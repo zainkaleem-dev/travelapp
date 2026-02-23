@@ -1,0 +1,36 @@
+Uri: https://account.templatemonster.com/cp/default.js
+File Name: C:\air\demo.templatemonster.com\cp\default.js
+Content Type: application/javascript
+
+Uri: https://demo.templatemonster.com/demo/275814.html
+File Name: C:\air\demo.templatemonster.com\demo\275814.html
+Content Type: text/html
+
+Uri: https://demo.templatemonster.com/favicon.ico
+File Name: C:\air\demo.templatemonster.com\favicon.ico
+Content Type: image/x-icon
+
+Uri: https://demo.templatemonster.com/safari-pinned-tab.svg
+File Name: C:\air\demo.templatemonster.com\safari-pinned-tab.svg
+Content Type: image/svg+xml
+
+Uri: https://s.tmimgcdn.com/scr/1200x627/275800/flightworld-airline-booking-search-engine-website-template_275814-5-original.png
+File Name: C:\air\demo.templatemonster.com\scr\1200x627\275800\flightworld-airline-booking-search-engine-website-template_275814-5-original.png
+Content Type: image/jpeg
+
+Uri: https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015
+File Name: C:\air\demo.templatemonster.com\beacon.min.js\vcd15cbe7772f49c399c6a5babf22c1241717689176015
+Content Type: text/javascript
+
+Uri: https://www.templatemonster.com/assets/css/demo-04e323aa87adcd791f39.css
+File Name: C:\air\demo.templatemonster.com\assets\css\demo-04e323aa87adcd791f39.css
+Content Type: text/css
+
+Uri: https://www.templatemonster.com/assets/js/commons-a6eacdce2af96cff47d4.js
+File Name: C:\air\demo.templatemonster.com\assets\js\commons-a6eacdce2af96cff47d4.js
+Content Type: application/javascript
+
+Uri: https://www.templatemonster.com/assets/js/demo-f3c2016947dafcd9046b.js
+File Name: C:\air\demo.templatemonster.com\assets\js\demo-f3c2016947dafcd9046b.js
+Content Type: application/javascript
+
