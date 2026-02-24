@@ -1,4 +1,4 @@
-
+﻿
 <div class="flightworld-root">
     <!-- preloader area -->
     <div class="preloader">
@@ -660,7 +660,7 @@
             <div class="container" data-aos="fade-up">
                 <div class="row">
                     <div class="col-12 col-lg-6 pt-5">
-                        <img src="assets/images/logoWhite.png" class="img-fluid" alt="Brand color white"
+                        <img src="assets/images/logo.png" class="img-fluid" alt="Brand color white"
                             title="Brand color white">
                         <p class="text-justify pt-5">Flight World Travel Agent dashboard is a specialized travel service
                             for organizations from flightworld.com</p>
@@ -741,7 +741,7 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <p class="text-center py-5 mb-0 font-small">Â©2025 Flight World Pwt Lcd. All Rights Reserved.
+                        <p class="text-center py-5 mb-0 font-small">Ã‚Â©2025 Flight World Pwt Lcd. All Rights Reserved.
                             Various trademarks are held by their respective owners.
                         </p>
                     </div>

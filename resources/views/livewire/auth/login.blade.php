@@ -1,7 +1,7 @@
 <div class="card">
     <div class="top">
         <h1>Login</h1>
-        <a class="link muted" href="{{ url('/') }}">Home</a>
+        <!-- <a class="link muted" href="{{ url('/') }}">Home</a> -->
     </div>
 
     <div class="muted">Sign in with your email and password.</div>

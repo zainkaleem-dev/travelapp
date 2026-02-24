@@ -575,7 +575,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12 col-lg-6 pt-5">
-                        <img src="assets/images/logoWhite.png" class="img-fluid" alt="Brand color white"
+                        <img src="assets/images/logo.png" class="img-fluid" alt="Brand color white"
                             title="Brand color white">
                         <p class="text-justify pt-5">Flight World Travel Agent dashboard is a specialized travel service
                             for organizations from flightworld.com</p>
@@ -678,4 +678,5 @@
     <!-- animation aos library -->
     
 </div>
+
 
