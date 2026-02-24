@@ -39,7 +39,7 @@ class FlightApiController extends Controller
     }
 
 
-    public function searchFlights()
+    public function searchFlights(Request $request)
     {
         // 1️⃣ Get Bearer token
         $token = $this->getToken();
@@ -51,22 +51,60 @@ class FlightApiController extends Controller
         // 2️⃣ Call Amadeus Flight API
         $url = $this->baseUrl . '/v2/shopping/flight-offers';
 
-        $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
-            ],
-            'query' => [
-                'originLocationCode' => 'LON',
-                'destinationLocationCode' => 'NYC',
-                'departureDate' => '2026-03-10',
-                'adults' => 1,
-            ],
-        ]);
+        $origin = strtoupper((string) $request->query('originLocationCode', 'LON'));
+        $destination = strtoupper((string) $request->query('destinationLocationCode', 'NYC'));
+        $departureDate = (string) $request->query('departureDate', now()->addWeek()->format('Y-m-d'));
+        $adults = max(1, (int) $request->query('adults', 1));
 
-        $data = json_decode($response->getBody(), true);
+        $query = [
+            'originLocationCode' => $origin,
+            'destinationLocationCode' => $destination,
+            'departureDate' => $departureDate,
+            'adults' => $adults,
+        ];
 
-        return response()->json($data);
+        if ($request->filled('children')) {
+            $query['children'] = (int) $request->query('children');
+        }
+
+        if ($request->filled('infants')) {
+            $query['infants'] = (int) $request->query('infants');
+        }
+
+        if ($request->filled('travelClass')) {
+            $query['travelClass'] = strtoupper((string) $request->query('travelClass'));
+        }
+
+        if ($request->filled('nonStop')) {
+            $query['nonStop'] = filter_var($request->query('nonStop'), FILTER_VALIDATE_BOOL) ? 'true' : 'false';
+        }
+
+        if ($request->filled('currencyCode')) {
+            $query['currencyCode'] = strtoupper((string) $request->query('currencyCode'));
+        }
+
+        if ($request->filled('max')) {
+            $query['max'] = max(1, (int) $request->query('max'));
+        }
+
+        try {
+            $response = $this->client->get($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'Accept' => 'application/json',
+                ],
+                'query' => $query,
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            return response()->json($data);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => 'Failed to fetch flights',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function priceFlightOffers(Request $request)

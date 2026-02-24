@@ -266,8 +266,8 @@
                                             </div>
                                         </div>
                                         <div class="col-12 col-lg-6 col-xl-2 px-0">
-                                            <button type="button" class="btn btn-search"
-                                                onclick="const el=document.getElementById('home-oneway-results'); if (el) { el.classList.remove('d-none'); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } return false;">
+                                            <button type="button" class="btn btn-search" id="onewaySearchBtn"
+                                                onclick="window.searchFlightsOneway(); return false;">
                                                 <span class="fw-bold">Search</span>
                                             </button>
                                         </div>
@@ -637,6 +637,13 @@
         <div id="home-oneway-results" class="d-none">
             @include('Livewire.pages.home.partials.oneway-results')
         </div>
+        <script>
+            window.flightSearchConfig = {
+                apiUrl: @json(url('/api/flights-search')),
+                reviewUrl: @json(route('booking.review'))
+            };
+        </script>
+        <script src="{{ asset('assets/js/home-flight-search.js') }}?v=2"></script>
         <!-- body section -->
         <div class="content-section">
 
@@ -747,4 +754,3 @@
 
     </div>
 </div>
-
