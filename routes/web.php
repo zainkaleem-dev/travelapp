@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Pages\Home\Index;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::redirect('/', '/login');
 
 
 Route::get('/login', Login::class)->name('login');
