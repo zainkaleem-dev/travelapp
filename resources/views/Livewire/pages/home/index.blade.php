@@ -266,8 +266,8 @@
                                             </div>
                                         </div>
                                         <div class="col-12 col-lg-6 col-xl-2 px-0">
-                                            <button type="submit" class="btn btn-search"
-                                                onclick="window.location.href='flight-listing-oneway.html';">
+                                            <button type="button" class="btn btn-search"
+                                                onclick="const el=document.getElementById('home-oneway-results'); if (el) { el.classList.remove('d-none'); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } return false;">
                                                 <span class="fw-bold">Search</span>
                                             </button>
                                         </div>
@@ -633,6 +633,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div id="home-oneway-results" class="d-none">
+            @include('Livewire.pages.home.partials.oneway-results')
         </div>
         <!-- body section -->
         <div class="content-section">
