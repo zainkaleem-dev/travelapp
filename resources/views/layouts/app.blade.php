@@ -19,7 +19,7 @@
             var(--bg);
         }
         .wrap { min-height: 100vh; display: grid; place-items: center; padding: 28px 14px; }
-        .card { width: 100%; max-width: 430px; border-radius: 18px; border: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04)); box-shadow: 0 20px 55px rgba(0,0,0,.45); padding: 22px; backdrop-filter: blur(10px); }
+        .card { width: 100%; max-width: 430px; border-radius: 18px; border: 1px solid rgba(90, 165, 255, .45); background: #142D5B; box-shadow: 0 20px 55px rgba(0,0,0,.45); padding: 22px; backdrop-filter: blur(10px); }
         .top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
         h1 { margin: 0; font-size: 18px; letter-spacing: .2px; }
         .muted { color: var(--muted); font-size: 13px; }
