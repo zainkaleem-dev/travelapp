@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Auth;
+namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -27,11 +27,11 @@ class Login extends Component
 
         session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route('home'));
     }
 
     public function render()
     {
-        return view('livewire.auth.login')->layout('layouts.guest', ['title' => 'Login']);
+        return view('livewire.auth.login')->title('Login');
     }
 }

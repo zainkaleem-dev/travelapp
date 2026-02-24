@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Auth;
+namespace App\Livewire\Auth;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -28,14 +28,14 @@ class Register extends Component
             'password' => Hash::make($data['password']),
         ]);
 
-        Auth::login($user);
-        session()->regenerate();
+        // Auth::login($user);
+        // session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route('login'));
     }
 
     public function render()
     {
-        return view('livewire.auth.register')->layout('layouts.guest', ['title' => 'Register']);
+        return view('livewire.auth.register')->title('Register');
     }
 }
