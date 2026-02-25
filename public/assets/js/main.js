@@ -6,8 +6,6 @@ document.querySelectorAll('.dropdown-toggle').forEach(dropDownFunc);
 
 // Dropdown Open and Close function
 function dropDownFunc(dropDown) {
-    console.log(dropDown.classList.contains('click-dropdown'));
-
     if (dropDown.classList.contains('click-dropdown') === true) {
         dropDown.addEventListener('click', function (e) {
             e.preventDefault();
@@ -65,8 +63,6 @@ window.addEventListener('click', function (e) {
 
 // Close the openend Dropdowns
 function closeDropdown() {
-    console.log('run');
-
     // remove the open and active class from other opened Dropdown (Closing the opend DropDown)
     document.querySelectorAll('.dropdown-container').forEach(function (container) {
         container.classList.remove('dropdown-open')

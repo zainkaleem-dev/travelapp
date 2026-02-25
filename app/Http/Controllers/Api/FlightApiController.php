@@ -13,7 +13,14 @@ class FlightApiController extends Controller
 
     public function __construct()
     {
-        $this->client = new Client(['verify' => false]);
+        $this->client = new Client([
+            'verify' => false,
+            'proxy' => [
+                'http' => null,
+                'https' => null,
+                'no' => [],
+            ],
+        ]);
         $this->baseUrl = config('amadeus.base_url');
     }
     public function getToken()
@@ -64,11 +71,17 @@ class FlightApiController extends Controller
         ];
 
         if ($request->filled('children')) {
-            $query['children'] = (int) $request->input('children');
+            $children = (int) $request->input('children');
+            if ($children > 0) {
+                $query['children'] = $children;
+            }
         }
 
         if ($request->filled('infants')) {
-            $query['infants'] = (int) $request->input('infants');
+            $infants = (int) $request->input('infants');
+            if ($infants > 0) {
+                $query['infants'] = $infants;
+            }
         }
 
         if ($request->filled('travelClass')) {

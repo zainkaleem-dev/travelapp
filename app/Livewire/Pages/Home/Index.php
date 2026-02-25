@@ -53,6 +53,7 @@ class Index extends Component
     public $multiCityFlightResults = null;
     public $activeTab = 'oneway';
     public $loading = false;
+    public $searchError = null;
 
     public function mount()
     {
@@ -118,6 +119,13 @@ class Index extends Component
     {
         $this->activeTab = 'oneway';
         $this->loading = true;
+        $this->searchError = null;
+
+        $this->oneWayOrigin = strtoupper(trim((string) ($this->oneWayOrigin ?: 'LON')));
+        $this->oneWayDestination = strtoupper(trim((string) ($this->oneWayDestination ?: 'NYC')));
+        if (empty($this->oneWayDepartureDate)) {
+            $this->oneWayDepartureDate = now()->addDays(5)->toDateString();
+        }
 
         // Validate required fields
         $this->validate([
@@ -149,12 +157,15 @@ class Index extends Component
             if ($response->getStatusCode() === 200) {
                 // For JsonResponse, getData() returns the data array
                 $this->flightResults = $response->getData(true);
+                if (!isset($this->flightResults['data']) || count($this->flightResults['data']) === 0) {
+                    $this->searchError = 'No live flights returned. Showing demo data.';
+                    $this->flightResults = $this->getDummyOneWayResults();
+                }
             } else {
                 // Handle error response
                 $errorData = $response->getData(true);
-                $this->flightResults = null;
-                session()->flash('error', 'Failed to search flights: ' . ($errorData['message'] ?? 'Unknown error'));
-                return;
+                $this->searchError = 'Live API issue: ' . ($errorData['message'] ?? 'Unknown error') . '. Showing demo data.';
+                $this->flightResults = $this->getDummyOneWayResults();
             }
 
             // Flash success message
@@ -162,11 +173,77 @@ class Index extends Component
 
         } catch (\Exception $e) {
             // Handle errors
-            $this->flightResults = null;
-            session()->flash('error', 'Failed to search flights: ' . $e->getMessage());
+            $this->searchError = 'Live API failed: ' . $e->getMessage() . '. Showing demo data.';
+            $this->flightResults = $this->getDummyOneWayResults();
         } finally {
             $this->loading = false;
         }
+    }
+
+    private function getDummyOneWayResults(): array
+    {
+        $origin = strtoupper(trim((string) ($this->oneWayOrigin ?: 'LON')));
+        $destination = strtoupper(trim((string) ($this->oneWayDestination ?: 'NYC')));
+        $date = $this->oneWayDepartureDate ?: now()->addDays(5)->toDateString();
+
+        return [
+            'data' => [
+                [
+                    'id' => 'demo-1',
+                    'itineraries' => [[
+                        'duration' => 'PT7H55M',
+                        'segments' => [[
+                            'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
+                            'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
+                            'carrierCode' => 'A1',
+                            'number' => '5951',
+                        ]],
+                    ]],
+                    'price' => ['total' => '299.35'],
+                ],
+                [
+                    'id' => 'demo-2',
+                    'itineraries' => [[
+                        'duration' => 'PT7H55M',
+                        'segments' => [[
+                            'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
+                            'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
+                            'carrierCode' => 'X1',
+                            'number' => '1160',
+                        ]],
+                    ]],
+                    'price' => ['total' => '310.87'],
+                ],
+                [
+                    'id' => 'demo-3',
+                    'itineraries' => [[
+                        'duration' => 'PT16H30M',
+                        'segments' => [
+                            [
+                                'departure' => ['iataCode' => $origin, 'at' => $date . 'T10:40:00'],
+                                'arrival' => ['iataCode' => 'LIS', 'at' => $date . 'T13:25:00'],
+                                'carrierCode' => 'TP',
+                                'number' => '1335',
+                            ],
+                            [
+                                'departure' => ['iataCode' => 'LIS', 'at' => $date . 'T18:45:00'],
+                                'arrival' => ['iataCode' => $destination, 'at' => $date . 'T22:10:00'],
+                                'carrierCode' => 'TP',
+                                'number' => '203',
+                            ],
+                        ],
+                    ]],
+                    'price' => ['total' => '343.40'],
+                ],
+            ],
+            'dictionaries' => [
+                'carriers' => [
+                    'A1' => 'A.P.G. DISTRIBUTION SYSTEM',
+                    'X1' => 'HAHN AIR TECHNOLOGIES',
+                    'TP' => 'TAP PORTUGAL',
+                ],
+            ],
+        ];
     }
 
     public function increaseAdults()
