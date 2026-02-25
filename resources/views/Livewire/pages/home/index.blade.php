@@ -631,7 +631,7 @@
         </div>
     </div>
 
-    @if($flightResults || $returnFlightResults || $multiCityFlightResults)
+    @if($flightResults || $returnFlightResults || $multiCityFlightResults || $activeTab === 'return')
     <!-- Flight Results -->
 
     <div class="filter-sec py-2">
@@ -920,6 +920,35 @@
     <div class="content-section">
         <div class="srp py-2">
             <div class="container">
+                @if($activeTab === 'return')
+                    @php
+                        $roundTripHtmlPath = resource_path('views/Livewire/pages/flights/flight-listing-round-trip.html');
+                        $roundTripHtml = '';
+
+                        if (file_exists($roundTripHtmlPath)) {
+                            $roundTripRaw = file_get_contents($roundTripHtmlPath);
+
+                            // Keep only the central results area from pasted HTML.
+                            if (preg_match('/<div class="content-section">([\s\S]*?)(?:<!--\s*page footer section\s*-->|<footer\b)/i', $roundTripRaw, $matches)) {
+                                $roundTripHtml = $matches[1];
+                            } elseif (preg_match('/<div class="filter-sec[\s\S]*$/i', $roundTripRaw, $matches)) {
+                                $roundTripHtml = $matches[0];
+                            } else {
+                                $roundTripHtml = $roundTripRaw;
+                            }
+
+                            // Extra safety: strip full-page wrappers if they still exist.
+                            $roundTripHtml = preg_replace('/<!doctype[\s\S]*?<body[^>]*>/i', '', $roundTripHtml);
+                            $roundTripHtml = preg_replace('/<\/body>[\s\S]*$/i', '', $roundTripHtml);
+                            $roundTripHtml = preg_replace('/<footer\b[\s\S]*$/i', '', $roundTripHtml);
+
+                            // AOS attributes can hide rows after Livewire DOM update; remove them for static render.
+                            $roundTripHtml = preg_replace('/\sdata-aos(?:-[a-z]+)?="[^"]*"/i', '', $roundTripHtml);
+                            $roundTripHtml = str_replace([' aos-init', ' aos-animate'], '', $roundTripHtml);
+                        }
+                    @endphp
+                    {!! $roundTripHtml !!}
+                @else
                 <div class="row">
                     <div class="col-12 my-2">
                         <div class="d-flex justify-content-between align-items-start">
@@ -1082,6 +1111,7 @@
                                 </div>
                             </div>
                         </div>
+                @endif
                     @endif
 
 
@@ -1104,4 +1134,3 @@
         });
     </script>
 @endpush
-
