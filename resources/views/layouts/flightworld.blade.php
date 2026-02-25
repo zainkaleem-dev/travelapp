@@ -59,27 +59,36 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto">
-
-
-                            <li class="nav-item">
+                            <li class="nav-item d-none d-md-block">
                                 <div class="dropdown-container">
                                     <div class="dropdown-toggle click-dropdown">
                                         <i class="bi bi-person-circle"></i> Account
                                     </div>
-                                        <div class="dropdown-menu">
-                                            <ul>
-                                                @auth
-                                                    <li class="nav-item">
-                                                        <form method="POST" action="{{ route('logout') }}">
-                                                            @csrf
-                                                            <button type="submit" class="dropdown-item">Logout</button>
-                                                        </form>
-                                                    </li>
-                                                @endauth
-                                            </ul>
-                                        </div>
+                                    <div class="dropdown-menu">
+                                        <ul>
+                                            @auth
+                                                <li class="nav-item">
+                                                    <form method="POST" action="{{ route('logout') }}">
+                                                        @csrf
+                                                        <button type="submit" class="dropdown-item">Logout</button>
+                                                    </form>
+                                                </li>
+                                            @endauth
+                                        </ul>
                                     </div>
-                                </li>
+                                </div>
+                            </li>
+
+                            <li class="nav-item d-md-none">
+                                @auth
+                                    <form method="POST" action="{{ route('logout') }}" class="mobile-logout-form">
+                                        @csrf
+                                        <button type="submit" class="mobile-logout-btn">Logout</button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" class="mobile-logout-btn d-inline-block">Login</a>
+                                @endauth
+                            </li>
                         </ul>
                     </div>
                 </nav>

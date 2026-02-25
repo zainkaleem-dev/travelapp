@@ -52,9 +52,13 @@ function dropDownFunc(dropDown) {
 
 // Listen to the doc click
 window.addEventListener('click', function (e) {
+    const target = e.target;
+    if (!(target instanceof Element)) {
+        return;
+    }
 
     // Close the menu if click happen outside menu
-    if (e.target.closest('.dropdown-container') === null) {
+    if (target.closest('.dropdown-container') === null) {
         // Close the opend dropdown
         closeDropdown();
     }

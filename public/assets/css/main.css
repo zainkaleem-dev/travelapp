@@ -524,6 +524,57 @@ iframe {
   }
 }
 @media screen and (max-width: 767px) {
+  .header .navbar {
+    position: relative;
+  }
+  #navbarSupportedContent {
+    top: calc(100% + 0.25rem);
+    right: 0;
+    left: auto;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0;
+    box-shadow: none !important;
+    padding: 0 !important;
+    z-index: 9999;
+  }
+  #navbarSupportedContent.show {
+    display: block !important;
+  }
+  #navbarSupportedContent .navbar-nav {
+    margin-left: 0 !important;
+    width: auto;
+  }
+  .mobile-logout-form {
+    margin: 0;
+    padding: 0;
+  }
+  .mobile-logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 14px;
+    border-radius: 10px;
+    border: 1px solid #d7d7d7;
+    background: #ffffff;
+    color: #111111;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .mobile-logout-btn:hover,
+  .mobile-logout-btn:focus {
+    color: #111111;
+    text-decoration: none;
+    background: #ffffff;
+  }
+}
+@media screen and (max-width: 767px) {
   #navbarSupportedContent .nav-item {
     padding: 1rem 0.5rem;
   }
