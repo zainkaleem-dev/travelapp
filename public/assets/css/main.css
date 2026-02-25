@@ -1334,6 +1334,66 @@ iframe {
   border-top: 1rem solid transparent;
   border-bottom: 1rem solid transparent;
 }
+.flight-search .search-pan #return .dep-date-input,
+.flight-search .search-pan #return .arv-date-input {
+  border-radius: 0.5rem;
+}
+.flight-search .search-pan #return .dep-date-input {
+  width: calc(42% - 0.4rem);
+  margin-left: 1.8rem;
+}
+.flight-search .search-pan #return .arv-date-input {
+  width: calc(58% - 0.2rem);
+  margin-left: 0.2rem !important;
+}
+.flight-search .search-pan #return .dep-date-input:after,
+.flight-search .search-pan #return .arv-date-input:before {
+  display: none;
+}
+.flight-search .search-pan #return .dep-date-input .cal-input,
+.flight-search .search-pan #return .arv-date-input .cal-input {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.35rem 0.25rem 0 0.2rem;
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.flight-search .search-pan #return .arv-date-input .cal-input {
+  appearance: none;
+  -webkit-appearance: none;
+}
+.flight-search .search-pan #return .arv-date-input .cal-input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+.flight-search .search-pan #return .form-group.d-flex {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0.4rem;
+  align-items: center;
+  padding-left: 2rem;
+}
+.flight-search .search-pan #return .dep-date-input,
+.flight-search .search-pan #return .arv-date-input {
+  width: 100% !important;
+  margin: 0 !important;
+  height: 2rem;
+  background: #ffffff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.flight-search .search-pan #return .dep-date-input:after,
+.flight-search .search-pan #return .arv-date-input:before {
+  display: none !important;
+}
+.flight-search .search-pan #return .dep-date-input .cal-input,
+.flight-search .search-pan #return .arv-date-input .cal-input {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.35rem 0.55rem 0 0.3rem;
+  font-size: 12px;
+  line-height: 1.2;
+}
 .flight-search .search-pan .dropdown-toggle {
   padding: 0 1rem 0 3rem;
 }

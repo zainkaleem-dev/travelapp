@@ -50,7 +50,7 @@
             <div class="container">
 
                 <nav class="navbar navbar-expand-md navbar-light py-0 px-0">
-                    <a class="navbar-brand ms-5" href="index.html"><img src="assets/images/logo.png" alt="Brand Logo"
+                    <a class="navbar-brand ms-5" href="{{ route('home') }}"><img src="assets/images/logo.png" alt="Brand Logo"
                             title="Brand Logo" class="img-fluid"></a>
                     <button class="navbar-toggler px-1 btn rounded-0" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
