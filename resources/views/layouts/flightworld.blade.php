@@ -66,16 +66,20 @@
                                     <div class="dropdown-toggle click-dropdown">
                                         <i class="bi bi-person-circle"></i> Account
                                     </div>
-                                    <div class="dropdown-menu">
-                                        <ul>
-                                            <li class="nav-item"><a class="dropdown-item" href="signin.html">Login</a>
-                                            </li>
-                                            <li class="nav-item"><a class="dropdown-item"
-                                                    href="signup.html">Register</a></li>
-                                        </ul>
+                                        <div class="dropdown-menu">
+                                            <ul>
+                                                @auth
+                                                    <li class="nav-item">
+                                                        <form method="POST" action="{{ route('logout') }}">
+                                                            @csrf
+                                                            <button type="submit" class="dropdown-item">Logout</button>
+                                                        </form>
+                                                    </li>
+                                                @endauth
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
+                                </li>
                         </ul>
                     </div>
                 </nav>

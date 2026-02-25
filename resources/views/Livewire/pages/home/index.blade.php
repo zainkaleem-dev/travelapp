@@ -1,4 +1,4 @@
-﻿<div>
+﻿<div class="home-page">
     <div class="head-wrapper">
 
         <div class="flight-search">
@@ -638,7 +638,6 @@
         <div class="container">
             <div class="d-flex justify-content-between">
                 <div class="fw-bold"><i class="bi bi-funnel pe-2"></i>Filters</div>
-                <div>
                     <a class="btn flt-btn" data-bs-toggle="collapse" href="#collapseExample" role="button"
                         aria-expanded="false" aria-controls="collapseExample">Reset All
                     </a>
@@ -1105,3 +1104,4 @@
         });
     </script>
 @endpush
+
