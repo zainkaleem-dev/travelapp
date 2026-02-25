@@ -1286,8 +1286,9 @@ iframe {
 .flight-search .search-pan .cal-input {
   background: none;
   border: 0px;
-  width: 6rem;
-  padding: 0.4rem 0 0 0.5rem;
+  width: 9.5rem;
+  max-width: 100%;
+  padding: 0.4rem 2.2rem 0 0.5rem;
 }
 .flight-search .search-pan .dep-date-input {
   position: relative;
