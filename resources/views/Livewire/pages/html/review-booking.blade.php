@@ -1,4 +1,4 @@
-﻿
+
 <!doctype html>
 <!--
 **********************************************************************************************************
@@ -121,7 +121,7 @@ Purchase:
                                 <div class="mt-5">
                                     <p class="d-inline-flex theme-text-white">
                                         <i class="bi bi-telephone-fill h4 theme-text-white ps-4 pe-2"></i>
-                                        24×7 Customer Support <br> 1800-313-5699
+                                        24�7 Customer Support <br> 1800-313-5699
                                     </p>
                                 </div>
                                 <div class="mt-3">
@@ -477,7 +477,7 @@ Purchase:
                                                 <div class="collapse" id="baseFare">
                                                     <div class="d-flex justify-content-between pt-3">
                                                         <span class="font-medium">Adult(s)
-                                                            (1 X ₹ 11,545)</span>
+                                                            (1 X ? 11,545)</span>
                                                         <span class="font-medium">
                                                             <i class="bi bi-currency-dollar"></i>
                                                             <span class="fw-normal">11,545</span>
@@ -499,7 +499,7 @@ Purchase:
                                                 <div class="collapse" id="airlineSurcharge">
                                                     <div class="d-flex justify-content-between pt-3">
                                                         <span class="font-medium">Adult(s)
-                                                            (1 X ₹ 8,0)</span>
+                                                            (1 X ? 8,0)</span>
                                                         <span class="font-medium">
                                                             <i class="bi bi-currency-dollar"></i>
                                                             <span class="fw-normal">800</span>
@@ -593,7 +593,7 @@ Purchase:
                     <div class="row">
                         <div class="col-12">
                             <button type="submit" class="btn btn-effect btn-book"
-                                onclick="window.location.href='traveller-details.html';">Continue</button>
+                                onclick="window.location.href='{{ route('booking.traveller_details') }}';">Continue</button>
                         </div>
                     </div>
                 </div>
@@ -687,7 +687,7 @@ Purchase:
                         </div>
                     </div>
                     <div class="col-12">
-                        <p class="text-center py-5 mb-0 font-small">©2025 Flight World Pwt Lcd. All Rights Reserved.
+                        <p class="text-center py-5 mb-0 font-small">�2025 Flight World Pwt Lcd. All Rights Reserved.
                             Various trademarks are held by their respective owners.
                         </p>
                     </div>
@@ -716,3 +716,5 @@ Purchase:
     <script src="assets/js/aos.js"></script>
 </body>
 </html>
+
+

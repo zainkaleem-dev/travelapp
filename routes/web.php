@@ -22,11 +22,18 @@ Route::get('/register', Register::class)->name('register');
 
 Route::livewire('/home', Index::class)->name('home');
 Route::livewire('/flight-listing-oneway.html', ListingOneway::class)->name('flight.listing.oneway');
-Route::livewire('/review-booking.html', ReviewBooking::class)->name('booking.review');
-Route::livewire('/traveller-details.html', TravellerDetails::class)->name('booking.traveller_details');
-Route::livewire('/traveller-addons-meal.html', TravellerAddonsMeal::class)->name('booking.traveller_addons_meal');
-Route::livewire('/payment.html', PaymentPage::class)->name('booking.payment');
-Route::livewire('/booking-confirmation-success.html', BookingConfirmationSuccess::class)->name('booking.confirmation_success');
+Route::livewire('/review-booking', ReviewBooking::class)->name('booking.review');
+Route::livewire('/traveller-details', TravellerDetails::class)->name('booking.traveller_details');
+Route::livewire('/traveller-addons-meal', TravellerAddonsMeal::class)->name('booking.traveller_addons_meal');
+Route::livewire('/payment', PaymentPage::class)->name('booking.payment');
+Route::livewire('/booking-confirmation-success', BookingConfirmationSuccess::class)->name('booking.confirmation_success');
+
+// Backward-compatible redirects for old .html URLs
+Route::redirect('/review-booking.html', '/review-booking');
+Route::redirect('/traveller-details.html', '/traveller-details');
+Route::redirect('/traveller-addons-meal.html', '/traveller-addons-meal');
+Route::redirect('/payment.html', '/payment');
+Route::redirect('/booking-confirmation-success.html', '/booking-confirmation-success');
 
 
 Route::post('/logout', function (Request $request) {

@@ -1063,7 +1063,7 @@
                                             <div class="fw-bold h5 mb-1 text-primary">
                                                 <span class="font-small text-muted me-1">USD</span>{{ number_format($offer['price']['total']) }}
                                             </div>
-                                            <button type="button" class="btn-select btn btn-primary btn-sm w-100 theme-border-radius" onclick="window.location.href='review-booking.html';">
+                                            <button type="button" class="btn-select btn btn-primary btn-sm w-100 theme-border-radius" onclick="window.location.href='{{ route('booking.review') }}';">
                                                 <span class="font-small fw-bold">Select</span>
                                             </button>
                                         </div>
@@ -1105,3 +1105,5 @@
         });
     </script>
 @endpush
+
+

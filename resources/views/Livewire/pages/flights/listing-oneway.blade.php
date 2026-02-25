@@ -1,4 +1,4 @@
-﻿<div>
+<div>
 
     <!-- preloader area -->
     <div class="preloader">
@@ -90,7 +90,7 @@
                                 <div class="mt-5">
                                     <p class="d-inline-flex theme-text-white">
                                         <i class="bi bi-telephone-fill h4 theme-text-white ps-4 pe-2"></i>
-                                        24Ã—7 Customer Support <br> 1800-313-5699
+                                        24×7 Customer Support <br> 1800-313-5699
                                     </p>
                                 </div>
                                 <div class="mt-3">
@@ -1043,7 +1043,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1087,7 +1087,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1131,7 +1131,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1175,7 +1175,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1219,7 +1219,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1262,7 +1262,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1306,7 +1306,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1350,7 +1350,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1394,7 +1394,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1438,7 +1438,7 @@
                                 <div class="col-12 col-md-3 text-center mt-md-0 mt-2">
                                     <div class="fw-bold"><i class="bi bi-currency-dollar ms-2"></i>4755</div>
                                     <button type="submit" class="btn-select btn btn-effect"
-                                        onclick="window.location.href='review-booking.html';">
+                                        onclick="window.location.href='{{ route('booking.review') }}';">
                                         <span class="font-small">Select</span>
                                     </button>
                                 </div>
@@ -1535,7 +1535,7 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <p class="text-center py-5 mb-0 font-small">Â©2025 Flight World Pwt Lcd. All Rights Reserved.
+                        <p class="text-center py-5 mb-0 font-small">©2025 Flight World Pwt Lcd. All Rights Reserved.
                             Various trademarks are held by their respective owners.
                         </p>
                     </div>
@@ -1578,11 +1578,11 @@
                                     </tr>
                                     <tr>
                                         <td>2 hours to 4 days*</td>
-                                        <td>ADULT : â‚¹ 2,999 + â‚¹ 300</td>
+                                        <td>ADULT : ₹ 2,999 + ₹ 300</td>
                                     </tr>
                                     <tr>
                                         <td>4 days to 365 days*</td>
-                                        <td>ADULT : â‚¹ 1,999 + â‚¹ 300</td>
+                                        <td>ADULT : ₹ 1,999 + ₹ 300</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1615,5 +1615,7 @@
     <!-- animation aos library -->
     
 </div>
+
+
 
 
