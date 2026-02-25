@@ -933,33 +933,13 @@
         <div class="srp py-2">
             <div class="container">
                 @if($activeTab === 'return')
-                    @php
-                        $roundTripHtmlPath = resource_path('views/Livewire/pages/flights/flight-listing-round-trip.html');
-                        $roundTripHtml = '';
-
-                        if (file_exists($roundTripHtmlPath)) {
-                            $roundTripRaw = file_get_contents($roundTripHtmlPath);
-
-                            if (preg_match('/<div class="content-section">([\s\S]*?)(?:<!--\s*page footer section\s*-->|<footer\b)/i', $roundTripRaw, $matches)) {
-                                $roundTripHtml = $matches[1];
-                            } elseif (preg_match('/<div class="filter-sec[\s\S]*$/i', $roundTripRaw, $matches)) {
-                                $roundTripHtml = $matches[0];
-                            } else {
-                                $roundTripHtml = $roundTripRaw;
-                            }
-
-                            $roundTripHtml = preg_replace('/<!doctype[\s\S]*?<body[^>]*>/i', '', $roundTripHtml);
-                            $roundTripHtml = preg_replace('/<\/body>[\s\S]*$/i', '', $roundTripHtml);
-                            $roundTripHtml = preg_replace('/<footer\b[\s\S]*$/i', '', $roundTripHtml);
-                            $roundTripHtml = preg_replace('/<script\b[\s\S]*?<\/script>/i', '', $roundTripHtml);
-                            $roundTripHtml = preg_replace('/\sdata-aos(?:-[a-z]+)?="[^"]*"/i', '', $roundTripHtml);
-                            $roundTripHtml = str_replace([' aos-init', ' aos-animate'], '', $roundTripHtml);
-                            $roundTripHtml = preg_replace('/src="assets\/images\/[^"]+"/i', 'src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="', $roundTripHtml);
-                        }
-                    @endphp
-                    <div wire:ignore>
-                        {!! $roundTripHtml !!}
-                    </div>
+                    <livewire:pages.flights.listing-return
+                        :results="$returnFlightResults ?? []"
+                        :origin="$returnOrigin"
+                        :destination="$returnDestination"
+                        :departure-date="$returnDepartureDate"
+                        :return-date="$returnReturnDate"
+                        :key="'listing-return-' . md5(json_encode([$returnOrigin, $returnDestination, $returnDepartureDate, $returnReturnDate, count($returnFlightResults['data'] ?? [])]))" />
                 @else
                     @php
                         $currentResults = $flightResults;
@@ -1063,8 +1043,8 @@
                                             <div class="fw-bold h5 mb-1 text-primary">
                                                 <span class="font-small text-muted me-1">USD</span>{{ number_format($offer['price']['total']) }}
                                             </div>
-                                            <button type="button" class="btn-select btn btn-primary btn-sm w-100 theme-border-radius" onclick="window.location.href='{{ route('booking.review') }}';">
-                                                <span class="font-small fw-bold">Select</span>
+                                            <button type="submit" class="btn-select btn btn-effect" onclick="window.location.href='{{ route('booking.review') }}';">
+                                                <span class="font-small">Select</span>
                                             </button>
                                         </div>
                                     </div>
@@ -1105,5 +1085,3 @@
         });
     </script>
 @endpush
-
-
