@@ -7,7 +7,7 @@
                 <ul class="nav nav-tabs border-0" role="tablist">
                     <li class="nav-item">
                         <button @class(['nav-link', 'active' => $activeTab === 'oneway']) id="oneway-tab"
-                            data-bs-toggle="tab" data-bs-target="#oneway" type="button" role="tab"
+                            wire:click="setActiveTab('oneway')" type="button" role="tab"
                             aria-controls="oneway" aria-selected="{{ $activeTab === 'oneway' ? 'true' : 'false' }}">
                             <span
                                 class="d-inline-block icon-20 rounded-circle bg-white align-middle me-2"></span>One-way
@@ -15,14 +15,14 @@
                     </li>
                     <li class="nav-item">
                         <button @class(['nav-link', 'active' => $activeTab === 'return']) id="return-tab"
-                            data-bs-toggle="tab" data-bs-target="#return" type="button" role="tab"
+                            wire:click="setActiveTab('return')" type="button" role="tab"
                             aria-controls="return" aria-selected="{{ $activeTab === 'return' ? 'true' : 'false' }}">
                             <span class="d-inline-block icon-20 rounded-circle bg-white align-middle me-2"></span>Return
                         </button>
                     </li>
                     <li class="nav-item">
                         <button @class(['nav-link', 'active' => $activeTab === 'multiCity']) id="multiCity-tab"
-                            data-bs-toggle="tab" data-bs-target="#multiCity" type="button" role="tab"
+                            wire:click="setActiveTab('multiCity')" type="button" role="tab"
                             aria-controls="multiCity"
                             aria-selected="{{ $activeTab === 'multiCity' ? 'true' : 'false' }}">
                             <span
@@ -552,74 +552,77 @@
                                             </div>
                                         </div>
                                         <div class="multi_city_form_wrapper"></div>
-                                        <div class="row mt-0 mt-md-0 mt-lg-0 mt-xl-2">
-                                            <div class="col-12 col-lg-12 col-xl-8">
-                                                <div class="row">
-                                                    <div class="col-12 col-lg-4 col-xl-4 ps-0 mb-2 mb-xl-0 pe-0 pe-lg-2"
-                                                        wire:key="multi-1-origin">
-                                                        <div class="form-group">
-                                                            <i
-                                                                class="bi bi-geo-alt-fill position-absolute h2 icon-pos"></i>
-                                                            <input type="text" class="form-control ps-5"
-                                                                id="multiOrigin2" placeholder="Origin"
-                                                                wire:model="multiCitySegments.1.origin">
-                                                            @error('multiCitySegments.1.origin') <span
-                                                                class="text-danger font-xs">{{ $message }}</span>
-                                                            @enderror
+                                        @foreach($multiCitySegments as $segmentIndex => $segment)
+                                            @if($segmentIndex > 0)
+                                                <div class="row mt-0 mt-md-0 mt-lg-0 mt-xl-2" wire:key="multi-row-{{ $segmentIndex }}">
+                                                    <div class="col-12 col-lg-12 col-xl-8">
+                                                        <div class="row">
+                                                            <div class="col-12 col-lg-4 col-xl-4 ps-0 mb-2 mb-xl-0 pe-0 pe-lg-2"
+                                                                wire:key="multi-{{ $segmentIndex }}-origin">
+                                                                <div class="form-group">
+                                                                    <i class="bi bi-geo-alt-fill position-absolute h2 icon-pos"></i>
+                                                                    <input type="text" class="form-control ps-5"
+                                                                        placeholder="Origin"
+                                                                        wire:model="multiCitySegments.{{ $segmentIndex }}.origin">
+                                                                    @error("multiCitySegments.$segmentIndex.origin") <span
+                                                                        class="text-danger font-xs">{{ $message }}</span>
+                                                                    @enderror
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12 col-lg-4 col-xl-4 ps-0 mb-2 mb-xl-0 pe-0 pe-lg-2"
+                                                                wire:key="multi-{{ $segmentIndex }}-destination">
+                                                                <div class="form-group">
+                                                                    <i class="bi bi-geo-alt-fill position-absolute h2 icon-pos"></i>
+                                                                    <input type="text" class="form-control ps-5"
+                                                                        placeholder="Destination"
+                                                                        wire:model="multiCitySegments.{{ $segmentIndex }}.destination">
+                                                                    @error("multiCitySegments.$segmentIndex.destination") <span
+                                                                        class="text-danger font-xs">{{ $message }}</span>
+                                                                    @enderror
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12 col-lg-4 col-xl-4 ps-0 mb-2 mb-xl-0 pe-0 pe-lg-0 pe-xl-2"
+                                                                wire:key="multi-{{ $segmentIndex }}-date">
+                                                                <div class="form-control form-group d-flex">
+                                                                    <i class="bi bi-calendar3 position-absolute h2 icon-pos"></i>
+                                                                    <span class="dep-date-input">
+                                                                        <input type="date" class="cal-input"
+                                                                            placeholder="Depart Date"
+                                                                            wire:model="multiCitySegments.{{ $segmentIndex }}.departureDate">
+                                                                        @error("multiCitySegments.$segmentIndex.departureDate") <span
+                                                                            class="text-danger font-xs">{{ $message }}</span>
+                                                                        @enderror
+                                                                    </span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-12 col-lg-4 col-xl-4 ps-0 mb-2 mb-xl-0 pe-0 pe-lg-2"
-                                                        wire:key="multi-1-destination">
-                                                        <div class="form-group">
-                                                            <i
-                                                                class="bi bi-geo-alt-fill position-absolute h2 icon-pos"></i>
-                                                            <input type="text" class="form-control ps-5"
-                                                                id="multiDestination2" placeholder="Destination"
-                                                                wire:model="multiCitySegments.1.destination">
-                                                            @error('multiCitySegments.1.destination') <span
-                                                                class="text-danger font-xs">{{ $message }}</span>
-                                                            @enderror
+                                                    @if($segmentIndex === 1)
+                                                        <div class="col-12 col-lg-12 col-xl-4 px-0">
+                                                            <div class="row">
+                                                                <div class="col-12 col-lg-6 col-xl-5 mb-2 mb-md-2 mb-lg-0 d-flex justify-content-center align-items-center">
+                                                                    <button type="button" class="btn btn-light font-small"
+                                                                        wire:click.prevent="addMultiCitySegment">
+                                                                        <span class="fw-bold">+ Add City</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="col-12 col-lg-6 col-xl-7">
+                                                                    <button type="button" class="btn btn-search"
+                                                                        wire:click="searchMultiCityFlights"
+                                                                        wire:loading.attr="disabled"
+                                                                        wire:loading.class="btn-loading">
+                                                                        <span class="fw-bold" wire:loading.remove
+                                                                            wire:target="searchMultiCityFlights">Search</span>
+                                                                        <span class="fw-bold" wire:loading
+                                                                            wire:target="searchMultiCityFlights">Searching...</span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-12 col-lg-4 col-xl-4 ps-0 mb-2 mb-xl-0 pe-0 pe-lg-0 pe-xl-2"
-                                                        wire:key="multi-1-date">
-                                                        <div class="form-control form-group d-flex">
-                                                            <i
-                                                                class="bi bi-calendar3 position-absolute h2 icon-pos"></i>
-                                                            <span class="dep-date-input">
-                                                                <input type="date" class="cal-input"
-                                                                    placeholder="Depart Date" id="multiDepartureDate2"
-                                                                    wire:model="multiCitySegments.1.departureDate">
-                                                                @error('multiCitySegments.1.departureDate') <span
-                                                                    class="text-danger font-xs">{{ $message }}</span>
-                                                                @enderror
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                                                    @endif
                                                 </div>
-                                            </div>
-                                            <div class="col-12 col-lg-12 col-xl-4 px-0">
-                                                <div class="row">
-                                                    <div class="col-12 col-lg-6 col-xl-5 mb-2 mb-md-2 mb-lg-0 d-flex justify-content-center align-items-center"
-                                                        id="wrapper">
-                                                        <button type="button" class="btn btn-light font-small"
-                                                            id="addMulticityRow" wire:click="addMultiCitySegment">
-                                                            <span class="fw-bold">+ Add City</span> </button>
-                                                    </div>
-                                                    <div class="col-12 col-lg-6 col-xl-7">
-                                                        <button type="button" class="btn btn-search"
-                                                            wire:click="searchMultiCityFlights"
-                                                            wire:loading.attr="disabled"
-                                                            wire:loading.class="btn-loading">
-                                                            <span class="fw-bold" wire:loading.remove
-                                                                wire:target="searchMultiCityFlights">Search</span>
-                                                            <span class="fw-bold" wire:loading
-                                                                wire:target="searchMultiCityFlights">Searching...</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                            @endif
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -940,12 +943,14 @@
                         :departure-date="$returnDepartureDate"
                         :return-date="$returnReturnDate"
                         :key="'listing-return-' . md5(json_encode([$returnOrigin, $returnDestination, $returnDepartureDate, $returnReturnDate, count($returnFlightResults['data'] ?? [])]))" />
+                @elseif($activeTab === 'multiCity')
+                    <livewire:pages.flights.listing-multicity
+                        :results="$multiCityFlightResults ?? []"
+                        :segments="$multiCitySegments ?? []"
+                        :key="'listing-multicity-' . md5(json_encode([count($multiCitySegments ?? []), count($multiCityFlightResults['data'] ?? [])]))" />
                 @else
                     @php
                         $currentResults = $flightResults;
-                        if ($activeTab === 'multiCity') {
-                            $currentResults = $multiCityFlightResults;
-                        }
                         $count = isset($currentResults['data']) ? count($currentResults['data']) : 0;
                     @endphp
 

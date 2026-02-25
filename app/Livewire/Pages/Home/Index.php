@@ -115,6 +115,17 @@ class Index extends Component
         $this->searchMultiCityFlights();
     }
 
+    public function setActiveTab(string $tab): void
+    {
+        if (!in_array($tab, ['oneway', 'return', 'multiCity'], true)) {
+            return;
+        }
+
+        $this->activeTab = $tab;
+        $this->searchError = null;
+        $this->resetValidation();
+    }
+
     public function searchFlights()
     {
         $this->activeTab = 'oneway';
@@ -379,6 +390,7 @@ class Index extends Component
     // Multicity methods
     public function addMultiCitySegment()
     {
+        $this->activeTab = 'multiCity';
         $this->multiCitySegments[] = ['origin' => '', 'destination' => '', 'departureDate' => ''];
     }
 
@@ -430,6 +442,7 @@ class Index extends Component
     {
         $this->activeTab = 'multiCity';
         $this->loading = true;
+        $this->searchError = null;
 
         // Validate required fields for all segments
         $rules = [];
@@ -467,22 +480,92 @@ class Index extends Component
             if ($response->getStatusCode() === 200) {
                 // For JsonResponse, getData() returns the data array
                 $this->multiCityFlightResults = $response->getData(true);
+                if (!isset($this->multiCityFlightResults['data']) || count($this->multiCityFlightResults['data']) === 0) {
+                    $this->searchError = 'No live multicity flights returned. Showing demo data.';
+                    $this->multiCityFlightResults = $this->getDummyMultiCityResults($firstSegment);
+                }
             } else {
                 // Handle error response
                 $errorData = $response->getData(true);
-                $this->multiCityFlightResults = null;
-                session()->flash('error', 'Failed to search multicity flights: ' . ($errorData['message'] ?? 'Unknown error'));
-                return;
+                $this->searchError = 'Live API issue: ' . ($errorData['message'] ?? 'Unknown error') . '. Showing demo data.';
+                $this->multiCityFlightResults = $this->getDummyMultiCityResults($firstSegment);
             }
 
             session()->flash('message', 'Multicity flights found successfully!');
 
         } catch (\Exception $e) {
-            $this->multiCityFlightResults = null;
-            session()->flash('error', 'Failed to search multicity flights: ' . $e->getMessage());
+            $firstSegment = $this->multiCitySegments[0] ?? ['origin' => 'LON', 'destination' => 'NYC', 'departureDate' => now()->addDays(5)->toDateString()];
+            $this->searchError = 'Live API failed: ' . $e->getMessage() . '. Showing demo data.';
+            $this->multiCityFlightResults = $this->getDummyMultiCityResults($firstSegment);
         } finally {
             $this->loading = false;
         }
+    }
+
+    private function getDummyMultiCityResults(array $firstSegment): array
+    {
+        $origin = strtoupper(trim((string) ($firstSegment['origin'] ?? 'LON')));
+        $destination = strtoupper(trim((string) ($firstSegment['destination'] ?? 'NYC')));
+        $date = (string) ($firstSegment['departureDate'] ?? now()->addDays(5)->toDateString());
+
+        return [
+            'data' => [
+                [
+                    'id' => 'multi-demo-1',
+                    'itineraries' => [[
+                        'duration' => 'PT7H55M',
+                        'segments' => [[
+                            'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
+                            'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
+                            'carrierCode' => 'A1',
+                            'number' => '5951',
+                        ]],
+                    ]],
+                    'price' => ['total' => '299.35'],
+                ],
+                [
+                    'id' => 'multi-demo-2',
+                    'itineraries' => [[
+                        'duration' => 'PT7H55M',
+                        'segments' => [[
+                            'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
+                            'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
+                            'carrierCode' => 'X1',
+                            'number' => '1160',
+                        ]],
+                    ]],
+                    'price' => ['total' => '310.87'],
+                ],
+                [
+                    'id' => 'multi-demo-3',
+                    'itineraries' => [[
+                        'duration' => 'PT16H30M',
+                        'segments' => [
+                            [
+                                'departure' => ['iataCode' => $origin, 'at' => $date . 'T10:40:00'],
+                                'arrival' => ['iataCode' => 'LIS', 'at' => $date . 'T13:25:00'],
+                                'carrierCode' => 'TP',
+                                'number' => '1335',
+                            ],
+                            [
+                                'departure' => ['iataCode' => 'LIS', 'at' => $date . 'T18:45:00'],
+                                'arrival' => ['iataCode' => $destination, 'at' => $date . 'T22:10:00'],
+                                'carrierCode' => 'TP',
+                                'number' => '203',
+                            ],
+                        ],
+                    ]],
+                    'price' => ['total' => '343.40'],
+                ],
+            ],
+            'dictionaries' => [
+                'carriers' => [
+                    'A1' => 'A.P.G. DISTRIBUTION SYSTEM',
+                    'X1' => 'HAHN AIR TECHNOLOGIES',
+                    'TP' => 'TAP PORTUGAL',
+                ],
+            ],
+        ];
     }
 
     public function render()
