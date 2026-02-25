@@ -1093,14 +1093,12 @@
     <script>
         // Listen for Livewire loading events
         document.addEventListener('livewire:loading', function (event) {
-            console.log('Livewire loading event fired');
             const preloader = document.getElementById('searchPreloader');
             preloader.style.display = 'block';
             document.body.style.overflow = 'hidden';
         });
 
         document.addEventListener('livewire:loaded', function (event) {
-            console.log('Livewire loaded event fired');
             const preloader = document.getElementById('searchPreloader');
             preloader.style.display = 'none';
             document.body.style.overflow = '';
