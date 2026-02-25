@@ -23,8 +23,8 @@ class FlightApiController extends Controller
             $url,
             [
                 'form_params' => [
-                    'grant_type'    => config('amadeus.grant_type'),
-                    'client_id'     => config('amadeus.client_id'),
+                    'grant_type' => config('amadeus.grant_type'),
+                    'client_id' => config('amadeus.client_id'),
                     'client_secret' => config('amadeus.client_secret'),
                 ],
                 'headers' => [
@@ -35,7 +35,7 @@ class FlightApiController extends Controller
 
         $data = json_decode($response->getBody(), true);
         return $data['access_token'] ?? null;
-       
+
     }
 
 
@@ -51,10 +51,10 @@ class FlightApiController extends Controller
         // 2️⃣ Call Amadeus Flight API
         $url = $this->baseUrl . '/v2/shopping/flight-offers';
 
-        $origin = strtoupper((string) $request->query('originLocationCode', 'LON'));
-        $destination = strtoupper((string) $request->query('destinationLocationCode', 'NYC'));
-        $departureDate = (string) $request->query('departureDate', now()->addWeek()->format('Y-m-d'));
-        $adults = max(1, (int) $request->query('adults', 1));
+        $origin = strtoupper((string) $request->input('originLocationCode'));
+        $destination = strtoupper((string) $request->input('destinationLocationCode'));
+        $departureDate = (string) $request->input('departureDate');
+        $adults = max(1, (int) $request->input('adults'));
 
         $query = [
             'originLocationCode' => $origin,
@@ -64,27 +64,31 @@ class FlightApiController extends Controller
         ];
 
         if ($request->filled('children')) {
-            $query['children'] = (int) $request->query('children');
+            $query['children'] = (int) $request->input('children');
         }
 
         if ($request->filled('infants')) {
-            $query['infants'] = (int) $request->query('infants');
+            $query['infants'] = (int) $request->input('infants');
         }
 
         if ($request->filled('travelClass')) {
-            $query['travelClass'] = strtoupper((string) $request->query('travelClass'));
+            $query['travelClass'] = strtoupper((string) $request->input('travelClass'));
         }
 
         if ($request->filled('nonStop')) {
-            $query['nonStop'] = filter_var($request->query('nonStop'), FILTER_VALIDATE_BOOL) ? 'true' : 'false';
+            $query['nonStop'] = filter_var($request->input('nonStop'), FILTER_VALIDATE_BOOL) ? 'true' : 'false';
         }
 
         if ($request->filled('currencyCode')) {
-            $query['currencyCode'] = strtoupper((string) $request->query('currencyCode'));
+            $query['currencyCode'] = strtoupper((string) $request->input('currencyCode'));
         }
 
         if ($request->filled('max')) {
-            $query['max'] = max(1, (int) $request->query('max'));
+            $query['max'] = max(1, (int) $request->input('max'));
+        }
+
+        if ($request->filled('returnDate')) {
+            $query['returnDate'] = (string) $request->input('returnDate');
         }
 
         try {
@@ -107,6 +111,7 @@ class FlightApiController extends Controller
         }
     }
 
+
     public function priceFlightOffers(Request $request)
     {
         $token = $this->getToken();
@@ -122,8 +127,8 @@ class FlightApiController extends Controller
         $response = $this->client->post($url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
             ],
             'body' => json_encode($body),
         ]);
@@ -228,8 +233,8 @@ class FlightApiController extends Controller
         $response = $this->client->post($url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
             ],
             'body' => json_encode($body),
         ]);
@@ -253,7 +258,7 @@ class FlightApiController extends Controller
         $response = $this->client->get($url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
+                'Accept' => 'application/json',
             ],
             'query' => [
                 'carrierCode' => $carrierCode,
@@ -281,7 +286,7 @@ class FlightApiController extends Controller
         $response = $this->client->get($url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
+                'Accept' => 'application/json',
             ],
             'query' => $request->query(),
         ]);
@@ -304,11 +309,11 @@ class FlightApiController extends Controller
         $response = $this->client->get($url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
+                'Accept' => 'application/json',
             ],
             'query' => [
                 'airportCode' => $airportCode,
-                'date'        => $date,
+                'date' => $date,
             ],
         ]);
 
@@ -330,7 +335,7 @@ class FlightApiController extends Controller
         $response = $this->client->get($url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
-                'Accept'        => 'application/json',
+                'Accept' => 'application/json',
             ],
             'query' => $params,
         ]);
@@ -340,5 +345,5 @@ class FlightApiController extends Controller
         return response()->json($data);
     }
 
-    
+
 }

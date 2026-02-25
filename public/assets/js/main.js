@@ -191,6 +191,7 @@ $('#carouselPartner').owlCarousel({
 $(function () {
     $("#datepicker").datepicker();
     $("#datepicker1").datepicker({ numberOfMonths: 2 });
+    $("#datepicker2").datepicker({ numberOfMonths: 2 });
     //multi city calender
     $("#datepicker3").datepicker();
     $("#datepicker4").datepicker();
