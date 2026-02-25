@@ -24,7 +24,6 @@ class ListingReturn extends Component
 
     public function render()
     {
-        return view('livewire.pages.flights.listing-return');
+        return view('livewire.pages.flights.listing-return-livewire');
     }
 }
-
