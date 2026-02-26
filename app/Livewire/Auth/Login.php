@@ -19,7 +19,7 @@ class Login extends Component
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             throw ValidationException::withMessages([
                 'email' => 'These credentials do not match our records.',
             ]);
@@ -32,6 +32,8 @@ class Login extends Component
 
     public function render()
     {
-        return view('livewire.auth.login')->title('Login');
+        return view('livewire.auth.login')
+            ->layout('layouts.flightworld')
+            ->title('Login');
     }
 }

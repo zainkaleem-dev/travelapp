@@ -1,6 +1,6 @@
 ﻿<div class="home-page head-wrapper">
 
-    <div class="flight-search">
+    <div class="flight-search" wire:ignore.self>
         <div class="container">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs border-0" role="tablist">
