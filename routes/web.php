@@ -40,7 +40,12 @@ Route::post('/logout', function () {
 
 // Backward compatibility: old register URL -> signup
 Route::redirect('/register', '/signup')->name('register');
-Route::get('/forgot-password',  fn() => 'Forgot password page')->name('password.request');
+Route::get('/forgot-password', \App\Livewire\Auth\ForgotPassword::class)
+    ->middleware('guest')
+    ->name('password.request');
+Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)
+    ->middleware('guest')
+    ->name('password.reset');
 Route::get('/privacy',          fn() => 'Privacy policy')->name('privacy');
 Route::get('/terms',            fn() => 'Terms of service')->name('terms');
 
