@@ -1,49 +1,42 @@
 <?php
 
-use App\Livewire\Auth\Login;
-use App\Livewire\Auth\Register;
-use App\Livewire\Pages\Booking\BookingConfirmationSuccess;
-use App\Livewire\Pages\Booking\PaymentPage;
-use App\Livewire\Pages\Booking\ReviewBooking;
-use App\Livewire\Pages\Booking\TravellerAddonsMeal;
-use App\Livewire\Pages\Booking\TravellerDetails;
-use App\Livewire\Pages\Flights\ListingOneway;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Livewire\Pages\Home\Index;
 
-Route::redirect('/', '/login');
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
 
+// Home (after login)
+Route::get('/home', \App\Livewire\Pages\Home\Index::class)
+    ->middleware('auth')
+    ->name('home');
 
-Route::get('/login', Login::class)->name('login');
-Route::get('/register', Register::class)->name('register');
+// Login page (Livewire full-page component)
+Route::get('/login', \App\Livewire\Auth\Login::class)
+    ->middleware('guest')
+    ->name('login');
 
-
-Route::get('/home', Index::class)->name('home');
-Route::get('/flight-listing-oneway.html', ListingOneway::class)->name('flight.listing.oneway');
-Route::get('/review-booking', ReviewBooking::class)->name('booking.review');
-Route::get('/traveller-details', TravellerDetails::class)->name('booking.traveller_details');
-Route::get('/traveller-addons-meal', TravellerAddonsMeal::class)->name('booking.traveller_addons_meal');
-Route::get('/payment', PaymentPage::class)->name('booking.payment');
-Route::get('/booking-confirmation-success', BookingConfirmationSuccess::class)->name('booking.confirmation_success');
-
-// Backward-compatible redirects for old .html URLs
-Route::redirect('/review-booking.html', '/review-booking');
-Route::redirect('/traveller-details.html', '/traveller-details');
-Route::redirect('/traveller-addons-meal.html', '/traveller-addons-meal');
-Route::redirect('/payment.html', '/payment');
-Route::redirect('/booking-confirmation-success.html', '/booking-confirmation-success');
-
-
-Route::post('/logout', function (Request $request) {
-    Auth::guard('web')->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return redirect('/');
+// Logout
+Route::post('/logout', function () {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect()->route('login');
 })->middleware('auth')->name('logout');
 
-// Route::view('/dashboard', 'dashboard')
-//     ->middleware('auth')
-//     ->name('dashboard');
+// Placeholder routes referenced in the Blade view
+Route::get('/register',         fn() => 'Register page')->name('register');
+Route::get('/forgot-password',  fn() => 'Forgot password page')->name('password.request');
+Route::get('/privacy',          fn() => 'Privacy policy')->name('privacy');
+Route::get('/terms',            fn() => 'Terms of service')->name('terms');
+
+// Social auth (requires Laravel Socialite)
+Route::get('/auth/google',   fn() => 'Google OAuth redirect')->name('auth.google');
+Route::get('/auth/facebook', fn() => 'Facebook OAuth redirect')->name('auth.facebook');
+
+// After login redirect
+Route::get('/flights', \App\Livewire\Pages\Flights\ListingOneway::class)
+    ->middleware('auth')
+    ->name('flights.search');
