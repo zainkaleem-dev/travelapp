@@ -20,13 +20,13 @@ Route::get('/login', Login::class)->name('login');
 Route::get('/register', Register::class)->name('register');
 
 
-Route::livewire('/home', Index::class)->name('home');
-Route::livewire('/flight-listing-oneway.html', ListingOneway::class)->name('flight.listing.oneway');
-Route::livewire('/review-booking', ReviewBooking::class)->name('booking.review');
-Route::livewire('/traveller-details', TravellerDetails::class)->name('booking.traveller_details');
-Route::livewire('/traveller-addons-meal', TravellerAddonsMeal::class)->name('booking.traveller_addons_meal');
-Route::livewire('/payment', PaymentPage::class)->name('booking.payment');
-Route::livewire('/booking-confirmation-success', BookingConfirmationSuccess::class)->name('booking.confirmation_success');
+Route::get('/home', Index::class)->name('home');
+Route::get('/flight-listing-oneway.html', ListingOneway::class)->name('flight.listing.oneway');
+Route::get('/review-booking', ReviewBooking::class)->name('booking.review');
+Route::get('/traveller-details', TravellerDetails::class)->name('booking.traveller_details');
+Route::get('/traveller-addons-meal', TravellerAddonsMeal::class)->name('booking.traveller_addons_meal');
+Route::get('/payment', PaymentPage::class)->name('booking.payment');
+Route::get('/booking-confirmation-success', BookingConfirmationSuccess::class)->name('booking.confirmation_success');
 
 // Backward-compatible redirects for old .html URLs
 Route::redirect('/review-booking.html', '/review-booking');

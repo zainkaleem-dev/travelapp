@@ -15,6 +15,6 @@ class ListingMulticity extends Component
 
     public function render()
     {
-        return view('livewire.pages.flights.listing-multicity-livewire');
+        return view('livewire.pages.flights.listing-multicity');
     }
 }

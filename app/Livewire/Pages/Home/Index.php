@@ -8,21 +8,18 @@ use Illuminate\Http\Request;
 
 class Index extends Component
 {
+    // One-way search properties
     public $oneWayOrigin = '';
     public $oneWayDestination = '';
     public $oneWayDepartureDate = '';
-
     public $oneWayAdults = 1;
     public $oneWayChildren = 0;
     public $oneWayInfants = 0;
-
     public $oneWayTravelClass = 'Economy';
-
     public $oneWayRefundable = false;
     public $oneWayNonStop = false;
     public $oneWayGdsReturn = false;
-
-    public $flightResults = null;
+    public $oneWayFlightResults = null;
 
     // Return flight properties
     public $returnOrigin = '';
@@ -57,11 +54,12 @@ class Index extends Component
 
     public function mount()
     {
-        // Test data for development
+        // One-way test data
         $this->oneWayOrigin = 'LON';
         $this->oneWayDestination = 'NYC';
         $this->oneWayDepartureDate = '2026-03-01';
 
+        // Test data for development
         $this->returnOrigin = 'LON';
         $this->returnDestination = 'NYC';
         $this->returnDepartureDate = '2026-03-01';
@@ -75,17 +73,6 @@ class Index extends Component
         $this->multiCitySegments[1]['departureDate'] = '2026-03-10';
     }
 
-    public function testSearch()
-    {
-        // Set test data
-        $this->oneWayOrigin = 'LON';
-        $this->oneWayDestination = 'NYC';
-        $this->oneWayDepartureDate = '2026-03-01';
-        $this->oneWayAdults = 1;
-
-        // Call search
-        $this->searchFlights();
-    }
 
     public function testReturnSearch()
     {
@@ -126,12 +113,16 @@ class Index extends Component
         $this->resetValidation();
     }
 
+
+
     public function searchFlights()
     {
+        $this->dispatch('search-started');
         $this->activeTab = 'oneway';
         $this->loading = true;
         $this->searchError = null;
 
+        // Ensure proper format for origin/destination
         $this->oneWayOrigin = strtoupper(trim((string) ($this->oneWayOrigin ?: 'LON')));
         $this->oneWayDestination = strtoupper(trim((string) ($this->oneWayDestination ?: 'NYC')));
         if (empty($this->oneWayDepartureDate)) {
@@ -146,7 +137,6 @@ class Index extends Component
         ]);
 
         try {
-            // Create a request object with the search parameters
             $request = new Request();
             $request->merge([
                 'originLocationCode' => strtoupper($this->oneWayOrigin),
@@ -157,37 +147,31 @@ class Index extends Component
                 'infants' => $this->oneWayInfants,
                 'travelClass' => strtoupper($this->oneWayTravelClass),
                 'nonStop' => $this->oneWayNonStop,
-                'max' => 10, // Limit results
+                'max' => 10,
             ]);
 
-            // Instantiate the controller and call the method
             $controller = new FlightApiController();
             $response = $controller->searchFlights($request);
 
-            // Handle the response properly
             if ($response->getStatusCode() === 200) {
-                // For JsonResponse, getData() returns the data array
-                $this->flightResults = $response->getData(true);
-                if (!isset($this->flightResults['data']) || count($this->flightResults['data']) === 0) {
+                $this->oneWayFlightResults = $response->getData(true);
+                if (!isset($this->oneWayFlightResults['data']) || count($this->oneWayFlightResults['data']) === 0) {
                     $this->searchError = 'No live flights returned. Showing demo data.';
-                    $this->flightResults = $this->getDummyOneWayResults();
+                    $this->oneWayFlightResults = $this->getDummyOneWayResults();
                 }
             } else {
-                // Handle error response
                 $errorData = $response->getData(true);
                 $this->searchError = 'Live API issue: ' . ($errorData['message'] ?? 'Unknown error') . '. Showing demo data.';
-                $this->flightResults = $this->getDummyOneWayResults();
+                $this->oneWayFlightResults = $this->getDummyOneWayResults();
             }
 
-            // Flash success message
             session()->flash('message', 'Flights found successfully!');
-
         } catch (\Exception $e) {
-            // Handle errors
             $this->searchError = 'Live API failed: ' . $e->getMessage() . '. Showing demo data.';
-            $this->flightResults = $this->getDummyOneWayResults();
+            $this->oneWayFlightResults = $this->getDummyOneWayResults();
         } finally {
             $this->loading = false;
+            $this->dispatch('search-finished');
         }
     }
 
@@ -200,51 +184,38 @@ class Index extends Component
         return [
             'data' => [
                 [
-                    'id' => 'demo-1',
-                    'itineraries' => [[
-                        'duration' => 'PT7H55M',
-                        'segments' => [[
-                            'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
-                            'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
-                            'carrierCode' => 'A1',
-                            'number' => '5951',
-                        ]],
-                    ]],
+                    'id' => 'oneway-demo-1',
+                    'itineraries' => [
+                        [
+                            'duration' => 'PT7H55M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
+                                    'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
+                                    'carrierCode' => 'A1',
+                                    'number' => '5951',
+                                ]
+                            ],
+                        ]
+                    ],
                     'price' => ['total' => '299.35'],
                 ],
                 [
-                    'id' => 'demo-2',
-                    'itineraries' => [[
-                        'duration' => 'PT7H55M',
-                        'segments' => [[
-                            'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
-                            'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
-                            'carrierCode' => 'X1',
-                            'number' => '1160',
-                        ]],
-                    ]],
+                    'id' => 'oneway-demo-2',
+                    'itineraries' => [
+                        [
+                            'duration' => 'PT7H55M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
+                                    'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
+                                    'carrierCode' => 'X1',
+                                    'number' => '1160',
+                                ]
+                            ],
+                        ]
+                    ],
                     'price' => ['total' => '310.87'],
-                ],
-                [
-                    'id' => 'demo-3',
-                    'itineraries' => [[
-                        'duration' => 'PT16H30M',
-                        'segments' => [
-                            [
-                                'departure' => ['iataCode' => $origin, 'at' => $date . 'T10:40:00'],
-                                'arrival' => ['iataCode' => 'LIS', 'at' => $date . 'T13:25:00'],
-                                'carrierCode' => 'TP',
-                                'number' => '1335',
-                            ],
-                            [
-                                'departure' => ['iataCode' => 'LIS', 'at' => $date . 'T18:45:00'],
-                                'arrival' => ['iataCode' => $destination, 'at' => $date . 'T22:10:00'],
-                                'carrierCode' => 'TP',
-                                'number' => '203',
-                            ],
-                        ],
-                    ]],
-                    'price' => ['total' => '343.40'],
                 ],
             ],
             'dictionaries' => [
@@ -257,6 +228,7 @@ class Index extends Component
         ];
     }
 
+    // One-way passenger controls
     public function increaseAdults()
     {
         $this->oneWayAdults++;
@@ -334,6 +306,18 @@ class Index extends Component
     {
         $this->activeTab = 'return';
         $this->loading = true;
+        $this->searchError = null;
+
+        // Ensure proper format for origin/destination
+        $this->returnOrigin = strtoupper(trim((string) ($this->returnOrigin ?: 'LON')));
+        $this->returnDestination = strtoupper(trim((string) ($this->returnDestination ?: 'NYC')));
+
+        if (empty($this->returnDepartureDate)) {
+            $this->returnDepartureDate = now()->addDays(5)->toDateString();
+        }
+        if (empty($this->returnReturnDate)) {
+            $this->returnReturnDate = now()->addDays(12)->toDateString();
+        }
 
         // Validate required fields
         $this->validate([
@@ -367,12 +351,16 @@ class Index extends Component
             if ($response->getStatusCode() === 200) {
                 // For JsonResponse, getData() returns the data array
                 $this->returnFlightResults = $response->getData(true);
+
+                if (!isset($this->returnFlightResults['data']) || count($this->returnFlightResults['data']) === 0) {
+                    $this->searchError = 'No live return flights returned. Showing demo data.';
+                    $this->returnFlightResults = $this->getDummyReturnResults();
+                }
             } else {
                 // Handle error response
                 $errorData = $response->getData(true);
-                $this->returnFlightResults = null;
-                session()->flash('error', 'Failed to search return flights: ' . ($errorData['message'] ?? 'Unknown error'));
-                return;
+                $this->searchError = 'Live API issue: ' . ($errorData['message'] ?? 'Unknown error') . '. Showing demo data.';
+                $this->returnFlightResults = $this->getDummyReturnResults();
             }
 
             // Flash success message
@@ -380,11 +368,87 @@ class Index extends Component
 
         } catch (\Exception $e) {
             // Handle errors
-            $this->returnFlightResults = null;
-            session()->flash('error', 'Failed to search return flights: ' . $e->getMessage());
+            $this->searchError = 'Live API failed: ' . $e->getMessage() . '. Showing demo data.';
+            $this->returnFlightResults = $this->getDummyReturnResults();
         } finally {
             $this->loading = false;
         }
+    }
+
+    private function getDummyReturnResults(): array
+    {
+        $origin = strtoupper(trim((string) ($this->returnOrigin ?: 'LON')));
+        $destination = strtoupper(trim((string) ($this->returnDestination ?: 'NYC')));
+        $departureDate = $this->returnDepartureDate ?: now()->addDays(5)->toDateString();
+        $returnDate = $this->returnReturnDate ?: now()->addDays(12)->toDateString();
+
+        return [
+            'data' => [
+                [
+                    'id' => 'return-demo-1',
+                    'itineraries' => [
+                        [ // Outbound
+                            'duration' => 'PT7H55M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $origin, 'at' => $departureDate . 'T13:00:00'],
+                                    'arrival' => ['iataCode' => $destination, 'at' => $departureDate . 'T15:55:00'],
+                                    'carrierCode' => 'A1',
+                                    'number' => '5951',
+                                ]
+                            ],
+                        ],
+                        [ // Inbound
+                            'duration' => 'PT8H10M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $destination, 'at' => $returnDate . 'T10:00:00'],
+                                    'arrival' => ['iataCode' => $origin, 'at' => $returnDate . 'T18:10:00'],
+                                    'carrierCode' => 'A1',
+                                    'number' => '5952',
+                                ]
+                            ],
+                        ]
+                    ],
+                    'price' => ['total' => '545.20'],
+                ],
+                [
+                    'id' => 'return-demo-2',
+                    'itineraries' => [
+                        [ // Outbound
+                            'duration' => 'PT7H55M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $origin, 'at' => $departureDate . 'T13:00:00'],
+                                    'arrival' => ['iataCode' => $destination, 'at' => $departureDate . 'T15:55:00'],
+                                    'carrierCode' => 'X1',
+                                    'number' => '1160',
+                                ]
+                            ],
+                        ],
+                        [ // Inbound
+                            'duration' => 'PT8H10M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $destination, 'at' => $returnDate . 'T11:00:00'],
+                                    'arrival' => ['iataCode' => $origin, 'at' => $returnDate . 'T19:10:00'],
+                                    'carrierCode' => 'X1',
+                                    'number' => '1161',
+                                ]
+                            ],
+                        ]
+                    ],
+                    'price' => ['total' => '580.45'],
+                ],
+            ],
+            'dictionaries' => [
+                'carriers' => [
+                    'A1' => 'A.P.G. DISTRIBUTION SYSTEM',
+                    'X1' => 'HAHN AIR TECHNOLOGIES',
+                    'TP' => 'TAP PORTUGAL',
+                ],
+            ],
+        ];
     }
 
     // Multicity methods
@@ -512,49 +576,59 @@ class Index extends Component
             'data' => [
                 [
                     'id' => 'multi-demo-1',
-                    'itineraries' => [[
-                        'duration' => 'PT7H55M',
-                        'segments' => [[
-                            'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
-                            'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
-                            'carrierCode' => 'A1',
-                            'number' => '5951',
-                        ]],
-                    ]],
+                    'itineraries' => [
+                        [
+                            'duration' => 'PT7H55M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
+                                    'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
+                                    'carrierCode' => 'A1',
+                                    'number' => '5951',
+                                ]
+                            ],
+                        ]
+                    ],
                     'price' => ['total' => '299.35'],
                 ],
                 [
                     'id' => 'multi-demo-2',
-                    'itineraries' => [[
-                        'duration' => 'PT7H55M',
-                        'segments' => [[
-                            'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
-                            'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
-                            'carrierCode' => 'X1',
-                            'number' => '1160',
-                        ]],
-                    ]],
+                    'itineraries' => [
+                        [
+                            'duration' => 'PT7H55M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $origin, 'at' => $date . 'T13:00:00'],
+                                    'arrival' => ['iataCode' => $destination, 'at' => $date . 'T15:55:00'],
+                                    'carrierCode' => 'X1',
+                                    'number' => '1160',
+                                ]
+                            ],
+                        ]
+                    ],
                     'price' => ['total' => '310.87'],
                 ],
                 [
                     'id' => 'multi-demo-3',
-                    'itineraries' => [[
-                        'duration' => 'PT16H30M',
-                        'segments' => [
-                            [
-                                'departure' => ['iataCode' => $origin, 'at' => $date . 'T10:40:00'],
-                                'arrival' => ['iataCode' => 'LIS', 'at' => $date . 'T13:25:00'],
-                                'carrierCode' => 'TP',
-                                'number' => '1335',
+                    'itineraries' => [
+                        [
+                            'duration' => 'PT16H30M',
+                            'segments' => [
+                                [
+                                    'departure' => ['iataCode' => $origin, 'at' => $date . 'T10:40:00'],
+                                    'arrival' => ['iataCode' => 'LIS', 'at' => $date . 'T13:25:00'],
+                                    'carrierCode' => 'TP',
+                                    'number' => '1335',
+                                ],
+                                [
+                                    'departure' => ['iataCode' => 'LIS', 'at' => $date . 'T18:45:00'],
+                                    'arrival' => ['iataCode' => $destination, 'at' => $date . 'T22:10:00'],
+                                    'carrierCode' => 'TP',
+                                    'number' => '203',
+                                ],
                             ],
-                            [
-                                'departure' => ['iataCode' => 'LIS', 'at' => $date . 'T18:45:00'],
-                                'arrival' => ['iataCode' => $destination, 'at' => $date . 'T22:10:00'],
-                                'carrierCode' => 'TP',
-                                'number' => '203',
-                            ],
-                        ],
-                    ]],
+                        ]
+                    ],
                     'price' => ['total' => '343.40'],
                 ],
             ],
@@ -566,6 +640,69 @@ class Index extends Component
                 ],
             ],
         ];
+    }
+
+
+    public function selectFlight($offerId)
+    {
+        $this->loading = true;
+        $this->searchError = null;
+
+        try {
+            // Find the offer in the current results
+            $results = $this->oneWayFlightResults;
+            if ($this->activeTab === 'return') {
+                $results = $this->returnFlightResults;
+            } elseif ($this->activeTab === 'multiCity') {
+                $results = $this->multiCityFlightResults;
+            }
+
+            $offer = collect($results['data'] ?? [])->firstWhere('id', $offerId);
+
+            if (!$offer) {
+                $this->searchError = 'Flight offer no longer available. Please search again.';
+                return;
+            }
+
+            $dictionaries = $results['dictionaries'] ?? [];
+
+            // Prepare the pricing request structure
+            $pricing_request = [
+                'data' => [
+                    'type' => 'flight-offers-pricing',
+                    'flightOffers' => [$offer]
+                ]
+            ];
+
+            // Initialize request and call FlightApiController
+            $request = new Request();
+            $request->merge($pricing_request);
+
+            $controller = new FlightApiController();
+            $response = $controller->priceFlightOffers($request);
+
+            if ($response->getStatusCode() === 200) {
+                $pricedData = $response->getData(true);
+
+                // Ensure dictionaries are preserved
+                if (!isset($pricedData['dictionaries']) && !empty($dictionaries)) {
+                    $pricedData['dictionaries'] = $dictionaries;
+                }
+
+                // Store in session for ReviewBooking component
+                session(['pricedFlight' => $pricedData]);
+                session()->save();
+
+                return redirect()->route('booking.review');
+            } else {
+                $errorData = $response->getData(true);
+                $this->searchError = 'Selection failed: ' . ($errorData['message'] ?? 'Unable to price this flight.');
+            }
+        } catch (\Exception $e) {
+            $this->searchError = 'Selection error: ' . $e->getMessage();
+        } finally {
+            $this->loading = false;
+        }
     }
 
     public function render()
