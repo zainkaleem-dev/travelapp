@@ -18,6 +18,11 @@ Route::get('/login', \App\Livewire\Auth\Login::class)
     ->middleware('guest')
     ->name('login');
 
+// Signup page (Livewire full-page component)
+Route::get('/signup', \App\Livewire\Auth\SignUp::class)
+    ->middleware('guest')
+    ->name('signup');
+
 // Logout
 Route::post('/logout', function () {
     auth()->logout();
@@ -26,8 +31,8 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->middleware('auth')->name('logout');
 
-// Placeholder routes referenced in the Blade view
-Route::get('/register',         fn() => 'Register page')->name('register');
+// Backward compatibility: old register URL -> signup
+Route::redirect('/register', '/signup')->name('register');
 Route::get('/forgot-password',  fn() => 'Forgot password page')->name('password.request');
 Route::get('/privacy',          fn() => 'Privacy policy')->name('privacy');
 Route::get('/terms',            fn() => 'Terms of service')->name('terms');

@@ -319,7 +319,7 @@
                     {{-- Register link --}}
                     <p class="fu8 text-center text-gray-500 pb-1" style="font-size:11px">
                         No account?
-                        <a href="{{ route('register') }}" class="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors">
+                        <a href="{{ route('signup') }}" class="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors">
                             Create one
                         </a>
                     </p>
