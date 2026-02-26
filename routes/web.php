@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+// Root URL
+Route::get('/', function () {
+    return auth()->check()
+        ? redirect()->route('home')
+        : redirect()->route('login');
+})->name('root');
+
 // Home (after login)
 Route::get('/home', \App\Livewire\Pages\Home\Index::class)
     ->middleware('auth')
