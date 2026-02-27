@@ -1,4 +1,4 @@
-<div>
+﻿<div>
 
 {{-- ══════════════════════════════════════════════════════════
      TOP NAV
@@ -331,76 +331,393 @@
             <div class="divide-y divide-gray-100" wire:loading.class="opacity-50">
 
                 @forelse($this->flights as $flight)
-                    <div class="flight-card px-4 py-3 flex items-center gap-4 {{ $flight['bgClass'] }}">
+                    <div class="flight-card px-4 py-3 {{ $flight['bgClass'] }}" x-data="{ open: false, cabin: 'economy' }">
+                        <div class="flex items-center gap-4 w-full">
+                            {{-- Airline logo --}}
+                            <div class="w-8 flex-shrink-0">
+                                <div class="airline-logo {{ $flight['airlineColor'] }}">{{ $flight['airline'] }}</div>
+                            </div>
 
-                        {{-- Airline logo --}}
-                        <div class="w-8 flex-shrink-0">
-                            <div class="airline-logo {{ $flight['airlineColor'] }}">{{ $flight['airline'] }}</div>
-                        </div>
-
-                        {{-- Route info --}}
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-3">
-                                {{-- Departure --}}
-                                <div class="min-w-0">
-                                    <p class="text-sm font-bold text-gray-800">{{ $flight['dep'] }}</p>
-                                    <p class="text-xs text-gray-500">{{ $flight['depCity'] }}</p>
-                                    <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $flight['depAirport'] }}</p>
-                                </div>
-
-                                {{-- Route line --}}
-                                <div class="flex-1 flex flex-col items-center gap-1">
-                                    <div class="relative w-full flight-line flex items-center justify-between">
-                                        <div class="flight-dot"></div>
-                                        <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 text-xs text-gray-500 relative z-10">
-                                            {{ $flight['stops'] }}
-                                        </div>
-                                        <div class="flight-dot"></div>
+                            {{-- Route info --}}
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-3">
+                                    {{-- Departure --}}
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-bold text-gray-800">{{ $flight['dep'] }}</p>
+                                        <p class="text-xs text-gray-500">{{ $flight['depCity'] }}</p>
+                                        <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $flight['depAirport'] }}</p>
                                     </div>
-                                    <p class="text-xs text-gray-400">{{ $flight['duration'] }}</p>
+
+                                    {{-- Route line --}}
+                                    <div class="flex-1 flex flex-col items-center gap-1">
+                                        <div class="relative w-full flight-line flex items-center justify-between">
+                                            <div class="flight-dot"></div>
+                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 text-xs text-gray-500 relative z-10">
+                                                {{ $flight['stops'] }}
+                                            </div>
+                                            <div class="flight-dot"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-400">{{ $flight['duration'] }}</p>
+                                    </div>
+
+                                    {{-- Arrival --}}
+                                    <div class="text-right min-w-0">
+                                        <p class="text-sm font-bold text-gray-800">{{ $flight['arr'] }}</p>
+                                        <p class="text-xs text-gray-500">{{ $flight['arrCity'] }}</p>
+                                        <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $flight['arrAirport'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Price & CTA --}}
+                            <div class="text-right flex-shrink-0 w-36">
+                                <div class="flex items-start justify-end gap-2">
+                                    <div>
+                                        @if($flight['badge'])
+                                            <div class="{{ $flight['badgeClass'] }}">{{ $flight['badge'] }}</div>
+                                        @else
+                                            <div class="mb-4"></div>
+                                        @endif
+                                    </div>
+                                    <button type="button"
+                                            class="mt-0.5 w-7 h-7 rounded-full border border-gray-200 bg-white text-red-600 hover:bg-red-50 flex items-center justify-center"
+                                            @click="open = !open"
+                                            :aria-expanded="open.toString()">
+                                        <svg class="w-4 h-4 transition-transform duration-200"
+                                             :class="open ? 'rotate-180' : ''"
+                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </button>
                                 </div>
 
-                                {{-- Arrival --}}
-                                <div class="text-right min-w-0">
-                                    <p class="text-sm font-bold text-gray-800">{{ $flight['arr'] }}</p>
-                                    <p class="text-xs text-gray-500">{{ $flight['arrCity'] }}</p>
-                                    <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $flight['arrAirport'] }}</p>
-                                </div>
+                                <p class="text-lg font-bold text-gray-800">${{ number_format($flight['price'], 2) }}</p>
+
+                                @if(!empty($flight['oldPrice']))
+                                    <p class="text-xs text-gray-500 line-through">${{ number_format($flight['oldPrice'], 2) }}</p>
+                                @elseif(!empty($flight['note']))
+                                    <p class="text-xs text-red-500 font-medium">{{ $flight['note'] }}</p>
+                                @else
+                                    <p class="text-xs text-gray-400">Per person</p>
+                                @endif
+
+                                <button wire:click="selectFlight({{ $flight['id'] }})"
+                                        class="mt-1 w-full py-1.5 {{ $flight['btnClass'] }} text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1">
+                                    <span wire:loading.remove wire:target="selectFlight({{ $flight['id'] }})">Select</span>
+                                    <span wire:loading wire:target="selectFlight({{ $flight['id'] }})">
+                                        <svg class="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                                        </svg>
+                                    </span>
+                                </button>
                             </div>
                         </div>
 
-                        {{-- Price & CTA --}}
-                        <div class="text-right flex-shrink-0 w-28">
-                            @if($flight['badge'])
-                                @if($flight['badgeClass'] === 'best-badge' || $flight['badgeClass'] === 'cheapest-badge')
-                                    <div class="{{ $flight['badgeClass'] }}">{{ $flight['badge'] }}</div>
-                                @else
-                                    <div class="{{ $flight['badgeClass'] }}">{{ $flight['badge'] }}</div>
-                                @endif
-                            @else
-                                <div class="mb-4"></div>
-                            @endif
+                        {{-- Emirates-style packages panel --}}
+                        <div x-show="open" x-collapse class="pt-3">
+                            <div class="border-t border-gray-100 pt-3">
+                                <div class="flex items-center justify-between text-xs text-gray-500">
+                                    <div class="flex items-center gap-4">
+                                        <button type="button" class="pb-2 font-medium"
+                                                @click="cabin='economy'"
+                                                :class="cabin==='economy' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Economy</button>
+                                        <button type="button" class="pb-2 font-medium"
+                                                @click="cabin='premium'"
+                                                :class="cabin==='premium' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Premium</button>
+                                        <button type="button" class="pb-2 font-medium"
+                                                @click="cabin='business'"
+                                                :class="cabin==='business' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Business</button>
+                                        <button type="button" class="pb-2 font-medium"
+                                                @click="cabin='first'"
+                                                :class="cabin==='first' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">First</button>
+                                    </div>
+                                    <a href="#" class="text-blue-600 hover:underline">Compare all services</a>
+                                </div>
 
-                            <p class="text-lg font-bold text-gray-800">${{ number_format($flight['price'], 2) }}</p>
+                                @php
+                                    $basePrice = (float) ($flight['price'] ?? 0);
+                                    $saver = $basePrice;
+                                    $flex = round($basePrice * 1.1, 2);
+                                    $flexPlus = round($basePrice * 1.4, 2);
+                                    $businessBase = round($basePrice * 2.2, 2);
+                                    $businessSpecial = $businessBase;
+                                    $businessSaver = round($businessBase * 1.07, 2);
+                                    $businessFlex = round($businessBase * 1.21, 2);
+                                    $businessFlexPlus = round($businessBase * 1.41, 2);
+                                @endphp
 
-                            @if(!empty($flight['oldPrice']))
-                                <p class="text-xs text-gray-500 line-through">${{ number_format($flight['oldPrice'], 2) }}</p>
-                            @elseif(!empty($flight['note']))
-                                <p class="text-xs text-red-500 font-medium">{{ $flight['note'] }}</p>
-                            @else
-                                <p class="text-xs text-gray-400">Per person</p>
-                            @endif
+                                {{-- Economy / Premium (Emirates-style cards) --}}
+                                <div x-show="cabin === 'economy' || cabin === 'premium'" class="mt-4 bg-gray-50 rounded-2xl p-4">
+                                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
+                                        <div class="hidden lg:block text-[11px] text-gray-600 space-y-4 pt-2">
+                                            <p class="text-gray-500">Fare benefits (per person)</p>
+                                            <a href="#" class="text-blue-600 hover:underline text-[11px]">Compare all services</a>
+                                            <p>Regular seat selection</p>
+                                            <p>Baggage</p>
+                                            <p>Change fee</p>
+                                            <p>Refund fee</p>
+                                            <p>Skywards Miles</p>
+                                            <p>Upgrade to Business</p>
+                                        </div>
 
-                            <button wire:click="selectFlight({{ $flight['id'] }})"
-                                    class="mt-1 w-full py-1.5 {{ $flight['btnClass'] }} text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1">
-                                <span wire:loading.remove wire:target="selectFlight({{ $flight['id'] }})">Select</span>
-                                <span wire:loading wire:target="selectFlight({{ $flight['id'] }})">
-                                    <svg class="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-                                    </svg>
-                                </span>
-                            </button>
+                                        <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full">
+                                        <div class="bg-emerald-800 text-white px-5 py-4">
+                                            <p class="text-sm font-semibold">Saver</p>
+                                            <p class="text-lg font-extrabold leading-tight">PKR {{ number_format($saver, 0) }}</p>
+                                            <p class="text-[11px] text-emerald-100 mt-0.5">Lowest price</p>
+                                        </div>
+                                        <div class="px-5 py-4 text-xs text-gray-700 space-y-2 flex flex-col h-full">
+                                            <p class="text-gray-400">At a charge</p>
+                                            <p>2 x 23 kg</p>
+                                            <p class="underline decoration-dotted">USD 100.00</p>
+                                            <p class="underline decoration-dotted">From USD 150.00</p>
+                                            <p>1,400 Miles</p>
+                                            <p class="underline decoration-dotted">After check-in opens 90,000 Miles</p>
+                                            <button type="button" class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50">
+                                                Select
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full">
+                                        <div class="bg-emerald-900 text-white px-5 py-4">
+                                            <p class="text-sm font-semibold">Flex</p>
+                                            <p class="text-lg font-extrabold leading-tight">PKR {{ number_format($flex, 0) }}</p>
+                                        </div>
+                                        <div class="px-5 py-4 text-xs text-gray-700 space-y-2 flex flex-col h-full">
+                                            <p class="underline decoration-dotted">Complimentary</p>
+                                            <p>2 x 23 kg</p>
+                                            <p class="underline decoration-dotted">USD 75.00</p>
+                                            <p class="underline decoration-dotted">USD 125.00</p>
+                                            <p>2,600 Miles</p>
+                                            <p class="underline decoration-dotted">Eligible 60,840 Miles</p>
+                                            <button type="button" class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50">
+                                                Select
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full">
+                                        <div class="bg-emerald-950 text-white px-5 py-4">
+                                            <p class="text-sm font-semibold">Flex Plus</p>
+                                            <p class="text-lg font-extrabold leading-tight">PKR {{ number_format($flexPlus, 0) }}</p>
+                                        </div>
+                                        <div class="px-5 py-4 text-xs text-gray-700 space-y-2 flex flex-col h-full">
+                                            <p class="underline decoration-dotted">Complimentary</p>
+                                            <p>2 x 23 kg</p>
+                                            <p class="underline decoration-dotted">Complimentary</p>
+                                            <p class="underline decoration-dotted">Complimentary</p>
+                                            <p>3,400 Miles</p>
+                                            <p class="underline decoration-dotted">Eligible 46,800 Miles</p>
+                                            <button type="button" class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50">
+                                                Select
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+
+                                {{-- Business --}}
+                                <div x-show="cabin === 'business'" class="mt-4 bg-gray-50 rounded-2xl p-4">
+                                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                                        <div class="hidden lg:block text-[11px] text-gray-600 space-y-4 pt-2">
+                                            <p class="text-gray-500">Fare benefits (per person)</p>
+                                            <a href="#" class="text-blue-600 hover:underline text-[11px]">Compare all services</a>
+                                            <p>Chauffeur-drive</p>
+                                            <p>Lounge</p>
+                                            <p>Seat selection</p>
+                                            <p>Baggage</p>
+                                            <p>Change fee</p>
+                                            <p>Refund fee</p>
+                                            <p>Skywards Miles</p>
+                                            <p>Upgrade to First</p>
+                                        </div>
+
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
+                                            <div class="bg-blue-700 text-white px-4 py-3">
+                                                <p class="text-sm font-semibold">Special</p>
+                                                <p class="text-sm font-bold">PKR {{ number_format($businessSpecial, 0) }}</p>
+                                            </div>
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                                <p class="text-gray-400">Info not available</p>
+                                                <p class="underline decoration-dotted">Not eligible</p>
+                                                <p class="text-gray-400">Restricted</p>
+                                                <p>2 x 32 kg</p>
+                                                <p class="underline decoration-dotted">USD 250.00</p>
+                                                <p class="underline decoration-dotted">From USD 375.00</p>
+                                                <p>5,225 Miles</p>
+                                                <p class="text-gray-400">Not permitted</p>
+                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                    Select
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
+                                            <div class="bg-blue-800 text-white px-4 py-3">
+                                                <p class="text-sm font-semibold">Saver</p>
+                                                <p class="text-sm font-bold">PKR {{ number_format($businessSaver, 0) }}</p>
+                                            </div>
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                                <p class="underline decoration-dotted text-gray-400">Not eligible</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p>Complimentary</p>
+                                                <p>2 x 32 kg</p>
+                                                <p class="underline decoration-dotted">USD 200.00</p>
+                                                <p class="underline decoration-dotted">From USD 300.00</p>
+                                                <p>5,938 Miles</p>
+                                                <p class="underline decoration-dotted">After check-in opens 60,840 Miles</p>
+                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                    Select
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
+                                            <div class="bg-blue-900 text-white px-4 py-3">
+                                                <p class="text-sm font-semibold">Flex</p>
+                                                <p class="text-sm font-bold">PKR {{ number_format($businessFlex, 0) }}</p>
+                                            </div>
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                                <p class="underline decoration-dotted text-gray-400">Not eligible</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p>Complimentary</p>
+                                                <p>2 x 32 kg</p>
+                                                <p class="underline decoration-dotted">USD 150.00</p>
+                                                <p class="underline decoration-dotted">USD 225.00</p>
+                                                <p>8,313 Miles</p>
+                                                <p class="underline decoration-dotted">Eligible 53,820 Miles</p>
+                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                    Select
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
+                                            <div class="bg-slate-900 text-white px-4 py-3">
+                                                <p class="text-sm font-semibold">Flex Plus</p>
+                                                <p class="text-sm font-bold">PKR {{ number_format($businessFlexPlus, 0) }}</p>
+                                            </div>
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                                <p class="underline decoration-dotted text-gray-400">Not eligible</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p>Complimentary</p>
+                                                <p>2 x 32 kg</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p>9,025 Miles</p>
+                                                <p class="underline decoration-dotted">Eligible 46,800 Miles</p>
+                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                    Select
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- First --}}
+                                <div x-show="cabin === 'first'" class="mt-4 bg-gray-50 rounded-2xl p-4">
+                                    @php
+                                        $firstBase = round($basePrice * 4.5, 2);
+                                        $firstFlex = $firstBase;
+                                        $firstFlexPlus = round($firstBase * 1.16, 2);
+                                    @endphp
+
+                                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                                        <div class="hidden lg:block text-[11px] text-gray-600 space-y-4 pt-2">
+                                            <p class="text-gray-500">Fare benefits (per person)</p>
+                                            <a href="#" class="text-blue-600 hover:underline text-[11px]">Compare all services</a>
+                                            <p>Chauffeur-drive</p>
+                                            <p>Lounge</p>
+                                            <p>Seat selection</p>
+                                            <p>Baggage</p>
+                                            <p>Change fee</p>
+                                            <p>Refund fee</p>
+                                            <p>Skywards Miles</p>
+                                        </div>
+
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
+                                            <div class="bg-red-700 text-white px-4 py-3">
+                                                <p class="text-sm font-semibold">Flex</p>
+                                                <p class="text-sm font-bold">PKR {{ number_format($firstFlex, 0) }}</p>
+                                            </div>
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                                <p class="underline decoration-dotted text-gray-400">Not eligible</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p>Complimentary</p>
+                                                <p>2 x 32 kg</p>
+                                                <p class="underline decoration-dotted">USD 150.00</p>
+                                                <p class="underline decoration-dotted">USD 225.00</p>
+                                                <p>11,875 Miles</p>
+                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                    Select
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
+                                            <div class="bg-red-900 text-white px-4 py-3">
+                                                <p class="text-sm font-semibold">Flex Plus</p>
+                                                <p class="text-sm font-bold">PKR {{ number_format($firstFlexPlus, 0) }}</p>
+                                            </div>
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                                <p class="underline decoration-dotted text-gray-400">Not eligible</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p>Complimentary</p>
+                                                <p>2 x 32 kg</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p class="underline decoration-dotted">Complimentary</p>
+                                                <p>11,875 Miles</p>
+                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                    Select
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="rounded-xl bg-white border border-gray-200 p-4 lg:col-span-2">
+                                            <p class="text-xs text-gray-700 font-semibold">First Class is partially available for this journey</p>
+
+                                            <div class="mt-3 relative">
+                                                <div class="absolute left-3 top-8 bottom-8 w-px bg-gray-200"></div>
+
+                                                <div class="relative pl-8">
+                                                    <div class="absolute left-0 top-4 w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 21l-1.5-4.5L3 15l18-6-6 18-4.5-1.5L6 20.5"/>
+                                                        </svg>
+                                                    </div>
+
+                                                    <div class="rounded-lg border border-gray-200 p-3">
+                                                        <p class="text-[11px] text-gray-500">Islamabad to Dubai</p>
+                                                        <p class="text-xs font-semibold text-gray-800">3 hrs 30 mins</p>
+                                                        <p class="text-xs text-blue-700 font-medium mt-1">Business Class</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-4 pl-8">
+                                                    <p class="text-[11px] text-gray-500">Connection in Dubai (DXB)</p>
+                                                    <p class="text-xs text-gray-700">Duration 1 hr 40 mins</p>
+                                                </div>
+
+                                                <div class="mt-4 relative pl-8">
+                                                    <div class="absolute left-0 top-4 w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 17h18M5 7l2 10m12-10-2 10"/>
+                                                        </svg>
+                                                    </div>
+
+                                                    <div class="rounded-lg border border-gray-200 p-3">
+                                                        <p class="text-[11px] text-gray-500">Dubai to Accra</p>
+                                                        <p class="text-xs font-semibold text-gray-800">9 hrs 5 mins</p>
+                                                        <p class="text-xs text-red-700 font-medium mt-1">First Class</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @empty
