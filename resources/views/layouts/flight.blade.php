@@ -419,10 +419,20 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
-                <a href="{{ route('login') }}"
-                    class="px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    Login / Register
-                </a>
+                @auth
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}"
+                        class="px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        Login / Register
+                    </a>
+                @endauth
             </div>
         </div>
     </nav>

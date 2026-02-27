@@ -49,11 +49,11 @@ class SignUp extends Component
             'password' => bcrypt($this->password),
         ]);
 
-        auth()->login($user);
+        $user->sendEmailVerificationNotification();
 
-        session()->flash('success', 'Account created successfully! Welcome aboard.');
+        session()->flash('success', 'Account created. Verification email sent. Please verify your email, then login.');
 
-        $this->redirect(route('home'), navigate: true);
+        $this->redirect(route('login'), navigate: true);
     }
 
     public function render()

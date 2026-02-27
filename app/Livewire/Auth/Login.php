@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Auth;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 use Livewire\Attributes\Locked;
@@ -61,8 +63,9 @@ class Login extends Component
 
         $this->isLoading = true;
 
-        // Attempt authentication
-        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        $user = User::where('email', $this->email)->first();
+
+        if (! $user || ! Hash::check($this->password, $user->password)) {
             RateLimiter::hit($this->throttleKey());
             $this->isLoading = false;
             $this->errorMessage = 'These credentials do not match our records.';
@@ -70,10 +73,17 @@ class Login extends Component
             return;
         }
 
+        if (! $user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+            $this->isLoading = false;
+            $this->errorMessage = 'Please verify your email first. A new verification link has been sent.';
+            return;
+        }
+
         // Clear rate limiter on success
         RateLimiter::clear($this->throttleKey());
 
-        // Regenerate session
+        Auth::login($user, $this->remember);
         request()->session()->regenerate();
 
         // Redirect after login

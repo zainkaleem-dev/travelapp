@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Models\User;
 use App\Livewire\Flightsearch\FlightSearch;
 use App\Livewire\Flightslist\FlightList;
 use App\Livewire\Passengerdetail\PassengerDetail;
@@ -47,6 +49,23 @@ Route::get('/forgot-password', \App\Livewire\Auth\ForgotPassword::class)
 Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)
     ->middleware('guest')
     ->name('password.reset');
+Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
+    $user = User::findOrFail($id);
+
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403);
+    }
+
+    if (! $request->hasValidSignature()) {
+        abort(403);
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
+
+    return redirect()->route('login')->with('success', 'Email verified successfully. Please login.');
+})->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 Route::get('/privacy', fn() => 'Privacy policy')->name('privacy');
 Route::get('/terms', fn() => 'Terms of service')->name('terms');
 

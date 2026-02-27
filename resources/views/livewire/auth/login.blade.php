@@ -169,6 +169,14 @@
 
                     {{-- ── Form ──────────────────────────────────── --}}
                     <form wire:submit="login" novalidate>
+                        @if (session()->has('success'))
+                            <div class="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 rounded-lg px-3 py-2 mb-3" style="font-size:11px">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                {{ session('success') }}
+                            </div>
+                        @endif
 
                         {{-- Global error message --}}
                         @if($errorMessage)
