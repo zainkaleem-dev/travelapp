@@ -423,9 +423,6 @@
                                                 @click="cabin='economy'"
                                                 :class="cabin==='economy' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Economy</button>
                                         <button type="button" class="pb-2 font-medium"
-                                                @click="cabin='premium'"
-                                                :class="cabin==='premium' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Premium</button>
-                                        <button type="button" class="pb-2 font-medium"
                                                 @click="cabin='business'"
                                                 :class="cabin==='business' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Business</button>
                                         <button type="button" class="pb-2 font-medium"
@@ -448,7 +445,7 @@
                                 @endphp
 
                                 {{-- Economy / Premium (Emirates-style cards) --}}
-                                <div x-show="cabin === 'economy' || cabin === 'premium'" class="mt-4 bg-gray-50 rounded-2xl p-4">
+                                <div x-show="cabin === 'economy'" class="mt-4 bg-gray-50 rounded-2xl p-4">
                                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
                                         <div class="hidden lg:block text-[11px] text-gray-600 space-y-4 pt-2">
                                             <p class="text-gray-500">Fare benefits (per person)</p>
@@ -461,13 +458,13 @@
                                             <p>Upgrade to Business</p>
                                         </div>
 
-                                        <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full">
-                                        <div class="bg-emerald-800 text-white px-5 py-4">
+                                        <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full flex flex-col">
+                                        <div class="bg-emerald-800 text-white px-5 py-4 min-h-[88px]">
                                             <p class="text-sm font-semibold">Saver</p>
                                             <p class="text-lg font-extrabold leading-tight">PKR {{ number_format($saver, 0) }}</p>
                                             <p class="text-[11px] text-emerald-100 mt-0.5">Lowest price</p>
                                         </div>
-                                        <div class="px-5 py-4 text-xs text-gray-700 space-y-2 flex flex-col h-full">
+                                        <div class="px-5 py-4 text-xs text-gray-700 flex flex-col gap-2 flex-1">
                                             <p class="text-gray-400">At a charge</p>
                                             <p>2 x 23 kg</p>
                                             <p class="underline decoration-dotted">USD 100.00</p>
@@ -480,12 +477,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full">
-                                        <div class="bg-emerald-900 text-white px-5 py-4">
+                                        <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full flex flex-col">
+                                         <div class="bg-emerald-900 text-white px-5 py-4 min-h-[88px]">
                                             <p class="text-sm font-semibold">Flex</p>
                                             <p class="text-lg font-extrabold leading-tight">PKR {{ number_format($flex, 0) }}</p>
                                         </div>
-                                        <div class="px-5 py-4 text-xs text-gray-700 space-y-2 flex flex-col h-full">
+                                        <div class="px-5 py-4 text-xs text-gray-700 flex flex-col gap-2 flex-1">
                                             <p class="underline decoration-dotted">Complimentary</p>
                                             <p>2 x 23 kg</p>
                                             <p class="underline decoration-dotted">USD 75.00</p>
@@ -498,12 +495,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full">
-                                        <div class="bg-emerald-950 text-white px-5 py-4">
+                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm h-full flex flex-col">
+                                        <div class="bg-emerald-950 text-white px-5 py-4 min-h-[88px]">
                                             <p class="text-sm font-semibold">Flex Plus</p>
                                             <p class="text-lg font-extrabold leading-tight">PKR {{ number_format($flexPlus, 0) }}</p>
                                         </div>
-                                        <div class="px-5 py-4 text-xs text-gray-700 space-y-2 flex flex-col h-full">
+                                        <div class="px-5 py-4 text-xs text-gray-700 flex flex-col gap-2 flex-1">
                                             <p class="underline decoration-dotted">Complimentary</p>
                                             <p>2 x 23 kg</p>
                                             <p class="underline decoration-dotted">Complimentary</p>
@@ -534,12 +531,12 @@
                                             <p>Upgrade to First</p>
                                         </div>
 
-                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
-                                            <div class="bg-blue-700 text-white px-4 py-3">
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200 flex flex-col h-full">
+                                            <div class="bg-blue-700 text-white px-4 py-3 min-h-[72px]">
                                                 <p class="text-sm font-semibold">Special</p>
                                                 <p class="text-sm font-bold">PKR {{ number_format($businessSpecial, 0) }}</p>
                                             </div>
-                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 flex-1 flex flex-col gap-3">
                                                 <p class="text-gray-400">Info not available</p>
                                                 <p class="underline decoration-dotted">Not eligible</p>
                                                 <p class="text-gray-400">Restricted</p>
@@ -548,18 +545,18 @@
                                                 <p class="underline decoration-dotted">From USD 375.00</p>
                                                 <p>5,225 Miles</p>
                                                 <p class="text-gray-400">Not permitted</p>
-                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
                                                     Select
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
-                                            <div class="bg-blue-800 text-white px-4 py-3">
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200 flex flex-col h-full">
+                                            <div class="bg-blue-800 text-white px-4 py-3 min-h-[72px]">
                                                 <p class="text-sm font-semibold">Saver</p>
                                                 <p class="text-sm font-bold">PKR {{ number_format($businessSaver, 0) }}</p>
                                             </div>
-                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 flex-1 flex flex-col gap-3">
                                                 <p class="underline decoration-dotted text-gray-400">Not eligible</p>
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>Complimentary</p>
@@ -568,18 +565,18 @@
                                                 <p class="underline decoration-dotted">From USD 300.00</p>
                                                 <p>5,938 Miles</p>
                                                 <p class="underline decoration-dotted">After check-in opens 60,840 Miles</p>
-                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
                                                     Select
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
-                                            <div class="bg-blue-900 text-white px-4 py-3">
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200 flex flex-col h-full">
+                                            <div class="bg-blue-900 text-white px-4 py-3 min-h-[72px]">
                                                 <p class="text-sm font-semibold">Flex</p>
                                                 <p class="text-sm font-bold">PKR {{ number_format($businessFlex, 0) }}</p>
                                             </div>
-                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 flex-1 flex flex-col gap-3">
                                                 <p class="underline decoration-dotted text-gray-400">Not eligible</p>
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>Complimentary</p>
@@ -588,18 +585,18 @@
                                                 <p class="underline decoration-dotted">USD 225.00</p>
                                                 <p>8,313 Miles</p>
                                                 <p class="underline decoration-dotted">Eligible 53,820 Miles</p>
-                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
                                                     Select
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
-                                            <div class="bg-slate-900 text-white px-4 py-3">
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200 flex flex-col h-full">
+                                            <div class="bg-slate-900 text-white px-4 py-3 min-h-[72px]">
                                                 <p class="text-sm font-semibold">Flex Plus</p>
                                                 <p class="text-sm font-bold">PKR {{ number_format($businessFlexPlus, 0) }}</p>
                                             </div>
-                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 flex-1 flex flex-col gap-3">
                                                 <p class="underline decoration-dotted text-gray-400">Not eligible</p>
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>Complimentary</p>
@@ -608,7 +605,7 @@
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>9,025 Miles</p>
                                                 <p class="underline decoration-dotted">Eligible 46,800 Miles</p>
-                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
                                                     Select
                                                 </button>
                                             </div>
@@ -637,12 +634,12 @@
                                             <p>Skywards Miles</p>
                                         </div>
 
-                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
-                                            <div class="bg-red-700 text-white px-4 py-3">
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200 flex flex-col h-full">
+                                            <div class="bg-red-700 text-white px-4 py-3 min-h-[72px]">
                                                 <p class="text-sm font-semibold">Flex</p>
                                                 <p class="text-sm font-bold">PKR {{ number_format($firstFlex, 0) }}</p>
                                             </div>
-                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 flex-1 flex flex-col gap-3">
                                                 <p class="underline decoration-dotted text-gray-400">Not eligible</p>
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>Complimentary</p>
@@ -650,18 +647,18 @@
                                                 <p class="underline decoration-dotted">USD 150.00</p>
                                                 <p class="underline decoration-dotted">USD 225.00</p>
                                                 <p>11,875 Miles</p>
-                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
                                                     Select
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200">
-                                            <div class="bg-red-900 text-white px-4 py-3">
+                                        <div class="rounded-xl bg-white overflow-hidden border border-gray-200 flex flex-col h-full">
+                                            <div class="bg-red-900 text-white px-4 py-3 min-h-[72px]">
                                                 <p class="text-sm font-semibold">Flex Plus</p>
                                                 <p class="text-sm font-bold">PKR {{ number_format($firstFlexPlus, 0) }}</p>
                                             </div>
-                                            <div class="px-4 py-3 text-[11px] text-gray-600 space-y-3">
+                                            <div class="px-4 py-3 text-[11px] text-gray-600 flex-1 flex flex-col gap-3">
                                                 <p class="underline decoration-dotted text-gray-400">Not eligible</p>
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>Complimentary</p>
@@ -669,7 +666,7 @@
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>11,875 Miles</p>
-                                                <button type="button" class="mt-2 w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
                                                     Select
                                                 </button>
                                             </div>
