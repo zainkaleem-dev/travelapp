@@ -18,24 +18,24 @@ class Login extends Component
     #[Validate('required|min:6')]
     public string $password = '';
 
-    public bool $remember    = false;
+    public bool $remember = false;
     public bool $showPassword = false;
 
     // ─── UI state ─────────────────────────────────────────────────
     #[Locked]
-    public bool   $isLoading   = false;
+    public bool $isLoading = false;
     public string $errorMessage = '';
 
     // ─── Booking context (passed from previous step) ───────────────
-    public string $flightFrom  = 'DUS';
-    public string $flightTo    = 'IST';
-    public int    $passengers  = 1;
-    public string $cabinClass  = 'ECO';
+    public string $flightFrom = 'DUS';
+    public string $flightTo = 'IST';
+    public int $passengers = 1;
+    public string $cabinClass = 'ECO';
 
     // ─── Toggle password visibility ───────────────────────────────
     public function togglePassword(): void
     {
-        $this->showPassword = ! $this->showPassword;
+        $this->showPassword = !$this->showPassword;
     }
 
     // ─── Rate-limit key ───────────────────────────────────────────
@@ -62,9 +62,9 @@ class Login extends Component
         $this->isLoading = true;
 
         // Attempt authentication
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
-            $this->isLoading    = false;
+            $this->isLoading = false;
             $this->errorMessage = 'These credentials do not match our records.';
             $this->reset('password');
             return;
@@ -77,7 +77,7 @@ class Login extends Component
         request()->session()->regenerate();
 
         // Redirect after login
-        $this->redirect(route('home'), navigate: true);
+        $this->redirect(route('flights.search'), navigate: true);
     }
 
     // ─── Social auth placeholders ─────────────────────────────────

@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Flightsearch\FlightSearch;
+use App\Livewire\Flightslist\FlightList;
+use App\Livewire\Passengerdetail\PassengerDetail;
+use App\Livewire\Additionalservices\AdditionalServices;
+use App\Livewire\Chooseseat\ChooseSeat;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,14 +16,10 @@ use Illuminate\Support\Facades\Route;
 // Root URL
 Route::get('/', function () {
     return auth()->check()
-        ? redirect()->route('home')
+        ? redirect()->route('flights.search')
         : redirect()->route('login');
 })->name('root');
 
-// Home (after login)
-Route::get('/home', \App\Livewire\Pages\Home\Index::class)
-    ->middleware('auth')
-    ->name('home');
 
 // Login page (Livewire full-page component)
 Route::get('/login', \App\Livewire\Auth\Login::class)
@@ -46,14 +47,29 @@ Route::get('/forgot-password', \App\Livewire\Auth\ForgotPassword::class)
 Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)
     ->middleware('guest')
     ->name('password.reset');
-Route::get('/privacy',          fn() => 'Privacy policy')->name('privacy');
-Route::get('/terms',            fn() => 'Terms of service')->name('terms');
+Route::get('/privacy', fn() => 'Privacy policy')->name('privacy');
+Route::get('/terms', fn() => 'Terms of service')->name('terms');
 
 // Social auth (requires Laravel Socialite)
-Route::get('/auth/google',   fn() => 'Google OAuth redirect')->name('auth.google');
+Route::get('/auth/google', fn() => 'Google OAuth redirect')->name('auth.google');
 Route::get('/auth/facebook', fn() => 'Facebook OAuth redirect')->name('auth.facebook');
 
-// After login redirect
-Route::get('/flights', \App\Livewire\Pages\Flights\ListingOneway::class)
-    ->middleware('auth')
-    ->name('flights.search');
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/flights-search', FlightSearch::class)
+        ->name('flights.search');
+
+    Route::get('/flights-list', FlightList::class)
+        ->name('flights.list');
+
+    Route::get('/passenger-details', PassengerDetail::class)
+        ->name('passenger.details');
+
+    Route::get('/seating', ChooseSeat::class)
+        ->name('seating');
+
+    Route::get('/additional-services', AdditionalServices::class)
+        ->name('additional.services');
+
+});
