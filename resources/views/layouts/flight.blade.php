@@ -34,6 +34,10 @@
     @livewireStyles
 
     <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: #f2f2f2;
