@@ -401,16 +401,10 @@
                                     <p class="text-xs text-gray-400">Per person</p>
                                 @endif
 
-                                <button wire:click="selectFlight({{ $flight['id'] }})"
-                                        class="mt-1 w-full py-1.5 {{ $flight['btnClass'] }} text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1">
-                                    <span wire:loading.remove wire:target="selectFlight({{ $flight['id'] }})">Select</span>
-                                    <span wire:loading wire:target="selectFlight({{ $flight['id'] }})">
-                                        <svg class="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-                                        </svg>
-                                    </span>
-                                </button>
+                                <a href="{{ route('passenger.details') }}"
+                                   class="mt-1 w-full py-1.5 {{ $flight['btnClass'] }} text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1">
+                                    Select
+                                </a>
                             </div>
                         </div>
 
@@ -471,9 +465,10 @@
                                             <p class="underline decoration-dotted">From USD 150.00</p>
                                             <p>1,400 Miles</p>
                                             <p class="underline decoration-dotted">After check-in opens 90,000 Miles</p>
-                                            <button type="button" class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50">
+                                            <a href="{{ route('passenger.details') }}"
+                                               class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50 flex items-center justify-center">
                                                 Select
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
 
@@ -489,9 +484,10 @@
                                             <p class="underline decoration-dotted">USD 125.00</p>
                                             <p>2,600 Miles</p>
                                             <p class="underline decoration-dotted">Eligible 60,840 Miles</p>
-                                            <button type="button" class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50">
+                                            <a href="{{ route('passenger.details') }}"
+                                               class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50 flex items-center justify-center">
                                                 Select
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
 
@@ -507,9 +503,10 @@
                                             <p class="underline decoration-dotted">Complimentary</p>
                                             <p>3,400 Miles</p>
                                             <p class="underline decoration-dotted">Eligible 46,800 Miles</p>
-                                            <button type="button" class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50">
+                                            <a href="{{ route('passenger.details') }}"
+                                               class="mt-auto w-full py-2.5 rounded-lg border border-gray-800 text-xs font-semibold bg-white hover:bg-gray-50 flex items-center justify-center">
                                                 Select
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -545,9 +542,10 @@
                                                 <p class="underline decoration-dotted">From USD 375.00</p>
                                                 <p>5,225 Miles</p>
                                                 <p class="text-gray-400">Not permitted</p>
-                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <a href="{{ route('passenger.details') }}"
+                                                   class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold flex items-center justify-center">
                                                     Select
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
 
@@ -565,9 +563,10 @@
                                                 <p class="underline decoration-dotted">From USD 300.00</p>
                                                 <p>5,938 Miles</p>
                                                 <p class="underline decoration-dotted">After check-in opens 60,840 Miles</p>
-                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <a href="{{ route('passenger.details') }}"
+                                                   class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold flex items-center justify-center">
                                                     Select
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
 
@@ -585,9 +584,10 @@
                                                 <p class="underline decoration-dotted">USD 225.00</p>
                                                 <p>8,313 Miles</p>
                                                 <p class="underline decoration-dotted">Eligible 53,820 Miles</p>
-                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <a href="{{ route('passenger.details') }}"
+                                                   class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold flex items-center justify-center">
                                                     Select
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
 
@@ -605,9 +605,10 @@
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>9,025 Miles</p>
                                                 <p class="underline decoration-dotted">Eligible 46,800 Miles</p>
-                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <a href="{{ route('passenger.details') }}"
+                                                   class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold flex items-center justify-center">
                                                     Select
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -647,9 +648,10 @@
                                                 <p class="underline decoration-dotted">USD 150.00</p>
                                                 <p class="underline decoration-dotted">USD 225.00</p>
                                                 <p>11,875 Miles</p>
-                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <a href="{{ route('passenger.details') }}"
+                                                   class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold flex items-center justify-center">
                                                     Select
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
 
@@ -666,9 +668,10 @@
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p class="underline decoration-dotted">Complimentary</p>
                                                 <p>11,875 Miles</p>
-                                                <button type="button" class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold">
+                                                <a href="{{ route('passenger.details') }}"
+                                                   class="mt-auto w-full py-2 rounded-lg border border-gray-800 text-xs font-semibold flex items-center justify-center">
                                                     Select
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
 
