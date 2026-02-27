@@ -59,8 +59,7 @@ class FlightSearch extends Component
     const MAX_FLIGHTS = 5;
 
     // ── Computed helpers ───────────────────────────────────────────────
-    #[Computed]
-    public function canAddFlight(): bool
+    public function getCanAddFlightProperty(): bool
     {
         return count($this->multiFlights) < self::MAX_FLIGHTS;
     }
@@ -115,10 +114,10 @@ class FlightSearch extends Component
         $this->validate($rules);
 
         // Simulate search delay — in a real app dispatch a job or redirect
-        $this->dispatch('search-started');
+        $this->redirectRoute('flights.list');
 
         // Reset searching after 2 seconds via JS
-        $this->js("setTimeout(() => \$wire.doneSearching(), 2000)");
+        return;
     }
 
     public function doneSearching(): void

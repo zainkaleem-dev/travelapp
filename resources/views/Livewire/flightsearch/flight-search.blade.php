@@ -378,7 +378,7 @@
                         </div>
                     </div>
 
-                    <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
+                    <button class="btn-search" wire:click.prevent="search" wire:loading.attr="disabled">
                         <span wire:loading.remove wire:target="search" class="flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <circle cx="11" cy="11" r="8" />
@@ -750,7 +750,7 @@
                         </div>
                     </div>
 
-                    <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
+                    <button class="btn-search" wire:click.prevent="search" wire:loading.attr="disabled">
                         <span wire:loading.remove wire:target="search" class="flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <circle cx="11" cy="11" r="8" />
@@ -880,7 +880,7 @@
                         </span>
                     </div>
 
-                    <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
+                    <button class="btn-search" wire:click.prevent="search" wire:loading.attr="disabled">
                         <span wire:loading.remove wire:target="search" class="flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <circle cx="11" cy="11" r="8" />
