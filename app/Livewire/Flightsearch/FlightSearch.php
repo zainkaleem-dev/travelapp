@@ -51,6 +51,12 @@ class FlightSearch extends Component
     public string $multiClass = 'Economy Class';
     public bool $multiPromo = false;
     public string $multiPromoCode = '';
+    public bool $multiFlexible = false;
+    public int $multiAdults = 1;
+    public int $multiChildren = 0;
+    public int $multiInfants = 0;
+    public array $showMultiDepAirports = [false, false];
+    public array $showMultiArrAirports = [false, false];
 
     // ── Searching state ────────────────────────────────────────────────
     public bool $searching = false;
@@ -74,6 +80,8 @@ class FlightSearch extends Component
     {
         if (count($this->multiFlights) < self::MAX_FLIGHTS) {
             $this->multiFlights[] = ['dep' => '', 'arr' => '', 'date' => ''];
+            $this->showMultiDepAirports[] = false;
+            $this->showMultiArrAirports[] = false;
         }
     }
 
@@ -85,6 +93,15 @@ class FlightSearch extends Component
 
         array_splice($this->multiFlights, $index, 1);
         $this->multiFlights = array_values($this->multiFlights);
+
+        if (isset($this->showMultiDepAirports[$index])) {
+            array_splice($this->showMultiDepAirports, $index, 1);
+            $this->showMultiDepAirports = array_values($this->showMultiDepAirports);
+        }
+        if (isset($this->showMultiArrAirports[$index])) {
+            array_splice($this->showMultiArrAirports, $index, 1);
+            $this->showMultiArrAirports = array_values($this->showMultiArrAirports);
+        }
     }
 
     public function search(): void
@@ -208,6 +225,24 @@ class FlightSearch extends Component
         $this->showOnewayArrAirports = false;
     }
 
+    public function selectMultiDepAirport(int $index, string $display): void
+    {
+        if (!isset($this->multiFlights[$index])) {
+            return;
+        }
+        $this->multiFlights[$index]['dep'] = $display;
+        $this->showMultiDepAirports[$index] = false;
+    }
+
+    public function selectMultiArrAirport(int $index, string $display): void
+    {
+        if (!isset($this->multiFlights[$index])) {
+            return;
+        }
+        $this->multiFlights[$index]['arr'] = $display;
+        $this->showMultiArrAirports[$index] = false;
+    }
+
     public function paxSummary(int $adults, int $children, int $infants): string
     {
         $parts = [];
@@ -313,6 +348,51 @@ class FlightSearch extends Component
         }
 
         $this->onewayPax = $this->paxSummary($this->onewayAdults, $this->onewayChildren, $this->onewayInfants);
+    }
+
+    public function incrementMultiPax(string $type): void
+    {
+        $total = $this->multiAdults + $this->multiChildren + $this->multiInfants;
+        if ($total >= 9) {
+            return;
+        }
+
+        if ($type === 'adult') {
+            $this->multiAdults++;
+        } elseif ($type === 'child') {
+            $this->multiChildren++;
+        } elseif ($type === 'infant') {
+            if ($this->multiInfants < $this->multiAdults) {
+                $this->multiInfants++;
+            }
+        }
+
+        $this->multiPax = $this->paxSummary($this->multiAdults, $this->multiChildren, $this->multiInfants);
+    }
+
+    public function decrementMultiPax(string $type): void
+    {
+        if ($type === 'adult') {
+            if ($this->multiAdults <= 1) {
+                return;
+            }
+            $this->multiAdults--;
+            if ($this->multiInfants > $this->multiAdults) {
+                $this->multiInfants = $this->multiAdults;
+            }
+        } elseif ($type === 'child') {
+            if ($this->multiChildren <= 0) {
+                return;
+            }
+            $this->multiChildren--;
+        } elseif ($type === 'infant') {
+            if ($this->multiInfants <= 0) {
+                return;
+            }
+            $this->multiInfants--;
+        }
+
+        $this->multiPax = $this->paxSummary($this->multiAdults, $this->multiChildren, $this->multiInfants);
     }
 
     public function render()

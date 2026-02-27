@@ -799,29 +799,201 @@
                             <p class="text-xs font-semibold text-gray-500 mb-2">Flight {{ $index + 1 }}</p>
                             <div class="mc-row">
 
-                                <div class="field-wrap" style="position:relative;">
+                                <div class="field-wrap" style="position:relative;"
+                                    wire:click="$set('showMultiDepAirports.{{ $index }}', true)"
+                                    wire:click.outside="$set('showMultiDepAirports.{{ $index }}', false)">
                                     <span class="field-label">Departure airport</span>
-                                    <input class="field-input" type="text" wire:model="multiFlights.{{ $index }}.dep"
+                                    <input class="field-input" type="text"
+                                        wire:model.live.debounce.150ms="multiFlights.{{ $index }}.dep"
+                                        wire:focus="$set('showMultiDepAirports.{{ $index }}', true)"
                                         placeholder="City or airport" autocomplete="off">
                                     @if($flight['dep'] && $index === 0)
-                                        <button class="field-clear" wire:click="$set('multiFlights.0.dep', '')"
+                                        <button class="field-clear" wire:click.stop="$set('multiFlights.0.dep', '')"
                                             title="Clear">×</button>
                                     @endif
                                     @error("multiFlights.$index.dep") <span class="field-error">{{ $message }}</span> @enderror
+                                    @if(($showMultiDepAirports[$index] ?? false))
+                                        <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                            style="min-width: 280px;">
+                                            <div class="px-4 py-3">
+                                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                                        <circle cx="12" cy="11" r="2" />
+                                                    </svg>
+                                                    <span>All locations</span>
+                                                </div>
+                                            </div>
+                                            <div class="h-px bg-gray-100"></div>
+                                            <div class="max-h-72 overflow-auto">
+                                                @php
+                                                    $q = $multiFlights[$index]['dep'] ?? '';
+                                                    $items = $this->filteredAirports($q);
+                                                @endphp
+                                                @forelse($items as $a)
+                                                    @php
+                                                        $display = $a['city'].' ('.$a['code'].')';
+                                                    @endphp
+                                                    <button type="button"
+                                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                        wire:click="selectMultiDepAirport({{ $index }}, '{{ $display }}')">
+                                                        <div>
+                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                                        </div>
+                                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                    </button>
+                                                @empty
+                                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                                                @endforelse
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
 
-                                <div class="field-wrap">
+                                <div class="field-wrap" style="position:relative;"
+                                    wire:click="$set('showMultiArrAirports.{{ $index }}', true)"
+                                    wire:click.outside="$set('showMultiArrAirports.{{ $index }}', false)">
                                     <span class="field-label">Arrival airport</span>
-                                    <input class="field-input" type="text" wire:model="multiFlights.{{ $index }}.arr"
+                                    <input class="field-input" type="text"
+                                        wire:model.live.debounce.150ms="multiFlights.{{ $index }}.arr"
+                                        wire:focus="$set('showMultiArrAirports.{{ $index }}', true)"
                                         placeholder="City or airport" autocomplete="off">
                                     @error("multiFlights.$index.arr") <span class="field-error">{{ $message }}</span> @enderror
+                                    @if(($showMultiArrAirports[$index] ?? false))
+                                        <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                            style="min-width: 280px;">
+                                            <div class="px-4 py-3">
+                                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                                        <circle cx="12" cy="11" r="2" />
+                                                    </svg>
+                                                    <span>All locations</span>
+                                                </div>
+                                            </div>
+                                            <div class="h-px bg-gray-100"></div>
+                                            <div class="max-h-72 overflow-auto">
+                                                @php
+                                                    $q = $multiFlights[$index]['arr'] ?? '';
+                                                    $items = $this->filteredAirports($q);
+                                                @endphp
+                                                @forelse($items as $a)
+                                                    @php
+                                                        $display = $a['city'].' ('.$a['code'].')';
+                                                    @endphp
+                                                    <button type="button"
+                                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                        wire:click="selectMultiArrAirport({{ $index }}, '{{ $display }}')">
+                                                        <div>
+                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                                        </div>
+                                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                    </button>
+                                                @empty
+                                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                                                @endforelse
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
 
-                                <div class="field-wrap">
+                                <div class="field-wrap"
+                                    x-data="singleDatePicker({
+                                        value: @js($multiFlights[$index]['date'] ?? ''),
+                                        flexible: @js($multiFlexible),
+                                        wireValueKey: 'multiFlights.{{ $index }}.date',
+                                        wireFlexibleKey: 'multiFlexible',
+                                        title: 'Please choose your departure date',
+                                    })"
+                                    x-init="init()"
+                                >
                                     <span class="field-label">Departing</span>
-                                    <input class="field-input date-input" type="date"
-                                        wire:model="multiFlights.{{ $index }}.date">
+                                    <input class="field-input date-input" type="text" inputmode="none" readonly
+                                        :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
                                     @error("multiFlights.$index.date") <span class="field-error">{{ $message }}</span> @enderror
+
+                                    {{-- Calendar modal --}}
+                                    <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
+                                        aria-modal="true" role="dialog">
+                                        <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+
+                                        <div class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                    <p class="text-base font-medium text-gray-800" x-text="title"></p>
+                                                </div>
+
+                                                <label class="flex items-center gap-3 select-none">
+                                                    <button type="button"
+                                                        class="relative inline-flex h-7 w-14 items-center rounded-full transition"
+                                                        :class="flexible ? 'bg-blue-600' : 'bg-gray-300'"
+                                                        @click="toggleFlexible()">
+                                                        <span class="inline-block h-6 w-6 transform rounded-full bg-white transition"
+                                                            :class="flexible ? 'translate-x-7' : 'translate-x-1'"></span>
+                                                    </button>
+                                                    <span class="text-sm text-gray-700">My dates are flexible (+/- 3 days)</span>
+                                                </label>
+                                            </div>
+
+                                            <div class="px-6 py-5">
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                    <template x-for="(m, idx) in months.slice(0, 2)" :key="m.key">
+                                                        <div>
+                                                            <div class="flex items-center justify-between mb-4">
+                                                                <div class="w-10"></div>
+                                                                <p class="text-lg font-medium text-gray-800 text-center" x-text="m.title"></p>
+                                                                <div class="w-10 flex justify-end">
+                                                                    <button type="button" class="w-10 h-10 rounded-full hover:bg-gray-50"
+                                                                        x-show="idx === 1" @click.prevent="nextMonth()">
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
+                                                                <template x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']" :key="d">
+                                                                    <div class="text-center tracking-widest" x-text="d"></div>
+                                                                </template>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-7 gap-1.5">
+                                                                <template x-for="cell in m.cells" :key="cell.key">
+                                                                    <button type="button"
+                                                                        class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
+                                                                        :disabled="cell.disabled || !cell.day"
+                                                                        @click="cell.day && pick(cell.iso)"
+                                                                        :class="dayClass(cell)">
+                                                                        <span x-text="cell.day || ''"></span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+
+                                            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                                                <button type="button"
+                                                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                                    @click="open = false">Close</button>
+                                                <button type="button"
+                                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                                                    :disabled="!iso"
+                                                    @click="apply(); open = false">
+                                                    Done
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {{-- Remove button (only for flight 3+) --}}
@@ -848,36 +1020,137 @@
                 {{-- Passengers / Class / Search --}}
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-                    <div class="field-wrap" style="position:relative;">
+                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
                         <span class="field-label">Passengers</span>
-                        <select class="field-select" wire:model="multiPax">
-                            <option>1 Adult</option>
-                            <option>2 Adults</option>
-                            <option>3 Adults</option>
-                            <option>1 Adult, 1 Child</option>
-                            <option>2 Adults, 1 Child</option>
-                            <option>2 Adults, 2 Children</option>
-                        </select>
-                        <span class="select-arrow">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </span>
+
+                        <button type="button" class="field-select text-left w-full flex items-center justify-between"
+                            @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
+                            <span class="text-gray-900">{{ $this->paxSummary($multiAdults, $multiChildren, $multiInfants) }}</span>
+                            <span class="select-arrow static">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div x-cloak x-show="open" x-transition
+                            class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            style="min-width: 280px;">
+                            <div class="px-4 py-3">
+                                <p class="text-sm font-medium text-gray-700">Passengers</p>
+                                <div class="h-px bg-gray-100 mt-2"></div>
+                            </div>
+
+                            <div class="px-4 pb-3 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <button type="button"
+                                        class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                        wire:click="decrementMultiPax('adult')" @disabled($multiAdults <= 1)>
+                                        <span class="text-xl leading-none">−</span>
+                                    </button>
+                                    <div class="text-center">
+                                        <div class="text-base font-semibold text-gray-900">{{ $multiAdults }} Adult</div>
+                                        <div class="text-xs text-gray-500">Ages 12+</div>
+                                    </div>
+                                    <button type="button"
+                                        class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                        wire:click="incrementMultiPax('adult')"
+                                        @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9)>
+                                        <span class="text-xl leading-none">+</span>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <button type="button"
+                                        class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                        wire:click="decrementMultiPax('child')" @disabled($multiChildren <= 0)>
+                                        <span class="text-xl leading-none">−</span>
+                                    </button>
+                                    <div class="text-center">
+                                        <div class="text-base font-semibold text-gray-900">{{ $multiChildren }} Child</div>
+                                        <div class="text-xs text-gray-500">Ages 2-11</div>
+                                    </div>
+                                    <button type="button"
+                                        class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                        wire:click="incrementMultiPax('child')"
+                                        @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9)>
+                                        <span class="text-xl leading-none">+</span>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <button type="button"
+                                        class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                        wire:click="decrementMultiPax('infant')" @disabled($multiInfants <= 0)>
+                                        <span class="text-xl leading-none">−</span>
+                                    </button>
+                                    <div class="text-center">
+                                        <div class="text-base font-semibold text-gray-900">{{ $multiInfants }} Infant</div>
+                                        <div class="text-xs text-gray-500">Ages under 2, on lap</div>
+                                    </div>
+                                    <button type="button"
+                                        class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                        wire:click="incrementMultiPax('infant')"
+                                        @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9 || $multiInfants >= $multiAdults)>
+                                        <span class="text-xl leading-none">+</span>
+                                    </button>
+                                </div>
+
+                                <div class="h-px bg-gray-100"></div>
+                                <p class="text-xs text-gray-600">
+                                    Please note: You can book for a maximum of nine passengers.
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="field-wrap" style="position:relative;">
+                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
                         <span class="field-label">Class</span>
-                        <select class="field-select" wire:model="multiClass">
-                            <option>Economy Class</option>
-                            <option>Business Class</option>
-                            <option>First Class</option>
-                            <option>Premium Economy</option>
-                        </select>
-                        <span class="select-arrow">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </span>
+
+                        <button type="button" class="field-select text-left w-full flex items-center justify-between"
+                            @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
+                            <span class="text-gray-900">{{ $multiClass }}</span>
+                            <span class="select-arrow static">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div x-cloak x-show="open" x-transition
+                            class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            style="min-width: 280px;">
+                            <div class="px-4 py-3">
+                                <p class="text-sm font-medium text-gray-700">Select class</p>
+                                <div class="h-px bg-gray-100 mt-2"></div>
+                            </div>
+
+                            @php
+                                $classes = ['Economy Class', 'Premium Economy', 'Business Class', 'First Class'];
+                            @endphp
+
+                            <div class="py-2">
+                                @foreach($classes as $class)
+                                    @php $isSelected = $multiClass === $class; @endphp
+                                    <button type="button"
+                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+                                        wire:click="$set('multiClass', '{{ $class }}')" @click="open = false">
+                                        <span class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                                            {{ $class }}
+                                        </span>
+                                        @if($isSelected)
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        @endif
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
 
                     <button class="btn-search" wire:click.prevent="search" wire:loading.attr="disabled">
