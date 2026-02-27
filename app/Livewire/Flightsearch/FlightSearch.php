@@ -35,6 +35,12 @@ class FlightSearch extends Component
     public string $onewayClass = 'Economy Class';
     public bool $onewayPromo = false;
     public string $onewayPromoCode = '';
+    public bool $onewayFlexible = false;
+    public int $onewayAdults = 1;
+    public int $onewayChildren = 0;
+    public int $onewayInfants = 0;
+    public bool $showOnewayDepAirports = false;
+    public bool $showOnewayArrAirports = false;
 
     // ── Multi-city fields ──────────────────────────────────────────────
     public array $multiFlights = [
@@ -177,6 +183,30 @@ class FlightSearch extends Component
     {
         $this->showReturnDepAirports = false;
         $this->showReturnArrAirports = false;
+        $this->showOnewayDepAirports = false;
+        $this->showOnewayArrAirports = false;
+    }
+
+    public function updatedOnewayDep(): void
+    {
+        $this->showOnewayDepAirports = true;
+    }
+
+    public function updatedOnewayArr(): void
+    {
+        $this->showOnewayArrAirports = true;
+    }
+
+    public function selectOnewayDepAirport(string $display): void
+    {
+        $this->onewayDep = $display;
+        $this->showOnewayDepAirports = false;
+    }
+
+    public function selectOnewayArrAirport(string $display): void
+    {
+        $this->onewayArr = $display;
+        $this->showOnewayArrAirports = false;
     }
 
     public function paxSummary(int $adults, int $children, int $infants): string
@@ -239,6 +269,51 @@ class FlightSearch extends Component
         }
 
         $this->returnPax = $this->paxSummary($this->returnAdults, $this->returnChildren, $this->returnInfants);
+    }
+
+    public function incrementOnewayPax(string $type): void
+    {
+        $total = $this->onewayAdults + $this->onewayChildren + $this->onewayInfants;
+        if ($total >= 9) {
+            return;
+        }
+
+        if ($type === 'adult') {
+            $this->onewayAdults++;
+        } elseif ($type === 'child') {
+            $this->onewayChildren++;
+        } elseif ($type === 'infant') {
+            if ($this->onewayInfants < $this->onewayAdults) {
+                $this->onewayInfants++;
+            }
+        }
+
+        $this->onewayPax = $this->paxSummary($this->onewayAdults, $this->onewayChildren, $this->onewayInfants);
+    }
+
+    public function decrementOnewayPax(string $type): void
+    {
+        if ($type === 'adult') {
+            if ($this->onewayAdults <= 1) {
+                return;
+            }
+            $this->onewayAdults--;
+            if ($this->onewayInfants > $this->onewayAdults) {
+                $this->onewayInfants = $this->onewayAdults;
+            }
+        } elseif ($type === 'child') {
+            if ($this->onewayChildren <= 0) {
+                return;
+            }
+            $this->onewayChildren--;
+        } elseif ($type === 'infant') {
+            if ($this->onewayInfants <= 0) {
+                return;
+            }
+            $this->onewayInfants--;
+        }
+
+        $this->onewayPax = $this->paxSummary($this->onewayAdults, $this->onewayChildren, $this->onewayInfants);
     }
 
     public function render()
