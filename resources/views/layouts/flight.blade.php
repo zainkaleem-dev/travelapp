@@ -408,20 +408,22 @@
 
             <div class="flex items-center gap-3">
                 @auth
-                    <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
-                        <button type="button"
-                            @click="open = !open"
-                            :aria-expanded="open.toString()"
+                    <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false"
+                        @click.outside="open = false">
+                        <button type="button" @click="open = !open" :aria-expanded="open.toString()"
                             class="flex items-center gap-2 rounded-full border border-gray-200 bg-white pl-1.5 pr-2 py-1 hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-0">
-                            <div class="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs font-bold">
+                            <div
+                                class="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs font-bold">
                                 {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
                             </div>
-                            <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
 
-                        <div x-cloak x-show="open" x-transition.origin.top.right class="absolute right-0 mt-2 w-60 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                        <div x-cloak x-show="open" x-transition.origin.top.right
+                            class="absolute right-0 mt-2 w-60 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
                             <div class="px-4 py-3 border-b border-gray-100">
                                 <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->name }}</p>
                                 <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
@@ -430,7 +432,8 @@
                             <a href="{{ route('profile') }}"
                                 class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1118.88 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5.121 17.804A9 9 0 1118.88 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 Profile
                             </a>
@@ -440,7 +443,8 @@
                                 <button type="submit"
                                     class="w-full px-4 py-2.5 text-sm text-left text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                     </svg>
                                     Logout
                                 </button>
@@ -483,13 +487,7 @@
         </div>
     </div>
 
-    {{-- ── Hero ── --}}
-    <div class="py-10 text-center px-4">
-        <p class="hero-label">Book</p>
-        <h1 class="hero-title">Book a flight</h1>
-        <p class="hero-sub">Search for flights and book online. See our routes and schedules, and discover more about
-            the experience you can look forward to on board.</p>
-    </div>
+
 
     {{-- ── Page content (Livewire slot) ── --}}
     <div class="px-4 pb-16">

@@ -1,101 +1,6 @@
 ﻿<div>
 
 {{-- ══════════════════════════════════════════════════════════
-     TOP NAV
-══════════════════════════════════════════════════════════ --}}
-<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-12">
-
-        <div class="flex items-center gap-6">
-            <button class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                </svg>
-                Back
-            </button>
-            <button class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-                Next
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-            </button>
-        </div>
-
-        <div class="flex items-center gap-3">
-            @auth
-                <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
-                    <button type="button"
-                        @click="open = !open"
-                        :aria-expanded="open.toString()"
-                        class="flex items-center gap-2 rounded-full border border-gray-200 bg-white pl-1.5 pr-2 py-1 hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-0">
-                        <div class="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs font-bold">
-                            {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
-                        </div>
-                        <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </button>
-
-                    <div x-cloak x-show="open" x-transition.origin.top.right class="absolute right-0 mt-2 w-60 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-gray-100">
-                            <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
-                        </div>
-
-                        <a href="{{ route('profile') }}"
-                            class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
-                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1118.88 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                            Profile
-                        </a>
-
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit"
-                                class="w-full px-4 py-2.5 text-sm text-left text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                                </svg>
-                                Logout
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            @else
-                <a href="{{ route('login') }}" class="px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    Login / Register
-                </a>
-            @endauth
-        </div>
-    </div>
-</nav>
-
-{{-- ══════════════════════════════════════════════════════════
-     STEP BAR
-══════════════════════════════════════════════════════════ --}}
-<div class="bg-white border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-center text-xs text-gray-500 py-1.5 gap-2">
-            <span>Home</span><span>/</span><span>Flight Tickets</span><span>/</span>
-            <span>{{ $origin }} – {{ $destination }}</span>
-        </div>
-        <div class="flex items-center overflow-x-auto">
-            <div class="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-t whitespace-nowrap">
-                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
-                </svg>
-                Select Flight
-            </div>
-            @foreach(['Passenger Details','Additional Services','Choice Next'] as $step)
-                <div class="px-4 py-2 text-gray-400 text-xs whitespace-nowrap">{{ $step }}</div>
-            @endforeach
-            <div class="px-4 py-2 text-gray-400 text-xs ml-auto whitespace-nowrap">Payment</div>
-        </div>
-    </div>
-</div>
-
-{{-- ══════════════════════════════════════════════════════════
      SEARCH BAR
 ══════════════════════════════════════════════════════════ --}}
 <div class="bg-blue-600 py-3">
@@ -766,6 +671,6 @@
 
         </div>
     </main>
-</div>
+    </div>
 
 </div>

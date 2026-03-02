@@ -1,5 +1,13 @@
 <div>
 
+{{-- ── Hero ── --}}
+    <div class="py-10 text-center px-4">
+        <p class="hero-label">Book</p>
+        <h1 class="hero-title">Book a flight</h1>
+        <p class="hero-sub">Search for flights and book online. See our routes and schedules, and discover more about
+            the experience you can look forward to on board.</p>
+    </div>
+
     {{-- ════════════════════════════════════════
     SEARCH CARD
     ════════════════════════════════════════ --}}
@@ -139,7 +147,6 @@
                     {{-- Date range --}}
                     <div class="field-wrap"
                         style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;" x-data="dateRangePicker({
-                                wire: $wire,
                                 dep: @js($returnDepDate),
                                 ret: @js($returnRetDate),
                                 flexible: @js($returnFlexible),
@@ -539,7 +546,6 @@
                     </div>
 
                     <div class="field-wrap" x-data="singleDatePicker({
-                                wire: $wire,
                                 value: @js($onewayDepDate),
                                 flexible: @js($onewayFlexible),
                                 wireValueKey: 'onewayDepDate',
@@ -938,7 +944,6 @@
                                 </div>
 
                                 <div class="field-wrap" x-data="singleDatePicker({
-                                                wire: $wire,
                                                 value: @js($multiFlights[$index]['date'] ?? ''),
                                                 flexible: @js($multiFlexible),
                                                 wireValueKey: 'multiFlights.{{ $index }}.date',
@@ -1285,7 +1290,7 @@
 
             toggleFlexible() {
                 this.flexible = !this.flexible;
-                if (this.wire) this.wire.set('returnFlexible', this.flexible);
+                if (this.$wire) this.$wire.$set('returnFlexible', this.flexible);
             },
 
             prevMonth() {
@@ -1368,10 +1373,10 @@
             },
 
             apply() {
-                if (!this.wire) return;
-                this.wire.set('returnDepDate', this.depIso);
-                this.wire.set('returnRetDate', this.retIso);
-                this.wire.set('returnFlexible', this.flexible);
+                if (!this.$wire) return;
+                this.$wire.$set('returnDepDate', this.depIso);
+                this.$wire.$set('returnRetDate', this.retIso);
+                this.$wire.$set('returnFlexible', this.flexible);
             },
 
             dayClass(cell) {
@@ -1406,7 +1411,6 @@
         const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
         return {
-            wire: opts?.wire,
             open: false,
             title: opts?.title || 'Select date',
             display: opts?.value ? fmt(opts.value) : '',
@@ -1428,7 +1432,7 @@
 
             toggleFlexible() {
                 this.flexible = !this.flexible;
-                if (this.wire && this.wireFlexibleKey) this.wire.set(this.wireFlexibleKey, this.flexible);
+                if (this.$wire && this.wireFlexibleKey) this.$wire.$set(this.wireFlexibleKey, this.flexible);
             },
 
             prevMonth() {
@@ -1492,9 +1496,9 @@
             },
 
             apply() {
-                if (!this.wire || !this.wireValueKey) return;
-                this.wire.set(this.wireValueKey, this.iso);
-                if (this.wireFlexibleKey) this.wire.set(this.wireFlexibleKey, this.flexible);
+                if (!this.$wire || !this.wireValueKey) return;
+                this.$wire.$set(this.wireValueKey, this.iso);
+                if (this.wireFlexibleKey) this.$wire.$set(this.wireFlexibleKey, this.flexible);
             },
 
             dayClass(cell) {
