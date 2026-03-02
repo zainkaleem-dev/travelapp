@@ -14,6 +14,15 @@ class FlightList extends Component
     public string $returnDate = '2026-07-28';
     public int $passengers = 1;
 
+    // Autocomplete dropdown toggles
+    public bool $showOriginAirports = false;
+    public bool $showDestinationAirports = false;
+
+    // Passenger breakdown for UI (kept in sync with $passengers)
+    public int $adultCount = 1;
+    public int $childCount = 0;
+    public int $infantCount = 0;
+
     // ─── Filters ──────────────────────────────────────────────────
     public int $priceMin = 100;
     public int $priceMax = 1000;
@@ -281,6 +290,109 @@ class FlightList extends Component
         $this->stops = ['any'];
         $this->airlines = ['any'];
         $this->departTimes = ['any'];
+    }
+
+    // ─── Airport helpers (copied from FlightSearch) ───────────────
+    public function getAirportsProperty(): array
+    {
+        return [
+            ['city' => 'Islamabad', 'country' => 'Pakistan', 'airport' => 'Islamabad International Airport', 'code' => 'ISB'],
+            ['city' => 'Lahore', 'country' => 'Pakistan', 'airport' => 'Allama Iqbal International Airport', 'code' => 'LHE'],
+            ['city' => 'Karachi', 'country' => 'Pakistan', 'airport' => 'Jinnah International Airport', 'code' => 'KHI'],
+            ['city' => 'Dubai', 'country' => 'United Arab Emirates', 'airport' => 'Dubai International Airport', 'code' => 'DXB'],
+            ['city' => 'Abu Dhabi', 'country' => 'United Arab Emirates', 'airport' => 'Zayed International Airport', 'code' => 'AUH'],
+            ['city' => 'Doha', 'country' => 'Qatar', 'airport' => 'Hamad International Airport', 'code' => 'DOH'],
+            ['city' => 'Istanbul', 'country' => 'Türkiye', 'airport' => 'Istanbul Airport', 'code' => 'IST'],
+            ['city' => 'London', 'country' => 'United Kingdom', 'airport' => 'Heathrow Airport', 'code' => 'LHR'],
+            ['city' => 'New York', 'country' => 'United States', 'airport' => 'John F. Kennedy International Airport', 'code' => 'JFK'],
+        ];
+    }
+
+    public function filteredAirports(string $query): array
+    {
+        $q = trim(mb_strtolower($query));
+        if ($q === '') {
+            return array_slice($this->airports, 0, 8);
+        }
+
+        $matches = array_values(array_filter($this->airports, function (array $a) use ($q) {
+            $hay = mb_strtolower($a['city'] . ' ' . $a['country'] . ' ' . $a['airport'] . ' ' . $a['code']);
+            return str_contains($hay, $q);
+        }));
+
+        return array_slice($matches, 0, 8);
+    }
+
+    public function updatedOrigin(): void
+    {
+        $this->showOriginAirports = true;
+    }
+
+    public function updatedDestination(): void
+    {
+        $this->showDestinationAirports = true;
+    }
+
+    public function selectOriginAirport(string $display): void
+    {
+        $this->origin = $display;
+        $this->showOriginAirports = false;
+    }
+
+    public function selectDestinationAirport(string $display): void
+    {
+        $this->destination = $display;
+        $this->showDestinationAirports = false;
+    }
+
+    protected function syncPassengersTotal(): void
+    {
+        $this->passengers = $this->adultCount + $this->childCount + $this->infantCount;
+    }
+
+    public function incrementPassengerType(string $type): void
+    {
+        $total = $this->adultCount + $this->childCount + $this->infantCount;
+        if ($total >= 9) {
+            return;
+        }
+
+        if ($type === 'adult') {
+            $this->adultCount++;
+        } elseif ($type === 'child') {
+            $this->childCount++;
+        } elseif ($type === 'infant') {
+            if ($this->infantCount < $this->adultCount) {
+                $this->infantCount++;
+            }
+        }
+
+        $this->syncPassengersTotal();
+    }
+
+    public function decrementPassengerType(string $type): void
+    {
+        if ($type === 'adult') {
+            if ($this->adultCount <= 1) {
+                return;
+            }
+            $this->adultCount--;
+            if ($this->infantCount > $this->adultCount) {
+                $this->infantCount = $this->adultCount;
+            }
+        } elseif ($type === 'child') {
+            if ($this->childCount <= 0) {
+                return;
+            }
+            $this->childCount--;
+        } elseif ($type === 'infant') {
+            if ($this->infantCount <= 0) {
+                return;
+            }
+            $this->infantCount--;
+        }
+
+        $this->syncPassengersTotal();
     }
 
     public function selectFlight(int $id): void

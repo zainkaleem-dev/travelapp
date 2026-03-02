@@ -1,4 +1,4 @@
-﻿<div>
+<div>
 
 {{-- ══════════════════════════════════════════════════════════
      SEARCH BAR
@@ -6,15 +6,61 @@
 <div class="bg-blue-600 py-3">
     <div class="max-w-7xl mx-auto px-4 flex items-center gap-3 flex-wrap">
 
-        {{-- Origin --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm">
-            <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
-            </svg>
-            <input wire:model.blur="origin"
-                   class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-52"
-                   value="{{ $origin }}">
+        {{-- Origin with airport dropdown (like flights-search) --}}
+        <div class="relative"
+             wire:click.outside="$set('showOriginAirports', false)">
+            <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
+                 wire:click="$set('showOriginAirports', true)">
+                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
+                </svg>
+                <input
+                    class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-52"
+                    type="text"
+                    wire:model.live.debounce.150ms="origin"
+                    wire:focus="$set('showOriginAirports', true)"
+                    placeholder="City or airport"
+                    autocomplete="off">
+            </div>
+
+            @if($showOriginAirports)
+                <div class="absolute z-50 mt-2 w-72 rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden text-gray-900">
+                    <div class="px-4 py-3">
+                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z"/>
+                                <circle cx="12" cy="11" r="2"/>
+                            </svg>
+                            <span>All locations</span>
+                        </div>
+                    </div>
+                    <div class="h-px bg-gray-100"></div>
+                    <div class="max-h-72 overflow-auto">
+                        @php
+                            $originItems = $this->filteredAirports($origin);
+                        @endphp
+                        @forelse($originItems as $a)
+                            @php
+                                $display = $a['city'] . ' (' . $a['code'] . ')';
+                            @endphp
+                            <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                    wire:click="selectOriginAirport('{{ $display }}')">
+                                <div>
+                                    <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                    <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                </div>
+                                <span
+                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                            </button>
+                        @empty
+                            <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                        @endforelse
+                    </div>
+                </div>
+            @endif
         </div>
 
         {{-- Swap button --}}
@@ -24,53 +70,356 @@
             </svg>
         </button>
 
-        {{-- Destination --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm">
-            <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
-            </svg>
-            <input wire:model.blur="destination"
-                   class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-52"
-                   value="{{ $destination }}">
+        {{-- Destination with airport dropdown --}}
+        <div class="relative"
+             wire:click.outside="$set('showDestinationAirports', false)">
+            <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
+                 wire:click="$set('showDestinationAirports', true)">
+                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
+                </svg>
+                <input
+                    class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-52"
+                    type="text"
+                    wire:model.live.debounce.150ms="destination"
+                    wire:focus="$set('showDestinationAirports', true)"
+                    placeholder="City or airport"
+                    autocomplete="off">
+            </div>
+
+            @if($showDestinationAirports)
+                <div class="absolute z-50 mt-2 w-72 rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden text-gray-900">
+                    <div class="px-4 py-3">
+                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z"/>
+                                <circle cx="12" cy="11" r="2"/>
+                            </svg>
+                            <span>All locations</span>
+                        </div>
+                    </div>
+                    <div class="h-px bg-gray-100"></div>
+                    <div class="max-h-72 overflow-auto">
+                        @php
+                            $destItems = $this->filteredAirports($destination);
+                        @endphp
+                        @forelse($destItems as $a)
+                            @php
+                                $display = $a['city'] . ' (' . $a['code'] . ')';
+                            @endphp
+                            <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                    wire:click="selectDestinationAirport('{{ $display }}')">
+                                <div>
+                                    <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                    <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                </div>
+                                <span
+                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                            </button>
+                        @empty
+                            <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                        @endforelse
+                    </div>
+                </div>
+            @endif
         </div>
 
-        {{-- Depart Date --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm">
-            <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {{-- Departing date (separate calendar) --}}
+        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
+             x-data="singleDatePicker({
+                    value: @js($departDate),
+                    flexible: false,
+                    wireValueKey: 'departDate',
+                    wireFlexibleKey: null,
+                    title: 'Please choose your departure date',
+                })"
+             x-init="init()">
+            <svg class="w-4 h-4 opacity-70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="3" y="4" width="18" height="18" rx="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
                 <line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-            <input wire:model.blur="departDate" type="date"
-                   class="bg-transparent text-sm text-white focus:outline-none cursor-pointer"
-                   value="{{ $departDate }}">
+            <button type="button"
+                    class="bg-transparent text-xs sm:text-sm text-white focus:outline-none cursor-pointer whitespace-nowrap"
+                    @click="open = true"
+                    x-text="display || 'Departing'">
+            </button>
+
+            {{-- Calendar modal for departing --}}
+            <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+                 aria-modal="true" role="dialog">
+                <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="open = false"></div>
+
+                <div class="relative w-full max-w-lg rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col border border-gray-100">
+                    <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </span>
+                            <p class="text-sm font-semibold text-gray-800" x-text="title"></p>
+                        </div>
+                    </div>
+
+                    <div class="p-5">
+                        <div class="grid grid-cols-1">
+                            <template x-for="m in months" :key="m.key">
+                                <div>
+                                    <div class="flex items-center justify-between mb-5">
+                                        <button type="button"
+                                                class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                                @click.prevent="prevMonth()">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                            </svg>
+                                        </button>
+                                        <p class="text-base font-semibold text-gray-900" x-text="m.title"></p>
+                                        <button type="button"
+                                                class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                                @click.prevent="nextMonth()">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="grid grid-cols-7 gap-0.5 text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">
+                                        <template x-for="d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']" :key="d">
+                                            <div class="flex h-8 items-center justify-center" x-text="d"></div>
+                                        </template>
+                                    </div>
+
+                                    <div class="grid grid-cols-7 gap-1">
+                                        <template x-for="cell in m.cells" :key="cell.key">
+                                            <button type="button"
+                                                    class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
+                                                    :disabled="cell.disabled || !cell.day"
+                                                    @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
+                                                <span x-text="cell.day || ''"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="px-5 py-4 border-t border-gray-100 bg-gray-50/30 flex items-center justify-end gap-2">
+                        <button type="button"
+                                class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                                @click="open = false">Close</button>
+                        <button type="button"
+                                class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                :disabled="!iso" @click="apply(); open = false">
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {{-- Return Date --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm">
-            <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {{-- Returning date (separate calendar) --}}
+        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
+             x-data="singleDatePicker({
+                    value: @js($returnDate),
+                    flexible: false,
+                    wireValueKey: 'returnDate',
+                    wireFlexibleKey: null,
+                    title: 'Please choose your return date',
+                })"
+             x-init="init()">
+            <svg class="w-4 h-4 opacity-70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect x="3" y="4" width="18" height="18" rx="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
                 <line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-            <input wire:model.blur="returnDate" type="date"
-                   class="bg-transparent text-sm text-white focus:outline-none cursor-pointer"
-                   value="{{ $returnDate }}">
+            <button type="button"
+                    class="bg-transparent text-xs sm:text-sm text-white focus:outline-none cursor-pointer whitespace-nowrap"
+                    @click="open = true"
+                    x-text="display || 'Returning'">
+            </button>
+
+            {{-- Calendar modal for returning --}}
+            <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+                 aria-modal="true" role="dialog">
+                <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="open = false"></div>
+
+                <div class="relative w-full max-w-lg rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col border border-gray-100">
+                    <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </span>
+                            <p class="text-sm font-semibold text-gray-800" x-text="title"></p>
+                        </div>
+                    </div>
+
+                    <div class="p-5">
+                        <div class="grid grid-cols-1">
+                            <template x-for="m in months" :key="m.key">
+                                <div>
+                                    <div class="flex items-center justify-between mb-5">
+                                        <button type="button"
+                                                class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                                @click.prevent="prevMonth()">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                            </svg>
+                                        </button>
+                                        <p class="text-base font-semibold text-gray-900" x-text="m.title"></p>
+                                        <button type="button"
+                                                class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                                @click.prevent="nextMonth()">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="grid grid-cols-7 gap-0.5 text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">
+                                        <template x-for="d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']" :key="d">
+                                            <div class="flex h-8 items-center justify-center" x-text="d"></div>
+                                        </template>
+                                    </div>
+
+                                    <div class="grid grid-cols-7 gap-1">
+                                        <template x-for="cell in m.cells" :key="cell.key">
+                                            <button type="button"
+                                                    class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
+                                                    :disabled="cell.disabled || !cell.day"
+                                                    @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
+                                                <span x-text="cell.day || ''"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="px-5 py-4 border-t border-gray-100 bg-gray-50/30 flex items-center justify-end gap-2">
+                        <button type="button"
+                                class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                                @click="open = false">Close</button>
+                        <button type="button"
+                                class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                :disabled="!iso" @click="apply(); open = false">
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {{-- Passengers --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm">
+        {{-- Passengers (dropdown UI similar to search page) --}}
+        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm relative"
+             x-data="{ open: false }"
+             @click.outside="open = false">
             <svg class="w-4 h-4 opacity-70" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
             </svg>
-            <select wire:model.live="passengers" class="bg-transparent focus:outline-none cursor-pointer text-white">
-                @for($i = 1; $i <= 9; $i++)
-                    <option value="{{ $i }}" class="text-gray-800">{{ $i }} {{ $i === 1 ? 'Passenger' : 'Passengers' }}</option>
-                @endfor
-            </select>
+
+            <button type="button"
+                    class="field-select text-left w-full flex items-center justify-between bg-transparent text-white text-xs sm:text-sm"
+                    @click="open = !open"
+                    aria-haspopup="listbox"
+                    :aria-expanded="open">
+                <span class="text-white">
+                    {{ $passengers }} {{ $passengers === 1 ? 'Passenger' : 'Passengers' }}
+                </span>
+                <span class="ml-1">
+                    <svg class="w-3.5 h-3.5 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                         stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </span>
+            </button>
+
+            <div x-cloak x-show="open" x-transition
+                 class="absolute left-0 top-full mt-2 w-72 rounded-xl border border-gray-200 bg-white shadow-lg text-gray-900 z-50">
+                <div class="px-4 py-3">
+                    <p class="text-sm font-medium text-gray-700">Passengers</p>
+                    <div class="h-px bg-gray-100 mt-2"></div>
+                </div>
+
+                <div class="px-4 pb-3 space-y-4">
+                    {{-- Adult --}}
+                    <div class="flex items-center justify-between">
+                        <button type="button"
+                                class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                wire:click="decrementPassengerType('adult')"
+                                @disabled($adultCount <= 1)>
+                            <span class="text-xl leading-none">−</span>
+                        </button>
+                        <div class="text-center">
+                            <div class="text-base font-semibold text-gray-900">{{ $adultCount }} Adult</div>
+                            <div class="text-xs text-gray-500">Ages 12+</div>
+                        </div>
+                        <button type="button"
+                                class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                wire:click="incrementPassengerType('adult')"
+                                @disabled(($adultCount + $childCount + $infantCount) >= 9)>
+                            <span class="text-xl leading-none">+</span>
+                        </button>
+                    </div>
+
+                    {{-- Child --}}
+                    <div class="flex items-center justify-between">
+                        <button type="button"
+                                class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                wire:click="decrementPassengerType('child')"
+                                @disabled($childCount <= 0)>
+                            <span class="text-xl leading-none">−</span>
+                        </button>
+                        <div class="text-center">
+                            <div class="text-base font-semibold text-gray-900">{{ $childCount }} Child</div>
+                            <div class="text-xs text-gray-500">Ages 2–11</div>
+                        </div>
+                        <button type="button"
+                                class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                wire:click="incrementPassengerType('child')"
+                                @disabled(($adultCount + $childCount + $infantCount) >= 9)>
+                            <span class="text-xl leading-none">+</span>
+                        </button>
+                    </div>
+
+                    {{-- Infant --}}
+                    <div class="flex items-center justify-between">
+                        <button type="button"
+                                class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                wire:click="decrementPassengerType('infant')"
+                                @disabled($infantCount <= 0)>
+                            <span class="text-xl leading-none">−</span>
+                        </button>
+                        <div class="text-center">
+                            <div class="text-base font-semibold text-gray-900">{{ $infantCount }} Infant</div>
+                            <div class="text-xs text-gray-500">Ages under 2, on lap</div>
+                        </div>
+                        <button type="button"
+                                class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
+                                wire:click="incrementPassengerType('infant')"
+                                @disabled(($adultCount + $childCount + $infantCount) >= 9 || $infantCount >= $adultCount)>
+                            <span class="text-xl leading-none">+</span>
+                        </button>
+                    </div>
+
+                    <div class="h-px bg-gray-100"></div>
+                    <p class="text-xs text-gray-600">
+                        Please note: You can book for a maximum of nine passengers.
+                    </p>
+                </div>
+            </div>
         </div>
 
         <button wire:click="search"
@@ -583,3 +932,118 @@
     </div>
 
 </div>
+
+<script>
+    window.singleDatePicker = function (opts) {
+        const pad = (n) => String(n).padStart(2, '0');
+        const toIso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        const parseIso = (iso) => {
+            if (!iso) return null;
+            const [y, m, d] = iso.split('-').map(Number);
+            return new Date(y, (m || 1) - 1, d || 1);
+        };
+        const fmt = (iso) => {
+            const d = parseIso(iso);
+            if (!d) return '';
+            return `${pad(d.getMonth() + 1)}/${pad(d.getDate())}/${d.getFullYear()}`;
+        };
+        const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+        return {
+            open: false,
+            title: opts?.title || 'Select date',
+            display: opts?.value ? fmt(opts.value) : '',
+            iso: opts?.value || '',
+            flexible: !!opts?.flexible,
+            wireValueKey: opts?.wireValueKey || '',
+            wireFlexibleKey: opts?.wireFlexibleKey || '',
+            base: null,
+            months: [],
+            minIso: toIso(startOfDay(new Date())),
+
+            init() {
+                const baseIso = this.iso || this.minIso;
+                const baseDate = parseIso(baseIso) || new Date();
+                this.base = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
+                this.months = [];
+                this.refreshMonths();
+            },
+
+            toggleFlexible() {
+                this.flexible = !this.flexible;
+                if (this.$wire && this.wireFlexibleKey) this.$wire.$set(this.wireFlexibleKey, this.flexible);
+            },
+
+            prevMonth() {
+                const today = new Date();
+                const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                const prev = new Date(this.base.getFullYear(), this.base.getMonth() - 1, 1);
+                if (prev >= currentMonth) {
+                    this.base = prev;
+                    this.refreshMonths();
+                }
+            },
+
+            nextMonth() {
+                this.base = new Date(this.base.getFullYear(), this.base.getMonth() + 1, 1);
+                this.refreshMonths();
+            },
+
+            refreshMonths() {
+                const m1 = this.buildMonth(this.base.getFullYear(), this.base.getMonth());
+                this.months = [m1];
+            },
+
+            buildMonth(year, monthIndex) {
+                const monthStart = new Date(year, monthIndex, 1);
+                const monthEnd = new Date(year, monthIndex + 1, 0);
+                const daysInMonth = monthEnd.getDate();
+                const jsDow = monthStart.getDay(); // 0=Sun
+                const offset = (jsDow + 6) % 7; // 0=Mon
+
+                const title = monthStart.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+                const cells = [];
+
+                for (let i = 0; i < offset; i++) {
+                    cells.push({ key: `${year}-${monthIndex}-blank-${i}`, day: null, iso: null, disabled: true });
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const d = new Date(year, monthIndex, day);
+                    const iso = toIso(d);
+                    cells.push({
+                        key: iso,
+                        day,
+                        iso,
+                        disabled: iso < this.minIso,
+                    });
+                }
+
+                while (cells.length < 42) {
+                    cells.push({ key: `${year}-${monthIndex}-tail-${cells.length}`, day: null, iso: null, disabled: true });
+                }
+
+                return { key: `${year}-${monthIndex}`, title, cells };
+            },
+
+            pick(iso) {
+                if (!iso || iso < this.minIso) return;
+                this.iso = iso;
+                this.display = fmt(this.iso);
+            },
+
+            apply() {
+                if (!this.$wire || !this.wireValueKey) return;
+                this.$wire.$set(this.wireValueKey, this.iso);
+                if (this.wireFlexibleKey) this.$wire.$set(this.wireFlexibleKey, this.flexible);
+            },
+
+            dayClass(cell) {
+                if (!cell.day) return 'text-transparent';
+                if (cell.disabled) return 'text-gray-300 cursor-not-allowed';
+                if (this.iso && cell.iso === this.iso) return 'bg-blue-600 text-white';
+                return 'text-gray-900 hover:bg-gray-100';
+            },
+        };
+    }
+</script>
