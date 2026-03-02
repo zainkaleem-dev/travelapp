@@ -65,7 +65,7 @@ class Login extends Component
 
         $user = User::where('email', $this->email)->first();
 
-        if (! $user || ! Hash::check($this->password, $user->password)) {
+        if (!$user || !Hash::check($this->password, $user->password)) {
             RateLimiter::hit($this->throttleKey());
             $this->isLoading = false;
             $this->errorMessage = 'These credentials do not match our records.';
@@ -73,7 +73,7 @@ class Login extends Component
             return;
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if (!$user->hasVerifiedEmail()) {
             $user->sendEmailVerificationNotification();
             $this->isLoading = false;
             $this->errorMessage = 'Please verify your email first. A new verification link has been sent.';
@@ -87,7 +87,7 @@ class Login extends Component
         request()->session()->regenerate();
 
         // Redirect after login
-        $this->redirect(route('flights.search'), navigate: true);
+        $this->redirect(route('flights.search'));
     }
 
     // ─── Social auth placeholders ─────────────────────────────────

@@ -26,19 +26,19 @@ class SignUp extends Component
 
     public function togglePassword(): void
     {
-        $this->showPassword = ! $this->showPassword;
+        $this->showPassword = !$this->showPassword;
     }
 
     public function togglePasswordConfirmation(): void
     {
-        $this->showPasswordConfirmation = ! $this->showPasswordConfirmation;
+        $this->showPasswordConfirmation = !$this->showPasswordConfirmation;
     }
 
     public function register(): void
     {
         $this->validate();
 
-        if (! $this->agreed) {
+        if (!$this->agreed) {
             $this->addError('agreed', 'You must agree to the Terms of Service.');
             return;
         }
@@ -53,7 +53,7 @@ class SignUp extends Component
 
         session()->flash('success', 'Account created. Verification email sent. Please verify your email, then login.');
 
-        $this->redirect(route('login'), navigate: true);
+        $this->redirect(route('login'));
     }
 
     public function render()

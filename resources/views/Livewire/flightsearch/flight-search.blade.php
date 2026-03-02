@@ -1,4 +1,3 @@
-{{-- resources/views/livewire/book-flight.blade.php --}}
 <div>
 
     {{-- ════════════════════════════════════════
@@ -37,12 +36,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
 
                     {{-- Departure --}}
-                    <div class="field-wrap" style="position:relative;"
-                        wire:click="$set('showReturnDepAirports', true)"
+                    <div class="field-wrap" style="position:relative;" wire:click="$set('showReturnDepAirports', true)"
                         wire:click.outside="$set('showReturnDepAirports', false)">
                         <span class="field-label">Departure airport</span>
                         <input class="field-input" type="text" wire:model.live.debounce.150ms="returnDep"
-                            wire:focus="$set('showReturnDepAirports', true)" placeholder="City or airport" autocomplete="off">
+                            wire:focus="$set('showReturnDepAirports', true)" placeholder="City or airport"
+                            autocomplete="off">
                         @if($returnDep)
                             <button class="field-clear" wire:click.stop="$set('returnDep', '')" title="Clear">×</button>
                         @endif
@@ -67,16 +66,18 @@
                                     @endphp
                                     @forelse($items as $a)
                                         @php
-                                            $display = $a['city'].' ('.$a['code'].')';
+                                            $display = $a['city'] . ' (' . $a['code'] . ')';
                                         @endphp
                                         <button type="button"
                                             class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
                                             wire:click="selectReturnDepAirport('{{ $display }}')">
                                             <div>
-                                                <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                                <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                    {{ $a['country'] }}</div>
                                                 <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                             </div>
-                                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                            <span
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
                                         </button>
                                     @empty
                                         <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -87,12 +88,12 @@
                     </div>
 
                     {{-- Arrival --}}
-                    <div class="field-wrap" style="position:relative;"
-                        wire:click="$set('showReturnArrAirports', true)"
+                    <div class="field-wrap" style="position:relative;" wire:click="$set('showReturnArrAirports', true)"
                         wire:click.outside="$set('showReturnArrAirports', false)">
                         <span class="field-label">Arrival airport</span>
                         <input class="field-input" type="text" wire:model.live.debounce.150ms="returnArr"
-                            wire:focus="$set('showReturnArrAirports', true)" placeholder="City or airport" autocomplete="off">
+                            wire:focus="$set('showReturnArrAirports', true)" placeholder="City or airport"
+                            autocomplete="off">
                         @error('returnArr') <span class="field-error">{{ $message }}</span> @enderror
                         @if($showReturnArrAirports)
                             <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
@@ -114,16 +115,18 @@
                                     @endphp
                                     @forelse($items as $a)
                                         @php
-                                            $display = $a['city'].' ('.$a['code'].')';
+                                            $display = $a['city'] . ' (' . $a['code'] . ')';
                                         @endphp
                                         <button type="button"
                                             class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
                                             wire:click="selectReturnArrAirport('{{ $display }}')">
                                             <div>
-                                                <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                                <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                    {{ $a['country'] }}</div>
                                                 <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                             </div>
-                                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                            <span
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
                                         </button>
                                     @empty
                                         <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -135,24 +138,22 @@
 
                     {{-- Date range --}}
                     <div class="field-wrap"
-                        style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;"
-                        x-data="dateRangePicker({
-                            dep: @js($returnDepDate),
-                            ret: @js($returnRetDate),
-                            flexible: @js($returnFlexible),
-                        })"
-                        x-init="init()">
+                        style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;" x-data="dateRangePicker({
+                                dep: @js($returnDepDate),
+                                ret: @js($returnRetDate),
+                                flexible: @js($returnFlexible),
+                            })" x-init="init()">
                         <div>
                             <span class="field-label">Departing</span>
-                            <input class="field-input date-input" type="text" inputmode="none" readonly
-                                :value="dep || ''" placeholder="mm/dd/yyyy" @click="open = true; active = 'dep'">
+                            <input class="field-input date-input" type="text" inputmode="none" readonly :value="dep || ''"
+                                placeholder="mm/dd/yyyy" @click="open = true; active = 'dep'">
                             @error('returnDepDate') <span class="field-error">{{ $message }}</span> @enderror
                         </div>
                         <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">–</span>
                         <div>
                             <span class="field-label">Returning</span>
-                            <input class="field-input date-input" type="text" inputmode="none" readonly
-                                :value="ret || ''" placeholder="mm/dd/yyyy" @click="open = true; active = 'ret'">
+                            <input class="field-input date-input" type="text" inputmode="none" readonly :value="ret || ''"
+                                placeholder="mm/dd/yyyy" @click="open = true; active = 'ret'">
                             @error('returnRetDate') <span class="field-error">{{ $message }}</span> @enderror
                         </div>
                         {{-- Calendar modal --}}
@@ -160,11 +161,14 @@
                             aria-modal="true" role="dialog">
                             <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
 
-                            <div class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                            <div
+                                class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
                                 <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                                     <div class="flex items-center gap-3">
-                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                         <p class="text-base font-medium text-gray-800"
                                             x-text="active === 'ret' ? 'When would you like to return?' : 'Please choose your departure date'">
@@ -174,8 +178,7 @@
                                     <label class="flex items-center gap-3 select-none">
                                         <button type="button"
                                             class="relative inline-flex h-7 w-14 items-center rounded-full transition"
-                                            :class="flexible ? 'bg-blue-600' : 'bg-gray-300'"
-                                            @click="toggleFlexible()">
+                                            :class="flexible ? 'bg-blue-600' : 'bg-gray-300'" @click="toggleFlexible()">
                                             <span class="inline-block h-6 w-6 transform rounded-full bg-white transition"
                                                 :class="flexible ? 'translate-x-7' : 'translate-x-1'"></span>
                                         </button>
@@ -189,19 +192,24 @@
                                             <div>
                                                 <div class="flex items-center justify-between mb-4">
                                                     <div class="w-10"></div>
-                                                    <p class="text-lg font-medium text-gray-800 text-center" x-text="m.title"></p>
+                                                    <p class="text-lg font-medium text-gray-800 text-center"
+                                                        x-text="m.title"></p>
                                                     <div class="w-10 flex justify-end">
-                                                        <button type="button" class="w-10 h-10 rounded-full hover:bg-gray-50"
+                                                        <button type="button"
+                                                            class="w-10 h-10 rounded-full hover:bg-gray-50"
                                                             x-show="idx === 1" @click.prevent="nextMonth()">
-                                                            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                            <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M9 5l7 7-7 7" />
                                                             </svg>
                                                         </button>
                                                     </div>
                                                 </div>
 
                                                 <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
-                                                    <template x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']" :key="d">
+                                                    <template x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                        :key="d">
                                                         <div class="text-center tracking-widest" x-text="d"></div>
                                                     </template>
                                                 </div>
@@ -211,8 +219,7 @@
                                                         <button type="button"
                                                             class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
                                                             :disabled="cell.disabled || !cell.day"
-                                                            @click="cell.day && pick(cell.iso)"
-                                                            :class="dayClass(cell)">
+                                                            @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
                                                             <span x-text="cell.day || ''"></span>
                                                         </button>
                                                     </template>
@@ -228,8 +235,7 @@
                                         @click="open = false">Close</button>
                                     <button type="button"
                                         class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-                                        :disabled="!depIso || !retIso"
-                                        @click="apply(); open = false">
+                                        :disabled="!depIso || !retIso" @click="apply(); open = false">
                                         Done
                                     </button>
                                 </div>
@@ -242,15 +248,17 @@
                 {{-- Row 2 --}}
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
+                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
+                        @click.outside="open = false">
                         <span class="field-label">Passengers</span>
 
                         <button type="button" class="field-select text-left w-full flex items-center justify-between"
                             @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                            <span class="text-gray-900">{{ $this->paxSummary($returnAdults, $returnChildren, $returnInfants) }}</span>
+                            <span
+                                class="text-gray-900">{{ $this->paxSummary($returnAdults, $returnChildren, $returnInfants) }}</span>
                             <span class="select-arrow static">
-                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -279,8 +287,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementReturnPax('adult')"
-                                        @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9)>
+                                        wire:click="incrementReturnPax('adult')" @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -298,8 +305,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementReturnPax('child')"
-                                        @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9)>
+                                        wire:click="incrementReturnPax('child')" @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -317,8 +323,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementReturnPax('infant')"
-                                        @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9 || $returnInfants >= $returnAdults)>
+                                        wire:click="incrementReturnPax('infant')" @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9 || $returnInfants >= $returnAdults)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -331,15 +336,16 @@
                         </div>
                     </div>
 
-                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
+                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
+                        @click.outside="open = false">
                         <span class="field-label">Class</span>
 
                         <button type="button" class="field-select text-left w-full flex items-center justify-between"
                             @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
                             <span class="text-gray-900">{{ $returnClass }}</span>
                             <span class="select-arrow static">
-                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -364,12 +370,15 @@
                                     <button type="button"
                                         class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
                                         wire:click="$set('returnClass', '{{ $class }}')" @click="open = false">
-                                        <span class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                                        <span
+                                            class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
                                             {{ $class }}
                                         </span>
                                         @if($isSelected)
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                    d="M5 13l4 4L19 7" />
                                             </svg>
                                         @endif
                                     </button>
@@ -423,12 +432,12 @@
             <div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
 
-                    <div class="field-wrap" style="position:relative;"
-                        wire:click="$set('showOnewayDepAirports', true)"
+                    <div class="field-wrap" style="position:relative;" wire:click="$set('showOnewayDepAirports', true)"
                         wire:click.outside="$set('showOnewayDepAirports', false)">
                         <span class="field-label">Departure airport</span>
                         <input class="field-input" type="text" wire:model.live.debounce.150ms="onewayDep"
-                            wire:focus="$set('showOnewayDepAirports', true)" placeholder="City or airport" autocomplete="off">
+                            wire:focus="$set('showOnewayDepAirports', true)" placeholder="City or airport"
+                            autocomplete="off">
                         @if($onewayDep)
                             <button class="field-clear" wire:click.stop="$set('onewayDep', '')" title="Clear">×</button>
                         @endif
@@ -453,16 +462,18 @@
                                     @endphp
                                     @forelse($items as $a)
                                         @php
-                                            $display = $a['city'].' ('.$a['code'].')';
+                                            $display = $a['city'] . ' (' . $a['code'] . ')';
                                         @endphp
                                         <button type="button"
                                             class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
                                             wire:click="selectOnewayDepAirport('{{ $display }}')">
                                             <div>
-                                                <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                                <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                    {{ $a['country'] }}</div>
                                                 <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                             </div>
-                                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                            <span
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
                                         </button>
                                     @empty
                                         <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -472,12 +483,12 @@
                         @endif
                     </div>
 
-                    <div class="field-wrap" style="position:relative;"
-                        wire:click="$set('showOnewayArrAirports', true)"
+                    <div class="field-wrap" style="position:relative;" wire:click="$set('showOnewayArrAirports', true)"
                         wire:click.outside="$set('showOnewayArrAirports', false)">
                         <span class="field-label">Arrival airport</span>
                         <input class="field-input" type="text" wire:model.live.debounce.150ms="onewayArr"
-                            wire:focus="$set('showOnewayArrAirports', true)" placeholder="City or airport" autocomplete="off">
+                            wire:focus="$set('showOnewayArrAirports', true)" placeholder="City or airport"
+                            autocomplete="off">
                         @error('onewayArr') <span class="field-error">{{ $message }}</span> @enderror
                         @if($showOnewayArrAirports)
                             <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
@@ -499,16 +510,18 @@
                                     @endphp
                                     @forelse($items as $a)
                                         @php
-                                            $display = $a['city'].' ('.$a['code'].')';
+                                            $display = $a['city'] . ' (' . $a['code'] . ')';
                                         @endphp
                                         <button type="button"
                                             class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
                                             wire:click="selectOnewayArrAirport('{{ $display }}')">
                                             <div>
-                                                <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                                <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                    {{ $a['country'] }}</div>
                                                 <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                             </div>
-                                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                            <span
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
                                         </button>
                                     @empty
                                         <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -518,19 +531,16 @@
                         @endif
                     </div>
 
-                    <div class="field-wrap"
-                        x-data="singleDatePicker({
-                            value: @js($onewayDepDate),
-                            flexible: @js($onewayFlexible),
-                            wireValueKey: 'onewayDepDate',
-                            wireFlexibleKey: 'onewayFlexible',
-                            title: 'Please choose your departure date',
-                        })"
-                        x-init="init()"
-                    >
+                    <div class="field-wrap" x-data="singleDatePicker({
+                                value: @js($onewayDepDate),
+                                flexible: @js($onewayFlexible),
+                                wireValueKey: 'onewayDepDate',
+                                wireFlexibleKey: 'onewayFlexible',
+                                title: 'Please choose your departure date',
+                            })" x-init="init()">
                         <span class="field-label">Departing</span>
-                        <input class="field-input date-input" type="text" inputmode="none" readonly
-                            :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
+                        <input class="field-input date-input" type="text" inputmode="none" readonly :value="display || ''"
+                            placeholder="mm/dd/yyyy" @click="open = true">
                         @error('onewayDepDate') <span class="field-error">{{ $message }}</span> @enderror
 
                         {{-- Calendar modal --}}
@@ -538,11 +548,14 @@
                             aria-modal="true" role="dialog">
                             <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
 
-                            <div class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                            <div
+                                class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
                                 <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                                     <div class="flex items-center gap-3">
-                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                         <p class="text-base font-medium text-gray-800" x-text="title"></p>
                                     </div>
@@ -550,8 +563,7 @@
                                     <label class="flex items-center gap-3 select-none">
                                         <button type="button"
                                             class="relative inline-flex h-7 w-14 items-center rounded-full transition"
-                                            :class="flexible ? 'bg-blue-600' : 'bg-gray-300'"
-                                            @click="toggleFlexible()">
+                                            :class="flexible ? 'bg-blue-600' : 'bg-gray-300'" @click="toggleFlexible()">
                                             <span class="inline-block h-6 w-6 transform rounded-full bg-white transition"
                                                 :class="flexible ? 'translate-x-7' : 'translate-x-1'"></span>
                                         </button>
@@ -565,19 +577,24 @@
                                             <div>
                                                 <div class="flex items-center justify-between mb-4">
                                                     <div class="w-10"></div>
-                                                    <p class="text-lg font-medium text-gray-800 text-center" x-text="m.title"></p>
+                                                    <p class="text-lg font-medium text-gray-800 text-center"
+                                                        x-text="m.title"></p>
                                                     <div class="w-10 flex justify-end">
-                                                        <button type="button" class="w-10 h-10 rounded-full hover:bg-gray-50"
+                                                        <button type="button"
+                                                            class="w-10 h-10 rounded-full hover:bg-gray-50"
                                                             x-show="idx === 1" @click.prevent="nextMonth()">
-                                                            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                            <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M9 5l7 7-7 7" />
                                                             </svg>
                                                         </button>
                                                     </div>
                                                 </div>
 
                                                 <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
-                                                    <template x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']" :key="d">
+                                                    <template x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                        :key="d">
                                                         <div class="text-center tracking-widest" x-text="d"></div>
                                                     </template>
                                                 </div>
@@ -587,8 +604,7 @@
                                                         <button type="button"
                                                             class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
                                                             :disabled="cell.disabled || !cell.day"
-                                                            @click="cell.day && pick(cell.iso)"
-                                                            :class="dayClass(cell)">
+                                                            @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
                                                             <span x-text="cell.day || ''"></span>
                                                         </button>
                                                     </template>
@@ -604,8 +620,7 @@
                                         @click="open = false">Close</button>
                                     <button type="button"
                                         class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-                                        :disabled="!iso"
-                                        @click="apply(); open = false">
+                                        :disabled="!iso" @click="apply(); open = false">
                                         Done
                                     </button>
                                 </div>
@@ -617,15 +632,17 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
+                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
+                        @click.outside="open = false">
                         <span class="field-label">Passengers</span>
 
                         <button type="button" class="field-select text-left w-full flex items-center justify-between"
                             @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                            <span class="text-gray-900">{{ $this->paxSummary($onewayAdults, $onewayChildren, $onewayInfants) }}</span>
+                            <span
+                                class="text-gray-900">{{ $this->paxSummary($onewayAdults, $onewayChildren, $onewayInfants) }}</span>
                             <span class="select-arrow static">
-                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -653,8 +670,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementOnewayPax('adult')"
-                                        @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9)>
+                                        wire:click="incrementOnewayPax('adult')" @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -671,8 +687,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementOnewayPax('child')"
-                                        @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9)>
+                                        wire:click="incrementOnewayPax('child')" @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -689,8 +704,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementOnewayPax('infant')"
-                                        @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9 || $onewayInfants >= $onewayAdults)>
+                                        wire:click="incrementOnewayPax('infant')" @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9 || $onewayInfants >= $onewayAdults)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -703,15 +717,16 @@
                         </div>
                     </div>
 
-                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
+                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
+                        @click.outside="open = false">
                         <span class="field-label">Class</span>
 
                         <button type="button" class="field-select text-left w-full flex items-center justify-between"
                             @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
                             <span class="text-gray-900">{{ $onewayClass }}</span>
                             <span class="select-arrow static">
-                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -736,12 +751,15 @@
                                     <button type="button"
                                         class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
                                         wire:click="$set('onewayClass', '{{ $class }}')" @click="open = false">
-                                        <span class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                                        <span
+                                            class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
                                             {{ $class }}
                                         </span>
                                         @if($isSelected)
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                    d="M5 13l4 4L19 7" />
                                             </svg>
                                         @endif
                                     </button>
@@ -833,16 +851,18 @@
                                                 @endphp
                                                 @forelse($items as $a)
                                                     @php
-                                                        $display = $a['city'].' ('.$a['code'].')';
+                                                        $display = $a['city'] . ' (' . $a['code'] . ')';
                                                     @endphp
                                                     <button type="button"
                                                         class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
                                                         wire:click="selectMultiDepAirport({{ $index }}, '{{ $display }}')">
                                                         <div>
-                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                                {{ $a['country'] }}</div>
                                                             <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                                         </div>
-                                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                        <span
+                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
                                                     </button>
                                                 @empty
                                                     <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -882,16 +902,18 @@
                                                 @endphp
                                                 @forelse($items as $a)
                                                     @php
-                                                        $display = $a['city'].' ('.$a['code'].')';
+                                                        $display = $a['city'] . ' (' . $a['code'] . ')';
                                                     @endphp
                                                     <button type="button"
                                                         class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
                                                         wire:click="selectMultiArrAirport({{ $index }}, '{{ $display }}')">
                                                         <div>
-                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
+                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                                {{ $a['country'] }}</div>
                                                             <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                                         </div>
-                                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                        <span
+                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
                                                     </button>
                                                 @empty
                                                     <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -901,16 +923,13 @@
                                     @endif
                                 </div>
 
-                                <div class="field-wrap"
-                                    x-data="singleDatePicker({
-                                        value: @js($multiFlights[$index]['date'] ?? ''),
-                                        flexible: @js($multiFlexible),
-                                        wireValueKey: 'multiFlights.{{ $index }}.date',
-                                        wireFlexibleKey: 'multiFlexible',
-                                        title: 'Please choose your departure date',
-                                    })"
-                                    x-init="init()"
-                                >
+                                <div class="field-wrap" x-data="singleDatePicker({
+                                                value: @js($multiFlights[$index]['date'] ?? ''),
+                                                flexible: @js($multiFlexible),
+                                                wireValueKey: 'multiFlights.{{ $index }}.date',
+                                                wireFlexibleKey: 'multiFlexible',
+                                                title: 'Please choose your departure date',
+                                            })" x-init="init()">
                                     <span class="field-label">Departing</span>
                                     <input class="field-input date-input" type="text" inputmode="none" readonly
                                         :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
@@ -921,11 +940,14 @@
                                         aria-modal="true" role="dialog">
                                         <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
 
-                                        <div class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                        <div
+                                            class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
                                             <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                                                 <div class="flex items-center gap-3">
-                                                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                     </svg>
                                                     <p class="text-base font-medium text-gray-800" x-text="title"></p>
                                                 </div>
@@ -935,10 +957,12 @@
                                                         class="relative inline-flex h-7 w-14 items-center rounded-full transition"
                                                         :class="flexible ? 'bg-blue-600' : 'bg-gray-300'"
                                                         @click="toggleFlexible()">
-                                                        <span class="inline-block h-6 w-6 transform rounded-full bg-white transition"
+                                                        <span
+                                                            class="inline-block h-6 w-6 transform rounded-full bg-white transition"
                                                             :class="flexible ? 'translate-x-7' : 'translate-x-1'"></span>
                                                     </button>
-                                                    <span class="text-sm text-gray-700">My dates are flexible (+/- 3 days)</span>
+                                                    <span class="text-sm text-gray-700">My dates are flexible (+/- 3
+                                                        days)</span>
                                                 </label>
                                             </div>
 
@@ -948,19 +972,25 @@
                                                         <div>
                                                             <div class="flex items-center justify-between mb-4">
                                                                 <div class="w-10"></div>
-                                                                <p class="text-lg font-medium text-gray-800 text-center" x-text="m.title"></p>
+                                                                <p class="text-lg font-medium text-gray-800 text-center"
+                                                                    x-text="m.title"></p>
                                                                 <div class="w-10 flex justify-end">
-                                                                    <button type="button" class="w-10 h-10 rounded-full hover:bg-gray-50"
+                                                                    <button type="button"
+                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50"
                                                                         x-show="idx === 1" @click.prevent="nextMonth()">
-                                                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                stroke-width="2" d="M9 5l7 7-7 7" />
                                                                         </svg>
                                                                     </button>
                                                                 </div>
                                                             </div>
 
                                                             <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
-                                                                <template x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']" :key="d">
+                                                                <template
+                                                                    x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                                    :key="d">
                                                                     <div class="text-center tracking-widest" x-text="d"></div>
                                                                 </template>
                                                             </div>
@@ -987,8 +1017,7 @@
                                                     @click="open = false">Close</button>
                                                 <button type="button"
                                                     class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-                                                    :disabled="!iso"
-                                                    @click="apply(); open = false">
+                                                    :disabled="!iso" @click="apply(); open = false">
                                                     Done
                                                 </button>
                                             </div>
@@ -1020,15 +1049,17 @@
                 {{-- Passengers / Class / Search --}}
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
+                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
+                        @click.outside="open = false">
                         <span class="field-label">Passengers</span>
 
                         <button type="button" class="field-select text-left w-full flex items-center justify-between"
                             @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                            <span class="text-gray-900">{{ $this->paxSummary($multiAdults, $multiChildren, $multiInfants) }}</span>
+                            <span
+                                class="text-gray-900">{{ $this->paxSummary($multiAdults, $multiChildren, $multiInfants) }}</span>
                             <span class="select-arrow static">
-                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -1056,8 +1087,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementMultiPax('adult')"
-                                        @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9)>
+                                        wire:click="incrementMultiPax('adult')" @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -1074,8 +1104,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementMultiPax('child')"
-                                        @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9)>
+                                        wire:click="incrementMultiPax('child')" @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -1092,8 +1121,7 @@
                                     </div>
                                     <button type="button"
                                         class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                        wire:click="incrementMultiPax('infant')"
-                                        @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9 || $multiInfants >= $multiAdults)>
+                                        wire:click="incrementMultiPax('infant')" @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9 || $multiInfants >= $multiAdults)>
                                         <span class="text-xl leading-none">+</span>
                                     </button>
                                 </div>
@@ -1106,15 +1134,16 @@
                         </div>
                     </div>
 
-                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
+                    <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
+                        @click.outside="open = false">
                         <span class="field-label">Class</span>
 
                         <button type="button" class="field-select text-left w-full flex items-center justify-between"
                             @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
                             <span class="text-gray-900">{{ $multiClass }}</span>
                             <span class="select-arrow static">
-                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -1139,12 +1168,15 @@
                                     <button type="button"
                                         class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
                                         wire:click="$set('multiClass', '{{ $class }}')" @click="open = false">
-                                        <span class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                                        <span
+                                            class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
                                             {{ $class }}
                                         </span>
                                         @if($isSelected)
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                    d="M5 13l4 4L19 7" />
                                             </svg>
                                         @endif
                                     </button>
@@ -1195,7 +1227,7 @@
 </div>
 
 <script>
-    window.dateRangePicker = function(opts) {
+    window.dateRangePicker = function (opts) {
         const pad = (n) => String(n).padStart(2, '0');
         const toIso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
         const parseIso = (iso) => {
@@ -1327,7 +1359,7 @@
         };
     }
 
-    window.singleDatePicker = function(opts) {
+    window.singleDatePicker = function (opts) {
         const pad = (n) => String(n).padStart(2, '0');
         const toIso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
         const parseIso = (iso) => {

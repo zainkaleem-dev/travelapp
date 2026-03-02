@@ -103,12 +103,12 @@ class PassengerDetail extends Component
         $this->validate();
 
         // Redirect to next step (Additional Services)
-        $this->redirect(route('additional-services'), navigate: true);
+        $this->redirect(route('additional-services'));
     }
 
     public function back(): void
     {
-        $this->redirect(route('select-flight'), navigate: true);
+        $this->redirect(route('select-flight'));
     }
 
     public function render()
