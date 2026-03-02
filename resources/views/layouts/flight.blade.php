@@ -121,13 +121,13 @@
         }
 
         /* Date inputs – show placeholder colour until filled */
-        .date-input:not([value]):not(:focus) {
+        .date-input:not(.has-val):not(:focus) {
             color: #9ca3af;
             font-weight: 400;
         }
 
         .date-input:focus,
-        .date-input[value]:not([value=""]) {
+        .date-input.has-val {
             color: #111827;
             font-weight: 600;
         }

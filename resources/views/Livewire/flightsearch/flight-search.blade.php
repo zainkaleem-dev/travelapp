@@ -153,14 +153,14 @@
                             })" x-init="init()">
                         <div>
                             <span class="field-label">Departing</span>
-                            <input class="field-input date-input" type="text" inputmode="none" readonly :value="dep || ''"
+                            <input class="field-input date-input" :class="dep ? 'has-val' : ''" type="text" inputmode="none" readonly :value="dep || ''"
                                 placeholder="mm/dd/yyyy" @click="open = true; active = 'dep'">
                             @error('returnDepDate') <span class="field-error">{{ $message }}</span> @enderror
                         </div>
                         <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">–</span>
                         <div>
                             <span class="field-label">Returning</span>
-                            <input class="field-input date-input" type="text" inputmode="none" readonly :value="ret || ''"
+                            <input class="field-input date-input" :class="ret ? 'has-val' : ''" type="text" inputmode="none" readonly :value="ret || ''"
                                 placeholder="mm/dd/yyyy" @click="open = true; active = 'ret'">
                             @error('returnRetDate') <span class="field-error">{{ $message }}</span> @enderror
                         </div>
@@ -553,7 +553,7 @@
                                 title: 'Please choose your departure date',
                             })" x-init="init()">
                         <span class="field-label">Departing</span>
-                        <input class="field-input date-input" type="text" inputmode="none" readonly :value="display || ''"
+                        <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none" readonly :value="display || ''"
                             placeholder="mm/dd/yyyy" @click="open = true">
                         @error('onewayDepDate') <span class="field-error">{{ $message }}</span> @enderror
 
@@ -951,7 +951,7 @@
                                                 title: 'Please choose your departure date',
                                             })" x-init="init()">
                                     <span class="field-label">Departing</span>
-                                    <input class="field-input date-input" type="text" inputmode="none" readonly
+                                    <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none" readonly
                                         :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
                                     @error("multiFlights.$index.date") <span class="field-error">{{ $message }}</span> @enderror
 
