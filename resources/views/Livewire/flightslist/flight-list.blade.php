@@ -21,12 +21,6 @@
             </button>
         </div>
 
-        <div class="flex-1 max-w-sm mx-6">
-            <input type="text" placeholder="Search..."
-                   class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-full bg-gray-50
-                          focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
-        </div>
-
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs font-bold">U</div>
             <button class="text-sm font-medium text-gray-600 flex items-center gap-1">

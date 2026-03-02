@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Flightsearch;
 
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class FlightSearch extends Component

@@ -1,24 +1,5 @@
 <div class="bg-slate-100 min-h-screen text-gray-800 text-xs">
 
-    {{-- ── Promo banner ──────────────────────────────────────────── --}}
-    <div class="bg-indigo-600 text-white py-1.5 text-center text-xs relative">
-        <span>🏷️ Up to 20% discount with early booking! Sign up now and benefit from the offer.</span>
-        <div class="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 items-center gap-4 text-white/80">
-            <button class="flex items-center gap-1 hover:text-white">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>App
-            </button>
-            <button class="flex items-center gap-1 hover:text-white">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
-                Support <svg class="w-2 h-2 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <button class="flex items-center gap-1 hover:text-white">
-                English <svg class="w-2 h-2 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <button class="flex items-center gap-1 hover:text-white">
-                USD <svg class="w-2 h-2 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-        </div>
-    </div>
 
     {{-- ── Navbar ─────────────────────────────────────────────────── --}}
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -31,12 +12,7 @@
                     Next<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
-            <div class="flex-1 max-w-xs mx-2 relative hidden sm:block">
-                <input type="text" placeholder="Search..." class="w-full pl-3 pr-8 py-1.5 border border-gray-200 rounded-full bg-gray-50 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-200"/>
-                <button class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-orange-400 flex items-center justify-center">
-                    <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35"/></svg>
-                </button>
-            </div>
+
             <div class="flex items-center gap-2 flex-shrink-0">
                 <button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50">
                     <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>

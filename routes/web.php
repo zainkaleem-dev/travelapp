@@ -52,15 +52,15 @@ Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)
 Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
     $user = User::findOrFail($id);
 
-    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+    if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
         abort(403);
     }
 
-    if (! $request->hasValidSignature()) {
+    if (!$request->hasValidSignature()) {
         abort(403);
     }
 
-    if (! $user->hasVerifiedEmail()) {
+    if (!$user->hasVerifiedEmail()) {
         $user->markEmailAsVerified();
     }
 
