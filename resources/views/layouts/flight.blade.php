@@ -410,12 +410,7 @@
                 <div
                     class="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-white text-xs font-bold">
                     U</div>
-                <button class="text-sm font-medium text-gray-600 flex items-center gap-1">
-                    English
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
+
                 @auth
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

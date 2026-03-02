@@ -139,6 +139,7 @@
                     {{-- Date range --}}
                     <div class="field-wrap"
                         style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;" x-data="dateRangePicker({
+                                wire: $wire,
                                 dep: @js($returnDepDate),
                                 ret: @js($returnRetDate),
                                 flexible: @js($returnFlexible),
@@ -191,7 +192,13 @@
                                         <template x-for="(m, idx) in months.slice(0, 2)" :key="m.key">
                                             <div>
                                                 <div class="flex items-center justify-between mb-4">
-                                                    <div class="w-10"></div>
+                                                    <div class="w-10">
+                                                        <button type="button" class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center" x-show="idx === 0" @click.prevent="prevMonth()">
+                                                            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
                                                     <p class="text-lg font-medium text-gray-800 text-center"
                                                         x-text="m.title"></p>
                                                     <div class="w-10 flex justify-end">
@@ -532,6 +539,7 @@
                     </div>
 
                     <div class="field-wrap" x-data="singleDatePicker({
+                                wire: $wire,
                                 value: @js($onewayDepDate),
                                 flexible: @js($onewayFlexible),
                                 wireValueKey: 'onewayDepDate',
@@ -576,7 +584,13 @@
                                         <template x-for="(m, idx) in months.slice(0, 2)" :key="m.key">
                                             <div>
                                                 <div class="flex items-center justify-between mb-4">
-                                                    <div class="w-10"></div>
+                                                    <div class="w-10">
+                                                        <button type="button" class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center" x-show="idx === 0" @click.prevent="prevMonth()">
+                                                            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
                                                     <p class="text-lg font-medium text-gray-800 text-center"
                                                         x-text="m.title"></p>
                                                     <div class="w-10 flex justify-end">
@@ -924,6 +938,7 @@
                                 </div>
 
                                 <div class="field-wrap" x-data="singleDatePicker({
+                                                wire: $wire,
                                                 value: @js($multiFlights[$index]['date'] ?? ''),
                                                 flexible: @js($multiFlexible),
                                                 wireValueKey: 'multiFlights.{{ $index }}.date',
@@ -971,7 +986,13 @@
                                                     <template x-for="(m, idx) in months.slice(0, 2)" :key="m.key">
                                                         <div>
                                                             <div class="flex items-center justify-between mb-4">
-                                                                <div class="w-10"></div>
+                                                                <div class="w-10">
+                                                                    <button type="button" class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center" x-show="idx === 0" @click.prevent="prevMonth()">
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
                                                                 <p class="text-lg font-medium text-gray-800 text-center"
                                                                     x-text="m.title"></p>
                                                                 <div class="w-10 flex justify-end">
@@ -1264,7 +1285,17 @@
 
             toggleFlexible() {
                 this.flexible = !this.flexible;
-                if (this.$wire) this.$wire.set('returnFlexible', this.flexible);
+                if (this.wire) this.wire.set('returnFlexible', this.flexible);
+            },
+
+            prevMonth() {
+                const today = new Date();
+                const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                const prev = new Date(this.base.getFullYear(), this.base.getMonth() - 1, 1);
+                if (prev >= currentMonth) {
+                    this.base = prev;
+                    this.refreshMonths();
+                }
             },
 
             nextMonth() {
@@ -1337,10 +1368,10 @@
             },
 
             apply() {
-                if (!this.$wire) return;
-                this.$wire.set('returnDepDate', this.depIso);
-                this.$wire.set('returnRetDate', this.retIso);
-                this.$wire.set('returnFlexible', this.flexible);
+                if (!this.wire) return;
+                this.wire.set('returnDepDate', this.depIso);
+                this.wire.set('returnRetDate', this.retIso);
+                this.wire.set('returnFlexible', this.flexible);
             },
 
             dayClass(cell) {
@@ -1375,6 +1406,7 @@
         const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
         return {
+            wire: opts?.wire,
             open: false,
             title: opts?.title || 'Select date',
             display: opts?.value ? fmt(opts.value) : '',
@@ -1396,7 +1428,17 @@
 
             toggleFlexible() {
                 this.flexible = !this.flexible;
-                if (this.$wire && this.wireFlexibleKey) this.$wire.set(this.wireFlexibleKey, this.flexible);
+                if (this.wire && this.wireFlexibleKey) this.wire.set(this.wireFlexibleKey, this.flexible);
+            },
+
+            prevMonth() {
+                const today = new Date();
+                const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                const prev = new Date(this.base.getFullYear(), this.base.getMonth() - 1, 1);
+                if (prev >= currentMonth) {
+                    this.base = prev;
+                    this.refreshMonths();
+                }
             },
 
             nextMonth() {
@@ -1450,9 +1492,9 @@
             },
 
             apply() {
-                if (!this.$wire || !this.wireValueKey) return;
-                this.$wire.set(this.wireValueKey, this.iso);
-                if (this.wireFlexibleKey) this.$wire.set(this.wireFlexibleKey, this.flexible);
+                if (!this.wire || !this.wireValueKey) return;
+                this.wire.set(this.wireValueKey, this.iso);
+                if (this.wireFlexibleKey) this.wire.set(this.wireFlexibleKey, this.flexible);
             },
 
             dayClass(cell) {
