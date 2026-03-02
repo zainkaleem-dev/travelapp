@@ -76,6 +76,10 @@ Route::get('/auth/facebook', fn() => 'Facebook OAuth redirect')->name('auth.face
 
 Route::middleware(['auth'])->group(function () {
 
+    Route::get('/profile', function () {
+        return view('dashboard');
+    })->name('profile');
+
     Route::get('/flights-search', FlightSearch::class)
         ->name('flights.search');
 
