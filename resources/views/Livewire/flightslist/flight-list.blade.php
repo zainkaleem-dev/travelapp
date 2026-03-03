@@ -641,6 +641,7 @@
                 @forelse($this->flights as $flight)
                     <div class="flight-card px-4 py-3 {{ $flight['bgClass'] }}" x-data="{ open: false, cabin: 'economy' }">
                         <div class="flex items-center gap-4 w-full">
+<<<<<<< Updated upstream
                             {{-- Airline logo --}}
                             <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center relative">
                                 <img src="https://pics.avs.io/64/64/{{ $flight['airlineCode'] }}.png"
@@ -668,19 +669,55 @@
                                             <div class="flight-dot"></div>
                                             <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 text-xs text-gray-500 relative z-10">
                                                 {{ $flight['stops'] }}
+=======
+                            {{-- Route itineraries --}}
+                            <div class="flex-1 min-w-0 flex flex-col gap-3">
+                                @foreach($flight['itineraries'] ?? [] as $itin)
+                                    <div class="flex items-center gap-4">
+                                        {{-- Airline logo for itinerary --}}
+                                        <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center relative">
+                                            <img src="https://pics.avs.io/64/64/{{ $itin['airlineCode'] }}.png" 
+                                                 alt="{{ $itin['airline'] }}"
+                                                 class="w-full h-full object-contain"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                                            <div class="airline-logo {{ $itin['airlineColor'] }} hidden w-full h-full text-[10px] items-center justify-center rounded-lg text-white">
+                                                {{ substr($itin['airline'], 0, 2) }}
+>>>>>>> Stashed changes
                                             </div>
-                                            <div class="flight-dot"></div>
                                         </div>
-                                        <p class="text-xs text-gray-400">{{ $flight['duration'] }}</p>
-                                    </div>
 
-                                    {{-- Arrival --}}
-                                    <div class="text-right min-w-0">
-                                        <p class="text-sm font-bold text-gray-800">{{ $flight['arr'] }}</p>
-                                        <p class="text-xs text-gray-500">{{ $flight['arrCity'] }}</p>
-                                        <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $flight['arrAirport'] }}</p>
+                                        {{-- Route info --}}
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-3">
+                                                {{-- Departure --}}
+                                                <div class="min-w-0 w-24">
+                                                    <p class="text-sm font-bold text-gray-800">{{ $itin['dep'] }}</p>
+                                                    <p class="text-xs text-gray-500 truncate" title="{{ $itin['depCity'] }}">{{ $itin['depCity'] }}</p>
+                                                    <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $itin['depAirport'] }}</p>
+                                                </div>
+
+                                                {{-- Route line --}}
+                                                <div class="flex-1 flex flex-col items-center gap-1">
+                                                    <div class="relative w-full flight-line flex items-center justify-between">
+                                                        <div class="flight-dot"></div>
+                                                        <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 text-[11px] text-gray-500 relative z-10 whitespace-nowrap">
+                                                            {{ $itin['stops'] }}
+                                                        </div>
+                                                        <div class="flight-dot"></div>
+                                                    </div>
+                                                    <p class="text-[11px] text-gray-400 whitespace-nowrap">{{ $itin['duration'] }}</p>
+                                                </div>
+
+                                                {{-- Arrival --}}
+                                                <div class="text-right min-w-0 w-24">
+                                                    <p class="text-sm font-bold text-gray-800">{{ $itin['arr'] }}</p>
+                                                    <p class="text-xs text-gray-500 truncate" title="{{ $itin['arrCity'] }}">{{ $itin['arrCity'] }}</p>
+                                                    <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $itin['arrAirport'] }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                @endforeach
                             </div>
 
                             {{-- Price & CTA --}}

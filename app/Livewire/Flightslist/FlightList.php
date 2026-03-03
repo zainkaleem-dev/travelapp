@@ -573,6 +573,61 @@ class FlightList extends Component
                 $departureTimestamp = strtotime($firstSegment['departure']['at']);
                 $refundable = !($offer['pricingOptions']['noRestrictionFare'] ?? false);
 
+                // Map itineraries individually for frontend
+                $mappedItineraries = [];
+                foreach ($itineraries as $idx => $itin) {
+                    $itinFirstSeg = $itin['segments'][0];
+                    $itinLastSeg = end($itin['segments']);
+
+                    $itinDepTime = date('H:i', strtotime($itinFirstSeg['departure']['at']));
+                    $itinArrTime = date('H:i', strtotime($itinLastSeg['arrival']['at']));
+
+                    $itinDurationRaw = $itin['duration'] ?? '';
+                    $itinDuration = '';
+                    if (preg_match('/PT(?:(\d+)H)?(?:(\d+)M)?/', $itinDurationRaw, $matches)) {
+                        $hours = (int) ($matches[1] ?? 0);
+                        $minutes = (int) ($matches[2] ?? 0);
+                        $itinDuration = "{$hours}h {$minutes}m";
+                    }
+
+                    $itinStopsCount = count($itin['segments']) - 1;
+                    $itinStopsLabel = $itinStopsCount === 0 ? 'Direct' : $itinStopsCount . ' Stop' . ($itinStopsCount > 1 ? 's' : '');
+
+                    $itinCarrierCode = $itinFirstSeg['carrierCode'];
+                    $itinAirlineName = $dictionaries['carriers'][$itinCarrierCode] ?? $itinCarrierCode;
+
+                    if ($this->isMulti && isset($this->segments[$idx])) {
+                        $itinDepCity = $this->segments[$idx]['origin'] ?? '';
+                        $itinArrCity = $this->segments[$idx]['destination'] ?? '';
+                        $itinDepCity = trim(preg_replace('/\([A-Z]{3}\)/', '', $itinDepCity));
+                        $itinArrCity = trim(preg_replace('/\([A-Z]{3}\)/', '', $itinArrCity));
+                    } else {
+                        // Return or Oneway
+                        if ($idx === 0) {
+                            $itinDepCity = trim(preg_replace('/\([A-Z]{3}\)/', '', $this->origin));
+                            $itinArrCity = trim(preg_replace('/\([A-Z]{3}\)/', '', $this->destination));
+                        } else {
+                            // Keep in mind for Oneway there is no $idx = 1
+                            $itinDepCity = trim(preg_replace('/\([A-Z]{3}\)/', '', $this->destination));
+                            $itinArrCity = trim(preg_replace('/\([A-Z]{3}\)/', '', $this->origin));
+                        }
+                    }
+
+                    $mappedItineraries[] = [
+                        'dep' => $itinDepTime,
+                        'arr' => $itinArrTime,
+                        'depCity' => $itinDepCity,
+                        'arrCity' => $itinArrCity,
+                        'depAirport' => $itinFirstSeg['departure']['iataCode'],
+                        'arrAirport' => $itinLastSeg['arrival']['iataCode'],
+                        'duration' => $itinDuration,
+                        'stops' => $itinStopsLabel,
+                        'airline' => $itinAirlineName,
+                        'airlineCode' => $itinCarrierCode,
+                        'airlineColor' => 'bg-emerald-700',
+                    ];
+                }
+
                 $mappedFlights[] = [
                     'id' => $offer['id'],
                     'airline' => $airlineName,
@@ -597,6 +652,7 @@ class FlightList extends Component
                     'note' => null,
                     'refundable' => $refundable,
                     'rawOffer' => $offer,
+                    'itineraries' => $mappedItineraries,
                 ];
             }
 
