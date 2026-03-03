@@ -89,38 +89,83 @@ class FlightList extends Component
             ];
         }
 
-        // 2. Fetch from Amadeus
+        // 2. Fetch from Amadeus using parallel requests to flight-offers API
         if (empty($this->originIata) || empty($this->destIata))
             return;
 
         try {
             $amadeus = app(\App\Services\AmadeusService::class);
-            // We pass a range to get multiple cheapest dates at once
-            $response = $amadeus->searchFlightDates([
-                'origin' => $this->originIata,
-                'destination' => $this->destIata,
-                'departureDate' => $startDate->format('Y-m-d') . ',' . $endDate->format('Y-m-d'),
-            ]);
+            $token = $amadeus->getToken();
+            $baseUrl = $amadeus->getBaseUrl();
 
-            if (isset($response['data']) && is_array($response['data'])) {
-                foreach ($response['data'] as $offer) {
-                    $offerDate = $offer['departureDate'] ?? null;
-                    $offerPrice = $offer['price']['total'] ?? null;
+            if (!$token) {
+                return;
+            }
 
-                    if ($offerDate && $offerPrice) {
-                        foreach ($this->dateRail as &$railItem) {
-                            if ($railItem['date'] === $offerDate) {
-                                // Only update if it's the first one found or cheaper
-                                if ($railItem['price'] === null || (float) $offerPrice < $railItem['price']) {
-                                    $railItem['price'] = (float) $offerPrice;
-                                }
-                            }
-                        }
+            $responses = \Illuminate\Support\Facades\Http::pool(function (\Illuminate\Http\Client\Pool $pool) use ($token, $baseUrl) {
+                $reqs = [];
+                foreach ($this->dateRail as $index => $railItem) {
+                    $query = [
+                        'originLocationCode' => strtoupper($this->originIata),
+                        'destinationLocationCode' => strtoupper($this->destIata),
+                        'departureDate' => $railItem['date'],
+                        'adults' => $this->adultCount,
+                        'max' => 1 // Just need the cheapest one
+                    ];
+
+                    if (!empty($this->returnDate)) {
+                        $query['returnDate'] = $this->returnDate;
+                    }
+
+                    if (!empty($this->childCount)) {
+                        $query['children'] = $this->childCount;
+                    }
+                    if (!empty($this->infantCount)) {
+                        $query['infants'] = $this->infantCount;
+                    }
+                    if (!empty($this->travelClassEnum)) {
+                        $query['travelClass'] = strtoupper($this->travelClassEnum);
+                    }
+
+                    $reqs[] = $pool->as((string) $index)
+                        ->withOptions(['verify' => false, 'proxy' => null])
+                        ->withToken($token)
+                        ->get($baseUrl . '/v2/shopping/flight-offers', $query);
+                }
+                return $reqs;
+            });
+
+            foreach ($responses as $index => $response) {
+                if ($response instanceof \Illuminate\Http\Client\Response && $response->ok()) {
+                    $data = $response->json();
+                    if (!empty($data['data']) && isset($data['data'][0]['price']['total'])) {
+                        $this->dateRail[$index]['price'] = (float) $data['data'][0]['price']['total'];
                     }
                 }
             }
+
         } catch (\Exception $e) {
             // Error fetching prices, rail remains with nulls/-
+        }
+    }
+
+    /**
+     * Sync the selected date's price in the date rail with the actual
+     * cheapest price from the loaded flight list, so they always match.
+     */
+    protected function syncDateRailWithFlights(): void
+    {
+        if (empty($this->allFlights) || empty($this->dateRail)) {
+            return;
+        }
+
+        $cheapest = min(array_column($this->allFlights, 'price'));
+
+        foreach ($this->dateRail as &$day) {
+            if ($day['date'] === $this->selectedDate) {
+                $day['price'] = $cheapest;
+                break;
+            }
         }
     }
 
@@ -217,6 +262,7 @@ class FlightList extends Component
         $this->departDate = $date;
         $this->fetchDateRailPrices();
         $this->loadFlights();
+        $this->syncDateRailWithFlights();
     }
 
     public function shiftDate(int $days): void
@@ -375,6 +421,7 @@ class FlightList extends Component
         $this->syncPassengersTotal();
         $this->fetchDateRailPrices();
         $this->loadFlights();
+        $this->syncDateRailWithFlights();
     }
 
     public function loadFlights(): void
@@ -513,8 +560,8 @@ class FlightList extends Component
                     'stops' => $stopsLabel,
                     'price' => $price,
                     'oldPrice' => null,
-                    'badge' => ($index === 0) ? 'Cheapest' : null,
-                    'badgeClass' => ($index === 0) ? 'cheapest-badge' : '',
+                    'badge' => null,
+                    'badgeClass' => '',
                     'btnClass' => 'bg-blue-600 hover:bg-blue-700',
                     'bgClass' => '',
                     'note' => null,
@@ -523,7 +570,13 @@ class FlightList extends Component
                 ];
             }
 
-            // Replace the hardcoded data with the live data!
+            // Sort by price (cheapest first) and tag the cheapest
+            if (!empty($mappedFlights)) {
+                usort($mappedFlights, fn($a, $b) => $a['price'] <=> $b['price']);
+                $mappedFlights[0]['badge'] = 'Cheapest';
+                $mappedFlights[0]['badgeClass'] = 'cheapest-badge';
+            }
+
             $this->allFlights = $mappedFlights;
 
             // Handle scenario where request returned 200, but array holds 0 items.

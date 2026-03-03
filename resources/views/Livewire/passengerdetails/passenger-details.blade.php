@@ -54,9 +54,13 @@
             <div class="flex-1 min-w-0 space-y-3">
 
                 {{-- Flight Details --}}
-                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                    <div class="px-4 py-3 border-b border-gray-100">
+                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden" x-data="{ fareOpen: false, cabin: 'economy' }">
+                    <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
                         <h2 class="font-semibold text-gray-800 text-sm">Flight Details</h2>
+                        <button type="button" @click="fareOpen = !fareOpen" class="text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-1 text-xs font-medium">
+                            <span x-text="fareOpen ? 'Hide Fares' : 'Show Fares'"></span>
+                            <svg class="w-4 h-4 transition-transform duration-200" :class="fareOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
                     </div>
 
                     {{-- Outbound --}}
@@ -140,6 +144,120 @@
                         </div>
                     </div>
                     @endif
+
+                    {{-- Collapsible Fare Panel --}}
+                    <div x-show="fareOpen" x-collapse>
+                        <div class="border-t border-gray-100 pt-3 px-4 pb-4">
+                            <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="pb-2 font-medium"
+                                            @click="cabin='economy'"
+                                            :class="cabin==='economy' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Economy</button>
+                                    <button type="button" class="pb-2 font-medium"
+                                            @click="cabin='business'"
+                                            :class="cabin==='business' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Business</button>
+                                    <button type="button" class="pb-2 font-medium"
+                                            @click="cabin='first'"
+                                            :class="cabin==='first' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">First</button>
+                                </div>
+                            </div>
+
+                            @php
+                                $basePrice = (float) ($selectedFlight['price'] ?? 0);
+                                $saver = $basePrice;
+                                $flex = round($basePrice * 1.1, 2);
+                                $flexPlus = round($basePrice * 1.4, 2);
+                                $businessBase = round($basePrice * 2.2, 2);
+                                $businessSpecial = $businessBase;
+                                $businessSaver = round($businessBase * 1.07, 2);
+                                $businessFlex = round($businessBase * 1.21, 2);
+                                $businessFlexPlus = round($businessBase * 1.41, 2);
+                            @endphp
+
+                            {{-- Economy Content --}}
+                            <div x-show="cabin === 'economy'" class="bg-gray-50 rounded-2xl p-4">
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+                                        <div class="bg-emerald-800 text-white px-4 py-3">
+                                            <p class="text-xs font-semibold">Saver</p>
+                                            <p class="text-base font-bold">${{ $saver }}</p>
+                                        </div>
+                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
+                                            <p>• 23kg Baggage</p>
+                                            <p>• Ticket changes permitted</p>
+                                            <p>• Refundable with fee</p>
+                                        </div>
+                                    </div>
+                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+                                        <div class="bg-emerald-900 text-white px-4 py-3">
+                                            <p class="text-xs font-semibold">Flex</p>
+                                            <p class="text-base font-bold">${{ $flex }}</p>
+                                        </div>
+                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
+                                            <p>• 23kg Baggage</p>
+                                            <p>• Complimentary Seat</p>
+                                            <p>• Fully Refundable</p>
+                                        </div>
+                                    </div>
+                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+                                        <div class="bg-emerald-950 text-white px-4 py-3">
+                                            <p class="text-xs font-semibold">Flex Plus</p>
+                                            <p class="text-base font-bold">${{ $flexPlus }}</p>
+                                        </div>
+                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
+                                            <p>• 35kg Baggage</p>
+                                            <p>• Free Wi-Fi</p>
+                                            <p>• Priority Boarding</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {{-- Business Content --}}
+                            <div x-show="cabin === 'business'" class="bg-gray-50 rounded-2xl p-4">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+                                        <div class="bg-indigo-700 text-white px-4 py-3">
+                                            <p class="text-xs font-semibold">Special</p>
+                                            <p class="text-base font-bold">${{ $businessSpecial }}</p>
+                                        </div>
+                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
+                                            <p>• 2x 32kg Baggage</p>
+                                            <p>• Lounge Access</p>
+                                        </div>
+                                    </div>
+                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
+                                        <div class="bg-indigo-800 text-white px-4 py-3">
+                                            <p class="text-xs font-semibold">Flex Plus</p>
+                                            <p class="text-base font-bold">${{ $businessFlexPlus }}</p>
+                                        </div>
+                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
+                                            <p>• Flat-bed Seat</p>
+                                            <p>• Chauffeur-drive</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- First Content --}}
+                            <div x-show="cabin === 'first'" class="bg-gray-50 rounded-2xl p-4">
+                                @php
+                                    $firstBase = round($basePrice * 4.5, 2);
+                                @endphp
+                                <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm max-w-sm mx-auto">
+                                    <div class="bg-red-800 text-white px-4 py-3 text-center">
+                                        <p class="text-xs font-semibold">First Class Flex Plus</p>
+                                        <p class="text-base font-bold">${{ $firstBase }}</p>
+                                    </div>
+                                    <div class="px-4 py-3 text-[10px] text-gray-600 text-center space-y-1">
+                                        <p>• Private Suite</p>
+                                        <p>• Shower Spa</p>
+                                        <p>• Fine Dining</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- ── Contact Details ──────────────────────────────────────── --}}
