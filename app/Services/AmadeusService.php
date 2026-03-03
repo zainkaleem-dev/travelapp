@@ -40,7 +40,6 @@ class AmadeusService
                 ]);
 
                 $data = json_decode($response->getBody(), true);
-
                 return $data['access_token'] ?? null;
 
             } catch (\Throwable $e) {

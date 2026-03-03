@@ -497,7 +497,7 @@
 
     {{-- ─── SIDEBAR FILTERS ────────────────────────────────── --}}
     <aside class="w-full lg:w-64 flex-shrink-0 space-y-6">
-        
+
         {{-- Price Range --}}
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
             <h3 class="text-sm font-bold text-gray-900 mb-4">Price Range</h3>
@@ -511,7 +511,7 @@
                 <div class="grid grid-cols-2 gap-2 mt-2">
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">$</span>
-                        <input type="number" wire:model.live.debounce.500ms="priceMin" 
+                        <input type="number" wire:model.live.debounce.500ms="priceMin"
                                class="w-full pl-6 pr-2 py-2.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none transition-all">
                     </div>
                     <div class="relative">
@@ -605,7 +605,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                 </button>
-                
+
                 <div class="flex flex-1 justify-between px-2 py-1 overflow-x-auto no-scrollbar">
                     @foreach($dateRail as $day)
                         <button wire:click="selectDate('{{ $day['date'] }}')"
@@ -643,7 +643,7 @@
                         <div class="flex items-center gap-4 w-full">
                             {{-- Airline logo --}}
                             <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center relative">
-                                <img src="https://pics.avs.io/64/64/{{ $flight['airlineCode'] }}.png" 
+                                <img src="https://pics.avs.io/64/64/{{ $flight['airlineCode'] }}.png"
                                      alt="{{ $flight['airline'] }}"
                                      class="w-full h-full object-contain"
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">

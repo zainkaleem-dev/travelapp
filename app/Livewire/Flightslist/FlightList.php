@@ -90,8 +90,9 @@ class FlightList extends Component
         }
 
         // 2. Fetch from Amadeus using parallel requests to flight-offers API
-        if (empty($this->originIata) || empty($this->destIata))
+        if (empty($this->originIata) || empty($this->destIata)) {
             return;
+        }
 
         try {
             $amadeus = app(\App\Services\AmadeusService::class);
@@ -145,7 +146,6 @@ class FlightList extends Component
             }
 
         } catch (\Exception $e) {
-            // Error fetching prices, rail remains with nulls/-
         }
     }
 

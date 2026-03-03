@@ -1,51 +1,5 @@
 <div>
 
-    {{-- ─── Navbar ──────────────────────────────────────────────────────────── --}}
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-12 gap-3">
-            <div class="flex items-center gap-2 flex-shrink-0">
-                <button wire:click="back" class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>Back
-                </button>
-                <button wire:click="continue" class="flex items-center gap-1 px-3 py-1.5 rounded-full border border-indigo-200 text-indigo-600 font-medium hover:bg-indigo-50 transition-colors">
-                    Next<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </button>
-            </div>
-
-            <div class="flex items-center gap-2 flex-shrink-0">
-                <button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                    Find Reservation
-                </button>
-                <button class="flex items-center gap-1.5 px-3 py-1.5 font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                    <span class="hidden sm:inline">Login / Register</span>
-                    <span class="sm:hidden">Login</span>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    {{-- ─── Step Progress ───────────────────────────────────────────────────── --}}
-    <div class="bg-white border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="hidden sm:block text-xs text-gray-400 py-1">Home / Flight Tickets / Flight on Passenger Details</div>
-            <div class="flex items-center overflow-x-auto">
-                <div class="flex items-center gap-1.5 px-3 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-                    <span class="hidden sm:inline">Select Flight</span>
-                </div>
-                <div class="flex items-center gap-1.5 px-3 sm:px-5 py-2.5 text-white font-semibold whitespace-nowrap" style="background:#2ab4c0">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                    Passenger Details
-                </div>
-                <div class="px-3 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap">Additional Services</div>
-                <div class="px-3 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap hidden sm:block">Choice Seat</div>
-                <div class="px-3 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap ml-auto hidden sm:block">Payment</div>
-            </div>
-        </div>
-    </div>
-
     {{-- ─── Page Body ───────────────────────────────────────────────────────── --}}
     <div class="max-w-6xl mx-auto px-4 py-4">
         <div class="flex flex-col lg:flex-row gap-4">
