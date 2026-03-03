@@ -219,6 +219,21 @@ class FlightList extends Component
         $this->loadFlights();
     }
 
+    public function shiftDate(int $days): void
+    {
+        $date = new \DateTime($this->departDate);
+        $date->modify(($days > 0 ? "+$days" : "$days") . " days");
+
+        $newDate = $date->format('Y-m-d');
+
+        // Prevent shifting to past dates
+        if ($newDate < date('Y-m-d')) {
+            $newDate = date('Y-m-d');
+        }
+
+        $this->selectDate($newDate);
+    }
+
     public function setSort(string $tab): void
     {
         $this->sortTab = $tab;

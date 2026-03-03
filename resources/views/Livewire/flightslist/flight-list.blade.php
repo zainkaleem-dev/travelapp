@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="h-px bg-gray-100"></div>
-                    <div class="max-h-72 overflow-auto">
+                    <div class="max-h-72 overflow-auto no-scrollbar">
                         @php
                             $originItems = $this->filteredAirports($origin);
                         @endphp
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <div class="h-px bg-gray-100"></div>
-                    <div class="max-h-72 overflow-auto">
+                    <div class="max-h-72 overflow-auto no-scrollbar">
                         @php
                             $destItems = $this->filteredAirports($destination);
                         @endphp
@@ -460,12 +460,12 @@
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">$</span>
                         <input type="number" wire:model.live.debounce.500ms="priceMin" 
-                               class="w-full pl-6 pr-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                               class="w-full pl-6 pr-2 py-2.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none transition-all">
                     </div>
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">$</span>
                         <input type="number" wire:model.live.debounce.500ms="priceMax"
-                               class="w-full pl-6 pr-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                               class="w-full pl-6 pr-2 py-2.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none transition-all">
                     </div>
                 </div>
             </div>
@@ -493,7 +493,7 @@
         {{-- Airlines --}}
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
             <h3 class="text-sm font-bold text-gray-900 mb-4">Airlines</h3>
-            <div class="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+            <div class="space-y-3 max-h-64 overflow-y-auto pr-2 no-scrollbar">
                 <label class="flex items-center group cursor-pointer">
                     <input type="checkbox" wire:model.live="airlines" value="any" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                     <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">All Airlines</span>
@@ -529,7 +529,7 @@
         <div class="bg-white rounded-xl border border-gray-200 mb-3 overflow-hidden">
 
             {{-- Sort tabs --}}
-            <div class="flex items-center border-b border-gray-100 px-2 gap-1 overflow-x-auto">
+            <div class="flex items-center border-b border-gray-100 px-2 gap-1 overflow-x-auto overflow-y-hidden no-scrollbar">
                 @foreach([
                     'best'       => 'Best Value',
                     'cheap'      => 'Cheapest',
@@ -546,33 +546,37 @@
             </div>
 
             {{-- Date rail --}}
-            <div class="flex items-center gap-1 px-3 py-2.5 border-b border-gray-100 overflow-x-auto">
-                <button class="p-1 text-gray-400 hover:text-gray-600 flex-shrink-0">
+            <div class="flex items-center px-4 py-3 border-b border-gray-100 bg-gray-50/30">
+                <button wire:click="shiftDate(-1)" wire:loading.attr="disabled"
+                        class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 disabled:opacity-50">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                 </button>
-                <div class="flex gap-1 flex-1">
+                
+                <div class="flex flex-1 justify-between px-2 py-1 overflow-x-auto no-scrollbar">
                     @foreach($dateRail as $day)
                         <button wire:click="selectDate('{{ $day['date'] }}')"
-                                class="flex-shrink-0 text-center px-3 py-1.5 rounded-lg cursor-pointer transition-colors
+                                class="flex-shrink-0 text-center px-4 py-1.5 rounded-xl cursor-pointer transition-all duration-200
                                        {{ $selectedDate === $day['date']
-                                           ? 'bg-blue-600'
-                                           : 'hover:bg-gray-50' }}">
-                            <p class="text-xs {{ $selectedDate === $day['date'] ? 'text-blue-200' : 'text-gray-400' }}">
+                                           ? 'bg-blue-600 shadow-md shadow-blue-200 scale-105'
+                                           : 'hover:bg-white hover:shadow-sm' }}">
+                            <p class="text-[10px] font-medium uppercase tracking-wider {{ $selectedDate === $day['date'] ? 'text-blue-100' : 'text-gray-400' }}">
                                 {{ $day['label'] }}
                             </p>
                             @if($day['price'])
-                                <p class="text-xs font-semibold {{ $selectedDate === $day['date'] ? 'text-white' : ($day['price'] <= current($dateRail)['price'] ? 'text-green-600' : 'text-gray-700') }}">
-                                    ${{ number_format($day['price'], 2) }}
+                                <p class="text-xs font-bold mt-0.5 {{ $selectedDate === $day['date'] ? 'text-white' : ($day['price'] <= current($dateRail)['price'] ? 'text-green-600' : 'text-gray-900') }}">
+                                    ${{ number_format($day['price'], 0) }}
                                 </p>
                             @else
-                                <p class="text-xs font-semibold {{ $selectedDate === $day['date'] ? 'text-white/50' : 'text-gray-400' }}">-</p>
+                                <p class="text-xs font-bold mt-0.5 {{ $selectedDate === $day['date'] ? 'text-white/40' : 'text-gray-300' }}">-</p>
                             @endif
                         </button>
                     @endforeach
                 </div>
-                <button class="p-1 text-gray-400 hover:text-gray-600 flex-shrink-0">
+
+                <button wire:click="shiftDate(1)" wire:loading.attr="disabled"
+                        class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 disabled:opacity-50">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
