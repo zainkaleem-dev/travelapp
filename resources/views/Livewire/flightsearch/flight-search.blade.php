@@ -55,7 +55,7 @@
                         @endif
                         @error('returnDep') <span class="field-error">{{ $message }}</span> @enderror
                         @if($showReturnDepAirports)
-                            <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                            <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                 style="min-width: 280px;">
                                 <div class="px-4 py-3">
                                     <div class="flex items-center gap-2 text-xs text-gray-500">
@@ -105,7 +105,7 @@
                             autocomplete="off">
                         @error('returnArr') <span class="field-error">{{ $message }}</span> @enderror
                         @if($showReturnArrAirports)
-                            <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                            <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                 style="min-width: 280px;">
                                 <div class="px-4 py-3">
                                     <div class="flex items-center gap-2 text-xs text-gray-500">
@@ -393,7 +393,7 @@
                         </button>
 
                         <div x-cloak x-show="open" x-transition
-                            class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 280px;">
                             <div class="px-4 py-3">
                                 <p class="text-sm font-medium text-gray-700">Passengers</p>
@@ -480,7 +480,7 @@
                         </button>
 
                         <div x-cloak x-show="open" x-transition
-                            class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 280px;">
                             <div class="px-4 py-3">
                                 <p class="text-sm font-medium text-gray-700">Select class</p>
@@ -570,7 +570,7 @@
                         @endif
                         @error('onewayDep') <span class="field-error">{{ $message }}</span> @enderror
                         @if($showOnewayDepAirports)
-                            <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                            <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                 style="min-width: 280px;">
                                 <div class="px-4 py-3">
                                     <div class="flex items-center gap-2 text-xs text-gray-500">
@@ -619,7 +619,7 @@
                             autocomplete="off">
                         @error('onewayArr') <span class="field-error">{{ $message }}</span> @enderror
                         @if($showOnewayArrAirports)
-                            <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                            <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                 style="min-width: 280px;">
                                 <div class="px-4 py-3">
                                     <div class="flex items-center gap-2 text-xs text-gray-500">
@@ -789,7 +789,7 @@
                         </button>
 
                         <div x-cloak x-show="open" x-transition
-                            class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 280px;">
                             <div class="px-4 py-3">
                                 <p class="text-sm font-medium text-gray-700">Passengers</p>
@@ -873,7 +873,7 @@
                         </button>
 
                         <div x-cloak x-show="open" x-transition
-                            class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 280px;">
                             <div class="px-4 py-3">
                                 <p class="text-sm font-medium text-gray-700">Select class</p>
@@ -970,7 +970,7 @@
                                     @endif
                                     @error("multiFlights.$index.dep") <span class="field-error">{{ $message }}</span> @enderror
                                     @if(($showMultiDepAirports[$index] ?? false))
-                                        <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                        <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                             style="min-width: 280px;">
                                             <div class="px-4 py-3">
                                                 <div class="flex items-center gap-2 text-xs text-gray-500">
@@ -1022,7 +1022,7 @@
                                         placeholder="City or airport" autocomplete="off">
                                     @error("multiFlights.$index.arr") <span class="field-error">{{ $message }}</span> @enderror
                                     @if(($showMultiArrAirports[$index] ?? false))
-                                        <div class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                        <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                             style="min-width: 280px;">
                                             <div class="px-4 py-3">
                                                 <div class="flex items-center gap-2 text-xs text-gray-500">
@@ -1219,7 +1219,7 @@
                         </button>
 
                         <div x-cloak x-show="open" x-transition
-                            class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 280px;">
                             <div class="px-4 py-3">
                                 <p class="text-sm font-medium text-gray-700">Passengers</p>
@@ -1303,7 +1303,7 @@
                         </button>
 
                         <div x-cloak x-show="open" x-transition
-                            class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 280px;">
                             <div class="px-4 py-3">
                                 <p class="text-sm font-medium text-gray-700">Select class</p>

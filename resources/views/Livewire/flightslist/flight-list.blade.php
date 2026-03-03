@@ -3,11 +3,11 @@
 {{-- ══════════════════════════════════════════════════════════
      SEARCH BAR
 ══════════════════════════════════════════════════════════ --}}
-<div class="bg-blue-600 py-3">
-    <div class="max-w-7xl mx-auto px-4 flex items-center gap-3 flex-wrap">
+<div class="bg-blue-600 py-3 overflow-visible relative z-10">
+    <div class="max-w-7xl mx-auto px-4 flex items-center gap-2 sm:gap-3 flex-nowrap min-h-[52px] overflow-visible">
 
         {{-- Origin with airport dropdown (like flights-search) --}}
-        <div class="relative"
+        <div class="relative flex-shrink-0"
              wire:click.outside="$set('showOriginAirports', false)">
             <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
                  wire:click="$set('showOriginAirports', true)">
@@ -16,7 +16,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
                 </svg>
                 <input
-                    class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-52"
+                    class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-36 min-w-[7rem] max-w-[12rem]"
                     type="text"
                     wire:model.live.debounce.150ms="origin"
                     wire:focus="$set('showOriginAirports', true)"
@@ -63,15 +63,15 @@
             @endif
         </div>
 
-        {{-- Swap button --}}
-        <button wire:click="$set('origin', '{{ $destination }}')" class="text-white/70 hover:text-white transition-colors hidden sm:block">
+        {{-- Swap button: swap departure and return airports --}}
+        <button type="button" wire:click="swapAirports" class="text-white/70 hover:text-white transition-colors flex-shrink-0 p-1 shrink-0" title="Swap departure and destination">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
             </svg>
         </button>
 
         {{-- Destination with airport dropdown --}}
-        <div class="relative"
+        <div class="relative flex-shrink-0"
              wire:click.outside="$set('showDestinationAirports', false)">
             <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
                  wire:click="$set('showDestinationAirports', true)">
@@ -80,7 +80,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
                 </svg>
                 <input
-                    class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-52"
+                    class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-36 min-w-[7rem] max-w-[12rem]"
                     type="text"
                     wire:model.live.debounce.150ms="destination"
                     wire:focus="$set('showDestinationAirports', true)"
@@ -128,7 +128,7 @@
         </div>
 
         {{-- Departing date (separate calendar) --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
+        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm flex-shrink-0"
              x-data="singleDatePicker({
                     value: @js($departDate),
                     flexible: false,
@@ -225,7 +225,7 @@
         </div>
 
         {{-- Returning date (separate calendar) --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
+        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm flex-shrink-0"
              x-data="singleDatePicker({
                     value: @js($returnDate),
                     flexible: false,
@@ -322,7 +322,7 @@
         </div>
 
         {{-- Passengers (dropdown UI similar to search page) --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm relative"
+        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm relative flex-shrink-0 min-w-[7rem]"
              x-data="{ open: false }"
              @click.outside="open = false">
             <svg class="w-4 h-4 opacity-70" fill="currentColor" viewBox="0 0 24 24">
@@ -347,7 +347,7 @@
             </button>
 
             <div x-cloak x-show="open" x-transition
-                 class="absolute left-0 top-full mt-2 w-72 rounded-xl border border-gray-200 bg-white shadow-lg text-gray-900 z-50">
+                 class="absolute left-0 top-full mt-2 w-72 rounded-xl border border-gray-200 bg-white shadow-lg text-gray-900 z-[100]">
                 <div class="px-4 py-3">
                     <p class="text-sm font-medium text-gray-700">Passengers</p>
                     <div class="h-px bg-gray-100 mt-2"></div>
@@ -422,9 +422,61 @@
             </div>
         </div>
 
-        <button wire:click="search"
+        {{-- Class dropdown (Economy, Premium Economy, Business, First) --}}
+        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm relative flex-shrink-0 min-w-[7rem]"
+             x-data="{ open: false }"
+             @click.outside="open = false">
+            <svg class="w-4 h-4 opacity-70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            <button type="button"
+                    class="field-select text-left w-full flex items-center justify-between bg-transparent text-white text-xs sm:text-sm min-w-[140px]"
+                    @click="open = !open"
+                    aria-haspopup="listbox"
+                    :aria-expanded="open">
+                <span class="text-white truncate">{{ $travelClass }}</span>
+                <span class="ml-1 flex-shrink-0">
+                    <svg class="w-3.5 h-3.5 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                         stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </span>
+            </button>
+
+            <div x-cloak x-show="open" x-transition
+                 class="absolute left-0 top-full mt-2 w-72 rounded-xl border border-gray-200 bg-white shadow-lg text-gray-900 z-[100] min-w-[16rem]">
+                <div class="px-4 py-3">
+                    <p class="text-sm font-medium text-gray-700">Select class</p>
+                    <div class="h-px bg-gray-100 mt-2"></div>
+                </div>
+                @php
+                    $classOptions = ['Economy Class', 'Premium Economy', 'Business Class', 'First Class'];
+                @endphp
+                <div class="py-2">
+                    @foreach($classOptions as $classOpt)
+                        @php $isSelected = $travelClass === $classOpt; @endphp
+                        <button type="button"
+                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+                                wire:click="setTravelClass('{{ $classOpt }}')"
+                                @click="open = false">
+                            <span class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                                {{ $classOpt }}
+                            </span>
+                            @if($isSelected)
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            @endif
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <button type="button" wire:click="search"
                 wire:loading.attr="disabled"
-                class="ml-auto px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-2">
+                class="flex-shrink-0 ml-auto px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-2 self-center">
             <span wire:loading.remove wire:target="search">Search</span>
             <span wire:loading wire:target="search" class="flex items-center gap-1.5">
                 <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">

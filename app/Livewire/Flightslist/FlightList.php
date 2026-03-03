@@ -357,6 +357,34 @@ class FlightList extends Component
         $this->showDestinationAirports = false;
     }
 
+    public function swapAirports(): void
+    {
+        [$this->origin, $this->destination] = [$this->destination, $this->origin];
+        [$this->originIata, $this->destIata] = [$this->destIata, $this->originIata];
+    }
+
+    private static function travelClassToEnum(string $class): string
+    {
+        $map = [
+            'Economy Class' => 'ECONOMY',
+            'Premium Economy' => 'PREMIUM_ECONOMY',
+            'Business Class' => 'BUSINESS',
+            'First Class' => 'FIRST',
+        ];
+        return $map[$class] ?? 'ECONOMY';
+    }
+
+    public function updatedTravelClass(): void
+    {
+        $this->travelClassEnum = self::travelClassToEnum($this->travelClass);
+    }
+
+    public function setTravelClass(string $class): void
+    {
+        $this->travelClass = $class;
+        $this->travelClassEnum = self::travelClassToEnum($class);
+    }
+
     protected function syncPassengersTotal(): void
     {
         $this->passengers = $this->adultCount + $this->childCount + $this->infantCount;
@@ -396,6 +424,7 @@ class FlightList extends Component
             if ($this->childCount <= 0) {
                 return;
             }
+            $this->childCount--;
         } elseif ($type === 'infant') {
             if ($this->infantCount <= 0) {
                 return;
@@ -419,6 +448,7 @@ class FlightList extends Component
         }
 
         $this->syncPassengersTotal();
+        $this->travelClassEnum = self::travelClassToEnum($this->travelClass);
         $this->fetchDateRailPrices();
         $this->loadFlights();
         $this->syncDateRailWithFlights();
