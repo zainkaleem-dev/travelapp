@@ -34,21 +34,48 @@ class PassengerDetail extends Component
     ])]
     public array $passengers = [];
 
+    public array $selectedFlight = [];
+    public array $searchParams = [];
+
     // ── Summary line items ────────────────────────────────────────────────────
-    public array $summaryItems = [
-        ['label' => 'Luggage Only Flight', 'removable' => false, 'amount' => 179.00],
-        ['label' => 'Return Flight All', 'removable' => false, 'amount' => 1037.00],
-        ['label' => 'Price Baggage 13kg', 'removable' => true, 'amount' => 17.00],
-        ['label' => 'Travel Insurance', 'removable' => true, 'amount' => 17.00],
-        ['label' => 'Seat Taxes', 'removable' => true, 'amount' => 17.00],
-    ];
+    public array $summaryItems = [];
 
     // ── Boot ──────────────────────────────────────────────────────────────────
-    public function mount(int $passengerCount = 2): void
+    public function mount(): void
     {
-        for ($i = 0; $i < $passengerCount; $i++) {
-            $this->passengers[] = $this->emptyPassenger();
+        $this->selectedFlight = session('selected_flight');
+        $this->searchParams = session('search_params');
+
+        // If no flight selected, redirect back to search
+        if (!$this->selectedFlight) {
+            $this->redirect(route('select-flight'), navigate: true);
+            return;
         }
+
+        $counts = $this->searchParams['passengers'] ?? ['adults' => 1, 'children' => 0, 'infants' => 0];
+
+        // Initialize passengers array
+        $this->passengers = [];
+
+        for ($i = 0; $i < ($counts['adults'] ?? 0); $i++) {
+            $this->passengers[] = array_merge($this->emptyPassenger(), ['type' => 'ADULT']);
+        }
+        for ($i = 0; $i < ($counts['children'] ?? 0); $i++) {
+            $this->passengers[] = array_merge($this->emptyPassenger(), ['type' => 'CHILD']);
+        }
+        for ($i = 0; $i < ($counts['infants'] ?? 0); $i++) {
+            $this->passengers[] = array_merge($this->emptyPassenger(), ['type' => 'HELD_INFANT']);
+        }
+
+        // Initialize summary items from real flight price
+        $totalPrice = (float) ($this->selectedFlight['price'] ?? 0);
+        $taxGuess = $totalPrice * 0.15; // Placeholder for UI
+        $basePrice = $totalPrice - $taxGuess;
+
+        $this->summaryItems = [
+            ['label' => 'Base Fare (x' . count($this->passengers) . ' Passengers)', 'removable' => false, 'amount' => round($basePrice, 2)],
+            ['label' => 'Taxes and Fees', 'removable' => false, 'amount' => round($taxGuess, 2)],
+        ];
     }
 
     private function emptyPassenger(): array
@@ -87,7 +114,8 @@ class PassengerDetail extends Component
     #[Computed]
     public function years(): array
     {
-        return range(date('Y') - 18, 1930);
+        // For adults, minimum 12 years old
+        return range(date('Y'), 1930);
     }
 
     // ── Actions ───────────────────────────────────────────────────────────────
@@ -103,12 +131,12 @@ class PassengerDetail extends Component
         $this->validate();
 
         // Redirect to next step (Additional Services)
-        $this->redirect(route('additional-services'));
+        $this->redirect(route('additional.services'), navigate: true);
     }
 
     public function back(): void
     {
-        $this->redirect(route('select-flight'));
+        $this->redirect(route('flights.list'), navigate: true);
     }
 
     public function render()

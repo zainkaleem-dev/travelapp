@@ -60,38 +60,41 @@
                     </div>
 
                     {{-- Outbound --}}
+                    @if(isset($selectedFlight['rawOffer']['itineraries'][0]))
                     <div class="px-4 py-3">
                         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white font-semibold mb-3" style="background:#2ab4c0; font-size:10px">
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
                             Outbound Flight
                         </div>
                         <div class="flex items-center gap-3 sm:gap-4">
-                            <div class="w-7 h-7 rounded-full bg-red-500 flex items-center justify-center text-white font-bold flex-shrink-0" style="font-size:9px">TK</div>
+                            <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold flex-shrink-0 relative overflow-hidden">
+                                <img src="https://pics.avs.io/64/64/{{ $selectedFlight['airlineCode'] ?? '??' }}.png" class="w-full h-full object-contain">
+                            </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2">
                                     <div class="flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">17:30</p>
-                                        <p class="text-gray-500" style="font-size:9px">Düsseldorf</p>
-                                        <p class="text-gray-400 hidden sm:block" style="font-size:9px">Düsseldorf International Airport (DUS)</p>
+                                        <p class="font-bold text-gray-800 text-sm">{{ $selectedFlight['dep'] ?? '00:00' }}</p>
+                                        <p class="text-gray-500" style="font-size:9px">{{ $selectedFlight['depAirport'] ?? '---' }}</p>
                                     </div>
                                     <div class="flex-1 flex flex-col items-center gap-0.5 min-w-0">
                                         <div class="relative w-full flight-line flex items-center justify-between">
                                             <div class="flight-dot"></div>
-                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">Direct</div>
+                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">{{ $selectedFlight['stops'] ?? 'Direct' }}</div>
                                             <div class="flight-dot"></div>
                                         </div>
-                                        <p class="text-gray-400" style="font-size:9px">4h 28m</p>
+                                        <p class="text-gray-400" style="font-size:9px">{{ $selectedFlight['duration'] ?? '--' }}</p>
                                     </div>
                                     <div class="text-right flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">23:18</p>
-                                        <p class="text-gray-500" style="font-size:9px">Istanbul</p>
-                                        <p class="text-gray-400 hidden sm:block" style="font-size:9px">Istanbul International Airport (IST)</p>
+                                        <p class="font-bold text-gray-800 text-sm">{{ $selectedFlight['arr'] ?? '00:00' }}</p>
+                                        <p class="text-gray-500" style="font-size:9px">{{ $selectedFlight['arrAirport'] ?? '---' }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @endif
 
+                    @if(isset($selectedFlight['rawOffer']['itineraries'][1]))
                     <div class="mx-4 border-t border-dashed border-gray-200"></div>
 
                     {{-- Return --}}
@@ -100,32 +103,43 @@
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
                             Return Flight
                         </div>
+                        @php
+                            $retItin = $selectedFlight['rawOffer']['itineraries'][1];
+                            $retFirst = $retItin['segments'][0];
+                            $retLast = end($retItin['segments']);
+                            $retDep = date('H:i', strtotime($retFirst['departure']['at']));
+                            $retArr = date('H:i', strtotime($retLast['arrival']['at']));
+                            $retDuration = str_replace(['PT', 'H', 'M'], ['', 'h ', 'm'], $retItin['duration']);
+                            $retStopsCount = count($retItin['segments']) - 1;
+                            $retStops = $retStopsCount === 0 ? 'Direct' : $retStopsCount . ' Stop' . ($retStopsCount > 1 ? 's' : '');
+                        @endphp
                         <div class="flex items-center gap-3 sm:gap-4">
-                            <div class="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold flex-shrink-0" style="font-size:9px">PC</div>
+                            <div class="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center text-white font-bold flex-shrink-0 relative overflow-hidden">
+                                <img src="https://pics.avs.io/64/64/{{ $retFirst['carrierCode'] ?? '??' }}.png" class="w-full h-full object-contain">
+                            </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2">
                                     <div class="flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">17:30</p>
-                                        <p class="text-gray-500" style="font-size:9px">Istanbul</p>
-                                        <p class="text-gray-400 hidden sm:block" style="font-size:9px">Istanbul International Airport (IST)</p>
+                                        <p class="font-bold text-gray-800 text-sm">{{ $retDep }}</p>
+                                        <p class="text-gray-500" style="font-size:9px">{{ $retFirst['departure']['iataCode'] }}</p>
                                     </div>
                                     <div class="flex-1 flex flex-col items-center gap-0.5 min-w-0">
                                         <div class="relative w-full flight-line flex items-center justify-between">
                                             <div class="flight-dot"></div>
-                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">Direct</div>
+                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">{{ $retStops }}</div>
                                             <div class="flight-dot"></div>
                                         </div>
-                                        <p class="text-gray-400" style="font-size:9px">4h 28m</p>
+                                        <p class="text-gray-400" style="font-size:9px">{{ $retDuration }}</p>
                                     </div>
                                     <div class="text-right flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">23:58</p>
-                                        <p class="text-gray-500" style="font-size:9px">Düsseldorf</p>
-                                        <p class="text-gray-400 hidden sm:block" style="font-size:9px">Düsseldorf International Airport (DUS)</p>
+                                        <p class="font-bold text-gray-800 text-sm">{{ $retArr }}</p>
+                                        <p class="text-gray-500" style="font-size:9px">{{ $retLast['arrival']['iataCode'] }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 {{-- ── Contact Details ──────────────────────────────────────── --}}
@@ -184,7 +198,15 @@
                             <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold" style="font-size:10px">{{ $index + 1 }}</span>
                             Passenger {{ $index + 1 }}
                         </h2>
-                        <span class="text-gray-400" style="font-size:10px">Adult (over 12 years)</span>
+                        @php
+                            $typeLabel = match($passenger['type']) {
+                                'ADULT' => 'Adult (over 12 years)',
+                                'CHILD' => 'Child (2-11 years)',
+                                'HELD_INFANT' => 'Infant (under 2 years)',
+                                default => 'Passenger'
+                            };
+                        @endphp
+                        <span class="text-gray-400" style="font-size:10px">{{ $typeLabel }}</span>
                     </div>
 
                     {{-- Info notice --}}

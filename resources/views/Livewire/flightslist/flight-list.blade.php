@@ -441,7 +441,73 @@
 {{-- ══════════════════════════════════════════════════════════
      MAIN CONTENT
 ══════════════════════════════════════════════════════════ --}}
-<div class="max-w-7xl mx-auto px-4 py-4 flex gap-4">
+<div class="max-w-7xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6">
+
+    {{-- ─── SIDEBAR FILTERS ────────────────────────────────── --}}
+    <aside class="w-full lg:w-64 flex-shrink-0 space-y-6">
+        
+        {{-- Price Range --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <h3 class="text-sm font-bold text-gray-900 mb-4">Price Range</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span>${{ number_format($priceMin) }}</span>
+                    <span>${{ number_format($priceMax) }}</span>
+                </div>
+                <input type="range" wire:model.live.debounce.250ms="priceMax" min="100" max="500000" step="500"
+                       class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">$</span>
+                        <input type="number" wire:model.live.debounce.500ms="priceMin" 
+                               class="w-full pl-6 pr-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">$</span>
+                        <input type="number" wire:model.live.debounce.500ms="priceMax"
+                               class="w-full pl-6 pr-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Stops --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <h3 class="text-sm font-bold text-gray-900 mb-4">Stops</h3>
+            <div class="space-y-3">
+                <label class="flex items-center group cursor-pointer">
+                    <input type="checkbox" wire:model.live="stops" value="any" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">Any stops</span>
+                </label>
+                <label class="flex items-center group cursor-pointer">
+                    <input type="checkbox" wire:model.live="stops" value="direct" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">Non-stop</span>
+                </label>
+                <label class="flex items-center group cursor-pointer">
+                    <input type="checkbox" wire:model.live="stops" value="1stop" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">1 Stop</span>
+                </label>
+            </div>
+        </div>
+
+        {{-- Airlines --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <h3 class="text-sm font-bold text-gray-900 mb-4">Airlines</h3>
+            <div class="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                <label class="flex items-center group cursor-pointer">
+                    <input type="checkbox" wire:model.live="airlines" value="any" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">All Airlines</span>
+                </label>
+                @foreach($this->availableAirlines as $airline)
+                    <label class="flex items-center group cursor-pointer">
+                        <input type="checkbox" wire:model.live="airlines" value="{{ strtolower($airline) }}" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">{{ $airline }}</span>
+                    </label>
+                @endforeach
+            </div>
+        </div>
+
+    </aside>
 
     {{-- ─── MAIN RESULTS ────────────────────────────────────── --}}
     <main class="flex-1 min-w-0">
@@ -465,13 +531,12 @@
             {{-- Sort tabs --}}
             <div class="flex items-center border-b border-gray-100 px-2 gap-1 overflow-x-auto">
                 @foreach([
-                    'cheap'    => 'Cheap Flights',
-                    'recommend'=> 'Recommended',
-                    'fastest'  => 'Fastest Route',
-                    'dynamic'  => 'Dynamic',
-                    'depart'   => 'Sectors Departure',
-                    'failure'  => 'Failure Detail',
-                    'daily'    => 'Daily / Stay',
+                    'best'       => 'Best Value',
+                    'cheap'      => 'Cheapest',
+                    'fastest'    => 'Fastest',
+                    'early'      => 'Early Depart',
+                    'late'       => 'Late Depart',
+                    'refundable' => 'Refundable',
                 ] as $key => $label)
                     <button wire:click="setSort('{{ $key }}')"
                             class="tab px-3 py-2.5 text-xs text-gray-500 hover:text-gray-700 whitespace-nowrap {{ $sortTab === $key ? 'active' : '' }}">
@@ -497,9 +562,13 @@
                             <p class="text-xs {{ $selectedDate === $day['date'] ? 'text-blue-200' : 'text-gray-400' }}">
                                 {{ $day['label'] }}
                             </p>
-                            <p class="text-xs font-semibold {{ $selectedDate === $day['date'] ? 'text-white' : ($day['price'] <= 175 ? 'text-green-600' : 'text-gray-700') }}">
-                                ${{ number_format($day['price'], 2) }}
-                            </p>
+                            @if($day['price'])
+                                <p class="text-xs font-semibold {{ $selectedDate === $day['date'] ? 'text-white' : ($day['price'] <= current($dateRail)['price'] ? 'text-green-600' : 'text-gray-700') }}">
+                                    ${{ number_format($day['price'], 2) }}
+                                </p>
+                            @else
+                                <p class="text-xs font-semibold {{ $selectedDate === $day['date'] ? 'text-white/50' : 'text-gray-400' }}">-</p>
+                            @endif
                         </button>
                     @endforeach
                 </div>
@@ -511,14 +580,20 @@
             </div>
 
             {{-- Flight list --}}
-            <div class="divide-y divide-gray-100" wire:loading.class="opacity-50">
+            <div class="divide-y divide-gray-100" wire:loading.class="opacity-50" wire:target="search,selectDate,setSort">
 
                 @forelse($this->flights as $flight)
                     <div class="flight-card px-4 py-3 {{ $flight['bgClass'] }}" x-data="{ open: false, cabin: 'economy' }">
                         <div class="flex items-center gap-4 w-full">
                             {{-- Airline logo --}}
-                            <div class="w-8 flex-shrink-0">
-                                <div class="airline-logo {{ $flight['airlineColor'] }}">{{ $flight['airline'] }}</div>
+                            <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center relative">
+                                <img src="https://pics.avs.io/64/64/{{ $flight['airlineCode'] }}.png" 
+                                     alt="{{ $flight['airline'] }}"
+                                     class="w-full h-full object-contain"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                                <div class="airline-logo {{ $flight['airlineColor'] }} hidden w-full h-full text-[10px] items-center justify-center rounded-lg text-white">
+                                    {{ substr($flight['airline'], 0, 2) }}
+                                </div>
                             </div>
 
                             {{-- Route info --}}
@@ -563,8 +638,8 @@
                                         @endif
                                     </div>
                                     <button type="button"
-                                            class="mt-0.5 w-7 h-7 rounded-full border border-gray-200 bg-white text-red-600 hover:bg-red-50 flex items-center justify-center"
-                                            @click="open = !open"
+                                            class="mt-0.5 w-7 h-7 rounded-full border border-gray-200 bg-white text-red-600 hover:bg-red-50 flex items-center justify-center transition-all"
+                                            @click="open = !open; if(open) $wire.loadFareDetails('{{ $flight['id'] }}')"
                                             :aria-expanded="open.toString()">
                                         <svg class="w-4 h-4 transition-transform duration-200"
                                              :class="open ? 'rotate-180' : ''"

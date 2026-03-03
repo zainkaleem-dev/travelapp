@@ -4,14 +4,19 @@ namespace App\Livewire\Flightsearch;
 
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use App\Services\AmadeusService;
+use Exception;
 
 class FlightSearch extends Component
 {
+    // Search results from Amadeus
+    public array $airportSearchResults = [];
+
     // ── Trip type tab ──────────────────────────────────────────────────
     public string $tripType = 'return'; // return | oneway | multi
 
     // ── Return fields ──────────────────────────────────────────────────
-    public string $returnDep = 'Islamabad (ISB)';
+    public string $returnDep = '';
     public string $returnArr = '';
     public string $returnDepDate = '';
     public string $returnRetDate = '';
@@ -29,7 +34,7 @@ class FlightSearch extends Component
     public bool $showReturnArrAirports = false;
 
     // ── One-way fields ─────────────────────────────────────────────────
-    public string $onewayDep = 'Islamabad (ISB)';
+    public string $onewayDep = '';
     public string $onewayArr = '';
     public string $onewayDepDate = '';
     public string $onewayPax = '1 Adult';
@@ -45,7 +50,7 @@ class FlightSearch extends Component
 
     // ── Multi-city fields ──────────────────────────────────────────────
     public array $multiFlights = [
-        ['dep' => 'Islamabad (ISB)', 'arr' => '', 'date' => ''],
+        ['dep' => '', 'arr' => '', 'date' => ''],
         ['dep' => '', 'arr' => '', 'date' => ''],
     ];
     public string $multiPax = '1 Adult';
@@ -132,9 +137,105 @@ class FlightSearch extends Component
         $this->validate($rules);
 
         // Simulate search delay — in a real app dispatch a job or redirect
-        $this->redirectRoute('flights.list');
+        if ($this->tripType === 'return') {
+            preg_match('/\(([A-Z]{3})\)/', $this->returnDep, $depMatches);
+            preg_match('/\(([A-Z]{3})\)/', $this->returnArr, $arrMatches);
 
-        // Reset searching after 2 seconds via JS
+            $originIata = $depMatches[1] ?? '';
+            $destIata = $arrMatches[1] ?? '';
+
+            // Clean class string for Amadeus 
+            // e.g. "Economy Class", "Premium Economy", "Business Class", "First Class"
+            $classMap = [
+                'Economy Class' => 'ECONOMY',
+                'Premium Economy' => 'PREMIUM_ECONOMY',
+                'Business Class' => 'BUSINESS',
+                'First Class' => 'FIRST',
+            ];
+            $travelClassEnum = $classMap[$this->returnClass] ?? 'ECONOMY';
+
+            $this->redirectRoute('flights.list', [
+                'origin' => $this->returnDep,
+                'destination' => $this->returnArr,
+                'originIata' => $originIata,
+                'destIata' => $destIata,
+                'departDate' => $this->returnDepDate,
+                'returnDate' => $this->returnRetDate,
+                'adultCount' => $this->returnAdults,
+                'childCount' => $this->returnChildren,
+                'infantCount' => $this->returnInfants,
+                'travelClass' => $this->returnClass,
+                'travelClassEnum' => $travelClassEnum,
+            ]);
+            return;
+        }
+        if ($this->tripType === 'oneway') {
+            preg_match('/\(([A-Z]{3})\)/', $this->onewayDep, $depMatches);
+            preg_match('/\(([A-Z]{3})\)/', $this->onewayArr, $arrMatches);
+
+            $originIata = $depMatches[1] ?? '';
+            $destIata = $arrMatches[1] ?? '';
+
+            $classMap = [
+                'Economy Class' => 'ECONOMY',
+                'Premium Economy' => 'PREMIUM_ECONOMY',
+                'Business Class' => 'BUSINESS',
+                'First Class' => 'FIRST',
+            ];
+            $travelClassEnum = $classMap[$this->onewayClass] ?? 'ECONOMY';
+
+            $this->redirectRoute('flights.list', [
+                'origin' => $this->onewayDep,
+                'destination' => $this->onewayArr,
+                'originIata' => $originIata,
+                'destIata' => $destIata,
+                'departDate' => $this->onewayDepDate,
+                'returnDate' => '',
+                'adultCount' => $this->onewayAdults,
+                'childCount' => $this->onewayChildren,
+                'infantCount' => $this->onewayInfants,
+                'travelClass' => $this->onewayClass,
+                'travelClassEnum' => $travelClassEnum,
+            ]);
+            return;
+        }
+
+        if ($this->tripType === 'multi') {
+            $segments = [];
+            foreach ($this->multiFlights as $flight) {
+                preg_match('/\(([A-Z]{3})\)/', $flight['dep'], $depMatches);
+                preg_match('/\(([A-Z]{3})\)/', $flight['arr'], $arrMatches);
+
+                $segments[] = [
+                    'originIata' => $depMatches[1] ?? '',
+                    'destIata' => $arrMatches[1] ?? '',
+                    'date' => $flight['date'],
+                    'origin' => $flight['dep'],
+                    'destination' => $flight['arr'],
+                ];
+            }
+
+            $classMap = [
+                'Economy Class' => 'ECONOMY',
+                'Premium Economy' => 'PREMIUM_ECONOMY',
+                'Business Class' => 'BUSINESS',
+                'First Class' => 'FIRST',
+            ];
+            $travelClassEnum = $classMap[$this->multiClass] ?? 'ECONOMY';
+
+            $this->redirectRoute('flights.list', [
+                'isMulti' => true,
+                'segments' => $segments,
+                'adultCount' => $this->multiAdults,
+                'childCount' => $this->multiChildren,
+                'infantCount' => $this->multiInfants,
+                'travelClass' => $this->multiClass,
+                'travelClassEnum' => $travelClassEnum,
+            ]);
+            return;
+        }
+
+        // Fallback or unexpected state
         return;
     }
 
@@ -143,45 +244,61 @@ class FlightSearch extends Component
         $this->searching = false;
     }
 
-    public function getAirportsProperty(): array
-    {
-        // Minimal static dataset for UI; replace with DB/API later.
-        return [
-            ['city' => 'Islamabad', 'country' => 'Pakistan', 'airport' => 'Islamabad International Airport', 'code' => 'ISB'],
-            ['city' => 'Lahore', 'country' => 'Pakistan', 'airport' => 'Allama Iqbal International Airport', 'code' => 'LHE'],
-            ['city' => 'Karachi', 'country' => 'Pakistan', 'airport' => 'Jinnah International Airport', 'code' => 'KHI'],
-            ['city' => 'Dubai', 'country' => 'United Arab Emirates', 'airport' => 'Dubai International Airport', 'code' => 'DXB'],
-            ['city' => 'Abu Dhabi', 'country' => 'United Arab Emirates', 'airport' => 'Zayed International Airport', 'code' => 'AUH'],
-            ['city' => 'Doha', 'country' => 'Qatar', 'airport' => 'Hamad International Airport', 'code' => 'DOH'],
-            ['city' => 'Istanbul', 'country' => 'Türkiye', 'airport' => 'Istanbul Airport', 'code' => 'IST'],
-            ['city' => 'London', 'country' => 'United Kingdom', 'airport' => 'Heathrow Airport', 'code' => 'LHR'],
-            ['city' => 'New York', 'country' => 'United States', 'airport' => 'John F. Kennedy International Airport', 'code' => 'JFK'],
-        ];
-    }
-
-    public function filteredAirports(string $query): array
+    public function fetchAirports(string $query): void
     {
         $q = trim(mb_strtolower($query));
-        if ($q === '') {
-            return array_slice($this->airports, 0, 8);
+        if ($q === '' || strlen($q) < 2) {
+            $this->airportSearchResults = [];
+            return;
         }
 
-        $matches = array_values(array_filter($this->airports, function (array $a) use ($q) {
-            $hay = mb_strtolower($a['city'] . ' ' . $a['country'] . ' ' . $a['airport'] . ' ' . $a['code']);
-            return str_contains($hay, $q);
-        }));
+        try {
+            $service = app(AmadeusService::class);
+            $response = $service->searchLocations($q);
 
-        return array_slice($matches, 0, 8);
+            if (isset($response['data']) && is_array($response['data'])) {
+                // Map Amadeus response to a simple array for the dropdown
+                $this->airportSearchResults = array_map(function ($location) {
+                    $cityName = $location['address']['cityName'] ?? '';
+                    $countryName = $location['address']['countryName'] ?? '';
+                    $airportName = $location['name'] ?? '';
+                    $iataCode = $location['iataCode'] ?? '';
+
+                    $display = "{$cityName} ({$iataCode})";
+                    if ($airportName && stripos($airportName, $cityName) === false) {
+                        $display .= " - {$airportName}";
+                    }
+                    if ($countryName) {
+                        $display .= ", {$countryName}";
+                    }
+
+                    return [
+                        'code' => $iataCode,
+                        'city' => $cityName,
+                        'country' => $countryName,
+                        'airport' => $airportName,
+                        'display' => $display,
+                    ];
+                }, array_slice($response['data'], 0, 8)); // Limit to top 8 results
+            } else {
+                $this->airportSearchResults = [];
+            }
+        } catch (Exception $e) {
+            // Silently fail or log the error
+            $this->airportSearchResults = [];
+        }
     }
 
     public function updatedReturnDep(): void
     {
         $this->showReturnDepAirports = true;
+        $this->fetchAirports($this->returnDep);
     }
 
     public function updatedReturnArr(): void
     {
         $this->showReturnArrAirports = true;
+        $this->fetchAirports($this->returnArr);
     }
 
     public function selectReturnDepAirport(string $display): void
@@ -207,11 +324,13 @@ class FlightSearch extends Component
     public function updatedOnewayDep(): void
     {
         $this->showOnewayDepAirports = true;
+        $this->fetchAirports($this->onewayDep);
     }
 
     public function updatedOnewayArr(): void
     {
         $this->showOnewayArrAirports = true;
+        $this->fetchAirports($this->onewayArr);
     }
 
     public function selectOnewayDepAirport(string $display): void
@@ -242,6 +361,28 @@ class FlightSearch extends Component
         }
         $this->multiFlights[$index]['arr'] = $display;
         $this->showMultiArrAirports[$index] = false;
+    }
+
+    public function updated($propertyName): void
+    {
+        // Intercept updates to the multiFlights array (e.g. "multiFlights.0.dep")
+        if (str_starts_with($propertyName, 'multiFlights.')) {
+            $parts = explode('.', $propertyName);
+            if (count($parts) === 3) {
+                // $parts[0] = 'multiFlights', $parts[1] = index, $parts[2] = 'dep' or 'arr'
+                $index = $parts[1];
+                $field = $parts[2];
+                $value = $this->multiFlights[$index][$field] ?? '';
+
+                if ($field === 'dep') {
+                    $this->showMultiDepAirports[$index] = true;
+                } else if ($field === 'arr') {
+                    $this->showMultiArrAirports[$index] = true;
+                }
+
+                $this->fetchAirports($value);
+            }
+        }
     }
 
     public function paxSummary(int $adults, int $children, int $infants): string
