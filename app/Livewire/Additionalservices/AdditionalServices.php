@@ -9,14 +9,15 @@ use Livewire\Attributes\Rule;
 class AdditionalServices extends Component
 {
 
-    // ── Travel Insurance ─────────────────────────────────────────────────
-    public string $insuranceOption = 'yes';   // 'yes' | 'no'
-    public float $insurancePrice = 77.00;
-
     // ── Extra Baggage ────────────────────────────────────────────────────
     public bool $baggageEnabled = false;
-    public int $baggageQty = 1;
-    public float $baggagePrice = 59.00;   // price per unit
+    public int $baggageQty = 0;
+    public float $baggagePrice = 59.00;   // price per unit placeholder for extra bags if available
+
+    // ── Dynamic Services ──────────────────────────────────────────────────
+    public array $includedBaggage = [];
+    public array $availableAncillaries = [];
+    public array $selectedAncillaries = [];
 
     // ── Flight Data ───────────────────────────────────────────────────────
     public array $selectedFlight = [];
@@ -36,6 +37,11 @@ class AdditionalServices extends Component
         $this->searchParams = session('search_params', []);
         $this->availableFares = session('selected_fare_tiers', []);
 
+        \Illuminate\Support\Facades\Log::info('RAW_AMADEUS_OFFER_INSPECTION', [
+            'raw_offer' => $this->selectedFlight['rawOffer'] ?? null,
+            'fares' => $this->availableFares
+        ]);
+
         // Require Flight session to exist
         if (empty($this->selectedFlight)) {
             $this->redirect(route('flights.search'), navigate: true);
@@ -49,10 +55,13 @@ class AdditionalServices extends Component
             $this->passengerCount = 1;
         }
 
-        // Load the base price (If we haven't visited PassengerDetails yet, we create the initial summary)
-        if (!session()->has('booking_summary')) {
+        // Initial summary load
+        if (session()->has('booking_summary')) {
+            $this->summaryItems = session('booking_summary', []);
+            $this->totalBasePrice = (float) session('booking_total', 0.00);
+        } else {
             $totalPrice = (float) ($this->selectedFlight['price'] ?? 0);
-            $taxGuess = $totalPrice * 0.15; // Tax placeholder UI
+            $taxGuess = $totalPrice * 0.15;
             $basePrice = $totalPrice - $taxGuess;
 
             $this->summaryItems = [
@@ -60,37 +69,85 @@ class AdditionalServices extends Component
                 ['label' => 'Taxes and Fees', 'removable' => false, 'amount' => round($taxGuess, 2)],
             ];
             $this->totalBasePrice = $totalPrice;
-        } else {
-            $this->summaryItems = session('booking_summary', []);
-            $this->totalBasePrice = session('booking_total', 0.00);
         }
 
-        // Add the Baggage & Insurance placeholders to the summary if they don't exist yet
+        // Extract Dynamic Data
+        $this->extractDynamicData();
+
+        // Sync summary items
         $this->syncSummary();
+    }
+
+    private function extractDynamicData(): void
+    {
+        $rawOffer = $this->selectedFlight['rawOffer'] ?? [];
+        if (empty($rawOffer))
+            return;
+
+        // 1. Extract Included Baggage (Using first traveler/segment as reference)
+        $travelerPricings = $rawOffer['travelerPricings'] ?? [];
+        if (!empty($travelerPricings)) {
+            $fareDetails = $travelerPricings[0]['fareDetailsBySegment'] ?? [];
+            foreach ($fareDetails as $detail) {
+                $baggage = $detail['includedCheckedBags'] ?? [];
+                if (!empty($baggage)) {
+                    $this->includedBaggage[] = [
+                        'segmentId' => $detail['segmentId'] ?? 'N/A',
+                        'quantity' => $baggage['quantity'] ?? 0,
+                        'weight' => $baggage['weight'] ?? null,
+                        'weightUnit' => $baggage['weightUnit'] ?? null,
+                    ];
+                }
+
+                // 2. Extract Amenities (if provided by Amadeus in the offer)
+                $amenities = $detail['amenities'] ?? [];
+                foreach ($amenities as $amenity) {
+                    $this->availableAncillaries[] = [
+                        'code' => $amenity['code'] ?? 'UNK',
+                        'description' => $amenity['description'] ?? 'Unnamed Service',
+                        'isChargeable' => $amenity['isChargeable'] ?? false,
+                        'amenityType' => $amenity['amenityType'] ?? 'N/A',
+                    ];
+                }
+            }
+        }
+
+        // De-duplicate ancillaries
+        $uniqueAncillaries = [];
+        foreach ($this->availableAncillaries as $anc) {
+            $uniqueAncillaries[$anc['code']] = $anc;
+        }
+        $this->availableAncillaries = array_values($uniqueAncillaries);
     }
 
     private function syncSummary(): void
     {
-        // We will append/update the Additional options onto the existing summary
-        $baseItems = array_filter($this->summaryItems, function ($item) {
-            return !in_array($item['label'], ['Travel Insurance', 'Extra Baggage']);
+        // 1. Remove optional items that we manage dynamically
+        $this->summaryItems = array_filter($this->summaryItems, function ($item) {
+            return !in_array($item['label'], ['Travel Insurance', 'Extra Baggage'])
+                && strpos($item['label'], 'Ancillary:') === false;
         });
 
-        $this->summaryItems = $baseItems;
-
-        if ($this->insuranceOption === 'yes') {
-            $this->summaryItems[] = [
-                'label' => 'Travel Insurance',
-                'removable' => true,
-                'amount' => $this->insurancePrice
-            ];
-        }
-
+        // 2. Add Extra Baggage if enabled
         if ($this->baggageEnabled && $this->baggageQty > 0) {
             $this->summaryItems[] = [
                 'label' => 'Extra Baggage',
                 'removable' => true,
                 'amount' => ($this->baggagePrice * $this->baggageQty)
+            ];
+        }
+
+        // 3. Add Selected Ancillaries (Lounges, etc.)
+        // Chargeable ancillaries (price = null) are listed as $0 with a label noting
+        // the final price is confirmed at checkout. Free ones show $0.
+        foreach ($this->selectedAncillaries as $code => $anc) {
+            $label = ucwords(strtolower($anc['description']));
+            $isChargeable = $anc['isChargeable'] ?? false;
+            $this->summaryItems[] = [
+                'label' => $label . ($isChargeable ? ' (price at checkout)' : ''),
+                'removable' => true,
+                'amount' => 0.00, // Chargeable ancillaries priced at checkout via Amadeus
+                'code' => $code
             ];
         }
     }
@@ -102,33 +159,20 @@ class AdditionalServices extends Component
         return collect($this->summaryItems)->sum('amount');
     }
 
-    // ── Actions ───────────────────────────────────────────────────────────────
-
-    public function setInsurance(string $value): void
+    public function toggleAncillary(string $code): void
     {
-        $this->insuranceOption = $value;
-        $this->syncSummary();
-    }
-
-    public function toggleBaggage(): void
-    {
-        $this->baggageEnabled = !$this->baggageEnabled;
-        if (!$this->baggageEnabled) {
-            $this->baggageQty = 1;
-        }
-        $this->syncSummary();
-    }
-
-    public function incrementBaggage(): void
-    {
-        $this->baggageQty++;
-        $this->syncSummary();
-    }
-
-    public function decrementBaggage(): void
-    {
-        if ($this->baggageQty > 0) {
-            $this->baggageQty--;
+        if (isset($this->selectedAncillaries[$code])) {
+            unset($this->selectedAncillaries[$code]);
+        } else {
+            foreach ($this->availableAncillaries as $anc) {
+                if ($anc['code'] === $code) {
+                    // Only assign a price for free amenities; chargeable ones
+                    // require a separate pricing call (price not in the base offer).
+                    $price = $anc['isChargeable'] ? null : 0.00;
+                    $this->selectedAncillaries[$code] = array_merge($anc, ['price' => $price]);
+                    break;
+                }
+            }
         }
         $this->syncSummary();
     }
@@ -136,12 +180,16 @@ class AdditionalServices extends Component
     public function removeItem(int $index): void
     {
         if (isset($this->summaryItems[$index])) {
-            $label = $this->summaryItems[$index]['label'];
+            $item = $this->summaryItems[$index];
+            $label = $item['label'];
 
-            if ($label === 'Travel Insurance') {
-                $this->insuranceOption = 'no';
-            } elseif ($label === 'Extra Baggage') {
+            if ($label === 'Extra Baggage') {
                 $this->baggageEnabled = false;
+                $this->baggageQty = 0;
+            } elseif (strpos($label, 'Ancillary:') === 0) {
+                $code = $item['code'] ?? null;
+                if ($code)
+                    unset($this->selectedAncillaries[$code]);
             }
 
             $this->syncSummary();

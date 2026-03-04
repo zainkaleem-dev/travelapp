@@ -9,18 +9,30 @@ File: resources/views/livewire/choose-seat.blade.php
         <span>🏷️ Up to 20% discount with early booking! Sign up now and benefit from the offer.</span>
         <div class="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 items-center gap-4 text-white/80">
             <button class="flex items-center gap-1 hover:text-white">
-                <x-icon-phone class="w-3 h-3" /> App
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg> App
             </button>
             <button class="flex items-center gap-1 hover:text-white">
-                <x-icon-help class="w-3 h-3" />
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 Support
-                <x-icon-chevron-down class="w-2 h-2 ml-0.5" />
+                <svg class="w-2 h-2 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
             </button>
             <button class="flex items-center gap-1 hover:text-white">
-                English <x-icon-chevron-down class="w-2 h-2 ml-0.5" />
+                English <svg class="w-2 h-2 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
             </button>
             <button class="flex items-center gap-1 hover:text-white">
-                USD <x-icon-chevron-down class="w-2 h-2 ml-0.5" />
+                USD <svg class="w-2 h-2 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
             </button>
         </div>
     </div>
@@ -29,16 +41,15 @@ File: resources/views/livewire/choose-seat.blade.php
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-12 gap-3">
 
-            {{-- Navigation buttons --}}
             <div class="flex items-center gap-2 flex-shrink-0">
-                <button
+                <button wire:click="back"
                     class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors text-xs">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                     Back
                 </button>
-                <button
+                <button wire:click="continue"
                     class="flex items-center gap-1 px-3 py-1.5 rounded-full border border-indigo-200 text-indigo-600 font-medium hover:bg-indigo-50 transition-colors text-xs">
                     Next
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -297,8 +308,13 @@ File: resources/views/livewire/choose-seat.blade.php
                                         {{-- Left group A B C --}}
                                         <div class="flex gap-1.5">
                                             @foreach(['A', 'B', 'C'] as $col)
-                                                @php $seat = $row['seats'][$col]; @endphp
-                                                <x-seat :seat="$seat" wire:click="selectSeat('{{ $seat['id'] }}')" />
+                                                @if(isset($row['seats'][$col]))
+                                                    @php $seat = $row['seats'][$col]; @endphp
+                                                    <x-seat :seat="$seat"
+                                                        wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})" />
+                                                @else
+                                                    <div class="w-[22px]"></div>
+                                                @endif
                                             @endforeach
                                         </div>
 
@@ -308,8 +324,13 @@ File: resources/views/livewire/choose-seat.blade.php
                                         {{-- Right group D E F --}}
                                         <div class="flex gap-1.5">
                                             @foreach(['D', 'E', 'F'] as $col)
-                                                @php $seat = $row['seats'][$col]; @endphp
-                                                <x-seat :seat="$seat" wire:click="selectSeat('{{ $seat['id'] }}')" />
+                                                @if(isset($row['seats'][$col]))
+                                                    @php $seat = $row['seats'][$col]; @endphp
+                                                    <x-seat :seat="$seat"
+                                                        wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})" />
+                                                @else
+                                                    <div class="w-[22px]"></div>
+                                                @endif
                                             @endforeach
                                         </div>
 
@@ -331,75 +352,83 @@ File: resources/views/livewire/choose-seat.blade.php
             </div>
 
             {{-- ── RIGHT: Summary ───────────────────────────────────────── --}}
-            <div class="w-full lg:w-64 flex-shrink-0">
-                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden sticky top-16">
+            <div class="w-full lg:w-80 flex-shrink-0">
+                <div
+                    class="bg-white rounded-[1rem] border border-gray-100 shadow-2xl shadow-gray-100/50 overflow-hidden sticky top-16">
 
-                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                        <h2 class="font-semibold text-gray-800 text-sm">Summary</h2>
-                        <span class="text-gray-500" style="font-size:10px">2 Passenger</span>
+                    <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+                        <h2 class="font-bold text-gray-900 text-xl">Summary</h2>
+                        @php
+                            $counts = session('search_params')['passengers'] ?? ['adults' => 1];
+                            $passCount = ($counts['adults'] ?? 0) + ($counts['children'] ?? 0) + ($counts['infants'] ?? 0);
+                        @endphp
+                        <span class="text-gray-400 font-medium" style="font-size:11px">{{ $passCount ?: 1 }}
+                            Passenger{{ $passCount > 1 ? 's' : '' }}</span>
                     </div>
 
-                    <div class="px-4 py-3 space-y-2.5 text-xs">
-                        <div class="flex items-start justify-between gap-2">
-                            <span class="text-gray-500" style="font-size:10px">Outbound only Flight ↗</span>
-                            <span class="font-semibold text-gray-800 flex-shrink-0">$179.00</span>
-                        </div>
-                        <div class="flex items-start justify-between gap-2">
-                            <span class="text-gray-500" style="font-size:10px">Return Flight All</span>
-                            <span class="font-semibold text-gray-800 flex-shrink-0">$1,037.00</span>
-                        </div>
-                        <div class="flex items-start justify-between gap-2">
-                            <div>
-                                <span class="text-gray-500" style="font-size:10px">Extra Baggage 13kg</span>
-                                <button class="block text-indigo-500 hover:underline mt-0.5"
-                                    style="font-size:9px">Remove</button>
+                    <div class="px-6 py-5 space-y-4">
+                        @php
+                            $summaryItems = session('booking_summary', []);
+                            $total = (float) session('booking_total', 0);
+                        @endphp
+
+                        @foreach($summaryItems as $item)
+                            <div class="flex items-start justify-between gap-4">
+                                <span class="text-gray-400 font-medium leading-tight"
+                                    style="font-size:11px">{{ $item['label'] }}</span>
+                                <span class="font-bold text-gray-900 flex-shrink-0"
+                                    style="font-size:13px">${{ number_format($item['amount'], 2) }}</span>
                             </div>
-                            <span class="font-semibold text-gray-800 flex-shrink-0">$17.00</span>
-                        </div>
-                        <div class="flex items-start justify-between gap-2">
-                            <div>
-                                <span class="text-gray-500" style="font-size:10px">Travel Insurance</span>
-                                <button class="block text-indigo-500 hover:underline mt-0.5"
-                                    style="font-size:9px">Remove</button>
+                        @endforeach
+
+                        {{-- Current selected seat info preview --}}
+                        @if($selectedSeat && $selectedSeatPrice > 0)
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex flex-col">
+                                    <span class="text-indigo-600 font-bold leading-tight" style="font-size:11px">Seat:
+                                        {{ $selectedSeat }}</span>
+                                    <span class="text-gray-400" style="font-size:9px">Current Selection</span>
+                                </div>
+                                <span class="font-bold text-indigo-700 flex-shrink-0"
+                                    style="font-size:13px">${{ number_format($selectedSeatPrice, 2) }}</span>
                             </div>
-                            <span class="font-semibold text-gray-800 flex-shrink-0">$17.00</span>
-                        </div>
-                        <div class="flex items-start justify-between gap-2 pb-2.5 border-b border-gray-100">
-                            <div>
-                                <span class="text-gray-500" style="font-size:10px">Seat Taxes</span>
-                                <button class="block text-indigo-500 hover:underline mt-0.5"
-                                    style="font-size:9px">Remove</button>
-                            </div>
-                            <span class="font-semibold text-gray-800 flex-shrink-0">$31.00</span>
-                        </div>
-                        <div class="flex items-center justify-between pt-1">
-                            <span class="font-bold text-gray-800">Total</span>
-                            <span class="font-bold text-gray-900 text-lg">$537.00</span>
+                        @endif
+
+                        <div class="pt-4 mt-2 border-t border-gray-100 flex items-center justify-between">
+                            <span class="text-gray-900 font-bold text-base">Total</span>
+                            <span
+                                class="text-gray-900 font-bold text-2xl">${{ number_format($total + ($selectedSeat ? $selectedSeatPrice : 0), 2) }}</span>
                         </div>
                     </div>
 
-                    <div class="px-4 pb-4 flex gap-2">
-                        {{-- Back Button --}}
+                    <div class="px-6 pb-6 flex gap-3">
                         <button type="button" wire:click="back"
-                            class="flex-1 py-2 sm:py-3 border-2 border-indigo-200 text-indigo-700 font-semibold rounded-xl hover:bg-indigo-50 transition-colors flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            class="flex-1 py-3 border border-gray-200 text-indigo-600 font-bold rounded-2xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-xs">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M15 19l-7-7 7-7" />
                             </svg>
                             Back
                         </button>
 
-                        {{-- Continue Button --}}
-                        <button type="button" wire:click="continue"
-                            class="flex-1 py-2 sm:py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2">
-                            <span wire:loading.remove wire:target="continue">Continue to Passenger Details</span>
-                            <span wire:loading wire:target="continue" class="flex items-center gap-1">Saving...</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
+                        <button type="button" wire:click="continue" wire:loading.attr="disabled"
+                            wire:loading.class="opacity-60 cursor-not-allowed"
+                            class="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 text-xs">
+                            <span wire:loading.remove wire:target="continue" class="flex items-center gap-2">
+                                Continue <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </span>
+                            <span wire:loading wire:target="continue" class="flex items-center gap-2">
+                                <svg class="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4" />
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                </svg>
+                                Saving...
+                            </span>
                         </button>
                     </div>
                 </div>
-
             </div>

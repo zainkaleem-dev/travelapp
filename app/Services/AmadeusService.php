@@ -301,6 +301,37 @@ class AmadeusService
         return json_decode($response->getBody(), true);
     }
 
+    public function getFlightSeatmap(array $flightOffer)
+    {
+        $token = $this->getToken();
+
+        if (!$token) {
+            throw new \Exception('Unable to get access token');
+        }
+
+        $url = $this->baseUrl . '/v1/shopping/seatmaps';
+
+        $body = [
+            'data' => [$flightOffer]
+        ];
+
+        try {
+            $response = $this->client->post($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $body,
+            ]);
+
+            return json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('SeatMap API failed: ' . $e->getMessage());
+            return ['data' => []];
+        }
+    }
+
     public function predictFlightChoice(array $payload)
     {
         $token = $this->getToken();
