@@ -7,212 +7,7 @@
             {{-- ── LEFT: Main Form ─────────────────────────────────────────── --}}
             <div class="flex-1 min-w-0 space-y-3">
 
-                {{-- Flight Details --}}
-                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden" x-data="{ fareOpen: false, cabin: 'economy' }">
-                    <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-                        <h2 class="font-semibold text-gray-800 text-sm">Flight Details</h2>
-                        <button type="button" @click="fareOpen = !fareOpen" class="text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-1 text-xs font-medium">
-                            <span x-text="fareOpen ? 'Hide Fares' : 'Show Fares'"></span>
-                            <svg class="w-4 h-4 transition-transform duration-200" :class="fareOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </button>
-                    </div>
 
-                    {{-- Outbound --}}
-                    @if(isset($selectedFlight['rawOffer']['itineraries'][0]))
-                    <div class="px-4 py-3">
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white font-semibold mb-3" style="background:#2ab4c0; font-size:10px">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-                            Outbound Flight
-                        </div>
-                        <div class="flex items-center gap-3 sm:gap-4">
-                            <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold flex-shrink-0 relative overflow-hidden">
-                                <img src="https://pics.avs.io/64/64/{{ $selectedFlight['airlineCode'] ?? '??' }}.png" class="w-full h-full object-contain">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <div class="flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">{{ $selectedFlight['dep'] ?? '00:00' }}</p>
-                                        <p class="text-gray-500" style="font-size:9px">{{ $selectedFlight['depAirport'] ?? '---' }}</p>
-                                    </div>
-                                    <div class="flex-1 flex flex-col items-center gap-0.5 min-w-0">
-                                        <div class="relative w-full flight-line flex items-center justify-between">
-                                            <div class="flight-dot"></div>
-                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">{{ $selectedFlight['stops'] ?? 'Direct' }}</div>
-                                            <div class="flight-dot"></div>
-                                        </div>
-                                        <p class="text-gray-400" style="font-size:9px">{{ $selectedFlight['duration'] ?? '--' }}</p>
-                                    </div>
-                                    <div class="text-right flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">{{ $selectedFlight['arr'] ?? '00:00' }}</p>
-                                        <p class="text-gray-500" style="font-size:9px">{{ $selectedFlight['arrAirport'] ?? '---' }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
-                    @if(isset($selectedFlight['rawOffer']['itineraries'][1]))
-                    <div class="mx-4 border-t border-dashed border-gray-200"></div>
-
-                    {{-- Return --}}
-                    <div class="px-4 py-3">
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white font-semibold mb-3" style="background:#6366f1; font-size:10px">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-                            Return Flight
-                        </div>
-                        @php
-                            $retItin = $selectedFlight['rawOffer']['itineraries'][1];
-                            $retFirst = $retItin['segments'][0];
-                            $retLast = end($retItin['segments']);
-                            $retDep = date('H:i', strtotime($retFirst['departure']['at']));
-                            $retArr = date('H:i', strtotime($retLast['arrival']['at']));
-                            $retDuration = str_replace(['PT', 'H', 'M'], ['', 'h ', 'm'], $retItin['duration']);
-                            $retStopsCount = count($retItin['segments']) - 1;
-                            $retStops = $retStopsCount === 0 ? 'Direct' : $retStopsCount . ' Stop' . ($retStopsCount > 1 ? 's' : '');
-                        @endphp
-                        <div class="flex items-center gap-3 sm:gap-4">
-                            <div class="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center text-white font-bold flex-shrink-0 relative overflow-hidden">
-                                <img src="https://pics.avs.io/64/64/{{ $retFirst['carrierCode'] ?? '??' }}.png" class="w-full h-full object-contain">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <div class="flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">{{ $retDep }}</p>
-                                        <p class="text-gray-500" style="font-size:9px">{{ $retFirst['departure']['iataCode'] }}</p>
-                                    </div>
-                                    <div class="flex-1 flex flex-col items-center gap-0.5 min-w-0">
-                                        <div class="relative w-full flight-line flex items-center justify-between">
-                                            <div class="flight-dot"></div>
-                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">{{ $retStops }}</div>
-                                            <div class="flight-dot"></div>
-                                        </div>
-                                        <p class="text-gray-400" style="font-size:9px">{{ $retDuration }}</p>
-                                    </div>
-                                    <div class="text-right flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">{{ $retArr }}</p>
-                                        <p class="text-gray-500" style="font-size:9px">{{ $retLast['arrival']['iataCode'] }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
-                    {{-- Collapsible Fare Panel --}}
-                    <div x-show="fareOpen" x-collapse>
-                        <div class="border-t border-gray-100 pt-3 px-4 pb-4">
-                            <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
-                                <div class="flex items-center gap-4">
-                                    <button type="button" class="pb-2 font-medium"
-                                            @click="cabin='economy'"
-                                            :class="cabin==='economy' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Economy</button>
-                                    <button type="button" class="pb-2 font-medium"
-                                            @click="cabin='business'"
-                                            :class="cabin==='business' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">Business</button>
-                                    <button type="button" class="pb-2 font-medium"
-                                            @click="cabin='first'"
-                                            :class="cabin==='first' ? 'text-gray-900 border-b-2 border-emerald-700' : 'text-gray-400'">First</button>
-                                </div>
-                            </div>
-
-                            @php
-                                $basePrice = (float) ($selectedFlight['price'] ?? 0);
-                                $saver = $basePrice;
-                                $flex = round($basePrice * 1.1, 2);
-                                $flexPlus = round($basePrice * 1.4, 2);
-                                $businessBase = round($basePrice * 2.2, 2);
-                                $businessSpecial = $businessBase;
-                                $businessSaver = round($businessBase * 1.07, 2);
-                                $businessFlex = round($businessBase * 1.21, 2);
-                                $businessFlexPlus = round($businessBase * 1.41, 2);
-                            @endphp
-
-                            {{-- Economy Content --}}
-                            <div x-show="cabin === 'economy'" class="bg-gray-50 rounded-2xl p-4">
-                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
-                                        <div class="bg-emerald-800 text-white px-4 py-3">
-                                            <p class="text-xs font-semibold">Saver</p>
-                                            <p class="text-base font-bold">${{ $saver }}</p>
-                                        </div>
-                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
-                                            <p>• 23kg Baggage</p>
-                                            <p>• Ticket changes permitted</p>
-                                            <p>• Refundable with fee</p>
-                                        </div>
-                                    </div>
-                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
-                                        <div class="bg-emerald-900 text-white px-4 py-3">
-                                            <p class="text-xs font-semibold">Flex</p>
-                                            <p class="text-base font-bold">${{ $flex }}</p>
-                                        </div>
-                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
-                                            <p>• 23kg Baggage</p>
-                                            <p>• Complimentary Seat</p>
-                                            <p>• Fully Refundable</p>
-                                        </div>
-                                    </div>
-                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
-                                        <div class="bg-emerald-950 text-white px-4 py-3">
-                                            <p class="text-xs font-semibold">Flex Plus</p>
-                                            <p class="text-base font-bold">${{ $flexPlus }}</p>
-                                        </div>
-                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
-                                            <p>• 35kg Baggage</p>
-                                            <p>• Free Wi-Fi</p>
-                                            <p>• Priority Boarding</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            {{-- Business Content --}}
-                            <div x-show="cabin === 'business'" class="bg-gray-50 rounded-2xl p-4">
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
-                                        <div class="bg-indigo-700 text-white px-4 py-3">
-                                            <p class="text-xs font-semibold">Special</p>
-                                            <p class="text-base font-bold">${{ $businessSpecial }}</p>
-                                        </div>
-                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
-                                            <p>• 2x 32kg Baggage</p>
-                                            <p>• Lounge Access</p>
-                                        </div>
-                                    </div>
-                                    <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col">
-                                        <div class="bg-indigo-800 text-white px-4 py-3">
-                                            <p class="text-xs font-semibold">Flex Plus</p>
-                                            <p class="text-base font-bold">${{ $businessFlexPlus }}</p>
-                                        </div>
-                                        <div class="px-4 py-3 text-[10px] text-gray-600 space-y-1 flex-1">
-                                            <p>• Flat-bed Seat</p>
-                                            <p>• Chauffeur-drive</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- First Content --}}
-                            <div x-show="cabin === 'first'" class="bg-gray-50 rounded-2xl p-4">
-                                @php
-                                    $firstBase = round($basePrice * 4.5, 2);
-                                @endphp
-                                <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm max-w-sm mx-auto">
-                                    <div class="bg-red-800 text-white px-4 py-3 text-center">
-                                        <p class="text-xs font-semibold">First Class Flex Plus</p>
-                                        <p class="text-base font-bold">${{ $firstBase }}</p>
-                                    </div>
-                                    <div class="px-4 py-3 text-[10px] text-gray-600 text-center space-y-1">
-                                        <p>• Private Suite</p>
-                                        <p>• Shower Spa</p>
-                                        <p>• Fine Dining</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 {{-- ── Contact Details ──────────────────────────────────────── --}}
                 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -496,7 +291,7 @@
                             wire:click="back"
                             class="flex-1 py-2 border border-indigo-200 text-indigo-600 font-semibold rounded-lg hover:bg-indigo-50 transition-colors flex items-center justify-center gap-1"
                         >
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>Back
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>Back to Seating
                         </button>
                         <button
                             wire:click="continue"
@@ -505,11 +300,11 @@
                             class="flex-1 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1"
                         >
                             <span wire:loading.remove wire:target="continue">
-                                Continue<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                Continue to Booking<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </span>
                             <span wire:loading wire:target="continue" class="flex items-center gap-1">
                                 <svg class="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
-                                Saving…
+                                Booking...
                             </span>
                         </button>
                     </div>
@@ -520,3 +315,4 @@
     </div>
 
 </div>
+```

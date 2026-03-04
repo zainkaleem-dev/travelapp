@@ -35,8 +35,6 @@ class PassengerDetail extends Component
     public array $passengers = [];
 
     public array $selectedFlight = [];
-    public array $searchParams = [];
-
     // ── Summary line items ────────────────────────────────────────────────────
     public array $summaryItems = [];
 
@@ -48,9 +46,12 @@ class PassengerDetail extends Component
 
         // If no flight selected, redirect back to search
         if (!$this->selectedFlight) {
-            $this->redirect(route('select-flight'), navigate: true);
+            $this->redirect(route('flights.search'), navigate: true);
             return;
         }
+
+        // Initialize from session summary
+        $this->summaryItems = session('booking_summary', []);
 
         $counts = $this->searchParams['passengers'] ?? ['adults' => 1, 'children' => 0, 'infants' => 0];
 
@@ -67,15 +68,6 @@ class PassengerDetail extends Component
             $this->passengers[] = array_merge($this->emptyPassenger(), ['type' => 'HELD_INFANT']);
         }
 
-        // Initialize summary items from real flight price
-        $totalPrice = (float) ($this->selectedFlight['price'] ?? 0);
-        $taxGuess = $totalPrice * 0.15; // Placeholder for UI
-        $basePrice = $totalPrice - $taxGuess;
-
-        $this->summaryItems = [
-            ['label' => 'Base Fare (x' . count($this->passengers) . ' Passengers)', 'removable' => false, 'amount' => round($basePrice, 2)],
-            ['label' => 'Taxes and Fees', 'removable' => false, 'amount' => round($taxGuess, 2)],
-        ];
     }
 
     private function emptyPassenger(): array
@@ -130,13 +122,26 @@ class PassengerDetail extends Component
     {
         $this->validate();
 
-        // Redirect to next step (Additional Services)
-        $this->redirect(route('additional.services'), navigate: true);
+        // ── Store passenger data in session for final Amadeus Booking ──
+        session([
+            'booking_contact' => [
+                'email' => $this->contactEmail,
+                'phoneCode' => $this->phoneCode,
+                'phoneNumber' => $this->phoneNumber,
+            ],
+            'booking_passengers' => $this->passengers,
+            'booking_summary' => $this->summaryItems,
+            'booking_total' => $this->total()
+        ]);
+
+        // Next step is Payment/Confirm
+        // For now, we will just dump the booking request, as Payment isn't built yet
+        // $this->redirect(route('payment'), navigate: true);
     }
 
     public function back(): void
     {
-        $this->redirect(route('flights.list'), navigate: true);
+        $this->redirect(route('seating'), navigate: true);
     }
 
     public function render()

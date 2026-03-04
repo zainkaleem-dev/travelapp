@@ -3,6 +3,8 @@
 namespace App\Livewire\Additionalservices;
 
 use Livewire\Component;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Rule;
 
 class AdditionalServices extends Component
 {
@@ -16,40 +18,96 @@ class AdditionalServices extends Component
     public int $baggageQty = 1;
     public float $baggagePrice = 59.00;   // price per unit
 
-    // ── Summary fixed lines ───────────────────────────────────────────────
-    public float $outboundPrice = 179.00;
-    public float $returnPrice = 1037.00;
-    public float $extraBaggageFee = 17.00;   // fee already in summary
-    public float $seatTaxes = 17.00;
+    // ── Flight Data ───────────────────────────────────────────────────────
+    public array $selectedFlight = [];
+    public array $searchParams = [];
+    public array $availableFares = [];
+    public int $passengerCount = 1;
 
-    // Whether each summary fee is removed
-    public bool $extraBaggageFeeRemoved = false;
-    public bool $travelInsuranceFeeRemoved = false;
-    public bool $seatTaxesRemoved = false;
+    // ── Summary line items ────────────────────────────────────────────────
+    public array $summaryItems = [];
+    public float $totalBasePrice = 0.00;
 
-    // ── Computed total ────────────────────────────────────────────────────
-    public function getTotal(): float
+    // ── Boot ──────────────────────────────────────────────────────────────────
+    public function mount(): void
     {
-        $total = $this->outboundPrice + $this->returnPrice;
+        // Load flight data
+        $this->selectedFlight = session('selected_flight', []);
+        $this->searchParams = session('search_params', []);
+        $this->availableFares = session('selected_fare_tiers', []);
 
-        if (!$this->extraBaggageFeeRemoved) {
-            $total += $this->extraBaggageFee;
-        }
-        if (!$this->travelInsuranceFeeRemoved) {
-            $total += 17.00;  // fixed insurance fee line in summary
-        }
-        if (!$this->seatTaxesRemoved) {
-            $total += $this->seatTaxes;
+        // Require Flight session to exist
+        if (empty($this->selectedFlight)) {
+            $this->redirect(route('flights.search'), navigate: true);
+            return;
         }
 
-        return $total;
+        // Calculate total passengers
+        $counts = $this->searchParams['passengers'] ?? ['adults' => 1, 'children' => 0, 'infants' => 0];
+        $this->passengerCount = ($counts['adults'] ?? 0) + ($counts['children'] ?? 0) + ($counts['infants'] ?? 0);
+        if ($this->passengerCount < 1) {
+            $this->passengerCount = 1;
+        }
+
+        // Load the base price (If we haven't visited PassengerDetails yet, we create the initial summary)
+        if (!session()->has('booking_summary')) {
+            $totalPrice = (float) ($this->selectedFlight['price'] ?? 0);
+            $taxGuess = $totalPrice * 0.15; // Tax placeholder UI
+            $basePrice = $totalPrice - $taxGuess;
+
+            $this->summaryItems = [
+                ['label' => 'Base Fare (x' . $this->passengerCount . ' Passengers)', 'removable' => false, 'amount' => round($basePrice, 2)],
+                ['label' => 'Taxes and Fees', 'removable' => false, 'amount' => round($taxGuess, 2)],
+            ];
+            $this->totalBasePrice = $totalPrice;
+        } else {
+            $this->summaryItems = session('booking_summary', []);
+            $this->totalBasePrice = session('booking_total', 0.00);
+        }
+
+        // Add the Baggage & Insurance placeholders to the summary if they don't exist yet
+        $this->syncSummary();
     }
 
-    // ── Actions ───────────────────────────────────────────────────────────
+    private function syncSummary(): void
+    {
+        // We will append/update the Additional options onto the existing summary
+        $baseItems = array_filter($this->summaryItems, function ($item) {
+            return !in_array($item['label'], ['Travel Insurance', 'Extra Baggage']);
+        });
+
+        $this->summaryItems = $baseItems;
+
+        if ($this->insuranceOption === 'yes') {
+            $this->summaryItems[] = [
+                'label' => 'Travel Insurance',
+                'removable' => true,
+                'amount' => $this->insurancePrice
+            ];
+        }
+
+        if ($this->baggageEnabled && $this->baggageQty > 0) {
+            $this->summaryItems[] = [
+                'label' => 'Extra Baggage',
+                'removable' => true,
+                'amount' => ($this->baggagePrice * $this->baggageQty)
+            ];
+        }
+    }
+
+    // ── Computed ──────────────────────────────────────────────────────────────
+    #[Computed]
+    public function total(): float
+    {
+        return collect($this->summaryItems)->sum('amount');
+    }
+
+    // ── Actions ───────────────────────────────────────────────────────────────
 
     public function setInsurance(string $value): void
     {
         $this->insuranceOption = $value;
+        $this->syncSummary();
     }
 
     public function toggleBaggage(): void
@@ -58,11 +116,13 @@ class AdditionalServices extends Component
         if (!$this->baggageEnabled) {
             $this->baggageQty = 1;
         }
+        $this->syncSummary();
     }
 
     public function incrementBaggage(): void
     {
         $this->baggageQty++;
+        $this->syncSummary();
     }
 
     public function decrementBaggage(): void
@@ -70,31 +130,44 @@ class AdditionalServices extends Component
         if ($this->baggageQty > 0) {
             $this->baggageQty--;
         }
+        $this->syncSummary();
     }
 
-    public function removeExtraBaggage(): void
+    public function removeItem(int $index): void
     {
-        $this->extraBaggageFeeRemoved = true;
+        if (isset($this->summaryItems[$index])) {
+            $label = $this->summaryItems[$index]['label'];
+
+            if ($label === 'Travel Insurance') {
+                $this->insuranceOption = 'no';
+            } elseif ($label === 'Extra Baggage') {
+                $this->baggageEnabled = false;
+            }
+
+            $this->syncSummary();
+        }
     }
 
-    public function removeTravelInsurance(): void
+    public function back(): void
     {
-        $this->travelInsuranceFeeRemoved = true;
-        $this->insuranceOption = 'no';
+        $this->redirect(route('passenger.details'), navigate: true);
     }
 
-    public function removeSeatTaxes(): void
+    public function continue(): void
     {
-        $this->seatTaxesRemoved = true;
+        // ── Store updated summary in session for the next step (Seating) ──
+        session([
+            'booking_summary' => $this->summaryItems,
+            'booking_total' => $this->total()
+        ]);
+
+        $this->redirect(route('seating'), navigate: true);
     }
 
-    // ── Render ────────────────────────────────────────────────────────────
     public function render()
     {
-        return view('livewire.additionalservices.additional-services', [
-            'total' => $this->getTotal(),
-        ])->layout('layouts.flight');
-        ;
+        return view('livewire.additionalservices.additional-services')
+            ->layout('layouts.flight', ['title' => 'Additional Services – FlightBook']);
     }
 
 }

@@ -6,9 +6,10 @@ use Livewire\Component;
 
 class ChooseSeat extends Component
 {
-    // ── Seat map config ──────────────────────────────────────────────────
-    public int $totalRows = 30;
+    // ─── Seat configuration ──────────────────────────────────────────────────
+
     public array $extraLegroomRows = [1, 2, 10, 11, 20];
+
     public array $occupiedSeats = [
         '3A',
         '3C',
@@ -53,107 +54,89 @@ class ChooseSeat extends Component
         '28F',
     ];
 
-    // ── State ────────────────────────────────────────────────────────────
-    public ?string $selectedSeat = '24E';   // currently selected seat
-    public int $activePassenger = 1;        // which passenger tab is active
+    /** Currently selected seat (null = none) */
+    public ?string $selectedSeat = '24E';
 
-    // ── Passengers ───────────────────────────────────────────────────────
-    public array $passengers = [
-        1 => ['label' => 'Passenger 1 · Outbound Date', 'seat' => '24E'],
-        2 => ['label' => 'Passenger 2 · Outbound Date', 'seat' => null],
-    ];
+    /** Total rows in the plane */
+    public int $totalRows = 30;
 
-    // ── Pricing ──────────────────────────────────────────────────────────
-    public float $outboundPrice = 179.00;
-    public float $returnPrice = 1037.00;
-    public float $extraBaggage = 17.00;
-    public float $travelInsurance = 17.00;
-    public float $seatTaxes = 31.00;
+    // ─── Computed helpers ─────────────────────────────────────────────────────
 
-    // ── Computed helpers ─────────────────────────────────────────────────
-
-    public function getSeatStateAttribute(int $row, string $col): string
+    /** Returns the seat state string for a given seatId */
+    public function seatState(int $row, string $col): string
     {
         $seatId = $row . $col;
 
         if ($seatId === $this->selectedSeat) {
             return 'selected';
         }
-        if (in_array($seatId, $this->occupiedSeats, true)) {
+
+        if (in_array($seatId, $this->occupiedSeats)) {
             return 'occupied';
         }
-        if (in_array($row, $this->extraLegroomRows, true)) {
+
+        if (in_array($row, $this->extraLegroomRows)) {
             return 'extra';
         }
+
         return 'available';
     }
 
-    public function isExtraLegroom(int $row): bool
-    {
-        return in_array($row, $this->extraLegroomRows, true);
-    }
-
-    public function getTotal(): float
-    {
-        return $this->outboundPrice
-            + $this->returnPrice
-            + $this->extraBaggage
-            + $this->travelInsurance
-            + $this->seatTaxes;
-    }
-
-    // ── Actions ──────────────────────────────────────────────────────────
-
-    /** Called when the user clicks an available seat button */
+    /** Toggle seat selection */
     public function selectSeat(string $seatId): void
     {
-        // Ignore occupied seats (guard)
-        if (in_array($seatId, $this->occupiedSeats, true)) {
+        // Deselect if already selected
+        if ($this->selectedSeat === $seatId) {
+            $this->selectedSeat = null;
             return;
         }
 
-        // Toggle off if clicking the already-selected seat
-        if ($this->selectedSeat === $seatId) {
-            $this->selectedSeat = null;
-            $this->passengers[$this->activePassenger]['seat'] = null;
+        // Ignore occupied seats
+        if (in_array($seatId, $this->occupiedSeats)) {
             return;
         }
 
         $this->selectedSeat = $seatId;
-        $this->passengers[$this->activePassenger]['seat'] = $seatId;
     }
 
-    /** Switch active passenger tab */
-    public function switchPassenger(int $passengerIndex): void
+    public function continue(): void
     {
-        $this->activePassenger = $passengerIndex;
-        // Restore the seat selection for the newly active passenger
-        $this->selectedSeat = $this->passengers[$passengerIndex]['seat'] ?? null;
+        if ($this->selectedSeat) {
+            session(['booking_seat' => $this->selectedSeat]);
+        }
+
+        $this->redirect(route('passenger.details'), navigate: true);
     }
 
-    public function removeExtraBaggage(): void
+    public function back(): void
     {
-        $this->extraBaggage = 0.00;
+        $this->redirect(route('additional.services'), navigate: true);
     }
-
-    public function removeTravelInsurance(): void
-    {
-        $this->travelInsurance = 0.00;
-    }
-
-    public function removeSeatTaxes(): void
-    {
-        $this->seatTaxes = 0.00;
-    }
-
-    // ── Render ───────────────────────────────────────────────────────────
 
     public function render()
     {
-        return view('livewire.chooseseat.choose-seat', [
-            'total' => $this->getTotal(),
-            'columns' => ['A', 'B', 'C', 'D', 'E', 'F'],
-        ])->layout('layouts.flight');
-    }
+        $rows = [];
 
+        for ($row = 1; $row <= $this->totalRows; $row++) {
+            $seats = [];
+            foreach (['A', 'B', 'C', 'D', 'E', 'F'] as $col) {
+                $seatId = $row . $col;
+                $seats[$col] = [
+                    'id' => $seatId,
+                    'state' => $this->seatState($row, $col),
+                    'isExtra' => in_array($row, $this->extraLegroomRows),
+                ];
+            }
+
+            $rows[] = [
+                'number' => $row,
+                'isExtra' => in_array($row, $this->extraLegroomRows),
+                'seats' => $seats,
+            ];
+        }
+
+        return view('livewire.choose-seat', [
+            'rows' => $rows,
+        ]);
+    }
 }

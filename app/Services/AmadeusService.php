@@ -450,6 +450,72 @@ class AmadeusService
         return json_decode($response->getBody(), true);
     }
 
+    /**
+     * Formats the Livewire frontend passenger session data into the strict Amadeus `travelers` schema.
+     */
+    public function formatPassengersForBooking(array $sessionPassengers, array $sessionContact): array
+    {
+        $travelers = [];
+
+        foreach ($sessionPassengers as $index => $p) {
+            // Month mapping
+            $months = [
+                'Jan' => '01',
+                'Feb' => '02',
+                'Mar' => '03',
+                'Apr' => '04',
+                'May' => '05',
+                'Jun' => '06',
+                'Jul' => '07',
+                'Aug' => '08',
+                'Sep' => '09',
+                'Oct' => '10',
+                'Nov' => '11',
+                'Dec' => '12'
+            ];
+            $m = $months[$p['dob_month']] ?? '01';
+            $d = str_pad($p['dob_day'], 2, '0', STR_PAD_LEFT);
+            $y = $p['dob_year'];
+
+            $gender = (strtolower($p['gender']) === 'male') ? 'MALE' : ((strtolower($p['gender']) === 'female') ? 'FEMALE' : 'UNSPECIFIED');
+
+            $traveler = [
+                'id' => (string) ($index + 1),
+                'dateOfBirth' => "{$y}-{$m}-{$d}",
+                'name' => [
+                    'firstName' => strtoupper($p['first_name']),
+                    'lastName' => strtoupper($p['last_name']),
+                ],
+                'gender' => $gender,
+                'contact' => [
+                    'emailAddress' => $sessionContact['email'] ?? '',
+                    'phones' => [
+                        [
+                            'deviceType' => 'MOBILE',
+                            'countryCallingCode' => str_replace('+', '', $sessionContact['phoneCode'] ?? '1'),
+                            'number' => $sessionContact['phoneNumber'] ?? '',
+                        ]
+                    ]
+                ]
+            ];
+
+            // If Passport is provided
+            if (!empty($p['passport'])) {
+                $traveler['documents'] = [
+                    [
+                        'documentType' => 'PASSPORT',
+                        'number' => strtoupper($p['passport']),
+                        'holder' => true
+                    ]
+                ];
+            }
+
+            $travelers[] = $traveler;
+        }
+
+        return $travelers;
+    }
+
     public function bookFlight(array $payload)
     {
         $token = $this->getToken();

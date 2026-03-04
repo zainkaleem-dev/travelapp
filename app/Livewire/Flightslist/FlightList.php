@@ -708,7 +708,6 @@ class FlightList extends Component
         // Avoid redundant calls
         if (isset($this->fareDetails[$id]))
             return;
-
         $this->loadingFares[$id] = true;
 
         // Find the flight in our current list
@@ -727,14 +726,91 @@ class FlightList extends Component
             $response = $amadeus->upsellFlightOffers($rawOffer);
 
             if (isset($response['data']) && !empty($response['data'])) {
-                // For simplicity, we just store the whole upsell response for this flight ID
-                $this->fareDetails[$id] = $response['data'];
+                $this->fareDetails[$id] = $this->parseUpsellOffers($response['data']);
             }
         } catch (\Exception $e) {
             // Error handling
         }
 
         $this->loadingFares[$id] = false;
+    }
+
+    private function parseUpsellOffers(array $offers): array
+    {
+        $grouped = [];
+
+        foreach ($offers as $offer) {
+            $price = (float) ($offer['price']['total'] ?? 0);
+
+            // Getting fare details from the first segment of the first traveler
+            $fareDetails = $offer['travelerPricings'][0]['fareDetailsBySegment'][0] ?? [];
+
+            $cabin = $fareDetails['cabin'] ?? 'ECONOMY';
+            $brandedFare = $fareDetails['brandedFare'] ?? 'STANDARD';
+
+            // Bags
+            $bags = $fareDetails['includedCheckedBags']['quantity'] ?? null;
+            $weight = $fareDetails['includedCheckedBags']['weight'] ?? null;
+            $bagString = 'No Checked Bags';
+            if ($bags !== null) {
+                $bagString = $bags . ' Checked Bag' . ($bags > 1 ? 's' : '');
+            } elseif ($weight !== null) {
+                $bagString = $weight . 'kg Checked Bag';
+            }
+
+            // Amenities
+            $amenitiesRaw = $fareDetails['amenities'] ?? [];
+            $amenitiesList = [];
+            foreach ($amenitiesRaw as $am) {
+                if (isset($am['description'])) {
+                    $amenitiesList[] = ucwords(strtolower(str_replace('_', ' ', $am['description'])));
+                } elseif (isset($am['amenityType'])) {
+                    $amenitiesList[] = ucwords(strtolower(str_replace('_', ' ', $am['amenityType'])));
+                }
+            }
+
+            if (empty($amenitiesList)) {
+                $amenitiesList[] = 'Standard Seat';
+            }
+
+            if (!isset($grouped[$cabin])) {
+                $grouped[$cabin] = [];
+            }
+
+            // Check if we already have this exact brandedfare in this cabin. If so, only keep the cheapest.
+            // (Sometimes Amadeus returns multiple identical bundles with slight routing differences).
+            $existingIndex = null;
+            foreach ($grouped[$cabin] as $idx => $existing) {
+                if ($existing['name'] === $brandedFare) {
+                    $existingIndex = $idx;
+                    break;
+                }
+            }
+
+            $formatted = [
+                'id' => $offer['id'],
+                'name' => str_replace('_', ' ', $brandedFare),
+                'price' => $price,
+                'bags' => $bagString,
+                'amenities' => array_slice($amenitiesList, 0, 4), // keep it short for UI
+                'raw' => $offer // store this if we want to submit the exact upsold offer to booking later
+            ];
+
+            if ($existingIndex !== null) {
+                if ($price < $grouped[$cabin][$existingIndex]['price']) {
+                    $grouped[$cabin][$existingIndex] = $formatted;
+                }
+            } else {
+                $grouped[$cabin][] = $formatted;
+            }
+        }
+
+        // Sort each cabin by price ascending
+        foreach ($grouped as $cabin => &$fares) {
+            usort($fares, fn($a, $b) => $a['price'] <=> $b['price']);
+        }
+
+        return $grouped;
     }
 
     public function selectFlight($id): void
@@ -754,9 +830,33 @@ class FlightList extends Component
             $flight['rawOffer'] = $rawOffer;
         }
 
+        // Also capture the parsed fare tiers if the user opened the dropdown
+        $fareTiers = $this->fareDetails[$id] ?? [];
+
+        // If the user clicked Select without ever opening the dropdown, we must fetch the tiers now.
+        if (empty($fareTiers) && $rawOffer) {
+            try {
+                $amadeus = app(\App\Services\AmadeusService::class);
+                $response = $amadeus->upsellFlightOffers($rawOffer);
+                \Illuminate\Support\Facades\Log::info('RAW UPSELL RESPONSE: ' . json_encode($response));
+
+                if (isset($response['data']) && !empty($response['data'])) {
+                    $fareTiers = $this->parseUpsellOffers($response['data']);
+                    $this->fareDetails[$id] = $fareTiers;
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Upsell API failed during selectFlight: ' . $e->getMessage());
+            }
+        }
+
+        // removed synthetic fallback: if amadeus returns no data, we pass an empty array to UI
+
+        \Illuminate\Support\Facades\Log::info('Saving fare tiers to session count: ' . count($fareTiers));
+
         // Store selection and search context in session for the next step
         session([
             'selected_flight' => $flight,
+            'selected_fare_tiers' => $fareTiers,
             'search_params' => [
                 'isMulti' => $this->isMulti,
                 'segments' => $this->segments,
@@ -776,7 +876,7 @@ class FlightList extends Component
             ]
         ]);
 
-        $this->redirect(route('passenger.details'), navigate: true);
+        $this->redirect(route('additional.services'), navigate: true);
     }
 
     public function render()
