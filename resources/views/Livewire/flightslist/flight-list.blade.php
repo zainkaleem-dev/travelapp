@@ -493,7 +493,7 @@
 {{-- ══════════════════════════════════════════════════════════
      MAIN CONTENT
 ══════════════════════════════════════════════════════════ --}}
-<div class="max-w-7xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6">
+<div class="max-w-7xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6" wire:init="$dispatch('loadDateRailPrices')">
 
     {{-- ─── SIDEBAR FILTERS ────────────────────────────────── --}}
     <aside class="w-full lg:w-64 flex-shrink-0 space-y-6">
@@ -608,7 +608,8 @@
 
                 <div class="flex flex-1 justify-between px-2 py-1 overflow-x-auto no-scrollbar">
                     @foreach($dateRail as $day)
-                        <button wire:click="selectDate('{{ $day['date'] }}')"
+                        <button wire:key="date-{{ $day['date'] }}"
+                                wire:click="selectDate('{{ $day['date'] }}')"
                                 class="flex-shrink-0 text-center px-4 py-1.5 rounded-xl cursor-pointer transition-all duration-200
                                        {{ $selectedDate === $day['date']
                                            ? 'bg-blue-600 shadow-md shadow-blue-200 scale-105'
@@ -639,7 +640,7 @@
             <div class="divide-y divide-gray-100" wire:loading.class="opacity-50" wire:target="search,selectDate,setSort">
 
                 @forelse($this->flights as $flight)
-                    <div class="flight-card px-4 py-3 {{ $flight['bgClass'] }}" x-data="{ open: false, cabin: 'economy' }">
+                    <div wire:key="flight-{{ $flight['id'] }}" class="flight-card px-4 py-3 {{ $flight['bgClass'] }}" x-data="{ open: false, cabin: 'economy' }">
                         <div class="flex items-center gap-4 w-full">
                             {{-- Route itineraries --}}
                             <div class="flex-1 min-w-0 flex flex-col gap-3">
@@ -737,7 +738,7 @@
                         <svg class="w-12 h-12 mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                         </svg>
-                        <p class="text-sm font-medium">No flights match your filters</p>
+                        <p class="text-sm font-medium">{{ $this->errorMessage ?: 'No flights match your filters' }}</p>
                         <button wire:click="clearFilters" class="mt-2 text-xs text-blue-500 hover:underline">Clear all filters</button>
                     </div>
                 @endforelse

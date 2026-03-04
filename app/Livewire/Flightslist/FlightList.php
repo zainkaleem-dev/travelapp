@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\FlightApiController;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Cache;
 
 class FlightList extends Component
 {
@@ -63,7 +65,7 @@ class FlightList extends Component
     // ─── Date rail (7 days around selected date) ──────────────────
     public array $dateRail = [];
 
-    public function fetchDateRailPrices()
+    public function initDateRail()
     {
         if ($this->isMulti || empty($this->departDate)) {
             return;
@@ -87,6 +89,14 @@ class FlightList extends Component
                 'label' => $current->format('D d.m'),
                 'price' => null, // Will populate via API
             ];
+        }
+    }
+
+    #[On('loadDateRailPrices')]
+    public function fetchDateRailPrices()
+    {
+        if ($this->isMulti || empty($this->departDate) || empty($this->dateRail)) {
+            return;
         }
 
         // 2. Fetch from Amadeus using parallel requests to flight-offers API
@@ -260,9 +270,12 @@ class FlightList extends Component
     {
         $this->selectedDate = $date;
         $this->departDate = $date;
-        $this->fetchDateRailPrices();
+        $this->initDateRail();
         $this->loadFlights();
         $this->syncDateRailWithFlights();
+
+        // Trigger background fetch for the other dates
+        $this->dispatch('loadDateRailPrices');
     }
 
     public function shiftDate(int $days): void
@@ -449,13 +462,15 @@ class FlightList extends Component
 
         $this->syncPassengersTotal();
         $this->travelClassEnum = self::travelClassToEnum($this->travelClass);
-        $this->fetchDateRailPrices();
+        $this->initDateRail();
         $this->loadFlights();
         $this->syncDateRailWithFlights();
     }
 
     public function loadFlights(): void
     {
+        $this->errorMessage = null;
+
         $amadeusService = app(\App\Services\AmadeusService::class);
         $controller = new FlightApiController($amadeusService);
 
@@ -628,6 +643,10 @@ class FlightList extends Component
                     ];
                 }
 
+                // Cache the raw offer so we don't send MBs of JSON payload to Livewire frontend
+                $cacheKey = 'flight_offer_' . session()->getId() . '_' . $offer['id'];
+                Cache::put($cacheKey, $offer, now()->addHours(1));
+
                 $mappedFlights[] = [
                     'id' => $offer['id'],
                     'airline' => $airlineName,
@@ -651,7 +670,7 @@ class FlightList extends Component
                     'bgClass' => '',
                     'note' => null,
                     'refundable' => $refundable,
-                    'rawOffer' => $offer,
+                    'rawOffer' => null, // Reduced payload size
                     'itineraries' => $mappedItineraries,
                 ];
             }
@@ -695,14 +714,17 @@ class FlightList extends Component
         // Find the flight in our current list
         $flight = collect($this->allFlights)->firstWhere('id', $id);
 
-        if (!$flight || !isset($flight['rawOffer'])) {
+        $cacheKey = 'flight_offer_' . session()->getId() . '_' . $id;
+        $rawOffer = Cache::get($cacheKey);
+
+        if (!$flight || !$rawOffer) {
             $this->loadingFares[$id] = false;
             return;
         }
 
         try {
             $amadeus = app(\App\Services\AmadeusService::class);
-            $response = $amadeus->upsellFlightOffers($flight['rawOffer']);
+            $response = $amadeus->upsellFlightOffers($rawOffer);
 
             if (isset($response['data']) && !empty($response['data'])) {
                 // For simplicity, we just store the whole upsell response for this flight ID
@@ -720,8 +742,16 @@ class FlightList extends Component
         // Find the flight in our current list
         $flight = collect($this->allFlights)->firstWhere('id', $id);
 
+        $cacheKey = 'flight_offer_' . session()->getId() . '_' . $id;
+        $rawOffer = Cache::get($cacheKey);
+
         if (!$flight) {
             return;
+        }
+
+        // Inject the raw offer back before sending it to session for booking
+        if ($rawOffer) {
+            $flight['rawOffer'] = $rawOffer;
         }
 
         // Store selection and search context in session for the next step
