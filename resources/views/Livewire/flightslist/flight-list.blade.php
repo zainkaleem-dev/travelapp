@@ -650,11 +650,7 @@
                                         <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center relative">
                                             <img src="https://pics.avs.io/64/64/{{ $itin['airlineCode'] }}.png" 
                                                  alt="{{ $itin['airline'] }}"
-                                                 class="w-full h-full object-contain"
-                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                                            <div class="airline-logo {{ $itin['airlineColor'] }} hidden w-full h-full text-[10px] items-center justify-center rounded-lg text-white">
-                                                {{ substr($itin['airline'], 0, 2) }}
-                                            </div>
+                                                 class="w-full h-full object-contain">
                                         </div>
 
                                         {{-- Route info --}}
@@ -669,6 +665,7 @@
 
                                                 {{-- Route line --}}
                                                 <div class="flex-1 flex flex-col items-center gap-1">
+                                                    <span class="text-[9px] font-bold text-gray-500 uppercase">{{ $itin['flightNumber'] ?? '' }}</span>
                                                     <div class="relative w-full flight-line flex items-center justify-between">
                                                         <div class="flight-dot"></div>
                                                         <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 text-[11px] text-gray-500 relative z-10 whitespace-nowrap">
@@ -692,26 +689,7 @@
                             </div>
                             {{-- Price & CTA --}}
                             <div class="text-right flex-shrink-0 w-36">
-                                <div class="flex items-start justify-end gap-2">
-                                    <div>
-                                        @if($flight['badge'])
-                                            <div class="{{ $flight['badgeClass'] }}">{{ $flight['badge'] }}</div>
-                                        @else
-                                            <div class="mb-4"></div>
-                                        @endif
-                                    </div>
-                                    <button type="button"
-                                            class="mt-0.5 w-7 h-7 rounded-full border border-gray-200 bg-white text-red-600 hover:bg-red-50 flex items-center justify-center transition-all"
-                                            @click="open = !open; if(open) $wire.loadFareDetails('{{ $flight['id'] }}')"
-                                            :aria-expanded="open.toString()">
-                                        <svg class="w-4 h-4 transition-transform duration-200"
-                                             :class="open ? 'rotate-180' : ''"
-                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                        </svg>
-                                    </button>
-                                </div>
-
+                                
                                 <p class="text-lg font-bold text-gray-800">${{ $flight['price'] }}</p>
 
                                 @if(!empty($flight['oldPrice']))

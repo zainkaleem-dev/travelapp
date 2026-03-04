@@ -2,7 +2,6 @@
 
     {{-- ── Hero ── --}}
     <div class="py-10 text-center px-4">
-        <p class="hero-label">Book</p>
         <h1 class="hero-title">Book a flight</h1>
         <p class="hero-sub">Search for flights and book online. See our routes and schedules, and discover more about
             the experience you can look forward to on board.</p>
@@ -150,12 +149,12 @@
                     <div class="field-wrap"
                         style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
                         <div x-data="singleDatePicker({
-                                                    value: @js($returnDepDate),
-                                                    flexible: @js($returnFlexible),
-                                                    wireValueKey: 'returnDepDate',
-                                                    wireFlexibleKey: 'returnFlexible',
-                                                    title: 'Please choose your departure date',
-                                                })" x-init="init()">
+                                                            value: @js($returnDepDate),
+                                                            flexible: @js($returnFlexible),
+                                                            wireValueKey: 'returnDepDate',
+                                                            wireFlexibleKey: 'returnFlexible',
+                                                            title: 'Please choose your departure date',
+                                                        })" x-init="init()">
                             <span class="field-label">Departing</span>
                             <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
                                 inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
@@ -261,12 +260,12 @@
                         <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">–</span>
 
                         <div x-data="singleDatePicker({
-                                                    value: @js($returnRetDate),
-                                                    flexible: @js($returnFlexible),
-                                                    wireValueKey: 'returnRetDate',
-                                                    wireFlexibleKey: 'returnFlexible',
-                                                    title: 'When would you like to return?',
-                                                })" x-init="init()">
+                                                            value: @js($returnRetDate),
+                                                            flexible: @js($returnFlexible),
+                                                            wireValueKey: 'returnRetDate',
+                                                            wireFlexibleKey: 'returnFlexible',
+                                                            title: 'When would you like to return?',
+                                                        })" x-init="init()">
                             <span class="field-label">Returning</span>
                             <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
                                 inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
@@ -661,12 +660,12 @@
                     </div>
 
                     <div class="field-wrap" x-data="singleDatePicker({
-                                                value: @js($onewayDepDate),
-                                                flexible: @js($onewayFlexible),
-                                                wireValueKey: 'onewayDepDate',
-                                                wireFlexibleKey: 'onewayFlexible',
-                                                title: 'Please choose your departure date',
-                                            })" x-init="init()">
+                                                        value: @js($onewayDepDate),
+                                                        flexible: @js($onewayFlexible),
+                                                        wireValueKey: 'onewayDepDate',
+                                                        wireFlexibleKey: 'onewayFlexible',
+                                                        title: 'Please choose your departure date',
+                                                    })" x-init="init()">
                         <span class="field-label">Departing</span>
                         <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none"
                             readonly :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
@@ -1065,12 +1064,12 @@
                                 </div>
 
                                 <div class="field-wrap" x-data="singleDatePicker({
-                                                                                value: @js($multiFlights[$index]['date'] ?? ''),
-                                                                                flexible: @js($multiFlexible),
-                                                                                wireValueKey: 'multiFlights.{{ $index }}.date',
-                                                                                wireFlexibleKey: 'multiFlexible',
-                                                                                title: 'Please choose your departure date',
-                                                                            })" x-init="init()">
+                                                                                                value: @js($multiFlights[$index]['date'] ?? ''),
+                                                                                                flexible: @js($multiFlexible),
+                                                                                                wireValueKey: 'multiFlights.{{ $index }}.date',
+                                                                                                wireFlexibleKey: 'multiFlexible',
+                                                                                                title: 'Please choose your departure date',
+                                                                                            })" x-init="init()">
                                     <span class="field-label">Departing</span>
                                     <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
                                         inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"

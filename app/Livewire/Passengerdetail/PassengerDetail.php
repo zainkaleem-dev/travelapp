@@ -118,7 +118,7 @@ class PassengerDetail extends Component
         }
     }
 
-    public function continue(): void
+    public function continue(\App\Services\AmadeusService $amadeusService): void
     {
         $this->validate();
 
@@ -134,9 +134,57 @@ class PassengerDetail extends Component
             'booking_total' => $this->total()
         ]);
 
-        // Next step is Payment/Confirm
-        // For now, we will just dump the booking request, as Payment isn't built yet
-        // $this->redirect(route('payment'), navigate: true);
+        try {
+            // 1. Format frontend data to the strict API traveler array
+            $amadeusTravelers = $amadeusService->formatPassengersForBooking(
+                $this->passengers,
+                session('booking_contact')
+            );
+
+            // 2. Fetch the originally selected offer (usually cached with Upsell changes)
+            $rawOffer = $this->selectedFlight['rawOffer'] ?? null;
+            if (!$rawOffer) {
+                throw new \Exception("Original flight offer is missing from memory.");
+            }
+
+            // 3. Confirm pricing / inventory one last time before creating the order
+            $pricingResponse = $amadeusService->priceFlightOffer([$rawOffer]);
+            if (!isset($pricingResponse['data']['flightOffers'][0])) {
+                throw new \Exception("Pricing confirmation failed. Seats may no longer be available.");
+            }
+
+            // We use the freshly validated price offer from Amadeus to ensure successful booking
+            $validatedOffer = $pricingResponse['data']['flightOffers'][0];
+
+            // 4. Submit Order
+            $orderPayload = [
+                'data' => [
+                    'type' => 'flight-orders',
+                    'flightOffers' => [$validatedOffer],
+                    'travelers' => $amadeusTravelers
+                ]
+            ];
+
+            $orderResult = $amadeusService->bookFlight($orderPayload);
+
+            if (isset($orderResult['data']['id'])) {
+                session([
+                    'amadeus_booking_id' => $orderResult['data']['id'],
+                    'amadeus_booking_reference' => $orderResult['data']['associatedRecords'][0]['reference'] ?? 'PENDING'
+                ]);
+
+                // Order perfectly created! Proceed to confirmation view.
+                session()->flash('success', 'Flight successfully booked!');
+                $this->redirect(route('flight.confirmation'), navigate: true);
+            } else {
+                $errorMsg = $orderResult['errors'][0]['detail'] ?? 'Amadeus rejected the booking order parameters.';
+                session()->flash('error', $errorMsg);
+            }
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Amadeus Booking Failed: ' . $e->getMessage());
+            session()->flash('error', 'Booking failed: ' . $e->getMessage());
+        }
     }
 
     public function back(): void

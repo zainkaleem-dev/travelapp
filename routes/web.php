@@ -8,6 +8,7 @@ use App\Livewire\Flightslist\FlightList;
 use App\Livewire\Passengerdetail\PassengerDetail;
 use App\Livewire\Additionalservices\AdditionalServices;
 use App\Livewire\Chooseseat\ChooseSeat;
+use App\Livewire\Flightconfirmation\FlightConfirmation;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,5 +95,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/additional-services', AdditionalServices::class)
         ->name('additional.services');
+
+    Route::get('/flight-confirmation', FlightConfirmation::class)
+        ->name('flight.confirmation');
 
 });

@@ -24,6 +24,7 @@ class AdditionalServices extends Component
     public array $searchParams = [];
     public array $availableFares = [];
     public int $passengerCount = 1;
+    public string $selectedFareName = '';
 
     // ── Summary line items ────────────────────────────────────────────────
     public array $summaryItems = [];
@@ -57,16 +58,25 @@ class AdditionalServices extends Component
 
         // Initial summary load
         if (session()->has('booking_summary')) {
-            $this->summaryItems = session('booking_summary', []);
+            $sessItems = session('booking_summary', []);
+            $newItems = [];
+            foreach ($sessItems as $item) {
+                if (str_starts_with($item['label'], 'Base Fare')) {
+                    // Convert old legacy session Base Fare to Flight Total
+                    $item['label'] = 'Flight Total (x' . $this->passengerCount . ' Passengers)';
+                    $item['amount'] = (float) ($this->selectedFlight['price'] ?? 0);
+                    $newItems[] = $item;
+                } elseif ($item['label'] !== 'Taxes and Fees') {
+                    $newItems[] = $item;
+                }
+            }
+            $this->summaryItems = $newItems;
             $this->totalBasePrice = (float) session('booking_total', 0.00);
         } else {
             $totalPrice = (float) ($this->selectedFlight['price'] ?? 0);
-            $taxGuess = $totalPrice * 0.15;
-            $basePrice = $totalPrice - $taxGuess;
 
             $this->summaryItems = [
-                ['label' => 'Base Fare (x' . $this->passengerCount . ' Passengers)', 'removable' => false, 'amount' => round($basePrice, 2)],
-                ['label' => 'Taxes and Fees', 'removable' => false, 'amount' => round($taxGuess, 2)],
+                ['label' => 'Flight Total (x' . $this->passengerCount . ' Passengers)', 'removable' => false, 'amount' => round($totalPrice, 2)],
             ];
             $this->totalBasePrice = $totalPrice;
         }
@@ -84,22 +94,26 @@ class AdditionalServices extends Component
         if (empty($rawOffer))
             return;
 
-        // 1. Extract Included Baggage (Using first traveler/segment as reference)
+        // 1. Extract Included Baggage — aggregate across all segments into one entry
         $travelerPricings = $rawOffer['travelerPricings'] ?? [];
         if (!empty($travelerPricings)) {
             $fareDetails = $travelerPricings[0]['fareDetailsBySegment'] ?? [];
+            $totalQty = 0;
+            $maxWeight = null;
+            $weightUnit = null;
+
             foreach ($fareDetails as $detail) {
                 $baggage = $detail['includedCheckedBags'] ?? [];
                 if (!empty($baggage)) {
-                    $this->includedBaggage[] = [
-                        'segmentId' => $detail['segmentId'] ?? 'N/A',
-                        'quantity' => $baggage['quantity'] ?? 0,
-                        'weight' => $baggage['weight'] ?? null,
-                        'weightUnit' => $baggage['weightUnit'] ?? null,
-                    ];
+                    $totalQty += (int) ($baggage['quantity'] ?? 0);
+                    $w = $baggage['weight'] ?? null;
+                    if ($w !== null && ($maxWeight === null || $w > $maxWeight)) {
+                        $maxWeight = $w;
+                        $weightUnit = $baggage['weightUnit'] ?? 'KG';
+                    }
                 }
 
-                // 2. Extract Amenities (if provided by Amadeus in the offer)
+                // 2. Extract Amenities
                 $amenities = $detail['amenities'] ?? [];
                 foreach ($amenities as $amenity) {
                     $this->availableAncillaries[] = [
@@ -109,6 +123,14 @@ class AdditionalServices extends Component
                         'amenityType' => $amenity['amenityType'] ?? 'N/A',
                     ];
                 }
+            }
+
+            if ($totalQty > 0 || $maxWeight !== null) {
+                $this->includedBaggage[] = [
+                    'quantity' => $totalQty > 0 ? $totalQty : null,
+                    'weight' => $maxWeight,
+                    'weightUnit' => $weightUnit,
+                ];
             }
         }
 
@@ -157,6 +179,46 @@ class AdditionalServices extends Component
     public function total(): float
     {
         return collect($this->summaryItems)->sum('amount');
+    }
+
+    // ── Actions ───────────────────────────────────────────────────────────────
+    public function selectFare(string $cabinCode, int $index): void
+    {
+        $fare = $this->availableFares[$cabinCode][$index] ?? null;
+
+        if (!$fare) {
+            return;
+        }
+
+        $this->selectedFareName = $fare['name'];
+        $newPrice = (float) $fare['price'];
+
+        $this->selectedFlight['price'] = $newPrice;
+        $this->selectedFlight['rawOffer'] = $fare['raw'] ?? $this->selectedFlight['rawOffer'];
+
+        // Update the base fare in summary and remove any lingering taxes line
+        foreach ($this->summaryItems as $key => &$item) {
+            if (str_starts_with($item['label'], 'Flight Total') || str_starts_with($item['label'], 'Base Fare')) {
+                $item['label'] = 'Flight Total (x' . $this->passengerCount . ' Passengers)';
+                $item['amount'] = round($newPrice, 2);
+            } elseif ($item['label'] === 'Taxes and Fees') {
+                unset($this->summaryItems[$key]);
+            }
+        }
+        $this->summaryItems = array_values($this->summaryItems); // Re-index after unset
+
+        $this->totalBasePrice = $newPrice;
+
+        $this->syncSummary();
+
+        // Update session immediately
+        session([
+            'selected_flight' => $this->selectedFlight,
+            'booking_summary' => $this->summaryItems,
+            'booking_total' => $this->total()
+        ]);
+
+        session()->flash('success', "Selected {$this->selectedFareName} fare successfully. Price updated.");
     }
 
     public function toggleAncillary(string $code): void

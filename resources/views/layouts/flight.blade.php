@@ -415,20 +415,7 @@
     <nav>
         <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-12">
             <div class="flex items-center gap-5">
-                <button
-                    class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Back
-                </button>
-                <button
-                    class="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
-                    Next
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+
             </div>
 
             <div class="flex items-center gap-3">
@@ -454,14 +441,14 @@
                                 <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
                             </div>
 
-                            <a href="{{ route('profile') }}"
+                            {{-- <a href="{{ route('profile') }}"
                                 class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5.121 17.804A9 9 0 1118.88 17.8M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 Profile
-                            </a>
+                            </a> --}}
 
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -489,25 +476,28 @@
     {{-- ── Step bar ── --}}
     <div class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="flex items-center text-xs text-gray-500 py-1.5 gap-2">
-                <a href="/" class="hover:text-blue-600">Home</a>
-                <span>/</span>
-                <span>Flight Tickets</span>
-                <span>/</span>
-                <span>Book a Flight</span>
-            </div>
+
             <div class="flex items-center">
-                <div class="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-t">
+                <div
+                    class="flex items-center gap-1 px-4 py-2 {{ request()->is('flights-search') || request()->is('flights-list') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
                     </svg>
-                    Book Flight
+                    Search Flight
                 </div>
-                <div class="px-4 py-2 text-gray-400 text-xs">Passenger Details</div>
-                <div class="px-4 py-2 text-gray-400 text-xs">Additional Services</div>
-                <div class="px-4 py-2 text-gray-400 text-xs">Choice Seat</div>
-                <div class="px-4 py-2 text-gray-400 text-xs ml-auto">Payment</div>
+                <div
+                    class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
+                    Additional Services
+                </div>
+                <div
+                    class="px-4 py-2 {{ request()->is('seating') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
+                    Choice Seat
+                </div>
+                <div
+                    class="px-4 py-2 {{ request()->is('passenger-details') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
+                    Passenger Details
+                </div>
             </div>
         </div>
     </div>

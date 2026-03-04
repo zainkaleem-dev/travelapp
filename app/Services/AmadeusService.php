@@ -530,12 +530,24 @@ class AmadeusService
                 ]
             ];
 
+            // Nationality to ISO 3166-1 alpha-2 mapping
+            $natMap = [
+                'Turkish' => 'TR',
+                'German' => 'DE',
+                'American' => 'US',
+                'British' => 'GB'
+            ];
+            $countryCode = $natMap[$p['nationality'] ?? 'American'] ?? 'US';
+
             // If Passport is provided
             if (!empty($p['passport'])) {
                 $traveler['documents'] = [
                     [
                         'documentType' => 'PASSPORT',
                         'number' => strtoupper($p['passport']),
+                        'issuanceCountry' => $countryCode,
+                        'nationality' => $countryCode,
+                        'expiryDate' => date('Y-m-d', strtotime('+5 years')), // Amadeus often requires expiry dates
                         'holder' => true
                     ]
                 ];

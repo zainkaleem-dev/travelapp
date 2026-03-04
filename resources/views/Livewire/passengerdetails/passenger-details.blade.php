@@ -7,7 +7,16 @@
             {{-- ── LEFT: Main Form ─────────────────────────────────────────── --}}
             <div class="flex-1 min-w-0 space-y-3">
 
-
+                {{-- Amadeus Error Alert --}}
+                @if (session()->has('error'))
+                    <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm flex items-start gap-2 mb-4">
+                        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <div>
+                            <strong class="font-semibold block mb-0.5">Booking failed</strong>
+                            <p>{{ session('error') }}</p>
+                        </div>
+                    </div>
+                @endif
 
                 {{-- ── Contact Details ──────────────────────────────────────── --}}
                 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -207,54 +216,7 @@
                 </div>
                 @endforeach
 
-                {{-- ── Baggage Info ─────────────────────────────────────────── --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {{-- Cabin --}}
-                    <div class="bg-white rounded-xl border border-gray-200 p-4">
-                        <h3 class="font-semibold text-gray-800 text-sm mb-1">Cabin Baggage and Hand Bag</h3>
-                        <p class="text-gray-500 mb-3" style="font-size:10px">Includes items carried in your own bag and items allowed under the rules set by the contracted airline.</p>
-                        <div class="flex items-end gap-3">
-                            <div class="flex flex-col items-center gap-1">
-                                <svg class="w-10 h-10 text-teal-400" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="10" y="12" width="28" height="30" rx="3"/>
-                                    <path stroke-linecap="round" d="M18 12V8a2 2 0 012-2h8a2 2 0 012 2v4"/>
-                                    <line x1="24" y1="18" x2="24" y2="36"/>
-                                    <line x1="16" y1="27" x2="32" y2="27"/>
-                                </svg>
-                                <span class="text-gray-600" style="font-size:10px">1 Cabin Bag</span>
-                                <span class="text-gray-400" style="font-size:9px">Cabin Bag (7 kg / 15lbs)</span>
-                            </div>
-                            <div class="flex flex-col items-center gap-1 ml-2">
-                                <svg class="w-8 h-8 text-indigo-400" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="8" y="16" width="32" height="26" rx="3"/>
-                                    <path d="M17 16V12a2 2 0 012-2h10a2 2 0 012 2v4"/>
-                                    <line x1="24" y1="22" x2="24" y2="36"/>
-                                    <line x1="16" y1="29" x2="32" y2="29"/>
-                                </svg>
-                                <span class="text-gray-600" style="font-size:10px">1 Personal Item</span>
-                                <span class="text-gray-400" style="font-size:9px">Under Seat (4kg)</span>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- Checked --}}
-                    <div class="bg-white rounded-xl border border-gray-200 p-4">
-                        <h3 class="font-semibold text-gray-800 text-sm mb-1">Checked Baggage Included In Your Flight</h3>
-                        <p class="text-gray-500 mb-3" style="font-size:10px">These are the luggage delivered to the airline that will be carried in the aircraft's hold compartment.</p>
-                        <div class="flex items-end gap-3">
-                            <div class="flex flex-col items-center gap-1">
-                                <svg class="w-10 h-10 text-teal-400" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="10" y="10" width="28" height="32" rx="3"/>
-                                    <path d="M18 10V6a2 2 0 012-2h8a2 2 0 012 2v4"/>
-                                    <line x1="24" y1="18" x2="24" y2="34"/>
-                                    <line x1="16" y1="26" x2="32" y2="26"/>
-                                    <line x1="16" y1="38" x2="32" y2="38"/>
-                                </svg>
-                                <span class="text-gray-600" style="font-size:10px">1 Checked Baggage</span>
-                                <span class="text-gray-400" style="font-size:9px">1 Checked Baggage (23kg)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+             
 
             </div>{{-- end LEFT --}}
 

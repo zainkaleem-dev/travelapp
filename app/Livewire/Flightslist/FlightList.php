@@ -577,6 +577,7 @@ class FlightList extends Component
                 $duration = "{$h}h {$m}m";
 
                 $price = (float) ($offer['price']['total'] ?? 0);
+                $basePrice = (float) ($offer['price']['base'] ?? 0);
 
                 $stopsCount = 0;
                 foreach ($itineraries as $itin) {
@@ -639,6 +640,7 @@ class FlightList extends Component
                         'stops' => $itinStopsLabel,
                         'airline' => $itinAirlineName,
                         'airlineCode' => $itinCarrierCode,
+                        'flightNumber' => $itinCarrierCode . ($itinFirstSeg['number'] ?? $itinFirstSeg['flightNumber'] ?? ''),
                         'airlineColor' => 'bg-emerald-700',
                     ];
                 }
@@ -663,6 +665,7 @@ class FlightList extends Component
                     'departureTimestamp' => $departureTimestamp,
                     'stops' => $stopsLabel,
                     'price' => $price,
+                    'basePrice' => $basePrice,
                     'oldPrice' => null,
                     'badge' => null,
                     'badgeClass' => '',
@@ -741,6 +744,7 @@ class FlightList extends Component
 
         foreach ($offers as $offer) {
             $price = (float) ($offer['price']['total'] ?? 0);
+            $basePrice = (float) ($offer['price']['base'] ?? 0);
 
             // Getting fare details from the first segment of the first traveler
             $fareDetails = $offer['travelerPricings'][0]['fareDetailsBySegment'][0] ?? [];
@@ -791,6 +795,7 @@ class FlightList extends Component
                 'id' => $offer['id'],
                 'name' => str_replace('_', ' ', $brandedFare),
                 'price' => $price,
+                'basePrice' => $basePrice,
                 'bags' => $bagString,
                 'amenities' => array_slice($amenitiesList, 0, 4), // keep it short for UI
                 'raw' => $offer // store this if we want to submit the exact upsold offer to booking later

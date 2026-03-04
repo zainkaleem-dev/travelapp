@@ -20,87 +20,49 @@
                         </button>
                     </div>
 
-                    {{-- Outbound --}}
-                    @if(isset($selectedFlight['rawOffer']['itineraries'][0]))
-                    <div class="px-4 py-3">
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white font-semibold mb-3" style="background:#2ab4c0; font-size:10px">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-                            Outbound Flight
-                        </div>
-                        <div class="flex items-center gap-3 sm:gap-4">
-                            <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold flex-shrink-0 relative overflow-hidden">
-                                <img src="https://pics.avs.io/64/64/{{ $selectedFlight['airlineCode'] ?? '??' }}.png" class="w-full h-full object-contain">
+                    {{-- Flight Itineraries --}}
+                    @foreach($selectedFlight['itineraries'] ?? [] as $index => $itin)
+                        @if($index > 0)
+                            <div class="mx-4 border-t border-dashed border-gray-200"></div>
+                        @endif
+                        <div class="px-4 py-3">
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white font-semibold mb-3" 
+                                style="background:{{ $index === 0 ? '#2ab4c0' : '#6366f1' }}; font-size:10px">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                                {{ $index === 0 ? 'Outbound' : 'Return' }} Flight
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <div class="flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">{{ $selectedFlight['dep'] ?? '00:00' }}</p>
-                                        <p class="text-gray-500" style="font-size:9px">{{ $selectedFlight['depAirport'] ?? '---' }}</p>
-                                    </div>
-                                    <div class="flex-1 flex flex-col items-center gap-0.5 min-w-0">
-                                        <div class="relative w-full flight-line flex items-center justify-between">
-                                            <div class="flight-dot"></div>
-                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">{{ $selectedFlight['stops'] ?? 'Direct' }}</div>
-                                            <div class="flight-dot"></div>
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                                    <img src="https://pics.avs.io/64/64/{{ $itin['airlineCode'] }}.png" class="w-full h-full object-contain">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex-shrink-0">
+                                            <p class="font-bold text-gray-800 text-sm">{{ $itin['dep'] }}</p>
+                                            <p class="text-gray-500" style="font-size:9px">{{ $itin['depCity'] }}</p>
+                                            <p class="text-gray-400 font-medium" style="font-size:8px">{{ $itin['depAirport'] }}</p>
                                         </div>
-                                        <p class="text-gray-400" style="font-size:9px">{{ $selectedFlight['duration'] ?? '--' }}</p>
-                                    </div>
-                                    <div class="text-right flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">{{ $selectedFlight['arr'] ?? '00:00' }}</p>
-                                        <p class="text-gray-500" style="font-size:9px">{{ $selectedFlight['arrAirport'] ?? '---' }}</p>
+                                        <div class="flex-1 flex flex-col items-center gap-0.5 min-w-0">
+                                            <span class="font-bold text-gray-500 uppercase" style="font-size:8px">{{ $itin['flightNumber'] ?? '' }}</span>
+                                            <div class="relative w-full flight-line flex items-center justify-between">
+                                                <div class="flight-dot"></div>
+                                                <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">
+                                                    {{ $itin['stops'] }}
+                                                </div>
+                                                <div class="flight-dot"></div>
+                                            </div>
+                                            <p class="text-gray-400" style="font-size:9px">{{ $itin['duration'] }}</p>
+                                        </div>
+                                        <div class="text-right flex-shrink-0">
+                                            <p class="font-bold text-gray-800 text-sm">{{ $itin['arr'] }}</p>
+                                            <p class="text-gray-500" style="font-size:9px">{{ $itin['arrCity'] }}</p>
+                                            <p class="text-gray-400 font-medium" style="font-size:8px">{{ $itin['arrAirport'] }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    @endif
-
-                    @if(isset($selectedFlight['rawOffer']['itineraries'][1]))
-                    <div class="mx-4 border-t border-dashed border-gray-200"></div>
-
-                    {{-- Return --}}
-                    <div class="px-4 py-3">
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-white font-semibold mb-3" style="background:#6366f1; font-size:10px">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-                            Return Flight
-                        </div>
-                        @php
-                            $retItin = $selectedFlight['rawOffer']['itineraries'][1];
-                            $retFirst = $retItin['segments'][0];
-                            $retLast = end($retItin['segments']);
-                            $retDep = date('H:i', strtotime($retFirst['departure']['at']));
-                            $retArr = date('H:i', strtotime($retLast['arrival']['at']));
-                            $retDuration = str_replace(['PT', 'H', 'M'], ['', 'h ', 'm'], $retItin['duration']);
-                            $retStopsCount = count($retItin['segments']) - 1;
-                            $retStops = $retStopsCount === 0 ? 'Direct' : $retStopsCount . ' Stop' . ($retStopsCount > 1 ? 's' : '');
-                        @endphp
-                        <div class="flex items-center gap-3 sm:gap-4">
-                            <div class="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center text-white font-bold flex-shrink-0 relative overflow-hidden">
-                                <img src="https://pics.avs.io/64/64/{{ $retFirst['carrierCode'] ?? '??' }}.png" class="w-full h-full object-contain">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <div class="flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">{{ $retDep }}</p>
-                                        <p class="text-gray-500" style="font-size:9px">{{ $retFirst['departure']['iataCode'] }}</p>
-                                    </div>
-                                    <div class="flex-1 flex flex-col items-center gap-0.5 min-w-0">
-                                        <div class="relative w-full flight-line flex items-center justify-between">
-                                            <div class="flight-dot"></div>
-                                            <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 relative z-10 text-gray-500" style="font-size:9px">{{ $retStops }}</div>
-                                            <div class="flight-dot"></div>
-                                        </div>
-                                        <p class="text-gray-400" style="font-size:9px">{{ $retDuration }}</p>
-                                    </div>
-                                    <div class="text-right flex-shrink-0">
-                                        <p class="font-bold text-gray-800 text-sm">{{ $retArr }}</p>
-                                        <p class="text-gray-500" style="font-size:9px">{{ $retLast['arrival']['iataCode'] }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
+                    @endforeach
 
                     {{-- Collapsible Fare Panel --}}
                     <div x-show="fareOpen" style="display: none;">
@@ -138,8 +100,8 @@
                                 @endphp
                                 <div x-show="cabin === '{{ $lowerCode }}'" class="bg-gray-50 rounded-2xl p-4">
                                     <div class="grid grid-cols-1 lg:grid-cols-[{{ count($fares) <= 3 ? count($fares) : 3 }}] gap-4">
-                                        @foreach($fares as $fare)
-                                            <div class="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm flex flex-col cursor-pointer hover:border-indigo-400 transition-colors">
+                                        @foreach($fares as $index => $fare)
+                                            <div class="rounded-2xl bg-white border {{ $selectedFareName === $fare['name'] ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-gray-200 hover:border-indigo-400' }} overflow-hidden shadow-sm flex flex-col transition-colors">
                                                 <div class="{{ $bgClass }} text-white px-4 py-3 flex justify-between items-center">
                                                     <div>
                                                         <p class="text-xs font-semibold uppercase">{{ $fare['name'] }}</p>
@@ -153,7 +115,11 @@
                                                     @endforeach
                                                 </div>
                                                 <div class="px-4 pb-4">
-                                                    <button type="button" class="w-full py-1.5 border border-indigo-200 text-indigo-700 text-xs font-semibold rounded hover:bg-indigo-50 transition-colors">Select Fare</button>
+                                                    <button type="button" 
+                                                            wire:click="selectFare('{{ $cabinCode }}', {{ $index }})"
+                                                            class="w-full py-1.5 border text-xs font-semibold rounded transition-colors {{ $selectedFareName === $fare['name'] ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'border-indigo-200 text-indigo-700 hover:bg-indigo-50' }}">
+                                                        {{ $selectedFareName === $fare['name'] ? 'Selected' : 'Select Fare' }}
+                                                    </button>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -164,145 +130,7 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- ── Dynamic Baggage Info ─────────────────────────────────────── --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {{-- Cabin --}}
-                    <div class="bg-white rounded-xl border border-gray-200 p-4">
-                        <h3 class="font-semibold text-gray-800 text-sm mb-1">Cabin Baggage</h3>
-                        <p class="text-gray-500 mb-3" style="font-size:10px">Standard carry-on allowance as per airline policy.</p>
-                        <div class="flex items-center gap-3">
-                            <div class="flex flex-col items-center gap-1">
-                                <svg class="w-10 h-10 text-teal-400" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="10" y="12" width="28" height="30" rx="3"/>
-                                    <path stroke-linecap="round" d="M18 12V8a2 2 0 012-2h8a2 2 0 012 2v4"/>
-                                    <line x1="24" y1="18" x2="24" y2="36"/>
-                                    <line x1="16" y1="27" x2="32" y2="27"/>
-                                </svg>
-                                <span class="text-gray-600 font-medium" style="font-size:10px">1 Cabin Bag</span>
-                                <span class="text-gray-400" style="font-size:9px">Airline standard</span>
-                            </div>
-                            <div class="ml-2">
-                                <p class="text-gray-500" style="font-size:9px">Weight/size limits<br>set by the airline.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Checked --}}
-                    <div class="bg-white rounded-xl border border-gray-200 p-4">
-                        <h3 class="font-semibold text-gray-800 text-sm mb-1">Checked Baggage Included</h3>
-                        @if(empty($includedBaggage))
-                            <p class="text-red-500 font-medium" style="font-size:10px">No checked baggage included in this fare.</p>
-                        @else
-                            <div class="space-y-3">
-                                @foreach($includedBaggage as $bag)
-                                    <div class="flex items-center gap-3">
-                                        <svg class="w-8 h-8 text-teal-500" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="10" y="10" width="28" height="32" rx="3"/>
-                                            <path d="M18 10V6a2 2 0 012-2h8a2 2 0 012 2v4"/>
-                                        </svg>
-                                        <div>
-                                            <p class="text-gray-800 font-bold" style="font-size:10px">
-                                                {{ $bag['quantity'] ?? '1' }} Bag(s)
-                                            </p>
-                                            <p class="text-gray-400" style="font-size:9px">
-                                                Max {{ $bag['weight'] ?? '23' }}{{ $bag['weightUnit'] ?? 'KG' }} each
-                                            </p>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- ── Extra Checked Baggage ────────────────────────────────────── --}}
-                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4">
-                        <div class="flex-shrink-0 w-20 h-20 bg-slate-50 rounded-xl flex items-center justify-center">
-                            <svg class="w-12 h-14 text-slate-400" viewBox="0 0 48 56" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <rect x="6" y="12" width="36" height="38" rx="4"/>
-                                <path d="M16 12V8a2 2 0 012-2h12a2 2 0 012 2v4"/>
-                                <line x1="24" y1="20" x2="24" y2="44"/><line x1="14" y1="32" x2="34" y2="32"/>
-                            </svg>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-semibold text-gray-800 text-sm mb-1">Add Extra Checked Baggage</h3>
-                            <p class="text-gray-500 mb-3" style="font-size:10px">Purchase additional baggage allowance for your trip.</p>
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex items-center gap-1">
-                                        <span class="text-gray-600" style="font-size:10px">Extra Bag (23kg)</span>
-                                    </div>
-                                    <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden">
-                                        <button class="px-2 py-1 text-gray-500 hover:bg-gray-100 transition-colors font-bold" wire:click="decrementBaggage">−</button>
-                                        <span class="px-3 py-1 text-gray-800 font-semibold border-x border-gray-200" style="font-size:11px">{{ $baggageQty }}</span>
-                                        <button class="px-2 py-1 text-gray-500 hover:bg-gray-100 transition-colors font-bold" wire:click="incrementBaggage">+</button>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-3 sm:ml-auto">
-                                    <span class="font-bold text-gray-800 text-sm">${{ number_format($baggagePrice, 2) }} / bag</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- ── Dynamic Amenities / Ancillaries ─────────────────────────── --}}
-                @if(!empty($availableAncillaries))
-                <div class="space-y-3">
-                    <h3 class="font-bold text-gray-800 text-sm px-1">Enhance Your Experience</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        @foreach($availableAncillaries as $anc)
-                            <div class="bg-white rounded-xl border {{ isset($selectedAncillaries[$anc['code']]) ? 'border-indigo-500 bg-indigo-50/30' : 'border-gray-200' }} p-4 transition-all hover:shadow-md cursor-pointer" 
-                                 wire:click="toggleAncillary('{{ $anc['code'] }}')">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
-                                        @if(strpos(strtolower($anc['description']), 'lounge') !== false)
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                                        @elseif(strpos(strtolower($anc['description']), 'wifi') !== false || strpos(strtolower($anc['description']), 'internet') !== false)
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071a9.9 9.9 0 0114.142 0M2.828 9.9a15 15 0 0121.214 0"/></svg>
-                                        @else
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                                        @endif
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex items-center justify-between mb-0.5">
-                                            <p class="font-bold text-gray-800 text-sm capitalize">{{ ucwords(strtolower($anc['description'])) }}</p>
-                                            @if($anc['isChargeable'])
-                                                <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 rounded-full px-2 py-0.5">Chargeable</span>
-                                            @else
-                                                <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 rounded-full px-2 py-0.5">Included</span>
-                                            @endif
-                                        </div>
-                                        @php
-                                            $ancType = strtolower($anc['amenityType'] ?? '');
-                                            $ancSubtitle = match(true) {
-                                                str_contains($ancType, 'lounge') => 'Airport lounge access during your journey.',
-                                                str_contains($ancType, 'baggage') => 'Baggage allowance service.',
-                                                str_contains($ancType, 'meal') => 'In-flight meal service.',
-                                                str_contains($ancType, 'wifi') || str_contains($ancType, 'internet') => 'High-speed in-flight internet.',
-                                                str_contains($ancType, 'seat') => 'Advance seat selection.',
-                                                str_contains($ancType, 'pre_reserved_seat') => 'Reserve your preferred seat in advance.',
-                                                str_contains($ancType, 'entertainment') => 'In-flight entertainment system.',
-                                                default => ($anc['isChargeable'] ? 'Optional paid add-on for your booking.' : 'Included as part of your selected fare.')
-                                            };
-                                        @endphp
-                                        <p class="text-gray-500" style="font-size:9px">{{ $ancSubtitle }}</p>
-                                    </div>
-                                    <div class="ml-2">
-                                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors {{ isset($selectedAncillaries[$anc['code']]) ? 'bg-indigo-600 border-indigo-600' : 'border-gray-300' }}">
-                                            @if(isset($selectedAncillaries[$anc['code']]))
-                                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24 font-bold"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
+                
                 </div>
 
             </div>{{-- end LEFT --}}
