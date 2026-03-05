@@ -45,7 +45,7 @@ class AdditionalServices extends Component
 
         // Require Flight session to exist
         if (empty($this->selectedFlight)) {
-            $this->redirect(route('flights.search'), navigate: true);
+            $this->redirect(route('flights.search'));
             return;
         }
 
@@ -260,7 +260,7 @@ class AdditionalServices extends Component
 
     public function back(): void
     {
-        $this->redirect(route('passenger.details'), navigate: true);
+        $this->redirect(route('passenger.details'));
     }
 
     public function continue(): void
@@ -271,7 +271,7 @@ class AdditionalServices extends Component
             'booking_total' => $this->total()
         ]);
 
-        $this->redirect(route('seating'), navigate: true);
+        $this->redirect(route('seating'));
     }
 
     public function render()

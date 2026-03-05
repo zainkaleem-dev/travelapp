@@ -9,32 +9,12 @@
 
             {{-- Back / Next --}}
             <div class="flex items-center gap-2 flex-shrink-0">
-                <button type="button" onclick="window.history.back()"
-                    class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Back
-                </button>
-                <button type="button" onclick="window.history.forward()"
-                    class="flex items-center gap-1 px-3 py-1.5 rounded-full border border-indigo-200 text-indigo-600 font-medium hover:bg-indigo-50 transition-colors">
-                    Next
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+
             </div>
 
             {{-- Actions --}}
             <div class="flex items-center gap-2 flex-shrink-0">
-                <button
-                    class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    Find Reservation
-                </button>
+
                 <a href="{{ route('signup') }}" wire:navigate
                     class="flex items-center gap-1.5 px-3 py-1.5 font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +34,6 @@
     ══════════════════════════════════════════════════════════ --}}
     <div class="bg-white border-b border-gray-200">
         <div class="max-w-6xl mx-auto px-4">
-            <div class="hidden sm:block text-xs text-gray-400 py-1">Home / Login</div>
             <div class="flex items-center overflow-x-auto">
 
                 {{-- Active step --}}
