@@ -32,8 +32,8 @@
                                 {{ $index === 0 ? 'Outbound' : 'Return' }} Flight
                             </div>
                             <div class="flex items-center gap-3 sm:gap-4">
-                                <div class="w-7 h-7 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                                    <img src="https://pics.avs.io/64/64/{{ $itin['airlineCode'] }}.png" class="w-full h-full object-contain">
+                                <div class="w-11 h-11 flex items-center justify-center flex-shrink-0 relative overflow-hidden rounded-lg">
+                                    <img src="https://pics.avs.io/128/128/{{ $itin['airlineCode'] }}.png" class="w-full h-full object-contain">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2">

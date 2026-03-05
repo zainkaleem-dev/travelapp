@@ -565,15 +565,15 @@
     <main class="flex-1 min-w-0">
 
         {{-- Outbound header --}}
-        <div class="bg-blue-600 text-white rounded-xl px-4 py-3 mb-3 flex items-center justify-between flex-wrap gap-2">
+        <div class="bg-blue-500 text-white rounded-xl px-4 py-3 mb-3 flex items-center justify-between flex-wrap gap-2" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
             <div>
-                <p class="text-xs opacity-75 mb-0.5">Select Outbound Flight</p>
-                <p class="text-sm font-semibold">{{ $origin }} → {{ $destination }}</p>
-                <p class="text-xs opacity-75 mt-0.5">After selecting your outbound flight you will be directed to select your return flight</p>
+                <p class="text-xs font-medium text-white mb-0.5">Select Outbound Flight</p>
+                <p class="text-base font-bold text-white">{{ $origin }} → {{ $destination }}</p>
+                <p class="text-xs font-medium text-white mt-0.5">After selecting your outbound flight you will be directed to select your return flight</p>
             </div>
             <div class="text-right">
-                <p class="text-xs opacity-75">{{ $origin }} → {{ $destination }}</p>
-                <p class="text-sm font-bold">{{ \Carbon\Carbon::parse($departDate)->format('l d.m.Y') }}</p>
+                <p class="text-xs font-medium text-white">{{ $origin }} → {{ $destination }}</p>
+                <p class="text-base font-bold text-white">{{ \Carbon\Carbon::parse($departDate)->format('l d.m.Y') }}</p>
             </div>
         </div>
 
@@ -637,79 +637,99 @@
             </div>
 
             {{-- Flight list --}}
-            <div class="divide-y divide-gray-100" wire:loading.class="opacity-50" wire:target="search,selectDate,setSort">
+            <div class="space-y-4 p-4" wire:loading.class="opacity-50" wire:target="search,selectDate,setSort">
 
                 @forelse($this->flights as $flight)
-                    <div wire:key="flight-{{ $flight['id'] }}" class="flight-card px-4 py-3 {{ $flight['bgClass'] }}" x-data="{ open: false, cabin: 'economy' }">
-                        <div class="flex items-center gap-4 w-full">
-                            {{-- Route itineraries --}}
-                            <div class="flex-1 min-w-0 flex flex-col gap-3">
-                                @foreach($flight['itineraries'] ?? [] as $itin)
-                                    <div class="flex items-center gap-4">
-                                        {{-- Airline logo for itinerary --}}
-                                        <div class="w-8 h-8 flex-shrink-0 flex items-center justify-center relative">
-                                            <img src="https://pics.avs.io/64/64/{{ $itin['airlineCode'] }}.png" 
-                                                 alt="{{ $itin['airline'] }}"
-                                                 class="w-full h-full object-contain">
+                    <div wire:key="flight-{{ $flight['id'] }}" class="flight-card bg-white rounded-xl border border-gray-200 shadow-md overflow-hidden {{ $flight['bgClass'] }}" x-data="{ open: false, cabin: 'economy' }" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.06);">
+                        {{-- Outbound & Return in separate sections --}}
+                        <div class="flex flex-col sm:flex-row">
+                            <div class="flex-1 min-w-0 divide-y divide-gray-100">
+                                @php $itineraries = $flight['itineraries'] ?? []; @endphp
+                                @foreach($itineraries as $idx => $itin)
+                                    <div class="px-4 py-4 {{ $idx > 0 ? 'bg-gray-50/50' : '' }}" style="box-shadow: 0 1px 2px 0 rgba(0,0,0,0.03);">
+                                        {{-- Section label: Outbound / Return --}}
+                                        <div class="flex items-center gap-2 mb-3">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider {{ $idx === 0 ? 'bg-blue-100 text-blue-700' : 'bg-indigo-100 text-indigo-700' }}">
+                                                @if($idx === 0)
+                                                    <svg class="w-3 h-3 flex-shrink-0" style="margin-top: 0.5px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                                                    Outbound
+                                                @else
+                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" style="margin-top: 0.5px;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 12H5M5 12l5 5M5 12l5-5"/></svg>
+                                                    Return
+                                                @endif
+                                            </span>
                                         </div>
-
-                                        {{-- Route info --}}
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center gap-3">
-                                                {{-- Departure --}}
-                                                <div class="min-w-0 w-24">
-                                                    <p class="text-sm font-bold text-gray-800">{{ $itin['dep'] }}</p>
-                                                    <p class="text-xs text-gray-500 truncate" title="{{ $itin['depCity'] }}">{{ $itin['depCity'] }}</p>
-                                                    <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $itin['depAirport'] }}</p>
-                                                </div>
-
-                                                {{-- Route line --}}
-                                                <div class="flex-1 flex flex-col items-center gap-1">
-                                                    <span class="text-[9px] font-bold text-gray-500 uppercase">{{ $itin['flightNumber'] ?? '' }}</span>
-                                                    <div class="relative w-full flight-line flex items-center justify-between">
-                                                        <div class="flight-dot"></div>
-                                                        <div class="bg-white border border-gray-200 rounded px-1.5 py-0.5 text-[11px] text-gray-500 relative z-10 whitespace-nowrap">
-                                                            {{ $itin['stops'] }}
-                                                        </div>
-                                                        <div class="flight-dot"></div>
+                                        <div class="flex items-center gap-4">
+                                            {{-- Airline logo --}}
+                                            <div class="w-14 h-14 flex-shrink-0 flex items-center justify-center rounded-xl bg-gray-50 border border-gray-100 overflow-hidden shadow-sm">
+                                                <img src="https://pics.avs.io/128/128/{{ $itin['airlineCode'] }}.png"
+                                                     alt="{{ $itin['airline'] }}"
+                                                     class="w-full h-full object-contain">
+                                            </div>
+                                            {{-- Route info --}}
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-stretch gap-3">
+                                                    {{-- Departure: time + city + airport --}}
+                                                    <div class="min-w-0 w-28 rounded-xl border border-gray-100 bg-gray-50/80 px-3 py-2.5 flex flex-col justify-center">
+                                                        <p class="text-base font-bold text-gray-900">{{ $itin['dep'] }}</p>
+                                                        <p class="text-xs font-medium text-gray-600 truncate mt-0.5" title="{{ $itin['depCity'] }}">{{ $itin['depCity'] }}</p>
+                                                        <p class="text-xs text-gray-500 font-medium truncate max-w-[120px]">{{ $itin['depAirport'] }}</p>
                                                     </div>
-                                                    <p class="text-[11px] text-gray-400 whitespace-nowrap">{{ $itin['duration'] }}</p>
-                                                </div>
-
-                                                {{-- Arrival --}}
-                                                <div class="text-right min-w-0 w-24">
-                                                    <p class="text-sm font-bold text-gray-800">{{ $itin['arr'] }}</p>
-                                                    <p class="text-xs text-gray-500 truncate" title="{{ $itin['arrCity'] }}">{{ $itin['arrCity'] }}</p>
-                                                    <p class="text-xs text-gray-400 truncate max-w-[120px]">{{ $itin['arrAirport'] }}</p>
+                                                    <div class="flex-1 flex flex-col items-center justify-center gap-2 min-w-0">
+                                                        {{-- Flight number badge (center-aligned) --}}
+                                                        <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-gradient-to-r from-slate-100 to-blue-50 text-blue-700 border border-blue-100/80 shadow-sm w-full max-w-[120px] text-center">
+                                                            {{ $itin['flightNumber'] ?? '' }}
+                                                        </span>
+                                                        {{-- Route line: start dot → stops → arrow only (no end dot) --}}
+                                                        <div class="relative w-full flex items-center py-1.5" style="min-height: 28px;">
+                                                            <div class="absolute left-0 right-0 top-1/2 h-0.5 rounded-full bg-gradient-to-r from-blue-200 via-blue-300 to-indigo-400 opacity-90" style="margin-top: -1px;"></div>
+                                                            <div class="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex-shrink-0 relative z-10 border-2 border-white shadow-md ring-2 ring-blue-200/50 self-center"></div>
+                                                            <div class="flex-1 min-w-0"></div>
+                                                            <div class="relative z-10 px-3 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap bg-white/95 text-gray-700 border border-gray-200/80 shadow-md ring-1 ring-gray-100 backdrop-blur-sm text-center min-w-[4.5rem]">
+                                                                {{ $itin['stops'] }}
+                                                            </div>
+                                                            <div class="flex-1 min-w-0"></div>
+                                                            <svg class="w-5 h-5 text-indigo-500 flex-shrink-0 relative z-10 drop-shadow-sm self-center block" style="vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                                            </svg>
+                                                        </div>
+                                                        {{-- Duration (center-aligned) --}}
+                                                        <div class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-100 text-[11px] font-semibold text-slate-700 w-full max-w-[120px]">
+                                                            <svg class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+                                                            <span>{{ $itin['duration'] }}</span>
+                                                        </div>
+                                                    </div>
+                                                    {{-- Arrival: time + city + airport --}}
+                                                    <div class="text-right min-w-0 w-28 rounded-xl border border-gray-100 bg-gray-50/80 px-3 py-2.5 flex flex-col justify-center">
+                                                        <p class="text-base font-bold text-gray-900">{{ $itin['arr'] }}</p>
+                                                        <p class="text-xs font-medium text-gray-600 truncate mt-0.5" title="{{ $itin['arrCity'] }}">{{ $itin['arrCity'] }}</p>
+                                                        <p class="text-xs text-gray-500 font-medium truncate max-w-[120px]">{{ $itin['arrAirport'] }}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
-                            {{-- Price & CTA --}}
-                            <div class="text-right flex-shrink-0 w-36">
-                                
-                                <p class="text-lg font-bold text-gray-800">${{ $flight['price'] }}</p>
-
-                                @if(!empty($flight['oldPrice']))
-                                    <p class="text-xs text-gray-500 line-through">${{ number_format($flight['oldPrice'], 2) }}</p>
-                                @elseif(!empty($flight['note']))
-                                    <p class="text-xs text-red-500 font-medium">{{ $flight['note'] }}</p>
-                                @else
-                                    <p class="text-xs text-gray-400">Per person</p>
-                                @endif
-
+                            {{-- Price & CTA (right column / bottom on small screens) --}}
+                            <div class="flex-shrink-0 px-5 py-5 sm:py-6 border-t sm:border-t-0 sm:border-l border-gray-200/80 bg-gradient-to-b from-white to-gray-50/50 flex flex-row sm:flex-col items-center justify-between sm:justify-center gap-5 sm:w-44">
+                                <div class="text-left sm:text-center space-y-1">
+                                    <p class="text-2xl font-bold text-gray-900 tracking-tight">${{ number_format($flight['price'], 2) }}</p>
+                                    @if(!empty($flight['oldPrice']))
+                                        <p class="text-xs text-gray-500 line-through">${{ number_format($flight['oldPrice'], 2) }}</p>
+                                    @elseif(!empty($flight['note']))
+                                        <p class="text-xs text-red-500 font-medium">{{ $flight['note'] }}</p>
+                                    @else
+                                        <p class="text-xs text-gray-500 font-medium">Per person</p>
+                                    @endif
+                                </div>
                                 <button wire:click="selectFlight('{{ $flight['id'] }}')"
-                                   class="mt-1 w-full py-1.5 {{ $flight['btnClass'] }} text-white text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1">
+                                        class="flex-shrink-0 w-full sm:w-auto px-6 py-3 {{ $flight['btnClass'] }} text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">
                                     Select
                                 </button>
                             </div>
                         </div>
-
                     </div>
-
-
 
                 @empty
                     <div class="flex flex-col items-center justify-center py-16 text-gray-400">

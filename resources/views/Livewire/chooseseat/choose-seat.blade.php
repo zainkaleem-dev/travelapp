@@ -1,4 +1,4 @@
-﻿<div>
+<div>
     {{-- ─── Page body ───────────────────────────────────────────────────────── --}}
     <div class="max-w-6xl mx-auto px-4 py-4">
         <div class="flex flex-col lg:flex-row gap-4">
@@ -31,8 +31,8 @@
                             <div class="flex items-center gap-3 {{ !$loop->first ? 'pt-4 border-t border-gray-50' : '' }}">
                                 <div class="flex flex-col items-center gap-1 flex-shrink-0">
                                     <div
-                                        class="w-7 h-7 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                                        <img src="https://pics.avs.io/64/64/{{ $itin['airlineCode'] }}.png"
+                                        class="w-11 h-11 flex items-center justify-center flex-shrink-0 relative overflow-hidden rounded-lg">
+                                        <img src="https://pics.avs.io/128/128/{{ $itin['airlineCode'] }}.png"
                                             class="w-full h-full object-contain">
                                     </div>
                                     <span class="font-bold text-gray-400 uppercase"
