@@ -1,26 +1,28 @@
 <div>
 
 {{-- ══════════════════════════════════════════════════════════
-     SEARCH BAR
+     SEARCH BAR — Professional, modern, eye-catching
 ══════════════════════════════════════════════════════════ --}}
-<div class="bg-blue-600 py-3 overflow-visible relative z-10">
-    <div class="max-w-7xl mx-auto px-4 flex items-center gap-2 sm:gap-3 flex-nowrap min-h-[52px] overflow-visible">
+<div class="relative overflow-visible z-10 py-4" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%); box-shadow: 0 4px 24px rgba(29, 78, 216, 0.35), inset 0 1px 0 rgba(255,255,255,0.12);">
+    <div class="max-w-7xl mx-auto px-4 flex items-center gap-2 sm:gap-3 flex-nowrap min-h-[56px] overflow-visible">
 
-        {{-- Origin with airport dropdown (like flights-search) --}}
+        {{-- Origin with airport dropdown --}}
         <div class="relative flex-shrink-0"
              wire:click.outside="$set('showOriginAirports', false)">
-            <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
-                 wire:click="$set('showOriginAirports', true)">
-                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
-                </svg>
+            <div class="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200"
+                 wire:click="$set('showOriginAirports', true)"
+                 style="min-height: 44px;">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </span>
                 <input
-                    class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-36 min-w-[7rem] max-w-[12rem]"
+                    class="bg-transparent font-semibold placeholder-white/80 focus:outline-none text-sm w-36 min-w-[7rem] max-w-[12rem]"
                     type="text"
                     wire:model.live.debounce.150ms="origin"
                     wire:focus="$set('showOriginAirports', true)"
-                    placeholder="City or airport"
+                    placeholder="From"
                     autocomplete="off">
             </div>
 
@@ -63,8 +65,8 @@
             @endif
         </div>
 
-        {{-- Swap button: swap departure and return airports --}}
-        <button type="button" wire:click="swapAirports" class="text-white/70 hover:text-white transition-colors flex-shrink-0 p-1 shrink-0" title="Swap departure and destination">
+        {{-- Swap button --}}
+        <button type="button" wire:click="swapAirports" class="flex-shrink-0 h-10 w-10 rounded-xl border border-white/25 bg-white/15 backdrop-blur-sm text-white hover:bg-white/25 hover:border-white/40 transition-all duration-200 flex items-center justify-center shrink-0" title="Swap departure and destination">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
             </svg>
@@ -73,18 +75,20 @@
         {{-- Destination with airport dropdown --}}
         <div class="relative flex-shrink-0"
              wire:click.outside="$set('showDestinationAirports', false)">
-            <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm"
-                 wire:click="$set('showDestinationAirports', true)">
-                <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/>
-                </svg>
+            <div class="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200"
+                 wire:click="$set('showDestinationAirports', true)"
+                 style="min-height: 44px;">
+                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </span>
                 <input
-                    class="bg-transparent font-medium placeholder-white/70 focus:outline-none text-sm w-36 min-w-[7rem] max-w-[12rem]"
+                    class="bg-transparent font-semibold placeholder-white/80 focus:outline-none text-sm w-36 min-w-[7rem] max-w-[12rem]"
                     type="text"
                     wire:model.live.debounce.150ms="destination"
                     wire:focus="$set('showDestinationAirports', true)"
-                    placeholder="City or airport"
+                    placeholder="To"
                     autocomplete="off">
             </div>
 
@@ -128,7 +132,7 @@
         </div>
 
         {{-- Departing date (separate calendar) --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm flex-shrink-0"
+        <div class="relative flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 flex-shrink-0 min-h-[44px]"
              x-data="singleDatePicker({
                     value: @js($departDate),
                     flexible: false,
@@ -136,25 +140,24 @@
                     wireFlexibleKey: null,
                     title: 'Please choose your departure date',
                 })"
-             x-init="init()">
-            <svg class="w-4 h-4 opacity-70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
+             x-init="init()"
+             @click.outside="open = false">
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 flex-shrink-0">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+            </span>
             <button type="button"
-                    class="bg-transparent text-xs sm:text-sm text-white focus:outline-none cursor-pointer whitespace-nowrap"
-                    @click="open = true"
+                    class="bg-transparent text-xs sm:text-sm font-semibold text-white focus:outline-none cursor-pointer whitespace-nowrap"
+                    @click="open = !open"
                     x-text="display || 'Departing'">
             </button>
 
-            {{-- Calendar modal for departing --}}
-            <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center p-4"
-                 aria-modal="true" role="dialog">
-                <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="open = false"></div>
-
-                <div class="relative w-full max-w-lg rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col border border-gray-100">
+            {{-- Calendar dropdown below button --}}
+            <div x-cloak x-show="open" x-transition
+                 class="absolute left-0 top-full z-[999] mt-2 rounded-2xl bg-white shadow-xl border border-gray-200 overflow-hidden flex flex-col"
+                 style="min-width: 320px;"
+                 @click.stop>
                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
                         <div class="flex items-center gap-2">
                             <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
@@ -167,21 +170,21 @@
                         </div>
                     </div>
 
-                    <div class="p-5">
+                    <div class="p-5 w-full box-border">
                         <div class="grid grid-cols-1">
                             <template x-for="m in months" :key="m.key">
-                                <div>
+                                <div class="w-full">
                                     <div class="flex items-center justify-between mb-5">
                                         <button type="button"
-                                                class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                                class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
                                                 @click.prevent="prevMonth()">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                                             </svg>
                                         </button>
-                                        <p class="text-base font-semibold text-gray-900" x-text="m.title"></p>
+                                        <p class="text-base font-semibold text-gray-900 shrink-0" x-text="m.title"></p>
                                         <button type="button"
-                                                class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                                class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
                                                 @click.prevent="nextMonth()">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -189,16 +192,16 @@
                                         </button>
                                     </div>
 
-                                    <div class="grid grid-cols-7 gap-0.5 text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">
+                                    <div class="grid grid-cols-7 gap-x-1 gap-y-0 w-full mb-2" style="grid-template-columns: repeat(7, minmax(2rem, 1fr));">
                                         <template x-for="d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']" :key="d">
-                                            <div class="flex h-8 items-center justify-center" x-text="d"></div>
+                                            <div class="flex h-8 min-w-[2rem] w-full items-center justify-center text-[11px] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap" x-text="d"></div>
                                         </template>
                                     </div>
 
-                                    <div class="grid grid-cols-7 gap-1">
+                                    <div class="grid gap-1 w-full" style="grid-template-columns: repeat(7, minmax(2rem, 1fr));">
                                         <template x-for="cell in m.cells" :key="cell.key">
                                             <button type="button"
-                                                    class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
+                                                    class="flex h-9 min-w-[2rem] w-full max-w-[2.5rem] mx-auto items-center justify-center rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed shrink-0"
                                                     :disabled="cell.disabled || !cell.day"
                                                     @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
                                                 <span x-text="cell.day || ''"></span>
@@ -221,11 +224,10 @@
                         </button>
                     </div>
                 </div>
-            </div>
         </div>
 
         {{-- Returning date (separate calendar) --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm flex-shrink-0"
+        <div class="relative flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 flex-shrink-0 min-h-[44px]"
              x-data="singleDatePicker({
                     value: @js($returnDate),
                     flexible: false,
@@ -233,25 +235,24 @@
                     wireFlexibleKey: null,
                     title: 'Please choose your return date',
                 })"
-             x-init="init()">
-            <svg class="w-4 h-4 opacity-70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
+             x-init="init()"
+             @click.outside="open = false">
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 flex-shrink-0">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+            </span>
             <button type="button"
-                    class="bg-transparent text-xs sm:text-sm text-white focus:outline-none cursor-pointer whitespace-nowrap"
-                    @click="open = true"
+                    class="bg-transparent text-xs sm:text-sm font-semibold text-white focus:outline-none cursor-pointer whitespace-nowrap"
+                    @click="open = !open"
                     x-text="display || 'Returning'">
             </button>
 
-            {{-- Calendar modal for returning --}}
-            <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center p-4"
-                 aria-modal="true" role="dialog">
-                <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="open = false"></div>
-
-                <div class="relative w-full max-w-lg rounded-2xl bg-white shadow-xl overflow-hidden flex flex-col border border-gray-100">
+            {{-- Calendar dropdown below button --}}
+            <div x-cloak x-show="open" x-transition
+                 class="absolute left-0 top-full z-[999] mt-2 rounded-2xl bg-white shadow-xl border border-gray-200 overflow-hidden flex flex-col"
+                 style="min-width: 320px;"
+                 @click.stop>
                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
                         <div class="flex items-center gap-2">
                             <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
@@ -264,21 +265,21 @@
                         </div>
                     </div>
 
-                    <div class="p-5">
+                    <div class="p-5 w-full box-border">
                         <div class="grid grid-cols-1">
                             <template x-for="m in months" :key="m.key">
-                                <div>
+                                <div class="w-full">
                                     <div class="flex items-center justify-between mb-5">
                                         <button type="button"
-                                                class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                                class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
                                                 @click.prevent="prevMonth()">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                                             </svg>
                                         </button>
-                                        <p class="text-base font-semibold text-gray-900" x-text="m.title"></p>
+                                        <p class="text-base font-semibold text-gray-900 shrink-0" x-text="m.title"></p>
                                         <button type="button"
-                                                class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                                class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
                                                 @click.prevent="nextMonth()">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -286,16 +287,16 @@
                                         </button>
                                     </div>
 
-                                    <div class="grid grid-cols-7 gap-0.5 text-[11px] font-medium text-gray-500 uppercase tracking-wider mb-3">
+                                    <div class="grid grid-cols-7 gap-x-1 gap-y-0 w-full mb-2" style="grid-template-columns: repeat(7, minmax(2rem, 1fr));">
                                         <template x-for="d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']" :key="d">
-                                            <div class="flex h-8 items-center justify-center" x-text="d"></div>
+                                            <div class="flex h-8 min-w-[2rem] w-full items-center justify-center text-[11px] font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap" x-text="d"></div>
                                         </template>
                                     </div>
 
-                                    <div class="grid grid-cols-7 gap-1">
+                                    <div class="grid gap-1 w-full" style="grid-template-columns: repeat(7, minmax(2rem, 1fr));">
                                         <template x-for="cell in m.cells" :key="cell.key">
                                             <button type="button"
-                                                    class="flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed"
+                                                    class="flex h-9 min-w-[2rem] w-full max-w-[2.5rem] mx-auto items-center justify-center rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed shrink-0"
                                                     :disabled="cell.disabled || !cell.day"
                                                     @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
                                                 <span x-text="cell.day || ''"></span>
@@ -318,23 +319,24 @@
                         </button>
                     </div>
                 </div>
-            </div>
         </div>
 
         {{-- Passengers (dropdown UI similar to search page) --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm relative flex-shrink-0 min-w-[7rem]"
+        <div class="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 relative flex-shrink-0 min-w-[7rem] min-h-[44px]"
              x-data="{ open: false }"
              @click.outside="open = false">
-            <svg class="w-4 h-4 opacity-70" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 flex-shrink-0">
+                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </span>
 
             <button type="button"
                     class="field-select text-left w-full flex items-center justify-between bg-transparent text-white text-xs sm:text-sm"
                     @click="open = !open"
                     aria-haspopup="listbox"
                     :aria-expanded="open">
-                <span class="text-white">
+                <span class="text-white font-semibold">
                     {{ $passengers }} {{ $passengers === 1 ? 'Passenger' : 'Passengers' }}
                 </span>
                 <span class="ml-1">
@@ -423,18 +425,20 @@
         </div>
 
         {{-- Class dropdown (Economy, Premium Economy, Business, First) --}}
-        <div class="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-white text-sm relative flex-shrink-0 min-w-[7rem]"
+        <div class="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 relative flex-shrink-0 min-w-[7rem] min-h-[44px]"
              x-data="{ open: false }"
              @click.outside="open = false">
-            <svg class="w-4 h-4 opacity-70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-            </svg>
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 flex-shrink-0">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+            </span>
             <button type="button"
                     class="field-select text-left w-full flex items-center justify-between bg-transparent text-white text-xs sm:text-sm min-w-[140px]"
                     @click="open = !open"
                     aria-haspopup="listbox"
                     :aria-expanded="open">
-                <span class="text-white truncate">{{ $travelClass }}</span>
+                <span class="text-white font-semibold truncate">{{ $travelClass }}</span>
                 <span class="ml-1 flex-shrink-0">
                     <svg class="w-3.5 h-3.5 transition-transform" :class="{ 'rotate-180': open }" fill="none"
                          stroke="currentColor" viewBox="0 0 24 24">
@@ -476,8 +480,12 @@
 
         <button type="button" wire:click="search"
                 wire:loading.attr="disabled"
-                class="flex-shrink-0 ml-auto px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-2 self-center">
-            <span wire:loading.remove wire:target="search">Search</span>
+                class="flex-shrink-0 ml-auto rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent flex items-center gap-2 self-center min-h-[44px]"
+                style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
+            <span wire:loading.remove wire:target="search" class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                Search
+            </span>
             <span wire:loading wire:target="search" class="flex items-center gap-1.5">
                 <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -496,64 +504,85 @@
 <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6" wire:init="$dispatch('loadDateRailPrices')">
 
     {{-- ─── SIDEBAR FILTERS ────────────────────────────────── --}}
-    <aside class="w-full lg:w-64 flex-shrink-0 space-y-6">
+    <aside class="w-full lg:w-64 flex-shrink-0 space-y-5">
 
         {{-- Price Range --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <h3 class="text-sm font-bold text-gray-900 mb-4">Price Range</h3>
-            <div class="space-y-4">
-                <div class="flex items-center justify-between text-xs text-gray-500">
-                    <span>${{ number_format($priceMin) }}</span>
-                    <span>${{ number_format($priceMax) }}</span>
+        <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
+                <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </span>
+                    Price Range
+                </h3>
+            </div>
+            <div class="p-4 space-y-4">
+                <div class="flex items-center justify-between text-xs font-medium text-gray-500">
+                    <span class="text-gray-600">${{ number_format($priceMin) }}</span>
+                    <span class="text-gray-600">${{ number_format($priceMax) }}</span>
                 </div>
                 <input type="range" wire:model.live.debounce.250ms="priceMax" min="100" max="500000" step="500"
-                       class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                <div class="grid grid-cols-2 gap-2 mt-2">
+                       class="flight-list-price-range w-full h-2 rounded-full appearance-none cursor-pointer bg-gray-200 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-0 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500 [&::-moz-range-thumb]:border-0">
+                <div class="grid grid-cols-2 gap-3">
                     <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">$</span>
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">$</span>
                         <input type="number" wire:model.live.debounce.500ms="priceMin"
-                               class="w-full pl-6 pr-2 py-2.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none transition-all">
+                               class="w-full pl-7 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 outline-none transition-all bg-gray-50/50 hover:bg-white">
                     </div>
                     <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">$</span>
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">$</span>
                         <input type="number" wire:model.live.debounce.500ms="priceMax"
-                               class="w-full pl-6 pr-2 py-2.5 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none transition-all">
+                               class="w-full pl-7 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 outline-none transition-all bg-gray-50/50 hover:bg-white">
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- Stops --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <h3 class="text-sm font-bold text-gray-900 mb-4">Stops</h3>
-            <div class="space-y-3">
-                <label class="flex items-center group cursor-pointer">
-                    <input type="checkbox" wire:model.live="stops" value="any" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                    <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">Any stops</span>
+        <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
+                <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8v8M3 21h18M3 10h18M3 7l9-4 9 4M3 10l9 4 9-4"/></svg>
+                    </span>
+                    Stops
+                </h3>
+            </div>
+            <div class="p-4 space-y-1">
+                <label class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
+                    <input type="checkbox" wire:model.live="stops" value="any" class="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 cursor-pointer">
+                    <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">Any stops</span>
                 </label>
-                <label class="flex items-center group cursor-pointer">
-                    <input type="checkbox" wire:model.live="stops" value="direct" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                    <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">Non-stop</span>
+                <label class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
+                    <input type="checkbox" wire:model.live="stops" value="direct" class="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 cursor-pointer">
+                    <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">Non-stop</span>
                 </label>
-                <label class="flex items-center group cursor-pointer">
-                    <input type="checkbox" wire:model.live="stops" value="1stop" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                    <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">1 Stop</span>
+                <label class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
+                    <input type="checkbox" wire:model.live="stops" value="1stop" class="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 cursor-pointer">
+                    <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">1 Stop</span>
                 </label>
             </div>
         </div>
 
         {{-- Airlines --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <h3 class="text-sm font-bold text-gray-900 mb-4">Airlines</h3>
-            <div class="space-y-3 max-h-64 overflow-y-auto pr-2 no-scrollbar">
-                <label class="flex items-center group cursor-pointer">
-                    <input type="checkbox" wire:model.live="airlines" value="any" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                    <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">All Airlines</span>
+        <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
+                <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                    </span>
+                    Airlines
+                </h3>
+            </div>
+            <div class="p-3 space-y-0.5 max-h-64 overflow-y-auto pr-1 no-scrollbar">
+                <label class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
+                    <input type="checkbox" wire:model.live="airlines" value="any" class="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 cursor-pointer">
+                    <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">All Airlines</span>
                 </label>
                 @foreach($this->availableAirlines as $airline)
-                    <label class="flex items-center group cursor-pointer">
-                        <input type="checkbox" wire:model.live="airlines" value="{{ strtolower($airline) }}" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        <span class="ml-3 text-sm text-gray-600 group-hover:text-gray-900">{{ $airline }}</span>
+                    <label class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
+                        <input type="checkbox" wire:model.live="airlines" value="{{ strtolower($airline) }}" class="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 cursor-pointer">
+                        <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ $airline }}</span>
                     </label>
                 @endforeach
             </div>
@@ -567,9 +596,7 @@
         {{-- Outbound header --}}
         <div class="bg-blue-500 text-white rounded-xl px-4 py-3 mb-3 flex items-center justify-between flex-wrap gap-2" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
             <div>
-                <p class="text-xs font-medium text-white mb-0.5">Select Outbound Flight</p>
                 <p class="text-base font-bold text-white">{{ $origin }} → {{ $destination }}</p>
-                <p class="text-xs font-medium text-white mt-0.5">After selecting your outbound flight you will be directed to select your return flight</p>
             </div>
             <div class="text-right">
                 <p class="text-xs font-medium text-white">{{ $origin }} → {{ $destination }}</p>
