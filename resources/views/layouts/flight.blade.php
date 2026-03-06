@@ -48,38 +48,27 @@
         /* ── Tab underline ── */
         .trip-tab {
             position: relative;
-            padding: 10px 0;
-            margin-right: 24px;
+            padding: 8px 16px;
+            margin-right: 8px;
             font-size: 13px;
+            font-weight: 500;
             color: #555;
             cursor: pointer;
-            background: none;
-            border: none;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
             outline: none;
-            transition: color .15s;
+            transition: all .15s;
             white-space: nowrap;
         }
 
-        .trip-tab::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #1a56db;
-            border-radius: 2px;
-            transform: scaleX(0);
-            transition: transform .2s;
-        }
+        /* .trip-tab::after removed as we use background/border now */
 
         .trip-tab.active {
-            color: #1a56db;
+            color: #fff;
+            background: #2ab4c0;
+            border-color: #2ab4c0;
             font-weight: 600;
-        }
-
-        .trip-tab.active::after {
-            transform: scaleX(1);
         }
 
         /* ── Input field ── */
@@ -93,8 +82,8 @@
         }
 
         .field-wrap:focus-within {
-            border-color: #1a56db;
-            box-shadow: 0 0 0 2px rgba(26, 86, 219, .12);
+            border-color: #2ab4c0;
+            box-shadow: 0 0 0 2px rgba(42, 180, 192, .12);
         }
 
         .field-label {
@@ -194,7 +183,7 @@
 
         /* ── Search button ── */
         .btn-search {
-            background: #2563eb;
+            background: #2ab4c0;
             color: #fff;
             font-weight: 600;
             font-size: 14px;
@@ -212,7 +201,7 @@
         }
 
         .btn-search:hover {
-            background: #1d4ed8;
+            background: #239ea9;
         }
 
         .btn-search:active {
@@ -301,7 +290,7 @@
         }
 
         .btn-add-flight:hover {
-            color: #1a56db;
+            color: #2ab4c0;
         }
 
         .btn-add-flight .add-icon {
@@ -319,8 +308,8 @@
         }
 
         .btn-add-flight:hover .add-icon {
-            border-color: #1a56db;
-            color: #1a56db;
+            border-color: #2ab4c0;
+            color: #2ab4c0;
         }
 
         /* login link */
@@ -333,7 +322,7 @@
         }
 
         .login-link a {
-            color: #1a56db;
+            color: #2ab4c0;
             text-decoration: underline;
             cursor: pointer;
         }
@@ -465,7 +454,7 @@
                     </div>
                 @else
                     <a href="{{ route('login') }}"
-                        class="px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        class="px-3 py-1.5 text-sm font-semibold bg-[#2ab4c0] text-white rounded-md hover:bg-[#239ea9] transition-colors">
                         Login / Register
                     </a>
                 @endauth
@@ -479,7 +468,7 @@
 
             <div class="flex items-center">
                 <div
-                    class="flex items-center gap-1 px-4 py-2 {{ request()->is('flights-search') || request()->is('flights-list') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
+                    class="flex items-center gap-1 px-4 py-2 {{ request()->is('flights-search') || request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
@@ -487,15 +476,15 @@
                     Search Flight
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
+                    class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
                     Additional Services
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('seating') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
+                    class="px-4 py-2 {{ request()->is('seating') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
                     Choice Seat
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('passenger-details') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
+                    class="px-4 py-2 {{ request()->is('passenger-details') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
                     Passenger Details
                 </div>
             </div>

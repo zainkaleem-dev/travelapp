@@ -3,7 +3,7 @@
 {{-- ══════════════════════════════════════════════════════════
      SEARCH BAR — Professional, modern, eye-catching
 ══════════════════════════════════════════════════════════ --}}
-<div class="relative overflow-visible z-10 py-4" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%); box-shadow: 0 4px 24px rgba(29, 78, 216, 0.35), inset 0 1px 0 rgba(255,255,255,0.12);">
+<div class="relative overflow-visible z-10 py-4" style="background: linear-gradient(135deg, #2ab4c0 0%, #239ea9 100%); box-shadow: 0 4px 24px rgba(42, 180, 192, 0.35), inset 0 1px 0 rgba(255,255,255,0.12);">
     <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center gap-3 min-h-[56px] overflow-visible py-2">
 
         {{-- Origin with airport dropdown --}}
@@ -55,7 +55,7 @@
                                     <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                 </div>
                                 <span
-                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
                             </button>
                         @empty
                             <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -121,7 +121,7 @@
                                     <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                 </div>
                                 <span
-                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
                             </button>
                         @empty
                             <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -160,7 +160,7 @@
                  @click.stop>
                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
                         <div class="flex items-center gap-2">
-                            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#2ab4c0]/10 text-[#2ab4c0]">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -218,7 +218,7 @@
                                 class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
                                 @click="open = false">Close</button>
                         <button type="button"
-                                class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 :disabled="!iso" @click="apply(); open = false">
                             Done
                         </button>
@@ -255,7 +255,7 @@
                  @click.stop>
                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
                         <div class="flex items-center gap-2">
-                            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                            <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#2ab4c0]/10 text-[#2ab4c0]">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -313,7 +313,7 @@
                                 class="px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
                                 @click="open = false">Close</button>
                         <button type="button"
-                                class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 :disabled="!iso" @click="apply(); open = false">
                             Done
                         </button>
@@ -464,11 +464,11 @@
                                 class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
                                 wire:click="setTravelClass('{{ $classOpt }}')"
                                 @click="open = false">
-                            <span class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                            <span class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium' }}">
                                 {{ $classOpt }}
                             </span>
                             @if($isSelected)
-                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                                 </svg>
                             @endif
@@ -510,7 +510,7 @@
         <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 overflow-hidden">
             <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
                 <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
-                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2ab4c0]/10 text-[#2ab4c0]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </span>
                     Price Range
@@ -522,7 +522,7 @@
                     <span class="text-gray-600">${{ number_format($priceMax) }}</span>
                 </div>
                 <input type="range" wire:model.live.debounce.250ms="priceMax" min="100" max="500000" step="500"
-                       class="flight-list-price-range w-full h-2 rounded-full appearance-none cursor-pointer bg-gray-200 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-0 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500 [&::-moz-range-thumb]:border-0">
+                       class="flight-list-price-range w-full h-2 rounded-full appearance-none cursor-pointer bg-gray-200 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#2ab4c0] [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-0 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#2ab4c0] [&::-moz-range-thumb]:border-0">
                 <div class="grid grid-cols-2 gap-3">
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">$</span>
@@ -542,7 +542,7 @@
         <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 overflow-hidden">
             <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
                 <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
-                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2ab4c0]/10 text-[#2ab4c0]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8v8M3 21h18M3 10h18M3 7l9-4 9 4M3 10l9 4 9-4"/></svg>
                     </span>
                     Stops
@@ -550,7 +550,7 @@
             </div>
             <div class="p-4 space-y-1">
                 <label class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
-                    <input type="checkbox" wire:model.live="stops" value="any" class="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 cursor-pointer">
+                    <input type="checkbox" wire:model.live="stops" value="any" class="w-4 h-4 rounded border-2 border-gray-300 text-[#2ab4c0] focus:ring-2 focus:ring-[#2ab4c0]/40 focus:ring-offset-0 cursor-pointer">
                     <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">Any stops</span>
                 </label>
                 <label class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
@@ -568,7 +568,7 @@
         <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 overflow-hidden">
             <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
                 <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
-                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2ab4c0]/10 text-[#2ab4c0]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                     </span>
                     Airlines
@@ -581,7 +581,7 @@
                 </label>
                 @foreach($this->availableAirlines as $airline)
                     <label class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
-                        <input type="checkbox" wire:model.live="airlines" value="{{ strtolower($airline) }}" class="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-0 cursor-pointer">
+                        <input type="checkbox" wire:model.live="airlines" value="{{ strtolower($airline) }}" class="w-4 h-4 rounded border-2 border-gray-300 text-[#2ab4c0] focus:ring-2 focus:ring-[#2ab4c0]/40 focus:ring-offset-0 cursor-pointer">
                         <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">{{ $airline }}</span>
                     </label>
                 @endforeach
@@ -594,7 +594,7 @@
     <main class="flex-1 min-w-0">
 
         {{-- Outbound header --}}
-        <div class="bg-blue-500 text-white rounded-xl px-4 py-3 mb-3 flex items-center justify-between flex-wrap gap-2" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
+        <div class="bg-[#2ab4c0] text-white rounded-xl px-4 py-3 mb-3 flex items-center justify-between flex-wrap gap-2" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
             <div>
                 <p class="text-base font-bold text-white">{{ $origin }} → {{ $destination }}</p>
             </div>
@@ -639,9 +639,9 @@
                                 wire:click="selectDate('{{ $day['date'] }}')"
                                 class="flex-shrink-0 text-center px-4 py-1.5 rounded-xl cursor-pointer transition-all duration-200
                                        {{ $selectedDate === $day['date']
-                                           ? 'bg-blue-600 shadow-md shadow-blue-200 scale-105'
+                                           ? 'bg-[#2ab4c0] shadow-md shadow-[#2ab4c0]/20 scale-105'
                                            : 'hover:bg-white hover:shadow-sm' }}">
-                            <p class="text-[10px] font-medium uppercase tracking-wider {{ $selectedDate === $day['date'] ? 'text-blue-100' : 'text-gray-400' }}">
+                            <p class="text-[10px] font-medium uppercase tracking-wider {{ $selectedDate === $day['date'] ? 'text-[#2ab4c0]/90' : 'text-gray-400' }}">
                                 {{ $day['label'] }}
                             </p>
                             @if($day['price'])
@@ -676,7 +676,7 @@
                                     <div class="px-4 py-4 {{ $idx > 0 ? 'bg-gray-50/50' : '' }}" style="box-shadow: 0 1px 2px 0 rgba(0,0,0,0.03);">
                                         {{-- Section label: Outbound / Return --}}
                                         <div class="flex items-center gap-2 mb-3">
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider {{ $idx === 0 ? 'bg-blue-100 text-blue-700' : 'bg-indigo-100 text-indigo-700' }}">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider {{ $idx === 0 ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-indigo-100 text-indigo-700' }}">
                                                 @if($idx === 0)
                                                     <svg class="w-3 h-3 flex-shrink-0" style="margin-top: 0.5px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                                                     Outbound
@@ -704,13 +704,13 @@
                                                     </div>
                                                     <div class="flex-1 flex flex-col items-center justify-center gap-2 min-w-0">
                                                         {{-- Flight number badge (center-aligned) --}}
-                                                        <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-gradient-to-r from-slate-100 to-blue-50 text-blue-700 border border-blue-100/80 shadow-sm w-full max-w-[120px] text-center">
+                                                        <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-gradient-to-r from-slate-100 to-[#2ab4c0]/5 text-[#2ab4c0] border border-[#2ab4c0]/10 shadow-sm w-full max-w-[120px] text-center">
                                                             {{ $itin['flightNumber'] ?? '' }}
                                                         </span>
                                                         {{-- Route line: start dot → stops → arrow only (no end dot) --}}
                                                         <div class="relative w-full flex items-center py-1.5" style="min-height: 28px;">
-                                                            <div class="absolute left-0 right-0 top-1/2 h-0.5 rounded-full bg-gradient-to-r from-blue-200 via-blue-300 to-indigo-400 opacity-90" style="margin-top: -1px;"></div>
-                                                            <div class="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex-shrink-0 relative z-10 border-2 border-white shadow-md ring-2 ring-blue-200/50 self-center"></div>
+                                                            <div class="absolute left-0 right-0 top-1/2 h-0.5 rounded-full bg-gradient-to-r from-[#2ab4c0]/20 via-[#2ab4c0]/40 to-indigo-400 opacity-90" style="margin-top: -1px;"></div>
+                                                            <div class="w-3 h-3 rounded-full bg-gradient-to-br from-[#2ab4c0] to-indigo-600 flex-shrink-0 relative z-10 border-2 border-white shadow-md ring-2 ring-[#2ab4c0]/20 self-center"></div>
                                                             <div class="flex-1 min-w-0"></div>
                                                             <div class="relative z-10 px-3 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap bg-white/95 text-gray-700 border border-gray-200/80 shadow-md ring-1 ring-gray-100 backdrop-blur-sm text-center min-w-[4.5rem]">
                                                                 {{ $itin['stops'] }}
@@ -751,7 +751,7 @@
                                     @endif
                                 </div>
                                 <button wire:click="selectFlight('{{ $flight['id'] }}')"
-                                        class="flex-shrink-0 w-full sm:w-auto px-6 py-3 {{ $flight['btnClass'] }} text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">
+                                        class="flex-shrink-0 w-full sm:w-auto px-6 py-3 {{ $flight['btnClass'] }} text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2ab4c0]">
                                     Select
                                 </button>
                             </div>
@@ -773,7 +773,7 @@
             {{-- Loading overlay --}}
             <div wire:loading wire:target="search,selectDate,setSort,priceMin,priceMax,stops,airlines,departTimes"
                  class="flex items-center justify-center py-8">
-                <div class="flex items-center gap-2 text-blue-600 text-sm font-medium">
+                <div class="flex items-center gap-2 text-[#2ab4c0] text-sm font-medium">
                     <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
@@ -896,7 +896,7 @@
             dayClass(cell) {
                 if (!cell.day) return 'text-transparent';
                 if (cell.disabled) return 'text-gray-300 cursor-not-allowed';
-                if (this.iso && cell.iso === this.iso) return 'bg-blue-600 text-white';
+                if (this.iso && cell.iso === this.iso) return 'bg-[#2ab4c0] text-white';
                 return 'text-gray-900 hover:bg-gray-100';
             },
         };

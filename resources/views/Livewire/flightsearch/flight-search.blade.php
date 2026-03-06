@@ -22,17 +22,7 @@
                 wire:click="switchTab('multi')">Multi-city</button>
         </div>
 
-        {{-- Login hint --}}
-        <div class="login-link mb-5">
-            <svg class="w-3.5 h-3.5 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01" />
-            </svg>
-            <a href="{{ route('login') }}">Log in to book Classic Rewards</a>
-            <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-            </svg>
-        </div>
+
 
         {{-- ══════════════════════════════════════
         PANEL: RETURN
@@ -85,7 +75,7 @@
                                                 <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                             </div>
                                             <span
-                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
                                         </button>
                                     @empty
                                         <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -135,7 +125,7 @@
                                                 <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                             </div>
                                             <span
-                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
                                         </button>
                                     @empty
                                         <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -149,12 +139,11 @@
                     <div class="field-wrap"
                         style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
                         <div x-data="singleDatePicker({
-                                                            value: @js($returnDepDate),
-                                                            flexible: @js($returnFlexible),
-                                                            wireValueKey: 'returnDepDate',
-                                                            wireFlexibleKey: 'returnFlexible',
-                                                            title: 'Please choose your departure date',
-                                                        })" x-init="init()">
+                                                                                                                    value: @js($returnDepDate),
+                                                                                                                    wireValueKey: 'returnDepDate',
+                                                                                                                    title: 'Please choose your departure date',
+                                                                                                                })"
+                            x-init="init()">
                             <span class="field-label">Departing</span>
                             <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
                                 inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
@@ -167,7 +156,7 @@
                                 <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
 
                                 <div
-                                    class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                    class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
                                     <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                                         <div class="flex items-center gap-3">
                                             <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
@@ -178,27 +167,18 @@
                                             <p class="text-base font-medium text-gray-800" x-text="title"></p>
                                         </div>
 
-                                        <label class="flex items-center gap-3 select-none">
-                                            <button type="button"
-                                                class="relative inline-flex h-7 w-14 items-center rounded-full transition"
-                                                :class="flexible ? 'bg-blue-600' : 'bg-gray-300'" @click="toggleFlexible()">
-                                                <span
-                                                    class="inline-block h-6 w-6 transform rounded-full bg-white transition"
-                                                    :class="flexible ? 'translate-x-7' : 'translate-x-1'"></span>
-                                            </button>
-                                            <span class="text-sm text-gray-700">My dates are flexible (+/- 3 days)</span>
-                                        </label>
+                                        
                                     </div>
 
                                     <div class="px-6 py-5">
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                            <template x-for="(m, idx) in months.slice(0, 2)" :key="m.key">
+                                        <div class="grid grid-cols-1 gap-8">
+                                            <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
                                                 <div>
                                                     <div class="flex items-center justify-between mb-4">
                                                         <div class="w-10">
                                                             <button type="button"
                                                                 class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
-                                                                x-show="idx === 0" @click.prevent="prevMonth()">
+                                                                @click.prevent="prevMonth()">
                                                                 <svg class="w-5 h-5 text-gray-700" fill="none"
                                                                     stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -210,8 +190,8 @@
                                                             x-text="m.title"></p>
                                                         <div class="w-10 flex justify-end">
                                                             <button type="button"
-                                                                class="w-10 h-10 rounded-full hover:bg-gray-50"
-                                                                x-show="idx === 1" @click.prevent="nextMonth()">
+                                                                class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                @click.prevent="nextMonth()">
                                                                 <svg class="w-5 h-5 text-gray-700" fill="none"
                                                                     stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -248,7 +228,7 @@
                                             class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
                                             @click="open = false">Close</button>
                                         <button type="button"
-                                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
                                             :disabled="!iso" @click="apply(); open = false">
                                             Done
                                         </button>
@@ -260,12 +240,11 @@
                         <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">–</span>
 
                         <div x-data="singleDatePicker({
-                                                            value: @js($returnRetDate),
-                                                            flexible: @js($returnFlexible),
-                                                            wireValueKey: 'returnRetDate',
-                                                            wireFlexibleKey: 'returnFlexible',
-                                                            title: 'When would you like to return?',
-                                                        })" x-init="init()">
+                                                                                                                    value: @js($returnRetDate),
+                                                                                                                    wireValueKey: 'returnRetDate',
+                                                                                                                    title: 'When would you like to return?',
+                                                                                                                })"
+                            x-init="init()">
                             <span class="field-label">Returning</span>
                             <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
                                 inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
@@ -278,7 +257,7 @@
                                 <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
 
                                 <div
-                                    class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                    class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
                                     <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                                         <div class="flex items-center gap-3">
                                             <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
@@ -289,27 +268,18 @@
                                             <p class="text-base font-medium text-gray-800" x-text="title"></p>
                                         </div>
 
-                                        <label class="flex items-center gap-3 select-none">
-                                            <button type="button"
-                                                class="relative inline-flex h-7 w-14 items-center rounded-full transition"
-                                                :class="flexible ? 'bg-blue-600' : 'bg-gray-300'" @click="toggleFlexible()">
-                                                <span
-                                                    class="inline-block h-6 w-6 transform rounded-full bg-white transition"
-                                                    :class="flexible ? 'translate-x-7' : 'translate-x-1'"></span>
-                                            </button>
-                                            <span class="text-sm text-gray-700">My dates are flexible (+/- 3 days)</span>
-                                        </label>
+                                        
                                     </div>
 
                                     <div class="px-6 py-5">
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                            <template x-for="(m, idx) in months.slice(0, 2)" :key="m.key">
+                                        <div class="grid grid-cols-1 gap-8">
+                                            <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
                                                 <div>
                                                     <div class="flex items-center justify-between mb-4">
                                                         <div class="w-10">
                                                             <button type="button"
                                                                 class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
-                                                                x-show="idx === 0" @click.prevent="prevMonth()">
+                                                                @click.prevent="prevMonth()">
                                                                 <svg class="w-5 h-5 text-gray-700" fill="none"
                                                                     stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -321,8 +291,8 @@
                                                             x-text="m.title"></p>
                                                         <div class="w-10 flex justify-end">
                                                             <button type="button"
-                                                                class="w-10 h-10 rounded-full hover:bg-gray-50"
-                                                                x-show="idx === 1" @click.prevent="nextMonth()">
+                                                                class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                @click.prevent="nextMonth()">
                                                                 <svg class="w-5 h-5 text-gray-700" fill="none"
                                                                     stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -359,7 +329,7 @@
                                             class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
                                             @click="open = false">Close</button>
                                         <button type="button"
-                                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                                            class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
                                             :disabled="!iso" @click="apply(); open = false">
                                             Done
                                         </button>
@@ -497,11 +467,11 @@
                                         class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
                                         wire:click="$set('returnClass', '{{ $class }}')" @click="open = false">
                                         <span
-                                            class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                                            class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium' }}">
                                             {{ $class }}
                                         </span>
                                         @if($isSelected)
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                                     d="M5 13l4 4L19 7" />
@@ -535,16 +505,16 @@
 
                 {{-- Promo --}}
                 <div class="mt-4">
-                    <button class="promo-toggle {{ $returnPromo ? 'open' : '' }}" wire:click="$toggle('returnPromo')">
+                    {{-- <button class="promo-toggle {{ $returnPromo ? 'open' : '' }}" wire:click="$toggle('returnPromo')">
                         Use promotional code
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
-                    </button>
+                    </button> --}}
                     @if($returnPromo)
                         <div class="promo-input open">
                             <input type="text" wire:model="returnPromoCode" placeholder="Enter promotional code"
-                                class="field-input border border-gray-200 rounded px-3 py-2 text-sm w-full max-w-xs focus:outline-none focus:border-blue-400">
+                                class="field-input border border-gray-200 rounded px-3 py-2 text-sm w-full max-w-xs focus:outline-none focus:border-[#2ab4c0]">
                         </div>
                     @endif
                 </div>
@@ -600,7 +570,7 @@
                                                 <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                             </div>
                                             <span
-                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
                                         </button>
                                     @empty
                                         <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -649,7 +619,7 @@
                                                 <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                             </div>
                                             <span
-                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
                                         </button>
                                     @empty
                                         <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -660,12 +630,11 @@
                     </div>
 
                     <div class="field-wrap" x-data="singleDatePicker({
-                                                        value: @js($onewayDepDate),
-                                                        flexible: @js($onewayFlexible),
-                                                        wireValueKey: 'onewayDepDate',
-                                                        wireFlexibleKey: 'onewayFlexible',
-                                                        title: 'Please choose your departure date',
-                                                    })" x-init="init()">
+                                                                                                                value: @js($onewayDepDate),
+                                                                                                                wireValueKey: 'onewayDepDate',
+                                                                                                                title: 'Please choose your departure date',
+                                                                                                            })"
+                        x-init="init()">
                         <span class="field-label">Departing</span>
                         <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none"
                             readonly :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
@@ -677,7 +646,7 @@
                             <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
 
                             <div
-                                class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
                                 <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                                     <div class="flex items-center gap-3">
                                         <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
@@ -687,27 +656,17 @@
                                         </svg>
                                         <p class="text-base font-medium text-gray-800" x-text="title"></p>
                                     </div>
-
-                                    <label class="flex items-center gap-3 select-none">
-                                        <button type="button"
-                                            class="relative inline-flex h-7 w-14 items-center rounded-full transition"
-                                            :class="flexible ? 'bg-blue-600' : 'bg-gray-300'" @click="toggleFlexible()">
-                                            <span class="inline-block h-6 w-6 transform rounded-full bg-white transition"
-                                                :class="flexible ? 'translate-x-7' : 'translate-x-1'"></span>
-                                        </button>
-                                        <span class="text-sm text-gray-700">My dates are flexible (+/- 3 days)</span>
-                                    </label>
                                 </div>
 
                                 <div class="px-6 py-5">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <template x-for="(m, idx) in months.slice(0, 2)" :key="m.key">
+                                    <div class="grid grid-cols-1 gap-8">
+                                        <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
                                             <div>
                                                 <div class="flex items-center justify-between mb-4">
                                                     <div class="w-10">
                                                         <button type="button"
                                                             class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
-                                                            x-show="idx === 0" @click.prevent="prevMonth()">
+                                                            @click.prevent="prevMonth()">
                                                             <svg class="w-5 h-5 text-gray-700" fill="none"
                                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -719,8 +678,8 @@
                                                         x-text="m.title"></p>
                                                     <div class="w-10 flex justify-end">
                                                         <button type="button"
-                                                            class="w-10 h-10 rounded-full hover:bg-gray-50"
-                                                            x-show="idx === 1" @click.prevent="nextMonth()">
+                                                            class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                            @click.prevent="nextMonth()">
                                                             <svg class="w-5 h-5 text-gray-700" fill="none"
                                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -757,7 +716,7 @@
                                         class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
                                         @click="open = false">Close</button>
                                     <button type="button"
-                                        class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                                        class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
                                         :disabled="!iso" @click="apply(); open = false">
                                         Done
                                     </button>
@@ -890,11 +849,11 @@
                                         class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
                                         wire:click="$set('onewayClass', '{{ $class }}')" @click="open = false">
                                         <span
-                                            class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                                            class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium' }}">
                                             {{ $class }}
                                         </span>
                                         @if($isSelected)
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                                     d="M5 13l4 4L19 7" />
@@ -1001,7 +960,7 @@
                                                             <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                                         </div>
                                                         <span
-                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
                                                     </button>
                                                 @empty
                                                     <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -1053,7 +1012,7 @@
                                                             <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
                                                         </div>
                                                         <span
-                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-600 text-white">{{ $a['code'] }}</span>
+                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
                                                     </button>
                                                 @empty
                                                     <div class="px-4 py-3 text-sm text-gray-500">No results</div>
@@ -1063,13 +1022,13 @@
                                     @endif
                                 </div>
 
-                                <div class="field-wrap" x-data="singleDatePicker({
-                                                                                                value: @js($multiFlights[$index]['date'] ?? ''),
-                                                                                                flexible: @js($multiFlexible),
-                                                                                                wireValueKey: 'multiFlights.{{ $index }}.date',
-                                                                                                wireFlexibleKey: 'multiFlexible',
-                                                                                                title: 'Please choose your departure date',
-                                                                                            })" x-init="init()">
+                                <div class="field-wrap"
+                                    x-data="singleDatePicker({
+                                                                                                                                                                                                                         value: @js($multiFlights[$index]['date'] ?? ''),
+                                                                                                                                                                                                                         wireValueKey: 'multiFlights.{{ $index }}.date',
+                                                                                                                                                                                                                         title: 'Please choose your departure date',
+                                                                                                                                                                                                                    })"
+                                    x-init="init()">
                                     <span class="field-label">Departing</span>
                                     <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
                                         inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
@@ -1082,7 +1041,7 @@
                                         <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
 
                                         <div
-                                            class="relative w-[92vw] max-w-4xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                            class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
                                             <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                                                 <div class="flex items-center gap-3">
                                                     <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
@@ -1092,30 +1051,17 @@
                                                     </svg>
                                                     <p class="text-base font-medium text-gray-800" x-text="title"></p>
                                                 </div>
-
-                                                <label class="flex items-center gap-3 select-none">
-                                                    <button type="button"
-                                                        class="relative inline-flex h-7 w-14 items-center rounded-full transition"
-                                                        :class="flexible ? 'bg-blue-600' : 'bg-gray-300'"
-                                                        @click="toggleFlexible()">
-                                                        <span
-                                                            class="inline-block h-6 w-6 transform rounded-full bg-white transition"
-                                                            :class="flexible ? 'translate-x-7' : 'translate-x-1'"></span>
-                                                    </button>
-                                                    <span class="text-sm text-gray-700">My dates are flexible (+/- 3
-                                                        days)</span>
-                                                </label>
                                             </div>
 
                                             <div class="px-6 py-5">
-                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                                    <template x-for="(m, idx) in months.slice(0, 2)" :key="m.key">
+                                                <div class="grid grid-cols-1 gap-8">
+                                                    <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
                                                         <div>
                                                             <div class="flex items-center justify-between mb-4">
                                                                 <div class="w-10">
                                                                     <button type="button"
                                                                         class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
-                                                                        x-show="idx === 0" @click.prevent="prevMonth()">
+                                                                        @click.prevent="prevMonth()">
                                                                         <svg class="w-5 h-5 text-gray-700" fill="none"
                                                                             stroke="currentColor" viewBox="0 0 24 24">
                                                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -1127,8 +1073,8 @@
                                                                     x-text="m.title"></p>
                                                                 <div class="w-10 flex justify-end">
                                                                     <button type="button"
-                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50"
-                                                                        x-show="idx === 1" @click.prevent="nextMonth()">
+                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                        @click.prevent="nextMonth()">
                                                                         <svg class="w-5 h-5 text-gray-700" fill="none"
                                                                             stroke="currentColor" viewBox="0 0 24 24">
                                                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -1167,7 +1113,7 @@
                                                     class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
                                                     @click="open = false">Close</button>
                                                 <button type="button"
-                                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
                                                     :disabled="!iso" @click="apply(); open = false">
                                                     Done
                                                 </button>
@@ -1320,11 +1266,11 @@
                                         class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
                                         wire:click="$set('multiClass', '{{ $class }}')" @click="open = false">
                                         <span
-                                            class="{{ $isSelected ? 'text-blue-600 font-semibold' : 'text-gray-900 font-medium' }}">
+                                            class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium' }}">
                                             {{ $class }}
                                         </span>
                                         @if($isSelected)
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                                     d="M5 13l4 4L19 7" />
@@ -1367,7 +1313,7 @@
                     @if($multiPromo)
                         <div class="promo-input open">
                             <input type="text" wire:model="multiPromoCode" placeholder="Enter promotional code"
-                                class="field-input border border-gray-200 rounded px-3 py-2 text-sm w-full max-w-xs focus:outline-none focus:border-blue-400">
+                                class="field-input border border-gray-200 rounded px-3 py-2 text-sm w-full max-w-xs focus:outline-none focus:border-[#2ab4c0]">
                         </div>
                     @endif
                 </div>
@@ -1400,7 +1346,6 @@
             ret: opts?.ret ? fmt(opts.ret) : '',
             depIso: opts?.dep || '',
             retIso: opts?.ret || '',
-            flexible: !!opts?.flexible,
             base: null,
             months: [],
             minIso: toIso(startOfDay(new Date())),
@@ -1413,10 +1358,6 @@
                 this.refreshMonths();
             },
 
-            toggleFlexible() {
-                this.flexible = !this.flexible;
-                if (this.$wire) this.$wire.$set('returnFlexible', this.flexible);
-            },
 
             prevMonth() {
                 const today = new Date();
@@ -1501,7 +1442,6 @@
                 if (!this.$wire) return;
                 this.$wire.$set('returnDepDate', this.depIso);
                 this.$wire.$set('returnRetDate', this.retIso);
-                this.$wire.$set('returnFlexible', this.flexible);
             },
 
             dayClass(cell) {
@@ -1513,7 +1453,7 @@
                 const isRet = this.retIso && iso === this.retIso;
                 const inRange = this.depIso && this.retIso && iso > this.depIso && iso < this.retIso;
 
-                if (isDep || isRet) return 'bg-blue-600 text-white';
+                if (isDep || isRet) return 'bg-[#2ab4c0] text-white';
                 if (inRange) return 'bg-blue-50 text-gray-900';
                 return 'text-gray-900 hover:bg-gray-100';
             },
@@ -1540,9 +1480,7 @@
             title: opts?.title || 'Select date',
             display: opts?.value ? fmt(opts.value) : '',
             iso: opts?.value || '',
-            flexible: !!opts?.flexible,
             wireValueKey: opts?.wireValueKey || '',
-            wireFlexibleKey: opts?.wireFlexibleKey || '',
             base: null,
             months: [],
             minIso: toIso(startOfDay(new Date())),
@@ -1555,10 +1493,6 @@
                 this.refreshMonths();
             },
 
-            toggleFlexible() {
-                this.flexible = !this.flexible;
-                if (this.$wire && this.wireFlexibleKey) this.$wire.$set(this.wireFlexibleKey, this.flexible);
-            },
 
             prevMonth() {
                 const today = new Date();
@@ -1623,13 +1557,12 @@
             apply() {
                 if (!this.$wire || !this.wireValueKey) return;
                 this.$wire.$set(this.wireValueKey, this.iso);
-                if (this.wireFlexibleKey) this.$wire.$set(this.wireFlexibleKey, this.flexible);
             },
 
             dayClass(cell) {
                 if (!cell.day) return 'text-transparent';
                 if (cell.disabled) return 'text-gray-300 cursor-not-allowed';
-                if (this.iso && cell.iso === this.iso) return 'bg-blue-600 text-white';
+                if (this.iso && cell.iso === this.iso) return 'bg-[#2ab4c0] text-white';
                 return 'text-gray-900 hover:bg-gray-100';
             },
         };
