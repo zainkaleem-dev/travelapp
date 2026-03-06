@@ -18,7 +18,7 @@
                         serif: ['Lora', 'serif'],
                     },
                     colors: {
-                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#2ab4c0', 600: '#249ea9', 700: '#1e858e' },
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
                         accent: '#f97316',
                         ek: { red: '#cc0000', darkred: '#a80000' },
                     }
@@ -376,8 +376,8 @@
 
         /* Navbar */
         nav {
-            background: #2ab4c0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
             position: sticky;
             top: 0;
             z-index: 50;
@@ -465,7 +465,7 @@
                     </div>
                 @else
                     <a href="{{ route('login') }}"
-                        class="px-3 py-1.5 text-sm font-semibold bg-white text-gray-800 rounded-md hover:bg-gray-100 transition-colors">
+                        class="px-3 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
                         Login / Register
                     </a>
                 @endauth
@@ -474,12 +474,12 @@
     </nav>
 
     {{-- ── Step bar ── --}}
-    <div class="border-b border-gray-200" style="background: #2ab4c0;">
+    <div class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4">
 
             <div class="flex items-center">
                 <div
-                    class="flex items-center gap-1 px-4 py-2 {{ request()->is('flights-search') || request()->is('flights-list') ? 'bg-white text-gray-800 font-semibold rounded-t' : 'text-white/80' }} text-xs">
+                    class="flex items-center gap-1 px-4 py-2 {{ request()->is('flights-search') || request()->is('flights-list') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
@@ -487,15 +487,15 @@
                     Search Flight
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-white text-gray-800 font-semibold rounded-t' : 'text-white/80' }} text-xs">
+                    class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
                     Additional Services
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('seating') ? 'bg-white text-gray-800 font-semibold rounded-t' : 'text-white/80' }} text-xs">
+                    class="px-4 py-2 {{ request()->is('seating') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
                     Choice Seat
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('passenger-details') ? 'bg-white text-gray-800 font-semibold rounded-t' : 'text-white/80' }} text-xs">
+                    class="px-4 py-2 {{ request()->is('passenger-details') ? 'bg-blue-600 text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
                     Passenger Details
                 </div>
             </div>
