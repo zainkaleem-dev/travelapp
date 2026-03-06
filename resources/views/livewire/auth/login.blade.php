@@ -4,7 +4,7 @@
     ══════════════════════════════════════════════════════════ --}}
     <div class="flex-1 flex flex-col min-h-screen items-start sm:items-center justify-center px-4 py-8">
         <div class="flex justify-center">
-            <img src="{{ asset('assets/images/travelapp_logo.svg') }}" alt="Logo" class="h-64 w-auto">
+            <img src="{{ asset('assets/images/travelapp_logo.png') }}" alt="Logo" class="h-64 w-auto">
         </div>
         <div class="w-full max-w-sm">
 
