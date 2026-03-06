@@ -30,7 +30,7 @@
     {{-- ══════════════════════════════════════════════════════════
     MAIN CONTENT
     ══════════════════════════════════════════════════════════ --}}
-    <div class="flex-1 flex items-start sm:items-center justify-center px-4 py-8">
+    <div class="flex-1 flex min-h-screen items-start sm:items-center justify-center px-4 py-8">
         <div class="w-full max-w-sm">
 
             {{-- ── Login Card ───────────────────────────────────── --}}
