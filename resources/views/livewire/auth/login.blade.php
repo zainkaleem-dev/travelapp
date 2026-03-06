@@ -1,6 +1,4 @@
-﻿{{-- Backup of previous login UI (tailwind-based) --}}
 <div>
-
     {{-- ══════════════════════════════════════════════════════════
     NAVBAR
     ══════════════════════════════════════════════════════════ --}}
@@ -16,7 +14,8 @@
             <div class="flex items-center gap-2 flex-shrink-0">
 
                 <a href="{{ route('signup') }}" wire:navigate
-                    class="flex items-center gap-1.5 px-3 py-1.5 font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                    class="flex items-center gap-1.5 px-3 py-1.5 font-semibold text-white rounded-lg transition-colors"
+                    style="background: #2ab4c0;">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -28,41 +27,6 @@
 
         </div>
     </nav>
-
-    {{-- ══════════════════════════════════════════════════════════
-    STEP PROGRESS BAR
-    ══════════════════════════════════════════════════════════ --}}
-    <div class="bg-white border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex items-center overflow-x-auto">
-
-                {{-- Active step --}}
-                <div class="flex items-center gap-1.5 px-4 sm:px-5 py-2.5 text-white font-semibold whitespace-nowrap"
-                    style="background:#2ab4c0">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Login
-                </div>
-
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap flex items-center gap-1.5">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
-                    </svg>
-                    Select Flight
-                </div>
-
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap hidden sm:block">Passenger Details</div>
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap hidden sm:block">Additional Services
-                </div>
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap hidden md:block">Choice Seat</div>
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap ml-auto hidden sm:block">Payment</div>
-            </div>
-        </div>
-    </div>
-
     {{-- ══════════════════════════════════════════════════════════
     MAIN CONTENT
     ══════════════════════════════════════════════════════════ --}}
@@ -73,14 +37,14 @@
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
 
                 {{-- Top gradient accent --}}
-                <div class="h-1 w-full" style="background:linear-gradient(90deg,#2ab4c0,#6366f1)"></div>
+                <div class="h-1 w-full" style="background: #2ab4c0;"></div>
 
                 <div class="px-6 py-6 space-y-4">
 
                     {{-- Title --}}
                     <div class="fu1">
                         <h1 class="text-lg font-bold text-gray-800">Login</h1>
-                        <p class="text-gray-400 mt-0.5" style="font-size:11px">Sign in with your email and password.</p>
+                        <p class="text-gray-600 mt-0.5" style="font-size:11px">Sign in with your email and password.</p>
                     </div>
 
                     {{-- ── Form ──────────────────────────────────── --}}
@@ -138,7 +102,7 @@
                                 <label for="password" class="text-gray-600 font-medium"
                                     style="font-size:11px">Password</label>
                                 <a href="{{ route('password.request') }}"
-                                    class="text-indigo-500 hover:text-indigo-700 transition-colors"
+                                    class="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors"
                                     style="font-size:10px">
                                     Forgot password?
                                 </a>
@@ -185,7 +149,7 @@
                         <div class="fu5 flex items-center gap-2 mt-4">
                             <input wire:model="remember" id="remember" type="checkbox"
                                 class="w-3.5 h-3.5 rounded cursor-pointer" />
-                            <label for="remember" class="text-gray-500 cursor-pointer select-none"
+                            <label for="remember" class="text-gray-600 cursor-pointer select-none"
                                 style="font-size:11px">
                                 Remember me
                             </label>
@@ -194,7 +158,7 @@
                         {{-- Login button --}}
                         <button type="submit" wire:loading.attr="disabled"
                             class="fu6 login-btn w-full py-2.5 rounded-lg text-white font-bold flex items-center justify-center gap-2 mt-4"
-                            style="font-size:13px">
+                            style="font-size:13px; background: #2ab4c0;">
 
                             {{-- Default state --}}
                             <span wire:loading.remove wire:target="login" class="flex items-center gap-2">
@@ -220,7 +184,7 @@
                     {{-- ── End Form ──────────────────────────────── --}}
 
                     {{-- Register link --}}
-                    <p class="fu8 text-center text-gray-500 pb-1" style="font-size:11px">
+                    <p class="fu8 text-center text-gray-600 pb-1" style="font-size:11px">
                         No account?
                         <a href="{{ route('signup') }}"
                             class="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors">
@@ -231,11 +195,11 @@
                 </div>
 
                 {{-- Bottom gradient accent --}}
-                <div class="h-0.5 w-full" style="background:linear-gradient(90deg,#6366f1,#2ab4c0)"></div>
+                <div class="h-0.5 w-full" style="background: #2ab4c0;"></div>
             </div>
 
             {{-- Footer --}}
-            <p class="text-center text-gray-400 mt-4" style="font-size:10px">
+            <p class="text-center text-gray-600 mt-4" style="font-size:10px">
                 © 2024 FlightBook ·
                 <a href="{{ route('privacy') }}" class="hover:text-gray-600 transition-colors">Privacy Policy</a> ·
                 <a href="{{ route('terms') }}" class="hover:text-gray-600 transition-colors">Terms of Service</a>

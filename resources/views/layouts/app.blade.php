@@ -205,9 +205,7 @@
 </head>
 
 <body class="bg-slate-100 min-h-screen flex flex-col text-xs">
-
     {{ $slot }}
-
     @livewireScripts
 </body>
 

@@ -1,8 +1,5 @@
 <div>
 
-    {{-- Top white spacer (matches login screen spacing) --}}
-    <div class="h-6 bg-white border-b border-gray-200"></div>
-
     {{-- ══════════════════════════════════════════════════════════
     NAVBAR
     ══════════════════════════════════════════════════════════ --}}
@@ -18,7 +15,8 @@
             <div class="flex items-center gap-2 flex-shrink-0">
 
                 <a href="{{ route('login') }}" wire:navigate
-                    class="flex items-center gap-1.5 px-3 py-1.5 font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                    class="flex items-center gap-1.5 px-3 py-1.5 font-semibold text-white rounded-lg transition-colors"
+                    style="background: #2ab4c0;">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -32,41 +30,6 @@
     </nav>
 
     {{-- ══════════════════════════════════════════════════════════
-    STEP PROGRESS BAR
-    ══════════════════════════════════════════════════════════ --}}
-    <div class="bg-white border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="hidden sm:block text-xs text-gray-400 py-1">Home / Sign Up</div>
-            <div class="flex items-center overflow-x-auto">
-
-                {{-- Active step --}}
-                <div class="flex items-center gap-1.5 px-4 sm:px-5 py-2.5 text-white font-semibold whitespace-nowrap"
-                    style="background:#2ab4c0">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Sign Up
-                </div>
-
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap flex items-center gap-1.5">
-                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
-                    </svg>
-                    Select Flight
-                </div>
-
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap hidden sm:block">Passenger Details</div>
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap hidden sm:block">Additional Services
-                </div>
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap hidden md:block">Choice Seat</div>
-                <div class="px-4 sm:px-5 py-2.5 text-gray-400 whitespace-nowrap ml-auto hidden sm:block">Payment</div>
-            </div>
-        </div>
-    </div>
-
-    {{-- ══════════════════════════════════════════════════════════
     MAIN CONTENT
     ══════════════════════════════════════════════════════════ --}}
     <div class="flex-1 flex items-start sm:items-center justify-center px-4 py-8">
@@ -76,7 +39,7 @@
             <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
 
                 {{-- Top gradient accent --}}
-                <div class="h-1 w-full" style="background:linear-gradient(90deg,#2ab4c0,#6366f1)"></div>
+                <div class="h-1 w-full" style="background: #2ab4c0;"></div>
 
                 <div class="px-6 py-6 space-y-4">
 
@@ -238,7 +201,7 @@
                         <button type="submit" wire:loading.attr="disabled"
                             wire:loading.class="opacity-70 cursor-not-allowed"
                             class="fu8 login-btn w-full py-2.5 rounded-lg text-white font-bold flex items-center justify-center gap-2 mt-4"
-                            style="font-size:13px">
+                            style="font-size:13px; background: #2ab4c0;">
                             <span wire:loading.remove wire:target="register" class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"
                                     viewBox="0 0 24 24">
@@ -263,7 +226,7 @@
 
 
                     {{-- Login link --}}
-                    <p class="fu8 text-center text-gray-500 pb-1" style="font-size:11px">
+                    <p class="fu8 text-center text-gray-600 pb-1" style="font-size:11px">
                         Already have an account?
                         <a href="{{ route('login') }}" wire:navigate
                             class="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors">
@@ -274,11 +237,11 @@
                 </div>
 
                 {{-- Bottom gradient accent --}}
-                <div class="h-0.5 w-full" style="background:linear-gradient(90deg,#6366f1,#2ab4c0)"></div>
+                <div class="h-0.5 w-full" style="background: #2ab4c0;"></div>
             </div>
 
             {{-- Footer --}}
-            <p class="text-center text-gray-400 mt-4" style="font-size:10px">
+            <p class="text-center text-gray-600 mt-4" style="font-size:10px">
                 © {{ date('Y') }} FlightBook ·
                 <a href="{{ route('privacy') }}" class="hover:text-gray-600 transition-colors">Privacy Policy</a> ·
                 <a href="{{ route('terms') }}" class="hover:text-gray-600 transition-colors">Terms of Service</a>
