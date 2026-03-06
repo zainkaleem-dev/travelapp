@@ -1,0 +1,48 @@
+<svg viewBox="0 0 1408 960" xmlns="http://www.w3.org/2000/svg">
+  <!-- Location Pin with Compass and Airplane -->
+  <g>
+    <!-- Outer Circle (Compass) -->
+    <circle cx="704" cy="290" r="150" fill="#20A39E" stroke="none"/>
+    
+    <!-- Compass Rose Points -->
+    <!-- North Point -->
+    <path d="M 704 160 L 715 195 L 693 195 Z" fill="white"/>
+    <!-- East Point -->
+    <path d="M 834 290 L 799 301 L 799 279 Z" fill="white"/>
+    <!-- South Point -->
+    <path d="M 704 420 L 715 385 L 693 385 Z" fill="white"/>
+    <!-- West Point -->
+    <path d="M 574 290 L 609 301 L 609 279 Z" fill="white"/>
+    
+    <!-- Compass Circle Ring (dashed effect with arcs) -->
+    <circle cx="704" cy="290" r="135" fill="none" stroke="white" stroke-width="8" stroke-dasharray="20,15"/>
+    
+    <!-- Airplane Icon -->
+    <!-- Fuselage -->
+    <path d="M 704 240 L 730 290 L 704 310 L 678 290 Z" fill="white"/>
+    <!-- Wings -->
+    <path d="M 680 285 L 728 285 L 730 295 L 678 295 Z" fill="white"/>
+    <!-- Tail fins -->
+    <path d="M 690 310 L 695 330 L 705 325 L 700 310 Z" fill="white"/>
+    <path d="M 718 310 L 713 330 L 703 325 L 708 310 Z" fill="white"/>
+  </g>
+  
+  <!-- Location Pin Pointer -->
+  <g>
+    <!-- Pin shape below circle -->
+    <path d="M 630 420 Q 630 500 704 540 Q 778 500 778 420" fill="#20A39E" stroke="none"/>
+    
+    <!-- Dotted line from circle to pin -->
+    <line x1="704" y1="440" x2="704" y2="480" stroke="#20A39E" stroke-width="6" stroke-dasharray="8,8"/>
+  </g>
+  
+  <!-- Text: "Travelapp" -->
+  <text x="704" y="640" font-family="Arial, sans-serif" font-size="140" font-weight="bold" text-anchor="middle" fill="#20A39E">
+    Travelapp
+  </text>
+  
+  <!-- Tagline: "Explore. Book. Discover." -->
+  <text x="704" y="750" font-family="Arial, sans-serif" font-size="70" text-anchor="middle" fill="#999999">
+    Explore. Book. Discover.
+  </text>
+</svg>

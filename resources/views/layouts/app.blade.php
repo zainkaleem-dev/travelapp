@@ -204,8 +204,10 @@
     @livewireStyles
 </head>
 
-<body class="bg-slate-100 min-h-screen flex flex-col text-xs">
-    {{ $slot }}
+<body class="bg-slate-100 min-h-screen flex flex-col items-center text-xs">
+    <div class="w-full flex flex-col flex-1">
+        {{ $slot }}
+    </div>
     @livewireScripts
 </body>
 

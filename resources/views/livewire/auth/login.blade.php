@@ -27,6 +27,10 @@
 
         </div>
     </nav>
+
+    <div class="flex justify-center">
+        <img src="{{ asset('assets/images/travelapp_logo.svg') }}" alt="Logo" class="h-14 w-auto">
+    </div>
     {{-- ══════════════════════════════════════════════════════════
     MAIN CONTENT
     ══════════════════════════════════════════════════════════ --}}
