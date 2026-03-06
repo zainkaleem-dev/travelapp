@@ -4,10 +4,10 @@
      SEARCH BAR — Professional, modern, eye-catching
 ══════════════════════════════════════════════════════════ --}}
 <div class="relative overflow-visible z-10 py-4" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%); box-shadow: 0 4px 24px rgba(29, 78, 216, 0.35), inset 0 1px 0 rgba(255,255,255,0.12);">
-    <div class="max-w-7xl mx-auto px-4 flex items-center gap-2 sm:gap-3 flex-nowrap min-h-[56px] overflow-visible">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center gap-3 min-h-[56px] overflow-visible py-2">
 
         {{-- Origin with airport dropdown --}}
-        <div class="relative flex-shrink-0"
+        <div class="relative flex-1 min-w-[160px] sm:flex-none"
              wire:click.outside="$set('showOriginAirports', false)">
             <div class="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200"
                  wire:click="$set('showOriginAirports', true)"
@@ -73,7 +73,7 @@
         </button>
 
         {{-- Destination with airport dropdown --}}
-        <div class="relative flex-shrink-0"
+        <div class="relative flex-1 min-w-[160px] sm:flex-none"
              wire:click.outside="$set('showDestinationAirports', false)">
             <div class="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200"
                  wire:click="$set('showDestinationAirports', true)"
@@ -132,7 +132,7 @@
         </div>
 
         {{-- Departing date (separate calendar) --}}
-        <div class="relative flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 flex-shrink-0 min-h-[44px]"
+        <div class="relative flex-1 min-w-[140px] sm:flex-none flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 min-h-[44px]"
              x-data="singleDatePicker({
                     value: @js($departDate),
                     flexible: false,
@@ -227,7 +227,7 @@
         </div>
 
         {{-- Returning date (separate calendar) --}}
-        <div class="relative flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 flex-shrink-0 min-h-[44px]"
+        <div class="relative flex-1 min-w-[140px] sm:flex-none flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 min-h-[44px]"
              x-data="singleDatePicker({
                     value: @js($returnDate),
                     flexible: false,
@@ -322,7 +322,7 @@
         </div>
 
         {{-- Passengers (dropdown UI similar to search page) --}}
-        <div class="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 relative flex-shrink-0 min-w-[7rem] min-h-[44px]"
+        <div class="flex-1 min-w-[140px] sm:flex-none flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 relative min-h-[44px]"
              x-data="{ open: false }"
              @click.outside="open = false">
             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 flex-shrink-0">
@@ -425,7 +425,7 @@
         </div>
 
         {{-- Class dropdown (Economy, Premium Economy, Business, First) --}}
-        <div class="flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 relative flex-shrink-0 min-w-[7rem] min-h-[44px]"
+        <div class="flex-1 min-w-[140px] sm:flex-none flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-white text-sm border border-white/20 bg-white/15 backdrop-blur-sm shadow-sm hover:bg-white/20 hover:border-white/30 transition-all duration-200 relative min-h-[44px]"
              x-data="{ open: false }"
              @click.outside="open = false">
             <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 flex-shrink-0">
@@ -480,7 +480,7 @@
 
         <button type="button" wire:click="search"
                 wire:loading.attr="disabled"
-                class="flex-shrink-0 ml-auto rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent flex items-center gap-2 self-center min-h-[44px]"
+                class="flex-1 sm:flex-none sm:ml-auto rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-transparent flex items-center justify-center gap-2 self-center min-h-[44px]"
                 style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
             <span wire:loading.remove wire:target="search" class="flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>

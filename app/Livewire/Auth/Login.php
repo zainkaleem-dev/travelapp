@@ -106,7 +106,7 @@ class Login extends Component
 
     public function render()
     {
-        return view('livewire.auth.login')
+        return view('Livewire.auth.login')
             ->layout('layouts.app', ['title' => 'Login – FlightBook']);
     }
 }

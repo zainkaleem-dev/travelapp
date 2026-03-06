@@ -9,7 +9,10 @@ use App\Livewire\Passengerdetail\PassengerDetail;
 use App\Livewire\Additionalservices\AdditionalServices;
 use App\Livewire\Chooseseat\ChooseSeat;
 use App\Livewire\Flightconfirmation\FlightConfirmation;
-
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\SignUp;
+use App\Livewire\Auth\ForgotPassword;
+use App\Livewire\Auth\ResetPassword;
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -25,12 +28,12 @@ Route::get('/', function () {
 
 
 // Login page (Livewire full-page component)
-Route::get('/login', \App\Livewire\Auth\Login::class)
+Route::get('/login', Login::class)
     ->middleware('guest')
     ->name('login');
 
 // Signup page (Livewire full-page component)
-Route::get('/signup', \App\Livewire\Auth\SignUp::class)
+Route::get('/signup', SignUp::class)
     ->middleware('guest')
     ->name('signup');
 
@@ -44,10 +47,10 @@ Route::post('/logout', function () {
 
 // Backward compatibility: old register URL -> signup
 Route::redirect('/register', '/signup')->name('register');
-Route::get('/forgot-password', \App\Livewire\Auth\ForgotPassword::class)
+Route::get('/forgot-password', ForgotPassword::class)
     ->middleware('guest')
     ->name('password.request');
-Route::get('/reset-password/{token}', \App\Livewire\Auth\ResetPassword::class)
+Route::get('/reset-password/{token}', ResetPassword::class)
     ->middleware('guest')
     ->name('password.reset');
 Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
