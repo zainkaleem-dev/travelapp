@@ -49,10 +49,21 @@
                             @enderror
                         </div>
 
-                        <button type="submit"
+                        <button type="submit" wire:loading.attr="disabled"
                             class="fu6 login-btn w-full py-2.5 rounded-lg text-white font-bold flex items-center justify-center gap-2 mt-4"
                             style="font-size:13px; background: #2ab4c0;">
-                            Send Reset Link
+
+                            {{-- Spinner (visible only when loading) --}}
+                            <svg wire:loading wire:target="sendResetLink" class="animate-spin w-4 h-4" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4" />
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                            </svg>
+
+                            {{-- Button Text --}}
+                            <span wire:loading.remove wire:target="sendResetLink">Send Reset Link</span>
+                            <span wire:loading wire:target="sendResetLink">Sending link...</span>
                         </button>
                     </form>
 

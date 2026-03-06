@@ -176,23 +176,26 @@
                             wire:loading.class="opacity-70 cursor-not-allowed"
                             class="fu8 login-btn w-full py-2.5 rounded-lg text-white font-bold flex items-center justify-center gap-2 mt-4"
                             style="font-size:13px; background: #2ab4c0;">
-                            <span wire:loading.remove wire:target="register" class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"
-                                    viewBox="0 0 24 24">
-                                    <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
-                                    <circle cx="9" cy="7" r="4" />
-                                    <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-                                </svg>
-                                Create Account
-                            </span>
-                            <span wire:loading wire:target="register" class="flex items-center gap-2">
-                                <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                        stroke-width="4" />
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                                </svg>
-                                Creating account...
-                            </span>
+
+                            {{-- Spinner (visible only when loading) --}}
+                            <svg wire:loading wire:target="register" class="animate-spin w-4 h-4" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4" />
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                            </svg>
+
+                            {{-- Icon (hidden when loading) --}}
+                            <svg wire:loading.remove wire:target="register" class="w-4 h-4" fill="none"
+                                stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                            </svg>
+
+                            {{-- Button Text --}}
+                            <span wire:loading.remove wire:target="register">Create Account</span>
+                            <span wire:loading wire:target="register">Creating account...</span>
                         </button>
 
                     </form>
