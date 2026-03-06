@@ -1,35 +1,5 @@
 <div>
     {{-- ══════════════════════════════════════════════════════════
-    NAVBAR
-    ══════════════════════════════════════════════════════════ --}}
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-12 gap-3">
-
-            {{-- Back / Next --}}
-            <div class="flex items-center gap-2 flex-shrink-0">
-
-            </div>
-
-            {{-- Actions --}}
-            <div class="flex items-center gap-2 flex-shrink-0">
-
-                <a href="{{ route('signup') }}" wire:navigate
-                    class="flex items-center gap-1.5 px-3 py-1.5 font-semibold text-white rounded-lg transition-colors"
-                    style="background: #2ab4c0;">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span class="hidden sm:inline">Register</span>
-                    <span class="sm:hidden">Register</span>
-                </a>
-            </div>
-
-        </div>
-    </nav>
-
-
-    {{-- ══════════════════════════════════════════════════════════
     MAIN CONTENT
     ══════════════════════════════════════════════════════════ --}}
     <div class="flex-1 flex flex-col min-h-screen items-start sm:items-center justify-center px-4 py-8">

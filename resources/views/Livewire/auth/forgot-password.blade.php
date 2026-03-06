@@ -1,20 +1,4 @@
 <div>
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-12 gap-3">
-            <div class="flex items-center gap-2 flex-shrink-0">
-
-            </div>
-
-            <div class="flex items-center gap-2 flex-shrink-0">
-                <a href="{{ route('login') }}"
-                    class="flex items-center gap-1.5 px-3 py-1.5 font-semibold text-white rounded-lg transition-colors"
-                    style="background: #2ab4c0;">
-                    Login
-                </a>
-            </div>
-        </div>
-    </nav>
-
 
     <div class="flex-1 flex items-start sm:items-center justify-center px-4 py-8">
         <div class="w-full max-w-sm">
