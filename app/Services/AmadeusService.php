@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
 
 class AmadeusService
@@ -29,23 +28,30 @@ class AmadeusService
 
     public function getToken(): ?string
     {
-        return Cache::remember('amadeus_token', 1700, function () {
-            try {
-                $response = $this->client->post($this->baseUrl . '/v1/security/oauth2/token', [
-                    'form_params' => [
-                        'grant_type' => 'client_credentials',
-                        'client_id' => $this->apiKey,
-                        'client_secret' => $this->apiSecret,
-                    ],
-                ]);
+        try {
+            $response = $this->client->post($this->baseUrl . '/v1/security/oauth2/token', [
+                'form_params' => [
+                    'grant_type' => 'client_credentials',
+                    'client_id' => $this->apiKey,
+                    'client_secret' => $this->apiSecret,
+                ],
+            ]);
 
-                $data = json_decode($response->getBody(), true);
-                return $data['access_token'] ?? null;
+            $data = json_decode($response->getBody(), true);
+            $token = $data['access_token'] ?? null;
 
-            } catch (\Throwable $e) {
-                return null;
+            if ($token) {
+                // Small delay after refreshing a token.
+                // A token refresh is an API call itself. If we immediately 
+                // make another call (like search) we will hit the 1 QPS limit.
+                usleep(1100000); // 1.1s
             }
-        });
+
+            return $token;
+
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     public function getClient(): Client
@@ -315,6 +321,12 @@ class AmadeusService
             'data' => [$flightOffer]
         ];
 
+        \Illuminate\Support\Facades\Log::info('Outgoing SeatMap Request', [
+            'offer_id' => $flightOffer['id'] ?? 'N/A',
+            'itineraries_count' => count($flightOffer['itineraries'] ?? []),
+            'first_segment' => $flightOffer['itineraries'][0]['segments'][0]['carrierCode'] ?? 'N/A'
+        ]);
+
         try {
             $response = $this->client->post($url, [
                 'headers' => [
@@ -468,6 +480,13 @@ class AmadeusService
         }
 
         $url = $this->baseUrl . '/v2/shopping/flight-offers';
+
+        // Ensure currencyCode is in searchCriteria if provided
+        if (isset($payload['currencyCode'])) {
+            $payload['searchCriteria'] = $payload['searchCriteria'] ?? [];
+            $payload['searchCriteria']['currencyCode'] = strtoupper($payload['currencyCode']);
+            unset($payload['currencyCode']);
+        }
 
         $response = $this->client->post($url, [
             'headers' => [
@@ -630,7 +649,6 @@ class AmadeusService
         }
 
         $url = $this->baseUrl . '/v1/shopping/seatmaps';
-
         $response = $this->client->get($url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
@@ -638,7 +656,6 @@ class AmadeusService
             ],
             'query' => ['flight-orderId' => $orderId],
         ]);
-
         return json_decode($response->getBody(), true);
     }
 

@@ -5,14 +5,12 @@ namespace App\Livewire\Additionalservices;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.flight')]
 class AdditionalServices extends Component
 {
 
-    // ── Extra Baggage ────────────────────────────────────────────────────
-    public bool $baggageEnabled = false;
-    public int $baggageQty = 0;
-    public float $baggagePrice = 59.00;   // price per unit placeholder for extra bags if available
 
     // ── Dynamic Services ──────────────────────────────────────────────────
     public array $includedBaggage = [];
@@ -29,14 +27,25 @@ class AdditionalServices extends Component
     // ── Summary line items ────────────────────────────────────────────────
     public array $summaryItems = [];
     public float $totalBasePrice = 0.00;
+    public string $currencyCode = 'USD';
 
     // ── Boot ──────────────────────────────────────────────────────────────────
     public function mount(): void
     {
         // Load flight data
         $this->selectedFlight = session('selected_flight', []);
-        $this->searchParams = session('search_params', []);
+        $this->searchParams = session('flight_search_params', []);
         $this->availableFares = session('selected_fare_tiers', []);
+
+        \Illuminate\Support\Facades\Log::info('ADDITIONAL_SERVICES_LOADED_FARES', [
+            'count' => count($this->availableFares),
+            'cabins' => array_keys($this->availableFares)
+        ]);
+
+        \Illuminate\Support\Facades\Log::info('ADDITIONAL_SERVICES_MOUNT_DATA', [
+            'search_params' => $this->searchParams,
+            'fares' => $this->availableFares
+        ]);
 
         \Illuminate\Support\Facades\Log::info('RAW_AMADEUS_OFFER_INSPECTION', [
             'raw_offer' => $this->selectedFlight['rawOffer'] ?? null,
@@ -50,11 +59,17 @@ class AdditionalServices extends Component
         }
 
         // Calculate total passengers
-        $counts = $this->searchParams['passengers'] ?? ['adults' => 1, 'children' => 0, 'infants' => 0];
-        $this->passengerCount = ($counts['adults'] ?? 0) + ($counts['children'] ?? 0) + ($counts['infants'] ?? 0);
+        $this->passengerCount =
+            ($this->searchParams['adultCount'] ?? 1) +
+            ($this->searchParams['childCount'] ?? 0) +
+            ($this->searchParams['infantCount'] ?? 0);
+
         if ($this->passengerCount < 1) {
             $this->passengerCount = 1;
         }
+
+        // Currency
+        $this->currencyCode = $this->searchParams['currency'] ?? ($this->selectedFlight['currency'] ?? 'USD');
 
         // Initial summary load
         if (session()->has('booking_summary')) {
@@ -86,7 +101,16 @@ class AdditionalServices extends Component
 
         // Sync summary items
         $this->syncSummary();
+
+        // Default Fare Selection
+        if (!empty($this->availableFares)) {
+            $firstCabin = array_key_first($this->availableFares);
+            if (!empty($this->availableFares[$firstCabin])) {
+                $this->selectedFareName = $this->availableFares[$firstCabin][0]['name'] ?? '';
+            }
+        }
     }
+
 
     private function extractDynamicData(): void
     {
@@ -146,20 +170,10 @@ class AdditionalServices extends Component
     {
         // 1. Remove optional items that we manage dynamically
         $this->summaryItems = array_filter($this->summaryItems, function ($item) {
-            return !in_array($item['label'], ['Travel Insurance', 'Extra Baggage'])
-                && strpos($item['label'], 'Ancillary:') === false;
+            return strpos($item['label'], 'Ancillary:') === false;
         });
 
-        // 2. Add Extra Baggage if enabled
-        if ($this->baggageEnabled && $this->baggageQty > 0) {
-            $this->summaryItems[] = [
-                'label' => 'Extra Baggage',
-                'removable' => true,
-                'amount' => ($this->baggagePrice * $this->baggageQty)
-            ];
-        }
-
-        // 3. Add Selected Ancillaries (Lounges, etc.)
+        // 2. Add Selected Ancillaries (Lounges, etc.)
         // Chargeable ancillaries (price = null) are listed as $0 with a label noting
         // the final price is confirmed at checkout. Free ones show $0.
         foreach ($this->selectedAncillaries as $code => $anc) {
@@ -245,10 +259,7 @@ class AdditionalServices extends Component
             $item = $this->summaryItems[$index];
             $label = $item['label'];
 
-            if ($label === 'Extra Baggage') {
-                $this->baggageEnabled = false;
-                $this->baggageQty = 0;
-            } elseif (strpos($label, 'Ancillary:') === 0) {
+            if (strpos($label, 'Ancillary:') === 0) {
                 $code = $item['code'] ?? null;
                 if ($code)
                     unset($this->selectedAncillaries[$code]);
@@ -260,7 +271,7 @@ class AdditionalServices extends Component
 
     public function back(): void
     {
-        $this->redirect(route('passenger.details'));
+        $this->redirect(route('flights.list'), navigate: true);
     }
 
     public function continue(): void
@@ -276,8 +287,7 @@ class AdditionalServices extends Component
 
     public function render()
     {
-        return view('livewire.additionalservices.additional-services')
-            ->layout('layouts.flight', ['title' => 'Additional Services – FlightBook']);
+        return view('livewire.additionalservices.additional-services');
     }
 
 }

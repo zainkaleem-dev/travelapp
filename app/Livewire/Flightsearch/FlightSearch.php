@@ -7,6 +7,9 @@ use Livewire\Component;
 use App\Services\AmadeusService;
 use Exception;
 
+use Livewire\Attributes\Layout;
+
+#[Layout('layouts.flight')]
 class FlightSearch extends Component
 {
     // Search results from Amadeus
@@ -22,8 +25,6 @@ class FlightSearch extends Component
     public string $returnRetDate = '';
     public string $returnPax = '1 Adult';
     public string $returnClass = 'Economy Class';
-    public bool $returnPromo = false;
-    public string $returnPromoCode = '';
     public bool $returnFlexible = false;
     public int $returnAdults = 1;
     public int $returnChildren = 0;
@@ -39,8 +40,6 @@ class FlightSearch extends Component
     public string $onewayDepDate = '';
     public string $onewayPax = '1 Adult';
     public string $onewayClass = 'Economy Class';
-    public bool $onewayPromo = false;
-    public string $onewayPromoCode = '';
     public bool $onewayFlexible = false;
     public int $onewayAdults = 1;
     public int $onewayChildren = 0;
@@ -55,8 +54,6 @@ class FlightSearch extends Component
     ];
     public string $multiPax = '1 Adult';
     public string $multiClass = 'Economy Class';
-    public bool $multiPromo = false;
-    public string $multiPromoCode = '';
     public bool $multiFlexible = false;
     public int $multiAdults = 1;
     public int $multiChildren = 0;
@@ -66,6 +63,16 @@ class FlightSearch extends Component
 
     // ── Searching state ────────────────────────────────────────────────
     public bool $searching = false;
+    public string $currency = 'USD'; // PKR | USD | EUR | GBP etc.
+    public array $currencies = [
+        'USD' => 'US Dollar ($)',
+        'PKR' => 'Pakistani Rupee (Rs)',
+        'EUR' => 'Euro (€)',
+        'GBP' => 'British Pound (£)',
+        'AED' => 'UAE Dirham (DH)',
+        'SAR' => 'Saudi Riyal (SR)',
+        'TRY' => 'Turkish Lira (₺)',
+    ];
 
     // ── Constants ─────────────────────────────────────────────────────
     const MAX_FLIGHTS = 5;
@@ -144,8 +151,6 @@ class FlightSearch extends Component
             $originIata = $depMatches[1] ?? '';
             $destIata = $arrMatches[1] ?? '';
 
-            // Clean class string for Amadeus 
-            // e.g. "Economy Class", "Premium Economy", "Business Class", "First Class"
             $classMap = [
                 'Economy Class' => 'ECONOMY',
                 'Premium Economy' => 'PREMIUM_ECONOMY',
@@ -154,19 +159,25 @@ class FlightSearch extends Component
             ];
             $travelClassEnum = $classMap[$this->returnClass] ?? 'ECONOMY';
 
-            $this->redirectRoute('flights.list', [
-                'origin' => $this->returnDep,
-                'destination' => $this->returnArr,
-                'originIata' => $originIata,
-                'destIata' => $destIata,
-                'departDate' => $this->returnDepDate,
-                'returnDate' => $this->returnRetDate,
-                'adultCount' => $this->returnAdults,
-                'childCount' => $this->returnChildren,
-                'infantCount' => $this->returnInfants,
-                'travelClass' => $this->returnClass,
-                'travelClassEnum' => $travelClassEnum,
+            session([
+                'flight_search_params' => [
+                    'origin' => $this->returnDep,
+                    'destination' => $this->returnArr,
+                    'originIata' => $originIata,
+                    'destIata' => $destIata,
+                    'departDate' => $this->returnDepDate,
+                    'returnDate' => $this->returnRetDate,
+                    'adultCount' => $this->returnAdults,
+                    'childCount' => $this->returnChildren,
+                    'infantCount' => $this->returnInfants,
+                    'travelClass' => $this->returnClass,
+                    'travelClassEnum' => $travelClassEnum,
+                    'currency' => $this->currency,
+                    'isMulti' => false,
+                ]
             ]);
+
+            $this->redirectRoute('flights.list');
             return;
         }
         if ($this->tripType === 'oneway') {
@@ -184,19 +195,25 @@ class FlightSearch extends Component
             ];
             $travelClassEnum = $classMap[$this->onewayClass] ?? 'ECONOMY';
 
-            $this->redirectRoute('flights.list', [
-                'origin' => $this->onewayDep,
-                'destination' => $this->onewayArr,
-                'originIata' => $originIata,
-                'destIata' => $destIata,
-                'departDate' => $this->onewayDepDate,
-                'returnDate' => '',
-                'adultCount' => $this->onewayAdults,
-                'childCount' => $this->onewayChildren,
-                'infantCount' => $this->onewayInfants,
-                'travelClass' => $this->onewayClass,
-                'travelClassEnum' => $travelClassEnum,
+            session([
+                'flight_search_params' => [
+                    'origin' => $this->onewayDep,
+                    'destination' => $this->onewayArr,
+                    'originIata' => $originIata,
+                    'destIata' => $destIata,
+                    'departDate' => $this->onewayDepDate,
+                    'returnDate' => '',
+                    'adultCount' => $this->onewayAdults,
+                    'childCount' => $this->onewayChildren,
+                    'infantCount' => $this->onewayInfants,
+                    'travelClass' => $this->onewayClass,
+                    'travelClassEnum' => $travelClassEnum,
+                    'currency' => $this->currency,
+                    'isMulti' => false,
+                ]
             ]);
+
+            $this->redirectRoute('flights.list');
             return;
         }
 
@@ -223,15 +240,20 @@ class FlightSearch extends Component
             ];
             $travelClassEnum = $classMap[$this->multiClass] ?? 'ECONOMY';
 
-            $this->redirectRoute('flights.list', [
-                'isMulti' => true,
-                'segments' => $segments,
-                'adultCount' => $this->multiAdults,
-                'childCount' => $this->multiChildren,
-                'infantCount' => $this->multiInfants,
-                'travelClass' => $this->multiClass,
-                'travelClassEnum' => $travelClassEnum,
+            session([
+                'flight_search_params' => [
+                    'isMulti' => true,
+                    'segments' => $segments,
+                    'adultCount' => $this->multiAdults,
+                    'childCount' => $this->multiChildren,
+                    'infantCount' => $this->multiInfants,
+                    'travelClass' => $this->multiClass,
+                    'travelClassEnum' => $travelClassEnum,
+                    'currency' => $this->currency,
+                ]
             ]);
+
+            $this->redirectRoute('flights.list');
             return;
         }
 
@@ -539,7 +561,7 @@ class FlightSearch extends Component
 
     public function render()
     {
-        return view('livewire.flightsearch.flight-search')->layout('layouts.flight');
+        return view('livewire.flightsearch.flight-search');
     }
 
 }

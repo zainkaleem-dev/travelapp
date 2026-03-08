@@ -19,6 +19,7 @@
                     },
                     colors: {
                         brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        gray: { 50: '#c8cfd6', 500: '#6b6d80' },
                         accent: '#f97316',
                         ek: { red: '#cc0000', darkred: '#a80000' },
                     }
@@ -45,30 +46,37 @@
             background: #f2f2f2;
         }
 
-        /* ── Tab underline ── */
-        .trip-tab {
-            position: relative;
-            padding: 8px 16px;
-            margin-right: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #555;
-            cursor: pointer;
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            outline: none;
-            transition: all .15s;
-            white-space: nowrap;
+        /* ── Trip type tabs ── */
+        .trip-tabs {
+            display: inline-flex;
+            background: #e5e7eb;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 24px;
         }
 
-        /* .trip-tab::after removed as we use background/border now */
+        .trip-tab {
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            outline: none;
+        }
+
+        .trip-tab:hover {
+            color: #111827;
+        }
 
         .trip-tab.active {
-            color: #fff;
-            background: #2ab4c0;
-            border-color: #2ab4c0;
-            font-weight: 600;
+            background: #fff;
+            color: #2ab4c0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         /* ── Input field ── */
@@ -195,8 +203,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            height: 100%;
-            min-height: 56px;
+            height: 44px;
             width: 100%;
         }
 

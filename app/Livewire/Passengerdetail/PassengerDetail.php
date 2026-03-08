@@ -5,7 +5,9 @@ namespace App\Livewire\Passengerdetail;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.flight')]
 class PassengerDetail extends Component
 {
 
@@ -35,6 +37,7 @@ class PassengerDetail extends Component
     public array $passengers = [];
 
     public array $selectedFlight = [];
+    public array $searchParams = [];
     // ── Summary line items ────────────────────────────────────────────────────
     public array $summaryItems = [];
 
@@ -194,8 +197,7 @@ class PassengerDetail extends Component
 
     public function render()
     {
-        return view('livewire.passengerdetails.passenger-details')
-            ->layout('layouts.flight', ['title' => 'Passenger Details – FlightBook']);
+        return view('livewire.passengerdetails.passenger-details');
     }
 
 }

@@ -18,6 +18,9 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        gray: { 50: '#c8cfd6', 500: '#6b6d80' },
+                    }
                 }
             }
         }

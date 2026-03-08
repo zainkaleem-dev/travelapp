@@ -4,294 +4,239 @@ namespace App\Livewire\Chooseseat;
 
 use App\Services\AmadeusService;
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.flight')]
 class ChooseSeat extends Component
 {
     public array $selectedFlight = [];
     public array $seatMapData = [];
-    public array $flightInfo = [];   // dynamic route data for the blade header
-    public array $columnHeaders = [];   // seat column letters from actual aircraft layout
+    public array $flightInfo = [];
+    public array $columnHeaders = [];
     public int $passengerCount = 1;
 
     public int $currentPassengerIndex = 0;
     public int $currentSegmentIndex = 0;
-    public array $passengerSeats = []; // [index => ['id' => '1A', 'price' => 20.00]]
+    public array $passengerSeats = [];
 
-    // ─── Seat configuration (Legacy, keeping for compatibility) ──────────────
     public ?string $selectedSeat = null;
     public float $selectedSeatPrice = 0.00;
-    public string $selectedSeatCurrency = 'USD';
 
-    // ─── Summary ─────────────────────────────────────────────────────────────
-    public array $summaryItems = [];
-    public float $totalBasePrice = 0.00;
+    public string $currencyCode = 'USD';
 
-    public function mount(AmadeusService $amadeusService)
+    public array $rows = [];
+    public array $leftCols = [];
+    public array $rightCols = [];
+
+    public function mount()
     {
-        $this->selectedFlight = session('selected_flight', []);
-
-        if (empty($this->selectedFlight)) {
-            return $this->redirect(route('flights.search'), navigate: true);
+        $this->selectedFlight = session('selected_flight');
+        if (!$this->selectedFlight) {
+            return redirect()->route('flights.list');
         }
 
-        // ── Populate flight info for the blade ────────────────────────────
-        $this->buildFlightInfo();
+        $searchParams = session('flight_search_params');
+        if ($searchParams) {
+            $this->passengerCount = ($searchParams['adultCount'] ?? 0) + ($searchParams['childCount'] ?? 0) + ($searchParams['infantCount'] ?? 0);
+            $this->currencyCode = $searchParams['currency'] ?? 'USD';
+            $this->currencyCode = $searchParams['currency'] ?? 'USD';
+        } else {
+            $this->passengerCount = 1;
+        }
+        if ($this->passengerCount < 1)
+            $this->passengerCount = 1;
 
-        // ── Passengers ───────────────────────────────────────────────────
-        $counts = session('search_params.passengers', ['adults' => 1, 'children' => 0, 'infants' => 0]);
-        $this->passengerCount = max(
-            1,
-            ($counts['adults'] ?? 0) + ($counts['children'] ?? 0) + ($counts['infants'] ?? 0)
-        );
+        // Pre-initialize passenger seats
+        for ($i = 0; $i < $this->passengerCount; $i++) {
+            $this->passengerSeats[$i] = ['id' => '', 'price' => 0];
+        }
 
-        // Load existing selections if any
-        $this->passengerSeats = session('booking_passenger_seats', []);
+        $this->prepareFlightInfo();
+        $this->loadSeatMap();
+    }
 
-        // Sync legacy props for the first passenger
-        $this->selectedSeat = $this->passengerSeats[$this->currentPassengerIndex]['id'] ?? null;
-        $this->selectedSeatPrice = $this->passengerSeats[$this->currentPassengerIndex]['price'] ?? 0.00;
+    protected function prepareFlightInfo()
+    {
+        $offer = $this->selectedFlight;
+        $itineraries = $offer['itineraries'] ?? [];
 
-        // ── Load summary from session ─────────────────────────────────────
-        $this->summaryItems = session('booking_summary', []);
-        $this->totalBasePrice = (float) session('booking_total', 0.00);
+        foreach ($itineraries as $index => $itin) {
+            // Using already mapped itinerary data from FlightList
+            $this->flightInfo[] = [
+                'type' => ($index === 0) ? 'Departure' : 'Return',
+                'airlineCode' => $itin['airlineCode'] ?? '',
+                'flightNumber' => $itin['flightNumber'] ?? '',
+                'departureTime' => $itin['dep'] ?? '',
+                'arrivalTime' => $itin['arr'] ?? '',
+                'origin' => $itin['depAirport'] ?? '',
+                'destination' => $itin['arrAirport'] ?? '',
+                'duration' => $itin['duration'] ?? '',
+                'stops' => $itin['stops'] ?? 'Direct',
+            ];
+        }
+    }
 
-        // ── Fetch seat map from Amadeus ───────────────────────────────────
+    public function loadSeatMap()
+    {
+        $amadeus = app(AmadeusService::class);
         try {
-            $rawOffer = $this->selectedFlight['rawOffer'] ?? null;
-            if ($rawOffer) {
-                $response = $amadeusService->getFlightSeatmap($rawOffer);
-                $this->seatMapData = $response['data'] ?? [];
+            $offer = $this->selectedFlight['rawOffer'] ?? $this->selectedFlight;
+            $response = $amadeus->getFlightSeatmap($offer);
+            if (empty($response['data'])) {
+                \Illuminate\Support\Facades\Log::warning('SeatMap API returned EMPTY data for flight ID: ' . ($offer['id'] ?? 'unknown'));
+            }
+
+            if (isset($response['data']) && !empty($response['data'])) {
+                $this->seatMapData = $response['data'][0];
             }
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('ChooseSeat seatmap failed: ' . $e->getMessage());
-            $this->seatMapData = [];
+            \Illuminate\Support\Facades\Log::error('Seatmap load error: ' . $e->getMessage());
         }
+
+        $this->parseSeatMap();
     }
 
-    public function selectPassenger(int $index): void
-    {
-        $this->currentPassengerIndex = $index;
-        // Sync legacy props
-        $this->selectedSeat = $this->passengerSeats[$index]['id'] ?? null;
-        $this->selectedSeatPrice = $this->passengerSeats[$index]['price'] ?? 0.00;
-    }
 
-    // ── Build human-readable flight info from session ─────────────────────────
-    private function buildFlightInfo(): void
+    protected function parseSeatMap()
     {
-        $itineraries = $this->selectedFlight['itineraries'] ?? [];
-        $flightDetails = [];
+        if (empty($this->seatMapData))
+            return;
+        $decks = $this->seatMapData['decks'] ?? [];
+        $deck = $decks[0] ?? [];
+        $seatingPlan = $deck['seatingPlan'] ?? [];
 
-        foreach ($itineraries as $itin) {
-            $segments = $itin['segments'] ?? [];
-            if (empty($segments))
+        $allLetters = [];
+        $rows = [];
+
+        foreach ($seatingPlan as $planRow) {
+            $rowNum = $planRow['rowNumber'] ?? null;
+            if (!$rowNum)
                 continue;
 
-            $first = $segments[0];
-            $last = end($segments);
+            $rowSeats = [];
+            $isExtra = false;
 
-            $flightDetails[] = [
-                'type' => count($flightDetails) === 0 ? 'Outbound' : 'Inbound',
-                'airlineCode' => $itin['airlineCode'] ?? '—',
-                'flightNumber' => ($itin['airlineCode'] ?? '') . ($itin['flightNumber'] ?? ''),
-                'origin' => $itin['depAirport'] ?? '—',
-                'originCity' => $itin['depCity'] ?? $itin['depAirport'] ?? '—',
-                'destination' => $itin['arrAirport'] ?? '—',
-                'destCity' => $itin['arrCity'] ?? $itin['arrAirport'] ?? '—',
-                'departureTime' => $itin['dep'] ?? '—',
-                'arrivalTime' => $itin['arr'] ?? '—',
-                'duration' => $itin['duration'] ?? '—',
-                'stops' => $itin['stops'] ?? 0,
-            ];
-        }
+            $elements = $planRow['elements'] ?? [];
+            foreach ($elements as $element) {
+                if (($element['type'] ?? '') !== 'seat')
+                    continue;
 
-        // Final fallback if itineraries are empty
-        if (empty($flightDetails)) {
-            $flightDetails[] = [
-                'type' => 'Flight',
-                'airlineCode' => $this->selectedFlight['airlineCode'] ?? '—',
-                'flightNumber' => $this->selectedFlight['flightNumber'] ?? '—',
-                'origin' => $this->selectedFlight['origin'] ?? '—',
-                'originCity' => $this->selectedFlight['origin'] ?? '—',
-                'destination' => $this->selectedFlight['destination'] ?? '—',
-                'destCity' => $this->selectedFlight['destination'] ?? '—',
-                'departureTime' => $this->selectedFlight['departureTime'] ?? '—',
-                'arrivalTime' => $this->selectedFlight['arrivalTime'] ?? '—',
-                'duration' => $this->selectedFlight['duration'] ?? '—',
-                'stops' => $this->selectedFlight['stops'] ?? 0,
-            ];
-        }
+                $seat = $element['seat']['number'] ?? '';
+                $letter = preg_replace('/[0-9]/', '', $seat);
+                if ($letter)
+                    $allLetters[] = $letter;
 
-        $this->flightInfo = $flightDetails;
-    }
+                $travelerPricing = $element['seat']['travelerPricing'][0] ?? [];
+                $status = $travelerPricing['seatAvailabilityStatus'] ?? 'AVAILABLE';
+                $price = (float) ($travelerPricing['price']['base']['amount'] ?? 0.00);
 
-    /** Toggle seat selection */
-    public function selectSeat(string $seatId, float $price = 0.00): void
-    {
-        // Check if THIS passenger already has THIS seat
-        if (isset($this->passengerSeats[$this->currentPassengerIndex]) && $this->passengerSeats[$this->currentPassengerIndex]['id'] === $seatId) {
-            unset($this->passengerSeats[$this->currentPassengerIndex]);
-            $this->selectedSeat = null;
-            $this->selectedSeatPrice = 0.00;
-            return;
-        }
+                $characteristics = $element['seat']['characteristicsCodes'] ?? [];
+                $state = ($status === 'OCCUPIED') ? 'occupied' : 'available';
+                if ($state === 'available' && in_array('XL', $characteristics)) {
+                    $state = 'extra';
+                    $isExtra = true;
+                }
 
-        // Check if ANY OTHER passenger has this seat
-        foreach ($this->passengerSeats as $idx => $seat) {
-            if ($idx !== $this->currentPassengerIndex && $seat['id'] === $seatId) {
-                return; // Seat taken by another passenger in this booking
+                $rowSeats[$letter] = [
+                    'id' => $seat,
+                    'price' => $price,
+                    'state' => $state
+                ];
             }
-        }
 
-        $this->passengerSeats[$this->currentPassengerIndex] = [
-            'id' => $seatId,
-            'price' => (float) $price
-        ];
-
-        // Sync legacy props
-        $this->selectedSeat = $seatId;
-        $this->selectedSeatPrice = (float) $price;
-    }
-
-    public function continue(): void
-    {
-        $summary = session('booking_summary', []);
-
-        // Remove all existing seat selection entries
-        $summary = array_filter($summary, fn($item) => !str_starts_with($item['label'] ?? '', 'Seat Selection'));
-        $summary = array_values($summary);
-
-        // Add each selected seat to summary
-        foreach ($this->passengerSeats as $idx => $seat) {
-            if (isset($seat['price']) && $seat['price'] > 0) {
-                $summary[] = [
-                    'label' => 'Seat Selection P' . ($idx + 1) . ' (' . $seat['id'] . ')',
-                    'removable' => true,
-                    'amount' => (float) $seat['price'],
+            if (!empty($rowSeats)) {
+                $rows[] = [
+                    'number' => $rowNum,
+                    'isExtra' => $isExtra,
+                    'seats' => $rowSeats
                 ];
             }
         }
 
-        session([
-            'booking_passenger_seats' => $this->passengerSeats,
-            'booking_summary' => $summary,
-            'booking_total' => collect($summary)->sum('amount'),
-        ]);
+        $uniqueLetters = array_unique($allLetters);
+        sort($uniqueLetters);
 
-        $this->redirect(route('passenger.details'), navigate: true);
+        $mid = ceil(count($uniqueLetters) / 2);
+        $this->leftCols = array_slice($uniqueLetters, 0, $mid);
+        $this->rightCols = array_slice($uniqueLetters, $mid);
+        $this->rows = $rows;
     }
 
-    public function back(): void
+    public function selectPassenger($index)
     {
-        $this->redirect(route('additional.services'), navigate: true);
+        $this->currentPassengerIndex = $index;
+        $this->refreshSeatMapStates();
     }
 
-    public function render()
+    public function selectSeat($seatId, $price)
     {
-        $rows = [];
-        $columnHeaders = [];
+        $currentSeat = $this->passengerSeats[$this->currentPassengerIndex]['id'] ?? '';
 
-        if (!empty($this->seatMapData)) {
-            $map = $this->seatMapData[$this->currentSegmentIndex ?? 0] ?? null;
-            $deck = $map['decks'][0] ?? null;
+        if ($currentSeat === $seatId) {
+            // Unselect
+            $this->passengerSeats[$this->currentPassengerIndex] = ['id' => '', 'price' => 0];
+        } else {
+            // Check if occupied by another passenger in this session
+            foreach ($this->passengerSeats as $idx => $s) {
+                if ($idx !== $this->currentPassengerIndex && $s['id'] === $seatId) {
+                    return; // Already taken by Px
+                }
+            }
+            $this->passengerSeats[$this->currentPassengerIndex] = ['id' => $seatId, 'price' => (float) $price];
+        }
 
-            if ($deck && isset($deck['seatingPlan'])) {
-                foreach ($deck['seatingPlan'] as $planRow) {
-                    $rowNumber = $planRow['rowNumber'];
-                    $seats = [];
-                    $isExtraLegroom = false;
+        $this->refreshSeatMapStates();
+    }
 
-                    foreach ($planRow['rowElements'] as $element) {
-                        if (!isset($element['seat'])) {
-                            continue;
-                        }
+    protected function refreshSeatMapStates()
+    {
+        // Re-parse or just update the states in $this->rows for reactivity
+        foreach ($this->rows as &$row) {
+            foreach ($row['seats'] as $letter => &$seat) {
+                // Reset to base state based on original data (simplified here)
+                // In a perfect impl, we'd store original states.
+                if ($seat['state'] === 'selected') {
+                    $seat['state'] = 'available'; // Default back
+                }
 
-                        $seat = $element['seat'];
-                        $seatId = $rowNumber . $seat['number'];
-                        $col = $seat['number'];
-
-                        // Track unique column letters
-                        if (!in_array($col, $columnHeaders)) {
-                            $columnHeaders[] = $col;
-                        }
-
-                        $occupied = ($seat['occupancyStatus'] ?? '') === 'OCCUPIED';
-                        $characteristics = $seat['characteristicsCodes'] ?? [];
-                        $isExtra = in_array('XL', $characteristics) || in_array('LE', $characteristics);
-
-                        if ($isExtra) {
-                            $isExtraLegroom = true;
-                        }
-
-                        // Price lookup
-                        $price = 0;
-                        if (isset($map['prices'])) {
-                            foreach ($map['prices'] as $p) {
-                                if (in_array($seatId, $p['seatId'] ?? [])) {
-                                    $price = (float) ($p['base']['amount'] ?? 0);
-                                    break;
-                                }
-                            }
-                        }
-
-                        $state = 'available';
-
-                        // Check if THIS passenger has selected this seat
-                        if ($seatId === ($this->passengerSeats[$this->currentPassengerIndex]['id'] ?? null)) {
-                            $state = 'selected';
-                        }
-                        // Check if ANY ANOTHER passenger in this booking has selected this seat
-                        else {
-                            foreach ($this->passengerSeats as $idx => $s) {
-                                if ($idx !== $this->currentPassengerIndex && ($s['id'] ?? null) === $seatId) {
-                                    $state = 'occupied';
-                                    break;
-                                }
-                            }
-                        }
-
-                        // If still available, check API occupancy status
-                        if ($state === 'available') {
-                            if ($occupied) {
-                                $state = 'occupied';
-                            } elseif ($isExtra) {
-                                $state = 'extra';
-                            }
-                        }
-
-                        $seats[$col] = [
-                            'id' => $seatId,
-                            'state' => $state,
-                            'price' => $price,
-                            'isExtra' => $isExtra,
-                        ];
-                    }
-
-                    if (!empty($seats)) {
-                        $rows[] = [
-                            'number' => $rowNumber,
-                            'isExtra' => $isExtraLegroom,
-                            'seats' => $seats,
-                        ];
+                // Apply selected state
+                foreach ($this->passengerSeats as $s) {
+                    if ($s['id'] === $seat['id']) {
+                        $seat['state'] = 'selected';
                     }
                 }
             }
         }
+    }
 
-        // Sort column headers (A, B, C ... then D, E, F etc.)
-        sort($columnHeaders);
-        $this->columnHeaders = $columnHeaders;
+    public function back()
+    {
+        $this->redirect(route('additional.services'), navigate: true);
+    }
 
-        // Split column headers into left and right groups around the aisle
-        $mid = (int) ceil(count($columnHeaders) / 2);
-        $leftCols = array_slice($columnHeaders, 0, $mid);
-        $rightCols = array_slice($columnHeaders, $mid);
+    public function continue()
+    {
+        $summary = session('booking_summary', []);
 
-        return view('livewire.chooseseat.choose-seat', [
-            'rows' => $rows,
-            'leftCols' => $leftCols,
-            'rightCols' => $rightCols,
-            'flightInfo' => $this->flightInfo,
-        ])->layout('layouts.flight', ['title' => 'Choose Seat – FlightBook']);
+        // Remove old seat items
+        $summary = array_filter($summary, fn($item) => !str_contains($item['label'], 'Seat Selection'));
+
+        foreach ($this->passengerSeats as $idx => $seat) {
+            if (!empty($seat['id'])) {
+                $summary[] = [
+                    'label' => "Seat Selection P" . ($idx + 1) . " (" . $seat['id'] . ")",
+                    'amount' => $seat['price'],
+                    'removable' => true
+                ];
+            }
+        }
+
+        session(['booking_summary' => array_values($summary)]);
+        $this->redirect(route('passenger.details'), navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.chooseseat.choose-seat');
     }
 }

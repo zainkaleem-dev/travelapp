@@ -9,46 +9,34 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Cache;
+use App\Services\AmadeusService;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.flight')]
 class FlightList extends Component
 {
     // ─── Search Form ──────────────────────────────────────────────
-    #[Url]
     public string $origin = '';
-    #[Url]
     public string $originIata = '';
-    #[Url]
     public string $destination = '';
-    #[Url]
     public string $destIata = '';
-    #[Url]
     public string $departDate = '';
-    #[Url]
     public string $returnDate = '';
 
-    #[Url]
+    public string $tripType = 'return';
+    public array $multiFlights = [];
+
     public bool $isMulti = false;
-    #[Url]
     public array $segments = [];
 
     public int $passengers = 1;
 
-    // Autocomplete dropdown toggles
-    public bool $showOriginAirports = false;
-    public bool $showDestinationAirports = false;
-
-    // Passenger breakdown for UI (kept in sync with $passengers)
-    #[Url]
+    // Passenger breakdown
     public int $adultCount = 1;
-    #[Url]
     public int $childCount = 0;
-    #[Url]
     public int $infantCount = 0;
 
-    #[Url]
     public string $travelClass = 'Economy Class';
-
-    #[Url]
     public string $travelClassEnum = 'ECONOMY';
 
     // ─── Filters ──────────────────────────────────────────────────
@@ -61,6 +49,14 @@ class FlightList extends Component
     // ─── Sorting / Date ──────────────────────────────────────────
     public string $sortTab = 'cheap';
     public string $selectedDate = '2026-07-14';
+
+    public bool $loadingPrices = false;
+    public string $currencyCode = 'USD';
+
+    public array $allFlights = [];
+    public ?string $errorMessage = null;
+    public array $fareDetails = [];
+    public array $loadingFares = [];
 
     // ─── Date rail (7 days around selected date) ──────────────────
     public array $dateRail = [];
@@ -84,11 +80,18 @@ class FlightList extends Component
         $this->dateRail = [];
         for ($i = 0; $i < 7; $i++) {
             $current = (clone $startDate)->modify("+$i days");
+            $dateStr = $current->format('Y-m-d');
             $this->dateRail[] = [
-                'date' => $current->format('Y-m-d'),
+                'date' => $dateStr,
                 'label' => $current->format('D d.m'),
                 'price' => null, // Will populate via API
             ];
+        }
+
+        // Ensure selectedDate is one of these 7 dates if it's currently invalid or outside range
+        $dates = array_column($this->dateRail, 'date');
+        if (!in_array($this->selectedDate, $dates)) {
+            $this->selectedDate = $this->departDate;
         }
     }
 
@@ -99,49 +102,77 @@ class FlightList extends Component
             return;
         }
 
-        // 2. Fetch from Amadeus using parallel requests to flight-offers API
         if (empty($this->originIata) || empty($this->destIata)) {
             return;
         }
 
+        $this->loadingPrices = true;
         try {
             $amadeus = app(\App\Services\AmadeusService::class);
             $token = $amadeus->getToken();
             $baseUrl = $amadeus->getBaseUrl();
 
             if (!$token) {
+                $this->loadingPrices = false;
                 return;
             }
 
             $responses = \Illuminate\Support\Facades\Http::pool(function (\Illuminate\Http\Client\Pool $pool) use ($token, $baseUrl) {
                 $reqs = [];
+
+                // Build common traveler structure
+                $travelers = [];
+                for ($i = 0; $i < $this->adultCount; $i++) {
+                    $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'ADULT'];
+                }
+                for ($i = 0; $i < $this->childCount; $i++) {
+                    $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'CHILD'];
+                }
+                for ($i = 0; $i < $this->infantCount; $i++) {
+                    $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'HELD_INFANT'];
+                }
+
                 foreach ($this->dateRail as $index => $railItem) {
-                    $query = [
-                        'originLocationCode' => strtoupper($this->originIata),
-                        'destinationLocationCode' => strtoupper($this->destIata),
-                        'departureDate' => $railItem['date'],
-                        'adults' => $this->adultCount,
-                        'max' => 1 // Just need the cheapest one
+                    $originDestinations = [
+                        [
+                            'id' => '1',
+                            'originLocationCode' => strtoupper($this->originIata),
+                            'destinationLocationCode' => strtoupper($this->destIata),
+                            'departureDateTimeRange' => ['date' => $railItem['date']],
+                        ]
                     ];
 
                     if (!empty($this->returnDate)) {
-                        $query['returnDate'] = $this->returnDate;
+                        $originDestinations[] = [
+                            'id' => '2',
+                            'originLocationCode' => strtoupper($this->destIata),
+                            'destinationLocationCode' => strtoupper($this->originIata),
+                            'departureDateTimeRange' => ['date' => $this->returnDate],
+                        ];
                     }
 
-                    if (!empty($this->childCount)) {
-                        $query['children'] = $this->childCount;
-                    }
-                    if (!empty($this->infantCount)) {
-                        $query['infants'] = $this->infantCount;
-                    }
-                    if (!empty($this->travelClassEnum)) {
-                        $query['travelClass'] = strtoupper($this->travelClassEnum);
-                    }
+                    $payload = [
+                        'originDestinations' => $originDestinations,
+                        'travelers' => $travelers,
+                        'sources' => ['GDS'],
+                        'searchCriteria' => [
+                            'maxFlightOffers' => 1,
+                            'flightFilters' => [
+                                'cabinRestrictions' => [
+                                    [
+                                        'cabin' => $this->travelClassEnum,
+                                        'coverage' => 'MOST_SEGMENTS',
+                                        'originDestinationIds' => array_map(fn($od) => $od['id'], $originDestinations),
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ];
 
                     $reqs[] = $pool->as((string) $index)
                         ->withOptions(['verify' => false, 'proxy' => null])
                         ->withToken($token)
-                        ->get($baseUrl . '/v2/shopping/flight-offers', $query);
+                        ->post($baseUrl . '/v2/shopping/flight-offers', $payload);
                 }
                 return $reqs;
             });
@@ -150,14 +181,25 @@ class FlightList extends Component
                 if ($response instanceof \Illuminate\Http\Client\Response && $response->ok()) {
                     $data = $response->json();
                     if (!empty($data['data']) && isset($data['data'][0]['price']['total'])) {
-                        $this->dateRail[$index]['price'] = (float) $data['data'][0]['price']['total'];
+                        $this->dateRail[$index]['price'] = $data['data'][0]['price']['total'];
+
+                        if (isset($data['data'][0]['price']['currency'])) {
+                            $apiCurrency = $data['data'][0]['price']['currency'];
+                            if (empty($this->currencyCode) || $this->currencyCode !== $apiCurrency) {
+                                $this->currencyCode = $apiCurrency;
+                            }
+                        }
                     }
                 }
             }
 
         } catch (\Exception $e) {
+            \Log::error("Date rail price fetch error: " . $e->getMessage());
+        } finally {
+            $this->loadingPrices = false;
         }
     }
+
 
     /**
      * Sync the selected date's price in the date rail with the actual
@@ -179,18 +221,13 @@ class FlightList extends Component
         }
     }
 
-    // ─── Raw flight data ──────────────────────────────────────────
-    public ?string $errorMessage = null;
-    public array $allFlights = [];
-
-    // Phase 4: Branded Fares / Details
-    public array $fareDetails = [];
-    public array $loadingFares = [];
-
     // ─── Computed: filtered + sorted flights ──────────────────────
     #[Computed]
     public function flights(): array
     {
+        if (empty($this->allFlights)) {
+            \Illuminate\Support\Facades\Log::warning('FLIGHTS_COMPUTED_BUT_ALLFLIGHTS_EMPTY');
+        }
         $results = array_filter($this->allFlights, function ($f) {
             // Price range
             if ($f['price'] < $this->priceMin || $f['price'] > $this->priceMax) {
@@ -218,27 +255,30 @@ class FlightList extends Component
         // Numerical Sorts
         switch ($this->sortTab) {
             case 'cheap':
-                usort($results, fn($a, $b) => $a['price'] <=> $b['price']);
+                usort($results, fn($a, $b) => (float) $a['price'] <=> (float) $b['price']);
                 break;
             case 'fastest':
-                usort($results, fn($a, $b) => $a['durationMinutes'] <=> $b['durationMinutes']);
+                usort($results, fn($a, $b) => (int) $a['durationMinutes'] <=> (int) $b['durationMinutes']);
                 break;
             case 'early':
-                usort($results, fn($a, $b) => $a['departureTimestamp'] <=> $b['departureTimestamp']);
+                usort($results, fn($a, $b) => (int) $a['departureTimestamp'] <=> (int) $b['departureTimestamp']);
                 break;
             case 'late':
-                usort($results, fn($a, $b) => $b['departureTimestamp'] <=> $a['departureTimestamp']);
+                usort($results, fn($a, $b) => (int) $b['departureTimestamp'] <=> (int) $a['departureTimestamp']);
                 break;
             case 'best':
                 // Smart Sort: Weighted score of price and duration
-                // We'll normalize by finding the min values in current window
                 if (!empty($results)) {
-                    $minPrice = min(array_column($results, 'price')) ?: 1;
-                    $minDur = min(array_column($results, 'durationMinutes')) ?: 1;
+                    $prices = array_column($results, 'price');
+                    $durs = array_column($results, 'durationMinutes');
+
+                    $minPrice = min($prices) ?: 1;
+                    $minDur = min($durs) ?: 1;
 
                     usort($results, function ($a, $b) use ($minPrice, $minDur) {
-                        $scoreA = ($a['price'] / $minPrice) + ($a['durationMinutes'] / $minDur);
-                        $scoreB = ($b['price'] / $minPrice) + ($b['durationMinutes'] / $minDur);
+                        // We give 70% weight to price and 30% to duration
+                        $scoreA = ((float) $a['price'] / $minPrice * 0.7) + ((int) $a['durationMinutes'] / $minDur * 0.3);
+                        $scoreB = ((float) $b['price'] / $minPrice * 0.7) + ((int) $b['durationMinutes'] / $minDur * 0.3);
                         return $scoreA <=> $scoreB;
                     });
                 }
@@ -258,40 +298,6 @@ class FlightList extends Component
             ->toArray();
     }
 
-    // ─── Actions ──────────────────────────────────────────────────
-    public function search(): void
-    {
-        // In a real app: dispatch a job or query the DB/API
-        // For now we just re-render with current filters
-        $this->dispatch('searched');
-    }
-
-    public function selectDate(string $date): void
-    {
-        $this->selectedDate = $date;
-        $this->departDate = $date;
-        $this->initDateRail();
-        $this->loadFlights();
-        $this->syncDateRailWithFlights();
-
-        // Trigger background fetch for the other dates
-        $this->dispatch('loadDateRailPrices');
-    }
-
-    public function shiftDate(int $days): void
-    {
-        $date = new \DateTime($this->departDate);
-        $date->modify(($days > 0 ? "+$days" : "$days") . " days");
-
-        $newDate = $date->format('Y-m-d');
-
-        // Prevent shifting to past dates
-        if ($newDate < date('Y-m-d')) {
-            $newDate = date('Y-m-d');
-        }
-
-        $this->selectDate($newDate);
-    }
 
     public function setSort(string $tab): void
     {
@@ -305,75 +311,6 @@ class FlightList extends Component
         $this->stops = ['any'];
         $this->airlines = ['any'];
         $this->departTimes = ['any'];
-    }
-
-    // ─── Airport Search ───────────────────────────────────────────
-    public array $airportSearchResults = [];
-
-    public function fetchAirports(string $query): array
-    {
-        $q = trim(mb_strtolower($query));
-        if ($q === '' || strlen($q) < 2) {
-            return [];
-        }
-
-        try {
-            $service = app(\App\Services\AmadeusService::class);
-            $response = $service->searchLocations($q);
-
-            if (isset($response['data']) && is_array($response['data'])) {
-                return array_map(function ($location) {
-                    $cityName = $location['address']['cityName'] ?? '';
-                    $countryName = $location['address']['countryName'] ?? '';
-                    $airportName = $location['name'] ?? '';
-                    $iataCode = $location['iataCode'] ?? '';
-
-                    return [
-                        'code' => $iataCode,
-                        'city' => $cityName,
-                        'country' => $countryName,
-                        'airport' => $airportName,
-                    ];
-                }, array_slice($response['data'], 0, 8)); // Top 8 results
-            }
-        } catch (\Exception $e) {
-            // Silently fail or return empty on API timeout
-        }
-        return [];
-    }
-
-    public function filteredAirports(string $query): array
-    {
-        // For standard UI render pass, we fetch via API
-        return $this->fetchAirports($query);
-    }
-
-    public function updatedOrigin(): void
-    {
-        $this->showOriginAirports = true;
-    }
-
-    public function updatedDestination(): void
-    {
-        $this->showDestinationAirports = true;
-    }
-
-    public function selectOriginAirport(string $display): void
-    {
-        $this->origin = $display;
-        $this->showOriginAirports = false;
-    }
-
-    public function selectDestinationAirport(string $display): void
-    {
-        $this->destination = $display;
-        $this->showDestinationAirports = false;
-    }
-
-    public function swapAirports(): void
-    {
-        [$this->origin, $this->destination] = [$this->destination, $this->origin];
-        [$this->originIata, $this->destIata] = [$this->destIata, $this->originIata];
     }
 
     private static function travelClassToEnum(string $class): string
@@ -390,12 +327,29 @@ class FlightList extends Component
     public function updatedTravelClass(): void
     {
         $this->travelClassEnum = self::travelClassToEnum($this->travelClass);
+
+        $params = session('flight_search_params', []);
+        $params['travelClass'] = $this->travelClass;
+        $params['travelClassEnum'] = $this->travelClassEnum;
+        session(['flight_search_params' => $params]);
+
+        $this->loadFlights();
+        $this->dispatch('loadDateRailPrices');
     }
+
 
     public function setTravelClass(string $class): void
     {
         $this->travelClass = $class;
         $this->travelClassEnum = self::travelClassToEnum($class);
+
+        $params = session('flight_search_params', []);
+        $params['travelClass'] = $this->travelClass;
+        $params['travelClassEnum'] = $this->travelClassEnum;
+        session(['flight_search_params' => $params]);
+
+        $this->loadFlights();
+        $this->dispatch('loadDateRailPrices');
     }
 
     protected function syncPassengersTotal(): void
@@ -403,144 +357,171 @@ class FlightList extends Component
         $this->passengers = $this->adultCount + $this->childCount + $this->infantCount;
     }
 
-    public function incrementPassengerType(string $type): void
-    {
-        $total = $this->adultCount + $this->childCount + $this->infantCount;
-        if ($total >= 9) {
-            return;
-        }
-
-        if ($type === 'adult') {
-            $this->adultCount++;
-        } elseif ($type === 'child') {
-            $this->childCount++;
-        } elseif ($type === 'infant') {
-            if ($this->infantCount < $this->adultCount) {
-                $this->infantCount++;
-            }
-        }
-
-        $this->syncPassengersTotal();
-    }
-
-    public function decrementPassengerType(string $type): void
-    {
-        if ($type === 'adult') {
-            if ($this->adultCount <= 1) {
-                return;
-            }
-            $this->adultCount--;
-            if ($this->infantCount > $this->adultCount) {
-                $this->infantCount = $this->adultCount;
-            }
-        } elseif ($type === 'child') {
-            if ($this->childCount <= 0) {
-                return;
-            }
-            $this->childCount--;
-        } elseif ($type === 'infant') {
-            if ($this->infantCount <= 0) {
-                return;
-            }
-            $this->infantCount--;
-        }
-
-        $this->syncPassengersTotal();
-    }
-
     public function mount()
     {
-        // ── Fast fallback for direct URL visits without params ──
-        if (!$this->isMulti && empty($this->origin) && empty($this->originIata)) {
-            $this->origin = 'Düsseldorf Airport (DUS)';
-            $this->originIata = 'DUS';
-            $this->destination = 'Istanbul Airport (IST)';
-            $this->destIata = 'IST';
-            $this->departDate = now()->addDays(7)->format('Y-m-d');
-            $this->returnDate = now()->addDays(14)->format('Y-m-d');
+        $params = session('flight_search_params');
+
+        if (!$params) {
+            return redirect()->route('flight-search');
         }
 
+        $this->tripType = $params['tripType'] ?? ($params['isMulti'] ? 'multi' : (!empty($params['returnDate']) ? 'return' : 'oneway'));
+        $this->origin = $params['origin'] ?? '';
+        $this->originIata = $params['originIata'] ?? '';
+        $this->destination = $params['destination'] ?? '';
+        $this->destIata = $params['destIata'] ?? '';
+        $this->departDate = $params['departDate'] ?? '';
+        $this->returnDate = $params['returnDate'] ?? '';
+        $this->isMulti = $params['isMulti'] ?? false;
+        $this->segments = $params['segments'] ?? [];
+
+        if ($this->isMulti && !empty($this->segments)) {
+            $this->multiFlights = array_map(function ($s) {
+                return [
+                    'dep' => $s['origin'],
+                    'arr' => $s['destination'],
+                    'originIata' => $s['originIata'],
+                    'destIata' => $s['destIata'],
+                    'date' => $s['date'],
+                ];
+            }, $this->segments);
+        }
+
+        $this->adultCount = $params['adultCount'] ?? 1;
+        $this->childCount = $params['childCount'] ?? 0;
+        $this->infantCount = $params['infantCount'] ?? 0;
+        $this->travelClass = $params['travelClass'] ?? 'Economy Class';
+        $this->travelClassEnum = $params['travelClassEnum'] ?? 'ECONOMY';
+        $this->currencyCode = $params['currency'] ?? 'USD';
+
         $this->syncPassengersTotal();
-        $this->travelClassEnum = self::travelClassToEnum($this->travelClass);
         $this->initDateRail();
         $this->loadFlights();
-        $this->syncDateRailWithFlights();
+        $this->fetchDateRailPrices();
+    }
+
+    public function selectDate(string $date): void
+    {
+        $this->selectedDate = $date;
+        $this->departDate = $date;
+
+        // Sync back to session
+        $params = session('flight_search_params', []);
+        $params['departDate'] = $this->departDate;
+        session(['flight_search_params' => $params]);
+
+        $this->initDateRail();
+        $this->loadFlights();
+        $this->fetchDateRailPrices();
+    }
+
+    public function shiftDate(int $days): void
+    {
+        if (empty($this->departDate))
+            return;
+
+        $date = new \DateTime($this->departDate);
+        $date->modify(($days > 0 ? '+' : '-') . abs($days) . ' days');
+
+        // Don't allow past dates
+        if ($date < new \DateTime('today')) {
+            $date = new \DateTime('today');
+        }
+
+        $newDate = $date->format('Y-m-d');
+        $this->selectDate($newDate);
     }
 
     public function loadFlights(): void
     {
         $this->errorMessage = null;
 
-        $amadeusService = app(\App\Services\AmadeusService::class);
+        $amadeusService = app(AmadeusService::class);
         $controller = new FlightApiController($amadeusService);
 
+
+        $originDestinations = [];
+
         if ($this->isMulti && !empty($this->segments)) {
-            $originDestinations = [];
             foreach ($this->segments as $index => $segment) {
                 $originDestinations[] = [
                     'id' => (string) ($index + 1),
-                    'originLocationCode' => $segment['originIata'],
-                    'destinationLocationCode' => $segment['destIata'],
+                    'originLocationCode' => strtoupper($segment['originIata']),
+                    'destinationLocationCode' => strtoupper($segment['destIata']),
                     'departureDateTimeRange' => [
                         'date' => $segment['date'],
                     ],
                 ];
             }
+        } else {
+            // One-way or Return
+            $originDestinations[] = [
+                'id' => '1',
+                'originLocationCode' => strtoupper($this->originIata),
+                'destinationLocationCode' => strtoupper($this->destIata),
+                'departureDateTimeRange' => [
+                    'date' => $this->departDate,
+                ],
+            ];
 
-            $travelers = [];
-            for ($i = 0; $i < $this->adultCount; $i++) {
-                $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'ADULT'];
+            if (!empty($this->returnDate)) {
+                $originDestinations[] = [
+                    'id' => '2',
+                    'originLocationCode' => strtoupper($this->destIata),
+                    'destinationLocationCode' => strtoupper($this->originIata),
+                    'departureDateTimeRange' => [
+                        'date' => $this->returnDate,
+                    ],
+                ];
             }
-            for ($i = 0; $i < $this->childCount; $i++) {
-                $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'CHILD'];
-            }
-            for ($i = 0; $i < $this->infantCount; $i++) {
-                $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'HELD_INFANT'];
-            }
+        }
 
-            $request = new Request();
-            $request->merge([
-                'originDestinations' => $originDestinations,
-                'travelers' => $travelers,
-                'sources' => ['GDS'],
-                'searchCriteria' => [
-                    'flightFilters' => [
-                        'cabinRestrictions' => [
-                            [
-                                'cabin' => $this->travelClassEnum,
-                                'coverage' => 'MOST_SEGMENTS',
-                                'originDestinationIds' => array_map(fn($od) => $od['id'], $originDestinations),
-                            ]
+        $travelers = [];
+        for ($i = 0; $i < $this->adultCount; $i++) {
+            $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'ADULT'];
+        }
+        for ($i = 0; $i < $this->childCount; $i++) {
+            $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'CHILD'];
+        }
+        for ($i = 0; $i < $this->infantCount; $i++) {
+            $travelers[] = ['id' => (string) (count($travelers) + 1), 'travelerType' => 'HELD_INFANT'];
+        }
+
+        $request = new Request();
+        $request->merge([
+            'originDestinations' => $originDestinations,
+            'travelers' => $travelers,
+            'sources' => ['GDS'],
+            'currencyCode' => $this->currencyCode,
+            'searchCriteria' => [
+                'flightFilters' => [
+                    'cabinRestrictions' => [
+                        [
+                            'cabin' => $this->travelClassEnum,
+                            'coverage' => 'MOST_SEGMENTS',
+                            'originDestinationIds' => array_map(fn($od) => $od['id'], $originDestinations),
                         ]
                     ]
                 ]
-            ]);
+            ]
+        ]);
 
-            $response = $controller->searchFlightsPost($request);
-        } else {
-            // 1. Prepare a Laravel request mimicking what the frontend API would send
-            $request = new Request();
-            $request->merge([
-                'originLocationCode' => $this->originIata,
-                'destinationLocationCode' => $this->destIata,
-                'departureDate' => $this->departDate,
-                'returnDate' => $this->returnDate,
-                'adults' => $this->adultCount,
-                'children' => $this->childCount,
-                'infants' => $this->infantCount,
-                'travelClass' => $this->travelClassEnum,
-            ]);
-
-            $response = $controller->searchFlights($request);
-        }
+        $response = $controller->searchFlightsPost($request);
 
         $statusCode = $response->getStatusCode();
         $data = json_decode($response->getContent(), true);
 
-        // 3. Map the complex AMADEUS JSON down into the simple array structure the UI expects
         if ($statusCode === 200 && isset($data['data'])) {
             $mappedFlights = [];
             $dictionaries = $data['dictionaries'] ?? [];
+
+            // Update currency from API response if ours is missing or different
+            if (!empty($data['data']) && isset($data['data'][0]['price']['currency'])) {
+                $apiCurrency = $data['data'][0]['price']['currency'];
+                if (empty($this->currencyCode) || $this->currencyCode !== $apiCurrency) {
+                    $this->currencyCode = $apiCurrency;
+                }
+            }
 
             foreach ($data['data'] as $index => $offer) {
                 // For simplified multi-city view, we use the first itinerary's first segment for departure 
@@ -554,6 +535,10 @@ class FlightList extends Component
 
                 if (!$firstSegment)
                     continue;
+
+                $seats = $offer['numberOfBookableSeats'] ?? null;
+                $travelerPricing = $offer['travelerPricings'][0] ?? [];
+                $fareDetailsBySegment = collect($travelerPricing['fareDetailsBySegment'] ?? []);
 
                 $carrierCode = $firstSegment['carrierCode'];
                 $airlineName = $dictionaries['carriers'][$carrierCode] ?? $carrierCode;
@@ -576,8 +561,8 @@ class FlightList extends Component
                 $m = $totalDurationMinutes % 60;
                 $duration = "{$h}h {$m}m";
 
-                $price = (float) ($offer['price']['total'] ?? 0);
-                $basePrice = (float) ($offer['price']['base'] ?? 0);
+                $price = $offer['price']['total'] ?? '0';
+                $basePrice = $offer['price']['base'] ?? '0';
 
                 $stopsCount = 0;
                 foreach ($itineraries as $itin) {
@@ -587,7 +572,13 @@ class FlightList extends Component
 
                 // Calculate first departure timestamp for sorting
                 $departureTimestamp = strtotime($firstSegment['departure']['at']);
-                $refundable = !($offer['pricingOptions']['noRestrictionFare'] ?? false);
+                $refundable = !($offer['pricingOptions']['noRefundFare'] ?? false);
+                $flexible = $offer['pricingOptions']['noRestrictionFare'] ?? false;
+
+                // Price Breakdown
+                $totalPrice = (float) ($offer['price']['total'] ?? 0);
+                $basePrice = (float) ($offer['price']['base'] ?? 0);
+                $taxAmount = $totalPrice - $basePrice;
 
                 // Map itineraries individually for frontend
                 $mappedItineraries = [];
@@ -611,6 +602,43 @@ class FlightList extends Component
 
                     $itinCarrierCode = $itinFirstSeg['carrierCode'];
                     $itinAirlineName = $dictionaries['carriers'][$itinCarrierCode] ?? $itinCarrierCode;
+
+                    // Codeshare / Operating Airline
+                    $operatingCarrierCode = $itinFirstSeg['operating']['carrierCode'] ?? $itinCarrierCode;
+                    $operatingAirlineName = $dictionaries['carriers'][$operatingCarrierCode] ?? $operatingCarrierCode;
+                    $isCodeshare = $operatingCarrierCode !== $itinCarrierCode;
+
+                    // Aircraft Info
+                    $aircraftCode = $itinFirstSeg['aircraft']['code'] ?? '';
+                    $aircraftName = $dictionaries['aircraft'][$aircraftCode] ?? $aircraftCode;
+
+                    // Technical Stops
+                    $techStops = $itinFirstSeg['numberTechnicalStops'] ?? 0;
+
+                    // Extract baggage and amenities for this itinerary
+                    $segId = $itinFirstSeg['id'];
+                    $fareDetail = $fareDetailsBySegment->firstWhere('segmentId', $segId);
+                    $baggage = 'No checked bags';
+                    $itinAmenities = [];
+
+                    if ($fareDetail) {
+                        // Baggage
+                        if (isset($fareDetail['includedCheckedBags'])) {
+                            $qty = $fareDetail['includedCheckedBags']['quantity'] ?? null;
+                            $weight = $fareDetail['includedCheckedBags']['weight'] ?? null;
+                            if ($qty !== null) {
+                                $baggage = $qty . ' Check-in bag' . ($qty > 1 ? 's' : '');
+                            } elseif ($weight !== null) {
+                                $baggage = $weight . ($fareDetail['includedCheckedBags']['weightUnit'] ?? 'KG') . ' Check-in bag';
+                            }
+                        }
+
+                        // Amenities
+                        $rawAmenities = $fareDetail['amenities'] ?? [];
+                        foreach ($rawAmenities as $ram) {
+                            $itinAmenities[] = $ram['description'] ?? 'Amenity';
+                        }
+                    }
 
                     if ($this->isMulti && isset($this->segments[$idx])) {
                         $itinDepCity = $this->segments[$idx]['origin'] ?? '';
@@ -642,12 +670,18 @@ class FlightList extends Component
                         'airlineCode' => $itinCarrierCode,
                         'flightNumber' => $itinCarrierCode . ($itinFirstSeg['number'] ?? $itinFirstSeg['flightNumber'] ?? ''),
                         'airlineColor' => 'bg-emerald-700',
+                        'baggage' => $baggage,
+                        'aircraft' => $aircraftName,
+                        'operatingCarrier' => $isCodeshare ? $operatingAirlineName : null,
+                        'technicalStops' => $techStops,
+                        'amenities' => $itinAmenities,
                     ];
                 }
 
-                // Cache the raw offer so we don't send MBs of JSON payload to Livewire frontend
-                $cacheKey = 'flight_offer_' . session()->getId() . '_' . $offer['id'];
-                Cache::put($cacheKey, $offer, now()->addHours(1));
+                // Removed Cache usage as per user request. We'll store it in the array.
+                // Note: This adds to Livewire payload size.
+                // $cacheKey = 'flight_offer_' . session()->getId() . '_' . $offer['id'];
+                // Cache::put($cacheKey, $offer, now()->addHours(1));
 
                 $mappedFlights[] = [
                     'id' => $offer['id'],
@@ -673,7 +707,13 @@ class FlightList extends Component
                     'bgClass' => '',
                     'note' => null,
                     'refundable' => $refundable,
-                    'rawOffer' => null, // Reduced payload size
+                    'flexible' => $flexible,
+                    'priceBreakdown' => [
+                        'base' => $basePrice,
+                        'taxes' => $taxAmount,
+                    ],
+                    'seats' => $seats,
+                    'rawOffer' => $offer,
                     'itineraries' => $mappedItineraries,
                 ];
             }
@@ -715,9 +755,7 @@ class FlightList extends Component
 
         // Find the flight in our current list
         $flight = collect($this->allFlights)->firstWhere('id', $id);
-
-        $cacheKey = 'flight_offer_' . session()->getId() . '_' . $id;
-        $rawOffer = Cache::get($cacheKey);
+        $rawOffer = $flight['rawOffer'] ?? null;
 
         if (!$flight || !$rawOffer) {
             $this->loadingFares[$id] = false;
@@ -820,74 +858,103 @@ class FlightList extends Component
 
     public function selectFlight($id): void
     {
-        // Find the flight in our current list
-        $flight = collect($this->allFlights)->firstWhere('id', $id);
+        session()->flash('info', 'Selecting flight ID: ' . $id);
+        \Illuminate\Support\Facades\Log::info('SELECT_FLIGHT_STARTED', ['flight_id' => $id, 'allFlights_count' => count($this->allFlights)]);
 
-        $cacheKey = 'flight_offer_' . session()->getId() . '_' . $id;
-        $rawOffer = Cache::get($cacheKey);
+        try {
+            // Find the flight in our current list
+            $flight = collect($this->allFlights)->firstWhere('id', $id);
 
-        if (!$flight) {
-            return;
-        }
+            if (!$flight) {
+                \Illuminate\Support\Facades\Log::error('SELECT_FLIGHT_NOT_FOUND', ['flight_id' => $id]);
+                session()->flash('error', 'The selected flight could not be found. Please refresh and try again.');
+                return;
+            }
 
-        // Inject the raw offer back before sending it to session for booking
-        if ($rawOffer) {
-            $flight['rawOffer'] = $rawOffer;
-        }
+            $rawOffer = $flight['rawOffer'] ?? null;
 
-        // Also capture the parsed fare tiers if the user opened the dropdown
-        $fareTiers = $this->fareDetails[$id] ?? [];
+            // Inject the raw offer back before sending it to session for booking
+            if ($rawOffer) {
+                $flight['rawOffer'] = $rawOffer;
+            }
 
-        // If the user clicked Select without ever opening the dropdown, we must fetch the tiers now.
-        if (empty($fareTiers) && $rawOffer) {
-            try {
+            // Also capture the parsed fare tiers if the user opened the dropdown
+            $fareTiers = $this->fareDetails[$id] ?? [];
+
+            // If the user clicked Select without ever opening the dropdown, we must fetch the tiers now.
+            if (empty($fareTiers) && $rawOffer) {
                 $amadeus = app(\App\Services\AmadeusService::class);
                 $response = $amadeus->upsellFlightOffers($rawOffer);
-                \Illuminate\Support\Facades\Log::info('RAW UPSELL RESPONSE: ' . json_encode($response));
+
+
+                \Illuminate\Support\Facades\Log::info('RAW_UPSELL_API_RESPONSE', [
+                    'flight_id' => $id,
+                    'response_keys' => array_keys($response),
+                    'data_count' => isset($response['data']) ? count($response['data']) : 0,
+                    'raw_data' => $response
+                ]);
 
                 if (isset($response['data']) && !empty($response['data'])) {
                     $fareTiers = $this->parseUpsellOffers($response['data']);
                     $this->fareDetails[$id] = $fareTiers;
                 }
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Upsell API failed during selectFlight: ' . $e->getMessage());
             }
+
+            \Illuminate\Support\Facades\Log::info('UPSOLD_FARE_TIERS_RESULT', [
+                'flight_id' => $id,
+                'count' => count($fareTiers),
+                'tiers' => $fareTiers
+            ]);
+
+            // ── Confirm Pricing (POST) for final services accuracy ──
+            if ($rawOffer) {
+                $amadeus = app(\App\Services\AmadeusService::class);
+                $pricingResponse = $amadeus->priceFlightOffer([$rawOffer]);
+                if (isset($pricingResponse['data']['flightOffers'][0])) {
+                    $pricedOffer = $pricingResponse['data']['flightOffers'][0];
+                    // Update flight pricing and raw offer with the validated one
+                    $flight['price'] = $pricedOffer['price']['total'] ?? $flight['price'];
+                    $flight['rawOffer'] = $pricedOffer;
+                }
+            }
+
+            // Store selection and search context in session for the next step
+            session([
+                'selected_flight' => $flight,
+                'selected_fare_tiers' => $fareTiers,
+                'flight_search_params' => [
+                    'isMulti' => $this->isMulti,
+                    'segments' => $this->segments,
+                    'origin' => $this->origin,
+                    'destination' => $this->destination,
+                    'originIata' => $this->originIata,
+                    'destIata' => $this->destIata,
+                    'departDate' => $this->departDate,
+                    'returnDate' => $this->returnDate,
+                    'adultCount' => $this->adultCount,
+                    'childCount' => $this->childCount,
+                    'infantCount' => $this->infantCount,
+                    'travelClass' => $this->travelClass,
+                    'travelClassEnum' => $this->travelClassEnum,
+                    'currency' => $this->currencyCode,
+                ]
+            ]);
+
+            \Illuminate\Support\Facades\Log::info('SELECT_FLIGHT_SUCCESS', ['flight_id' => $id]);
+            $this->redirect(route('additional.services'), navigate: true);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('SELECT_FLIGHT_EXCEPTION: ' . $e->getMessage(), [
+                'exception' => $e,
+                'flight_id' => $id
+            ]);
+            session()->flash('error', 'An error occurred while selecting your flight: ' . $e->getMessage());
         }
-
-        // removed synthetic fallback: if amadeus returns no data, we pass an empty array to UI
-
-        \Illuminate\Support\Facades\Log::info('Saving fare tiers to session count: ' . count($fareTiers));
-
-        // Store selection and search context in session for the next step
-        session([
-            'selected_flight' => $flight,
-            'selected_fare_tiers' => $fareTiers,
-            'search_params' => [
-                'isMulti' => $this->isMulti,
-                'segments' => $this->segments,
-                'origin' => $this->origin,
-                'destination' => $this->destination,
-                'originIata' => $this->originIata,
-                'destIata' => $this->destIata,
-                'departDate' => $this->departDate,
-                'returnDate' => $this->returnDate,
-                'passengers' => [
-                    'adults' => $this->adultCount,
-                    'children' => $this->childCount,
-                    'infants' => $this->infantCount,
-                ],
-                'travelClass' => $this->travelClass,
-                'travelClassEnum' => $this->travelClassEnum,
-            ]
-        ]);
-
-        $this->redirect(route('additional.services'), navigate: true);
     }
 
     public function render()
     {
-        return view('livewire.flightslist.flight-list')
-            ->layout('layouts.flight');
+        return view('livewire.flightslist.flight-list');
     }
 
 }

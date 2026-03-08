@@ -1,4 +1,4 @@
-<div>
+﻿<div>
     {{-- ─── Page body ───────────────────────────────────────────────────────── --}}
     <div class="max-w-6xl mx-auto px-4 py-4">
         <div class="flex flex-col lg:flex-row gap-4">
@@ -106,13 +106,11 @@
                             <div class="w-4 h-4 rounded bg-gray-100 border border-gray-300 flex-shrink-0"
                                 style="border-radius:3px 3px 2px 2px"></div>
                             <span class="text-gray-600" style="font-size:10px">Standard Seats</span>
-                            <span class="font-semibold text-gray-800" style="font-size:10px">27.00 USD</span>
                         </div>
                         <div class="flex items-center gap-1.5">
                             <div class="w-4 h-4 flex-shrink-0"
                                 style="background:#a5f3fc;border:1px solid #67e8f9;border-radius:3px 3px 2px 2px"></div>
                             <span class="text-gray-600" style="font-size:10px">Extra Legroom</span>
-                            <span class="font-semibold text-gray-800" style="font-size:10px">44.00 USD</span>
                         </div>
                         <div class="flex items-center gap-1.5">
                             <div class="w-4 h-4 flex-shrink-0"
@@ -237,8 +235,8 @@
                     <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                         <h2 class="font-bold text-gray-900 text-xl">Summary</h2>
                         @php
-                            $counts = session('search_params')['passengers'] ?? ['adults' => 1];
-                            $passCount = ($counts['adults'] ?? 0) + ($counts['children'] ?? 0) + ($counts['infants'] ?? 0);
+                            $searchParams = session('flight_search_params', []);
+                            $passCount = ($searchParams['adultCount'] ?? 0) + ($searchParams['childCount'] ?? 0) + ($searchParams['infantCount'] ?? 0);
                         @endphp
                         <span class="text-gray-400 font-medium" style="font-size:11px">{{ $passCount ?: 1 }}
                             Passenger{{ $passCount > 1 ? 's' : '' }}</span>
@@ -255,7 +253,7 @@
                                 <span class="text-gray-400 font-medium leading-tight"
                                     style="font-size:11px">{{ $item['label'] }}</span>
                                 <span class="font-bold text-gray-900 flex-shrink-0"
-                                    style="font-size:13px">${{ number_format($item['amount'], 2) }}</span>
+                                    style="font-size:13px">{{ $currencyCode }}{{ number_format($item['amount'], 2) }}</span>
                             </div>
                         @endforeach
 
@@ -270,14 +268,14 @@
                                     <span class="text-gray-400" style="font-size:9px">Selection in progress</span>
                                 </div>
                                 <span class="font-bold text-indigo-700 flex-shrink-0"
-                                    style="font-size:13px">${{ number_format($seat['price'] ?? 0, 2) }}</span>
+                                    style="font-size:13px">{{ $currencyCode }}{{ number_format($seat['price'] ?? 0, 2) }}</span>
                             </div>
                         @endforeach
 
                         <div class="pt-4 mt-2 border-t border-gray-100 flex items-center justify-between">
                             <span class="text-gray-900 font-bold text-base">Total</span>
                             <span
-                                class="text-gray-900 font-bold text-2xl">${{ number_format($total + $currentSeatsTotal, 2) }}</span>
+                                class="text-gray-900 font-bold text-2xl">{{ $currencyCode }}{{ number_format($total + $currentSeatsTotal, 2) }}</span>
                         </div>
                     </div>
 

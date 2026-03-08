@@ -20,29 +20,29 @@ class FlightApiController extends Controller
 
 
 
-    public function searchFlights(Request $request)
-    {
-        $validated = $request->validate([
-            'originLocationCode' => 'required|string|size:3',
-            'destinationLocationCode' => 'required|string|size:3',
-            'departureDate' => 'required|date_format:Y-m-d|after_or_equal:today',
-            'returnDate' => 'nullable|date_format:Y-m-d|after_or_equal:departureDate',
-            'adults' => 'required|integer|min:1|max:9',
-            'children' => 'nullable|integer|min:0|max:9',
-            'infants' => 'nullable|integer|min:0|max:9',
-            'travelClass' => 'nullable|in:ECONOMY,PREMIUM_ECONOMY,BUSINESS,FIRST',
-            'nonStop' => 'nullable|boolean',
-            'currencyCode' => 'nullable|string|size:3',
-            'max' => 'nullable|integer|min:1|max:250',
-        ]);
+    // public function searchFlights(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'originLocationCode' => 'required|string|size:3',
+    //         'destinationLocationCode' => 'required|string|size:3',
+    //         'departureDate' => 'required|date_format:Y-m-d|after_or_equal:today',
+    //         'returnDate' => 'nullable|date_format:Y-m-d|after_or_equal:departureDate',
+    //         'adults' => 'required|integer|min:1|max:9',
+    //         'children' => 'nullable|integer|min:0|max:9',
+    //         'infants' => 'nullable|integer|min:0|max:9',
+    //         'travelClass' => 'nullable|in:ECONOMY,PREMIUM_ECONOMY,BUSINESS,FIRST',
+    //         'nonStop' => 'nullable|boolean',
+    //         'currencyCode' => 'nullable|string|size:3',
+    //         'max' => 'nullable|integer|min:1|max:250',
+    //     ]);
 
-        try {
-            $data = $this->amadeusService->searchFlights($validated);
-            return response()->json($data);
-        } catch (\Throwable $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
+    //     try {
+    //         $data = $this->amadeusService->searchFlights($validated);
+    //         return response()->json($data);
+    //     } catch (\Throwable $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
 
     public function searchFlightsPost(Request $request)
     {
@@ -50,6 +50,7 @@ class FlightApiController extends Controller
             'originDestinations' => 'required|array|min:1',
             'travelers' => 'required|array|min:1',
             'sources' => 'required|array|min:1',
+            'currencyCode' => 'nullable|string|size:3',
         ]);
 
         try {
