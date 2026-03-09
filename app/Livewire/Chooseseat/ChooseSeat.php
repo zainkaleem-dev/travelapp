@@ -10,6 +10,10 @@ use Livewire\Attributes\Layout;
 class ChooseSeat extends Component
 {
     public array $selectedFlight = [];
+    public array $availableFares = [];
+    public string $selectedFareName = '';
+    public array $availableAncillaries = [];
+    public array $selectedAncillaries = [];
     public array $seatMapData = [];
     public array $flightInfo = [];
     public array $columnHeaders = [];
@@ -17,7 +21,8 @@ class ChooseSeat extends Component
 
     public int $currentPassengerIndex = 0;
     public int $currentSegmentIndex = 0;
-    public array $passengerSeats = [];
+    public array $passengerSeats = []; // [segmentIndex][passengerIndex] = ['id' => '', 'price' => 0]
+    public array $allSeatMaps = []; // [segmentIndex] = seatMapData
 
     public ?string $selectedSeat = null;
     public float $selectedSeatPrice = 0.00;
@@ -28,6 +33,10 @@ class ChooseSeat extends Component
     public array $leftCols = [];
     public array $rightCols = [];
 
+    public array $searchParams = [];
+    public array $summaryItems = [];
+    public float $total = 0.0;
+
     public function mount()
     {
         $this->selectedFlight = session('selected_flight');
@@ -35,65 +44,143 @@ class ChooseSeat extends Component
             return redirect()->route('flights.list');
         }
 
-        $searchParams = session('flight_search_params');
-        if ($searchParams) {
-            $this->passengerCount = ($searchParams['adultCount'] ?? 0) + ($searchParams['childCount'] ?? 0) + ($searchParams['infantCount'] ?? 0);
-            $this->currencyCode = $searchParams['currency'] ?? 'USD';
-            $this->currencyCode = $searchParams['currency'] ?? 'USD';
+        $this->searchParams = session('flight_search_params', []);
+
+        // Load Fares and Ancillaries from session (synced from FlightList/AdditionalServices)
+        $this->availableFares = session('selected_fare_tiers', []);
+        $this->selectedFareName = session('selected_fare_name', '');
+        $this->availableAncillaries = session('available_ancillaries', []);
+        $this->selectedAncillaries = session('selected_ancillaries', []);
+
+        if ($this->searchParams) {
+            $this->passengerCount = ($this->searchParams['adultCount'] ?? 0) + ($this->searchParams['childCount'] ?? 0) + ($this->searchParams['infantCount'] ?? 0);
+            $this->currencyCode = $this->searchParams['currency'] ?? 'USD';
         } else {
             $this->passengerCount = 1;
         }
-        if ($this->passengerCount < 1)
-            $this->passengerCount = 1;
 
-        // Pre-initialize passenger seats
-        for ($i = 0; $i < $this->passengerCount; $i++) {
-            $this->passengerSeats[$i] = ['id' => '', 'price' => 0];
+        if ($this->passengerCount < 1) {
+            $this->passengerCount = 1;
         }
+
+        // Initialize passenger seats for ALL segments
+        $itineraries = $this->selectedFlight['rawOffer']['itineraries'] ?? [];
+        $totalSegments = 0;
+        foreach ($itineraries as $itin) {
+            foreach ($itin['segments'] ?? [] as $seg) {
+                for ($i = 0; $i < $this->passengerCount; $i++) {
+                    $this->passengerSeats[$totalSegments][$i] = ['id' => '', 'price' => 0];
+                }
+                $totalSegments++;
+            }
+        }
+
+        $this->summaryItems = session('booking_summary', []);
+        $this->calculateTotal();
 
         $this->prepareFlightInfo();
         $this->loadSeatMap();
     }
 
+    protected function calculateTotal()
+    {
+        $baseTotal = (float) session('booking_total', 0);
+        $seatsTotal = 0;
+        foreach ($this->passengerSeats as $segmentSeats) {
+            $seatsTotal += collect($segmentSeats)->sum('price');
+        }
+        $this->total = $baseTotal + $seatsTotal;
+    }
+
     protected function prepareFlightInfo()
     {
-        $offer = $this->selectedFlight;
-        $itineraries = $offer['itineraries'] ?? [];
+        $this->flightInfo = [];
+        $itineraries = $this->selectedFlight['rawOffer']['itineraries'] ?? [];
+        $segIdx = 0;
 
-        foreach ($itineraries as $index => $itin) {
-            // Using already mapped itinerary data from FlightList
-            $this->flightInfo[] = [
-                'type' => ($index === 0) ? 'Departure' : 'Return',
-                'airlineCode' => $itin['airlineCode'] ?? '',
-                'flightNumber' => $itin['flightNumber'] ?? '',
-                'departureTime' => $itin['dep'] ?? '',
-                'arrivalTime' => $itin['arr'] ?? '',
-                'origin' => $itin['depAirport'] ?? '',
-                'destination' => $itin['arrAirport'] ?? '',
-                'duration' => $itin['duration'] ?? '',
-                'stops' => $itin['stops'] ?? 'Direct',
-            ];
+        foreach ($itineraries as $itinIdx => $itin) {
+            foreach ($itin['segments'] ?? [] as $sIdx => $segment) {
+                $this->flightInfo[] = [
+                    'index' => $segIdx,
+                    'type' => ($itinIdx === 0) ? 'Departure' : 'Return',
+                    'airlineCode' => $segment['carrierCode'] ?? '',
+                    'flightNumber' => ($segment['carrierCode'] ?? '') . ($segment['number'] ?? ''),
+                    'departureTime' => \Carbon\Carbon::parse($segment['departure']['at'])->format('H:i'),
+                    'arrivalTime' => \Carbon\Carbon::parse($segment['arrival']['at'])->format('H:i'),
+                    'origin' => $segment['departure']['iataCode'] ?? '',
+                    'destination' => $segment['arrival']['iataCode'] ?? '',
+                ];
+                $segIdx++;
+            }
         }
+    }
+
+    public function selectFare($cabin, $index)
+    {
+        $fare = $this->availableFares[$cabin][$index] ?? null;
+        if ($fare) {
+            $this->selectedFareName = $fare['name'];
+            $this->selectedFlight['price'] = $fare['price'];
+            $this->selectedFlight['basePrice'] = $fare['basePrice'];
+
+            // Update session
+            session(['selected_fare_name' => $this->selectedFareName]);
+            $selectedFlight = session('selected_flight');
+            $selectedFlight['price'] = $fare['price'];
+            $selectedFlight['basePrice'] = $fare['basePrice'];
+            session(['selected_flight' => $selectedFlight]);
+
+            $this->dispatch('fareUpdated');
+        }
+    }
+
+    public function toggleAncillary($code)
+    {
+        if (isset($this->selectedAncillaries[$code])) {
+            unset($this->selectedAncillaries[$code]);
+        } else {
+            $ancillary = collect($this->availableAncillaries)->firstWhere('code', $code);
+            if ($ancillary) {
+                $this->selectedAncillaries[$code] = $ancillary;
+            }
+        }
+        session(['selected_ancillaries' => $this->selectedAncillaries]);
+    }
+
+    public function changeSegment($index)
+    {
+        $this->currentSegmentIndex = $index;
+        $this->loadSeatMap();
     }
 
     public function loadSeatMap()
     {
+        // Check cache first
+        if (isset($this->allSeatMaps[$this->currentSegmentIndex])) {
+            $this->seatMapData = $this->allSeatMaps[$this->currentSegmentIndex];
+            $this->parseSeatMap();
+            $this->refreshSeatMapStates();
+            return;
+        }
+
         $amadeus = app(AmadeusService::class);
         try {
             $offer = $this->selectedFlight['rawOffer'] ?? $this->selectedFlight;
+
+            // Fetch all seatmaps for the offer
             $response = $amadeus->getFlightSeatmap($offer);
-            if (empty($response['data'])) {
-                \Illuminate\Support\Facades\Log::warning('SeatMap API returned EMPTY data for flight ID: ' . ($offer['id'] ?? 'unknown'));
-            }
 
             if (isset($response['data']) && !empty($response['data'])) {
-                $this->seatMapData = $response['data'][0];
+                // Store all seatmaps and pick the current one
+                $this->allSeatMaps = $response['data'];
+                $this->seatMapData = $this->allSeatMaps[$this->currentSegmentIndex] ?? $this->allSeatMaps[0] ?? [];
             }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Seatmap load error: ' . $e->getMessage());
         }
 
         $this->parseSeatMap();
+        $this->refreshSeatMapStates();
     }
 
 
@@ -170,37 +257,69 @@ class ChooseSeat extends Component
 
     public function selectSeat($seatId, $price)
     {
-        $currentSeat = $this->passengerSeats[$this->currentPassengerIndex]['id'] ?? '';
+        $currentSeat = $this->passengerSeats[$this->currentSegmentIndex][$this->currentPassengerIndex]['id'] ?? '';
 
         if ($currentSeat === $seatId) {
             // Unselect
-            $this->passengerSeats[$this->currentPassengerIndex] = ['id' => '', 'price' => 0];
+            $this->passengerSeats[$this->currentSegmentIndex][$this->currentPassengerIndex] = ['id' => '', 'price' => 0];
         } else {
-            // Check if occupied by another passenger in this session
-            foreach ($this->passengerSeats as $idx => $s) {
+            // Check if occupied by another passenger in THIS specific segment
+            foreach ($this->passengerSeats[$this->currentSegmentIndex] as $idx => $s) {
                 if ($idx !== $this->currentPassengerIndex && $s['id'] === $seatId) {
-                    return; // Already taken by Px
+                    return; // Already taken by Px in this segment
                 }
             }
-            $this->passengerSeats[$this->currentPassengerIndex] = ['id' => $seatId, 'price' => (float) $price];
+            $this->passengerSeats[$this->currentSegmentIndex][$this->currentPassengerIndex] = ['id' => $seatId, 'price' => (float) $price];
         }
 
+        $this->calculateTotal();
         $this->refreshSeatMapStates();
+    }
+
+    public function removeItem($index)
+    {
+        if (isset($this->summaryItems[$index])) {
+            $item = $this->summaryItems[$index];
+            if ($item['removable'] ?? false) {
+                // Handle Seat Selection removal specifically to sync with passengerSeats
+                if (str_contains($item['label'], 'Seat Selection')) {
+                    // Extract segment and passenger info from label if possible
+                    // Format: "Seat Selection S1-P1 (12A)"
+                    if (preg_match('/S(\d+)-P(\d+)/', $item['label'], $matches)) {
+                        $sIdx = (int) $matches[1] - 1;
+                        $pIdx = (int) $matches[2] - 1;
+                        if (isset($this->passengerSeats[$sIdx][$pIdx])) {
+                            $this->passengerSeats[$sIdx][$pIdx] = ['id' => '', 'price' => 0];
+                            $this->refreshSeatMapStates();
+                        }
+                    }
+                }
+
+                // Update booking total in session
+                $bookingTotal = (float) session('booking_total', 0);
+                $bookingTotal -= $item['amount'];
+                session(['booking_total' => $bookingTotal]);
+
+                unset($this->summaryItems[$index]);
+                $this->summaryItems = array_values($this->summaryItems);
+                session(['booking_summary' => $this->summaryItems]);
+
+                $this->calculateTotal();
+            }
+        }
     }
 
     protected function refreshSeatMapStates()
     {
-        // Re-parse or just update the states in $this->rows for reactivity
         foreach ($this->rows as &$row) {
             foreach ($row['seats'] as $letter => &$seat) {
                 // Reset to base state based on original data (simplified here)
-                // In a perfect impl, we'd store original states.
                 if ($seat['state'] === 'selected') {
-                    $seat['state'] = 'available'; // Default back
+                    $seat['state'] = 'available';
                 }
 
-                // Apply selected state
-                foreach ($this->passengerSeats as $s) {
+                // Apply selected state only for CURRENT segment
+                foreach ($this->passengerSeats[$this->currentSegmentIndex] ?? [] as $s) {
                     if ($s['id'] === $seat['id']) {
                         $seat['state'] = 'selected';
                     }
@@ -221,13 +340,15 @@ class ChooseSeat extends Component
         // Remove old seat items
         $summary = array_filter($summary, fn($item) => !str_contains($item['label'], 'Seat Selection'));
 
-        foreach ($this->passengerSeats as $idx => $seat) {
-            if (!empty($seat['id'])) {
-                $summary[] = [
-                    'label' => "Seat Selection P" . ($idx + 1) . " (" . $seat['id'] . ")",
-                    'amount' => $seat['price'],
-                    'removable' => true
-                ];
+        foreach ($this->passengerSeats as $sIdx => $segmentSeats) {
+            foreach ($segmentSeats as $pIdx => $seat) {
+                if (!empty($seat['id'])) {
+                    $summary[] = [
+                        'label' => "Seat Selection S" . ($sIdx + 1) . "-P" . ($pIdx + 1) . " (" . $seat['id'] . ")",
+                        'amount' => $seat['price'],
+                        'removable' => true
+                    ];
+                }
             }
         }
 

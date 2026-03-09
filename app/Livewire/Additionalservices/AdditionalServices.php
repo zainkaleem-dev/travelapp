@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('layouts.flight')]
 class AdditionalServices extends Component
@@ -37,17 +38,17 @@ class AdditionalServices extends Component
         $this->searchParams = session('flight_search_params', []);
         $this->availableFares = session('selected_fare_tiers', []);
 
-        \Illuminate\Support\Facades\Log::info('ADDITIONAL_SERVICES_LOADED_FARES', [
+        Log::info('ADDITIONAL_SERVICES_LOADED_FARES', [
             'count' => count($this->availableFares),
             'cabins' => array_keys($this->availableFares)
         ]);
 
-        \Illuminate\Support\Facades\Log::info('ADDITIONAL_SERVICES_MOUNT_DATA', [
+        Log::info('ADDITIONAL_SERVICES_MOUNT_DATA', [
             'search_params' => $this->searchParams,
             'fares' => $this->availableFares
         ]);
 
-        \Illuminate\Support\Facades\Log::info('RAW_AMADEUS_OFFER_INSPECTION', [
+        Log::info('RAW_AMADEUS_OFFER_INSPECTION', [
             'raw_offer' => $this->selectedFlight['rawOffer'] ?? null,
             'fares' => $this->availableFares
         ]);

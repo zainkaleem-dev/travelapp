@@ -14,41 +14,43 @@ class AmadeusService
     public function __construct()
     {
         $this->client = new Client([
-            'verify' => false,
-            'proxy' => [
-                'http' => null,
-                'https' => null,
-                'no' => [],
+            "verify" => false,
+            "proxy" => [
+                "http" => null,
+                "https" => null,
+                "no" => [],
             ],
         ]);
-        $this->baseUrl = config('amadeus.base_url');
-        $this->apiKey = config('amadeus.client_id');
-        $this->apiSecret = config('amadeus.client_secret');
+        $this->baseUrl = config("amadeus.base_url");
+        $this->apiKey = config("amadeus.client_id");
+        $this->apiSecret = config("amadeus.client_secret");
     }
 
     public function getToken(): ?string
     {
         try {
-            $response = $this->client->post($this->baseUrl . '/v1/security/oauth2/token', [
-                'form_params' => [
-                    'grant_type' => 'client_credentials',
-                    'client_id' => $this->apiKey,
-                    'client_secret' => $this->apiSecret,
+            $response = $this->client->post(
+                $this->baseUrl . "/v1/security/oauth2/token",
+                [
+                    "form_params" => [
+                        "grant_type" => "client_credentials",
+                        "client_id" => $this->apiKey,
+                        "client_secret" => $this->apiSecret,
+                    ],
                 ],
-            ]);
+            );
 
             $data = json_decode($response->getBody(), true);
-            $token = $data['access_token'] ?? null;
+            $token = $data["access_token"] ?? null;
 
             if ($token) {
                 // Small delay after refreshing a token.
-                // A token refresh is an API call itself. If we immediately 
+                // A token refresh is an API call itself. If we immediately
                 // make another call (like search) we will hit the 1 QPS limit.
                 usleep(1100000); // 1.1s
             }
 
             return $token;
-
         } catch (\Throwable $e) {
             return null;
         }
@@ -64,32 +66,36 @@ class AmadeusService
         return $this->baseUrl;
     }
 
-    public function searchLocations(string $keyword, string $subType = 'CITY,AIRPORT', string $view = 'LIGHT', ?string $countryCode = null)
-    {
+    public function searchLocations(
+        string $keyword,
+        string $subType = "CITY,AIRPORT",
+        string $view = "LIGHT",
+        ?string $countryCode = null,
+    ) {
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
         $query = [
-            'subType' => $subType,
-            'keyword' => $keyword,
-            'view' => $view,
+            "subType" => $subType,
+            "keyword" => $keyword,
+            "view" => $view,
         ];
 
         if (!empty($countryCode)) {
-            $query['countryCode'] = strtoupper($countryCode);
+            $query["countryCode"] = strtoupper($countryCode);
         }
 
-        $url = $this->baseUrl . '/v1/reference-data/locations';
+        $url = $this->baseUrl . "/v1/reference-data/locations";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $query,
+            "query" => $query,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -100,54 +106,65 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/reference-data/locations/' . strtoupper($locationId);
+        $url =
+            $this->baseUrl .
+            "/v1/reference-data/locations/" .
+            strtoupper($locationId);
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
         ]);
 
         return json_decode($response->getBody(), true);
     }
 
-    public function autocompleteLocations(string $keyword, ?string $countryCode = null)
-    {
+    public function autocompleteLocations(
+        string $keyword,
+        ?string $countryCode = null,
+    ) {
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
         $query = [
-            'subType' => 'CITY,AIRPORT',
-            'keyword' => $keyword,
-            'page[limit]' => 7,
-            'sort' => 'analytics.travelers.score',
-            'view' => 'LIGHT',
+            "subType" => "CITY,AIRPORT",
+            "keyword" => $keyword,
+            "page[limit]" => 7,
+            "sort" => "analytics.travelers.score",
+            "view" => "LIGHT",
         ];
 
         if (!empty($countryCode)) {
-            $query['countryCode'] = strtoupper($countryCode);
+            $query["countryCode"] = strtoupper($countryCode);
         }
 
-        $response = $this->client->get($this->baseUrl . '/v1/reference-data/locations', [
-            'headers' => ['Authorization' => 'Bearer ' . $token],
-            'query' => $query,
-        ]);
+        $response = $this->client->get(
+            $this->baseUrl . "/v1/reference-data/locations",
+            [
+                "headers" => ["Authorization" => "Bearer " . $token],
+                "query" => $query,
+            ],
+        );
 
         $data = json_decode($response->getBody(), true);
 
-        return array_map(fn($loc) => [
-            'id' => $loc['id'],
-            'label' => $loc['name'] . ' (' . $loc['iataCode'] . ')',
-            'iata' => $loc['iataCode'],
-            'subType' => $loc['subType'],
-        ], $data['data'] ?? []);
+        return array_map(
+            fn($loc) => [
+                "id" => $loc["id"],
+                "label" => $loc["name"] . " (" . $loc["iataCode"] . ")",
+                "iata" => $loc["iataCode"],
+                "subType" => $loc["subType"],
+            ],
+            $data["data"] ?? [],
+        );
     }
 
     public function searchFlights(array $params)
@@ -155,53 +172,55 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v2/shopping/flight-offers';
+        $url = $this->baseUrl . "/v2/shopping/flight-offers";
 
         $query = [
-            'originLocationCode' => strtoupper($params['originLocationCode']),
-            'destinationLocationCode' => strtoupper($params['destinationLocationCode']),
-            'departureDate' => $params['departureDate'],
-            'adults' => $params['adults'],
+            "originLocationCode" => strtoupper($params["originLocationCode"]),
+            "destinationLocationCode" => strtoupper(
+                $params["destinationLocationCode"],
+            ),
+            "departureDate" => $params["departureDate"],
+            "adults" => $params["adults"],
         ];
 
         // Optional fields
-        if (!empty($params['returnDate'])) {
-            $query['returnDate'] = $params['returnDate'];
+        if (!empty($params["returnDate"])) {
+            $query["returnDate"] = $params["returnDate"];
         }
 
-        if (!empty($params['children'])) {
-            $query['children'] = $params['children'];
+        if (!empty($params["children"])) {
+            $query["children"] = $params["children"];
         }
 
-        if (!empty($params['infants'])) {
-            $query['infants'] = $params['infants'];
+        if (!empty($params["infants"])) {
+            $query["infants"] = $params["infants"];
         }
 
-        if (!empty($params['travelClass'])) {
-            $query['travelClass'] = strtoupper($params['travelClass']);
+        if (!empty($params["travelClass"])) {
+            $query["travelClass"] = strtoupper($params["travelClass"]);
         }
 
-        if (isset($params['nonStop'])) {
-            $query['nonStop'] = $params['nonStop'] ? 'true' : 'false';
+        if (isset($params["nonStop"])) {
+            $query["nonStop"] = $params["nonStop"] ? "true" : "false";
         }
 
-        if (!empty($params['currencyCode'])) {
-            $query['currencyCode'] = strtoupper($params['currencyCode']);
+        if (!empty($params["currencyCode"])) {
+            $query["currencyCode"] = strtoupper($params["currencyCode"]);
         }
 
-        if (!empty($params['max'])) {
-            $query['max'] = $params['max'];
+        if (!empty($params["max"])) {
+            $query["max"] = $params["max"];
         }
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $query,
+            "query" => $query,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -212,19 +231,19 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        // Flight Inspiration Search API 
+        // Flight Inspiration Search API
         // Or we use Flight Cheapest Date Search (V1)
         // https://test.api.amadeus.com/v1/shopping/flight-dates
         // We will query up to 6 months around the date or strictly for that period
-        $url = $this->baseUrl . '/v1/shopping/flight-dates';
+        $url = $this->baseUrl . "/v1/shopping/flight-dates";
 
         $query = [
-            'origin' => strtoupper($params['origin']),
-            'destination' => strtoupper($params['destination']),
-            'departureDate' => $params['departureDate'] ?? null,
+            "origin" => strtoupper($params["origin"]),
+            "destination" => strtoupper($params["destination"]),
+            "departureDate" => $params["departureDate"] ?? null,
             // 'oneWay' => 'true' or 'false'
         ];
 
@@ -233,16 +252,16 @@ class AmadeusService
 
         try {
             $response = $this->client->get($url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                    'Accept' => 'application/json',
+                "headers" => [
+                    "Authorization" => "Bearer " . $token,
+                    "Accept" => "application/json",
                 ],
-                'query' => $query,
+                "query" => $query,
             ]);
 
             return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
-            return ['data' => []]; // Silently return empty on failure/404 out of range
+            return ["data" => []]; // Silently return empty on failure/404 out of range
         }
     }
 
@@ -251,31 +270,31 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/shopping/flight-offers/upselling';
+        $url = $this->baseUrl . "/v1/shopping/flight-offers/upselling";
 
         $body = [
-            'data' => [
-                'type' => 'flight-offers-upselling',
-                'flightOffers' => [$flightOffer],
-            ]
+            "data" => [
+                "type" => "flight-offers-upselling",
+                "flightOffers" => [$flightOffer],
+            ],
         ];
 
         try {
             $response = $this->client->post($url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
+                "headers" => [
+                    "Authorization" => "Bearer " . $token,
+                    "Accept" => "application/json",
+                    "Content-Type" => "application/json",
                 ],
-                'json' => $body,
+                "json" => $body,
             ]);
 
             return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
-            return ['data' => []];
+            return ["data" => []];
         }
     }
     public function priceFlightOffer(array $flightOffers)
@@ -283,28 +302,39 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/shopping/flight-offers/pricing';
+        $url = $this->baseUrl . "/v1/shopping/flight-offers/pricing";
 
         $body = [
-            'data' => [
-                'type' => 'flight-offers-pricing',
-                'flightOffers' => $flightOffers,
-            ]
+            "data" => [
+                "type" => "flight-offers-pricing",
+                "flightOffers" => $flightOffers,
+            ],
         ];
 
-        $response = $this->client->post($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ],
-            'json' => $body,
-        ]);
+        try {
+            $response = $this->client->post($url, [
+                "headers" => [
+                    "Authorization" => "Bearer " . $token,
+                    "Accept" => "application/json",
+                    "Content-Type" => "application/json",
+                ],
+                "json" => $body,
+            ]);
 
-        return json_decode($response->getBody(), true);
+            return json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning(
+                "PRICE_FLIGHT_OFFER_HTTP_ERROR",
+                [
+                    "error" => $e->getMessage(),
+                    "offers_count" => count($flightOffers),
+                ],
+            );
+            return ["data" => null, "error" => $e->getMessage()];
+        }
     }
 
     public function getFlightSeatmap(array $flightOffer)
@@ -312,35 +342,39 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/shopping/seatmaps';
+        $url = $this->baseUrl . "/v1/shopping/seatmaps";
 
         $body = [
-            'data' => [$flightOffer]
+            "data" => [$flightOffer],
         ];
 
-        \Illuminate\Support\Facades\Log::info('Outgoing SeatMap Request', [
-            'offer_id' => $flightOffer['id'] ?? 'N/A',
-            'itineraries_count' => count($flightOffer['itineraries'] ?? []),
-            'first_segment' => $flightOffer['itineraries'][0]['segments'][0]['carrierCode'] ?? 'N/A'
+        \Illuminate\Support\Facades\Log::info("Outgoing SeatMap Request", [
+            "offer_id" => $flightOffer["id"] ?? "N/A",
+            "itineraries_count" => count($flightOffer["itineraries"] ?? []),
+            "first_segment" =>
+                $flightOffer["itineraries"][0]["segments"][0]["carrierCode"] ??
+                "N/A",
         ]);
 
         try {
             $response = $this->client->post($url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
+                "headers" => [
+                    "Authorization" => "Bearer " . $token,
+                    "Accept" => "application/json",
+                    "Content-Type" => "application/json",
                 ],
-                'json' => $body,
+                "json" => $body,
             ]);
 
             return json_decode($response->getBody(), true);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('SeatMap API failed: ' . $e->getMessage());
-            return ['data' => []];
+            \Illuminate\Support\Facades\Log::error(
+                "SeatMap API failed: " . $e->getMessage(),
+            );
+            return ["data" => []];
         }
     }
 
@@ -349,18 +383,18 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v2/shopping/flight-offers/prediction';
+        $url = $this->baseUrl . "/v2/shopping/flight-offers/prediction";
 
         $response = $this->client->post($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
             ],
-            'json' => $payload,
+            "json" => $payload,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -371,18 +405,19 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/shopping/availability/flight-availabilities';
+        $url =
+            $this->baseUrl . "/v1/shopping/availability/flight-availabilities";
 
         $response = $this->client->post($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
             ],
-            'json' => $params,
+            "json" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -393,17 +428,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/reference-data/airlines';
+        $url = $this->baseUrl . "/v1/reference-data/airlines";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -414,15 +449,19 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/reference-data/airlines/' . strtoupper($airlineCode) . '/destinations';
+        $url =
+            $this->baseUrl .
+            "/v1/reference-data/airlines/" .
+            strtoupper($airlineCode) .
+            "/destinations";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
         ]);
 
@@ -434,17 +473,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/reference-data/locations/airports';
+        $url = $this->baseUrl . "/v1/reference-data/locations/airports";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -455,17 +494,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/reference-data/recommended-locations';
+        $url = $this->baseUrl . "/v1/reference-data/recommended-locations";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -476,25 +515,27 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v2/shopping/flight-offers';
+        $url = $this->baseUrl . "/v2/shopping/flight-offers";
 
         // Ensure currencyCode is in searchCriteria if provided
-        if (isset($payload['currencyCode'])) {
-            $payload['searchCriteria'] = $payload['searchCriteria'] ?? [];
-            $payload['searchCriteria']['currencyCode'] = strtoupper($payload['currencyCode']);
-            unset($payload['currencyCode']);
+        if (isset($payload["currencyCode"])) {
+            $payload["searchCriteria"] = $payload["searchCriteria"] ?? [];
+            $payload["searchCriteria"]["currencyCode"] = strtoupper(
+                $payload["currencyCode"],
+            );
+            unset($payload["currencyCode"]);
         }
 
         $response = $this->client->post($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
             ],
-            'json' => $payload,
+            "json" => $payload,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -503,72 +544,83 @@ class AmadeusService
     /**
      * Formats the Livewire frontend passenger session data into the strict Amadeus `travelers` schema.
      */
-    public function formatPassengersForBooking(array $sessionPassengers, array $sessionContact): array
-    {
+    public function formatPassengersForBooking(
+        array $sessionPassengers,
+        array $sessionContact,
+    ): array {
         $travelers = [];
 
         foreach ($sessionPassengers as $index => $p) {
             // Month mapping
             $months = [
-                'Jan' => '01',
-                'Feb' => '02',
-                'Mar' => '03',
-                'Apr' => '04',
-                'May' => '05',
-                'Jun' => '06',
-                'Jul' => '07',
-                'Aug' => '08',
-                'Sep' => '09',
-                'Oct' => '10',
-                'Nov' => '11',
-                'Dec' => '12'
+                "Jan" => "01",
+                "Feb" => "02",
+                "Mar" => "03",
+                "Apr" => "04",
+                "May" => "05",
+                "Jun" => "06",
+                "Jul" => "07",
+                "Aug" => "08",
+                "Sep" => "09",
+                "Oct" => "10",
+                "Nov" => "11",
+                "Dec" => "12",
             ];
-            $m = $months[$p['dob_month']] ?? '01';
-            $d = str_pad($p['dob_day'], 2, '0', STR_PAD_LEFT);
-            $y = $p['dob_year'];
+            $m = $months[$p["dob_month"]] ?? "01";
+            $d = str_pad($p["dob_day"], 2, "0", STR_PAD_LEFT);
+            $y = $p["dob_year"];
 
-            $gender = (strtolower($p['gender']) === 'male') ? 'MALE' : ((strtolower($p['gender']) === 'female') ? 'FEMALE' : 'UNSPECIFIED');
+            $gender =
+                strtolower($p["gender"]) === "male"
+                    ? "MALE"
+                    : (strtolower($p["gender"]) === "female"
+                        ? "FEMALE"
+                        : "UNSPECIFIED");
 
             $traveler = [
-                'id' => (string) ($index + 1),
-                'dateOfBirth' => "{$y}-{$m}-{$d}",
-                'name' => [
-                    'firstName' => strtoupper($p['first_name']),
-                    'lastName' => strtoupper($p['last_name']),
+                "id" => (string) ($index + 1),
+                "dateOfBirth" => "{$y}-{$m}-{$d}",
+                "name" => [
+                    "firstName" => strtoupper($p["first_name"]),
+                    "lastName" => strtoupper($p["last_name"]),
                 ],
-                'gender' => $gender,
-                'contact' => [
-                    'emailAddress' => $sessionContact['email'] ?? '',
-                    'phones' => [
+                "gender" => $gender,
+                "contact" => [
+                    "emailAddress" => $sessionContact["email"] ?? "",
+                    "phones" => [
                         [
-                            'deviceType' => 'MOBILE',
-                            'countryCallingCode' => str_replace('+', '', $sessionContact['phoneCode'] ?? '1'),
-                            'number' => $sessionContact['phoneNumber'] ?? '',
-                        ]
-                    ]
-                ]
+                            "deviceType" => "MOBILE",
+                            "countryCallingCode" => str_replace(
+                                "+",
+                                "",
+                                $sessionContact["phoneCode"] ?? "1",
+                            ),
+                            "number" => $sessionContact["phoneNumber"] ?? "",
+                        ],
+                    ],
+                ],
             ];
 
             // Nationality to ISO 3166-1 alpha-2 mapping
             $natMap = [
-                'Turkish' => 'TR',
-                'German' => 'DE',
-                'American' => 'US',
-                'British' => 'GB'
+                "Turkish" => "TR",
+                "German" => "DE",
+                "American" => "US",
+                "British" => "GB",
             ];
-            $countryCode = $natMap[$p['nationality'] ?? 'American'] ?? 'US';
+            $countryCode = $natMap[$p["nationality"] ?? "American"] ?? "US";
 
             // If Passport is provided
-            if (!empty($p['passport'])) {
-                $traveler['documents'] = [
+            if (!empty($p["passport"])) {
+                $traveler["documents"] = [
                     [
-                        'documentType' => 'PASSPORT',
-                        'number' => strtoupper($p['passport']),
-                        'issuanceCountry' => $countryCode,
-                        'nationality' => $countryCode,
-                        'expiryDate' => date('Y-m-d', strtotime('+5 years')), // Amadeus often requires expiry dates
-                        'holder' => true
-                    ]
+                        "documentType" => "PASSPORT",
+                        "number" => strtoupper($p["passport"]),
+                        "issuanceCountry" => $countryCode,
+                        "nationality" => $countryCode,
+                        "expiryDate" => date("Y-m-d", strtotime("+5 years")), // Amadeus often requires expiry dates
+                        "holder" => true,
+                    ],
                 ];
             }
 
@@ -583,18 +635,18 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/booking/flight-orders';
+        $url = $this->baseUrl . "/v1/booking/flight-orders";
 
         $response = $this->client->post($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
             ],
-            'json' => $payload,
+            "json" => $payload,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -605,15 +657,15 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/booking/flight-orders/' . $orderId;
+        $url = $this->baseUrl . "/v1/booking/flight-orders/" . $orderId;
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
         ]);
 
@@ -625,15 +677,15 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/booking/flight-orders/' . $orderId;
+        $url = $this->baseUrl . "/v1/booking/flight-orders/" . $orderId;
 
         $response = $this->client->delete($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
         ]);
 
@@ -645,16 +697,16 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/shopping/seatmaps';
+        $url = $this->baseUrl . "/v1/shopping/seatmaps";
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => ['flight-orderId' => $orderId],
+            "query" => ["flight-orderId" => $orderId],
         ]);
         return json_decode($response->getBody(), true);
     }
@@ -664,18 +716,18 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/shopping/seatmaps';
+        $url = $this->baseUrl . "/v1/shopping/seatmaps";
 
         $response = $this->client->post($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
             ],
-            'json' => ['data' => [$flightOffer]],
+            "json" => ["data" => [$flightOffer]],
         ]);
 
         return json_decode($response->getBody(), true);
@@ -686,17 +738,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/analytics/itinerary-price-metrics';
+        $url = $this->baseUrl . "/v1/analytics/itinerary-price-metrics";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -707,17 +759,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/shopping/flight-destinations';
+        $url = $this->baseUrl . "/v1/shopping/flight-destinations";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -728,17 +780,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v2/schedule/flights';
+        $url = $this->baseUrl . "/v2/schedule/flights";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -749,17 +801,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/travel/predictions/flight-delay';
+        $url = $this->baseUrl . "/v1/travel/predictions/flight-delay";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -770,17 +822,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/travel/predictions/airport-on-time';
+        $url = $this->baseUrl . "/v1/travel/predictions/airport-on-time";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -791,17 +843,17 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v2/reference-data/urls/checkin-links';
+        $url = $this->baseUrl . "/v2/reference-data/urls/checkin-links";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
-            'query' => $params,
+            "query" => $params,
         ]);
 
         return json_decode($response->getBody(), true);
@@ -812,15 +864,19 @@ class AmadeusService
         $token = $this->getToken();
 
         if (!$token) {
-            throw new \Exception('Unable to get access token');
+            throw new \Exception("Unable to get access token");
         }
 
-        $url = $this->baseUrl . '/v1/reference-data/locations/' . strtoupper($locationCode) . '/airports';
+        $url =
+            $this->baseUrl .
+            "/v1/reference-data/locations/" .
+            strtoupper($locationCode) .
+            "/airports";
 
         $response = $this->client->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Accept' => 'application/json',
+            "headers" => [
+                "Authorization" => "Bearer " . $token,
+                "Accept" => "application/json",
             ],
         ]);
 
