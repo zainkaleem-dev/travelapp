@@ -1077,160 +1077,144 @@ class FlightList extends Component
             "allFlights_count" => count($this->allFlights),
         ]);
 
-        try {
-            // Find the flight in our current list
-            $flight = collect($this->allFlights)->firstWhere("id", $id);
+        // Find the flight in our current list
+        $flight = collect($this->allFlights)->firstWhere("id", $id);
 
-            if (!$flight) {
-                Log::error("SELECT_FLIGHT_NOT_FOUND", ["flight_id" => $id]);
-                session()->flash(
-                    "error",
-                    "The selected flight could not be found. Please refresh and try again.",
-                );
-                return;
-            }
-
-            $rawOffer = $flight["rawOffer"] ?? null;
-
-            // Inject the raw offer back before sending it to session for booking
-            if ($rawOffer) {
-                $flight["rawOffer"] = $rawOffer;
-            }
-
-            // Also capture the parsed fare tiers if the user opened the dropdown
-            $fareTiers = $this->fareDetails[$id] ?? [];
-
-            // If the user clicked Select without ever opening the dropdown, we must fetch the tiers now.
-            if (empty($fareTiers) && $rawOffer) {
-                try {
-                    $amadeus = app(AmadeusService::class);
-                    $response = $amadeus->upsellFlightOffers($rawOffer);
-
-                    Log::info("RAW_UPSELL_API_RESPONSE", [
-                        "flight_id" => $id,
-                        "response_keys" => array_keys($response),
-                        "data_count" => isset($response["data"])
-                            ? count($response["data"])
-                            : 0,
-                    ]);
-
-                    if (isset($response["data"]) && !empty($response["data"])) {
-                        $fareTiers = $this->parseUpsellOffers(
-                            $response["data"],
-                        );
-                        $this->fareDetails[$id] = $fareTiers;
-                    }
-                } catch (\Exception $e) {
-                    Log::warning("UPSELL_FLIGHT_OFFERS_FAILED_NON_FATAL", [
-                        "flight_id" => $id,
-                        "error" => $e->getMessage(),
-                    ]);
-                    // Non-fatal: continue without upsell tiers
-                }
-            }
-
-            Log::info("UPSOLD_FARE_TIERS_RESULT", [
-                "flight_id" => $id,
-                "count" => count($fareTiers),
-                "tiers" => $fareTiers,
-            ]);
-
-            // ── Confirm Pricing (POST) for final services accuracy ──
-            if ($rawOffer) {
-                try {
-                    // Keep a reference to original amenities per segmentId
-                    $originalAmenities = [];
-                    $travelerPricings = $rawOffer["travelerPricings"] ?? [];
-                    if (!empty($travelerPricings)) {
-                        foreach (
-                            $travelerPricings[0]["fareDetailsBySegment"] ?? []
-                            as $det
-                        ) {
-                            $originalAmenities[$det["segmentId"]] =
-                                $det["amenities"] ?? [];
-                        }
-                    }
-
-                    $amadeus = app(AmadeusService::class);
-                    $pricingResponse = $amadeus->priceFlightOffer([$rawOffer]);
-
-                    if (isset($pricingResponse["data"]["flightOffers"][0])) {
-                        $pricedOffer =
-                            $pricingResponse["data"]["flightOffers"][0];
-
-                        // Re-inject amenities if the pricing response stripped them out
-                        if (
-                            isset(
-                            $pricedOffer["travelerPricings"][0][
-                                "fareDetailsBySegment"
-                            ],
-                        )
-                        ) {
-                            foreach (
-                                $pricedOffer["travelerPricings"][0][
-                                    "fareDetailsBySegment"
-                                ]
-                                as &$newDet
-                            ) {
-                                $sId = $newDet["segmentId"];
-                                if (
-                                    empty($newDet["amenities"]) &&
-                                    !empty($originalAmenities[$sId])
-                                ) {
-                                    $newDet["amenities"] =
-                                        $originalAmenities[$sId];
-                                }
-                            }
-                        }
-
-                        // Update flight pricing and raw offer with the enriched priced one
-                        $flight["price"] =
-                            $pricedOffer["price"]["total"] ?? $flight["price"];
-                        $flight["rawOffer"] = $pricedOffer;
-                    }
-                } catch (\Exception $e) {
-                    Log::warning("PRICE_FLIGHT_OFFER_FAILED_NON_FATAL", [
-                        "flight_id" => $id,
-                        "error" => $e->getMessage(),
-                    ]);
-                    // Non-fatal: proceed to redirect with the original unpriced offer
-                }
-            }
-
-            // Store selection and search context in session for the next step
-            session([
-                "selected_flight" => $flight,
-                "selected_fare_tiers" => $fareTiers,
-                "flight_search_params" => [
-                    "isMulti" => $this->isMulti,
-                    "segments" => $this->segments,
-                    "origin" => $this->origin,
-                    "destination" => $this->destination,
-                    "originIata" => $this->originIata,
-                    "destIata" => $this->destIata,
-                    "departDate" => $this->departDate,
-                    "returnDate" => $this->returnDate,
-                    "adultCount" => $this->adultCount,
-                    "childCount" => $this->childCount,
-                    "infantCount" => $this->infantCount,
-                    "travelClass" => $this->travelClass,
-                    "travelClassEnum" => $this->travelClassEnum,
-                    "currency" => $this->currencyCode,
-                ],
-            ]);
-            Log::info("SELECT_FLIGHT_SUCCESS", ["flight_id" => $id]);
-            return redirect()->route("additional.services");
-        } catch (\Exception $e) {
-            Log::error("SELECT_FLIGHT_EXCEPTION: " . $e->getMessage(), [
-                "exception" => $e,
-                "flight_id" => $id,
-            ]);
+        if (!$flight) {
+            Log::error("SELECT_FLIGHT_NOT_FOUND", ["flight_id" => $id]);
             session()->flash(
                 "error",
-                "An error occurred while selecting your flight: " .
-                $e->getMessage(),
+                "The selected flight could not be found. Please refresh and try again.",
             );
+            return;
         }
+
+        $rawOffer = $flight["rawOffer"] ?? null;
+
+        // Inject the raw offer back before sending it to session for booking
+        if ($rawOffer) {
+            $flight["rawOffer"] = $rawOffer;
+        }
+
+        // Also capture the parsed fare tiers if the user opened the dropdown
+        $fareTiers = $this->fareDetails[$id] ?? [];
+
+        // If the user clicked Select without ever opening the dropdown, we must fetch the tiers now.
+        if (empty($fareTiers) && $rawOffer) {
+            try {
+                $amadeus = app(AmadeusService::class);
+                $response = $amadeus->upsellFlightOffers($rawOffer);
+
+                Log::info("RAW_UPSELL_API_RESPONSE", [
+                    "flight_id" => $id,
+                    "response_keys" => array_keys($response),
+                    "data_count" => isset($response["data"])
+                        ? count($response["data"])
+                        : 0,
+                ]);
+
+                if (isset($response["data"]) && !empty($response["data"])) {
+                    $fareTiers = $this->parseUpsellOffers($response["data"]);
+                    $this->fareDetails[$id] = $fareTiers;
+                }
+            } catch (\Exception $e) {
+                Log::warning("UPSELL_FLIGHT_OFFERS_FAILED_NON_FATAL", [
+                    "flight_id" => $id,
+                    "error" => $e->getMessage(),
+                ]);
+                // Non-fatal: continue without upsell tiers
+            }
+        }
+
+        Log::info("UPSOLD_FARE_TIERS_RESULT", [
+            "flight_id" => $id,
+            "count" => count($fareTiers),
+            "tiers" => $fareTiers,
+        ]);
+
+        // ── Confirm Pricing (POST) for final services accuracy ──
+        if ($rawOffer) {
+            try {
+                // Keep a reference to original amenities per segmentId
+                $originalAmenities = [];
+                $travelerPricings = $rawOffer["travelerPricings"] ?? [];
+                if (!empty($travelerPricings)) {
+                    foreach (
+                        $travelerPricings[0]["fareDetailsBySegment"] ?? []
+                        as $det
+                    ) {
+                        $originalAmenities[$det["segmentId"]] =
+                            $det["amenities"] ?? [];
+                    }
+                }
+
+                $amadeus = app(AmadeusService::class);
+                $pricingResponse = $amadeus->priceFlightOffer([$rawOffer]);
+
+                if (isset($pricingResponse["data"]["flightOffers"][0])) {
+                    $pricedOffer = $pricingResponse["data"]["flightOffers"][0];
+
+                    // Re-inject amenities if the pricing response stripped them out
+                    if (
+                        isset(
+                        $pricedOffer["travelerPricings"][0][
+                            "fareDetailsBySegment"
+                        ],
+                    )
+                    ) {
+                        foreach (
+                            $pricedOffer["travelerPricings"][0][
+                                "fareDetailsBySegment"
+                            ]
+                            as &$newDet
+                        ) {
+                            $sId = $newDet["segmentId"];
+                            if (
+                                empty($newDet["amenities"]) &&
+                                !empty($originalAmenities[$sId])
+                            ) {
+                                $newDet["amenities"] = $originalAmenities[$sId];
+                            }
+                        }
+                    }
+
+                    // Update flight pricing and raw offer with the enriched priced one
+                    $flight["price"] =
+                        $pricedOffer["price"]["total"] ?? $flight["price"];
+                    $flight["rawOffer"] = $pricedOffer;
+                }
+            } catch (\Exception $e) {
+                Log::warning("PRICE_FLIGHT_OFFER_FAILED_NON_FATAL", [
+                    "flight_id" => $id,
+                    "error" => $e->getMessage(),
+                ]);
+                // Non-fatal: proceed to redirect with the original unpriced offer
+            }
+        }
+
+        // Store selection and search context in session for the next step
+        session([
+            "selected_flight" => $flight,
+            "selected_fare_tiers" => $fareTiers,
+            "flight_search_params" => [
+                "isMulti" => $this->isMulti,
+                "segments" => $this->segments,
+                "origin" => $this->origin,
+                "destination" => $this->destination,
+                "originIata" => $this->originIata,
+                "destIata" => $this->destIata,
+                "departDate" => $this->departDate,
+                "returnDate" => $this->returnDate,
+                "adultCount" => $this->adultCount,
+                "childCount" => $this->childCount,
+                "infantCount" => $this->infantCount,
+                "travelClass" => $this->travelClass,
+                "travelClassEnum" => $this->travelClassEnum,
+                "currency" => $this->currencyCode,
+            ],
+        ]);
+        Log::info("SELECT_FLIGHT_SUCCESS", ["flight_id" => $id]);
+        return $this->redirect(route("additional.services"));
     }
 
     public function render()
