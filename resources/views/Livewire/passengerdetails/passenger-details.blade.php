@@ -69,10 +69,18 @@
                 {{-- ── Passenger Forms (loop) ───────────────────────────────── --}}
                 @foreach ($passengers as $index => $passenger)
                 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                    <div wire:click="setActivePassenger({{ $index }})" class="flex items-center justify-between px-4 py-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors">
                         <h2 class="font-semibold text-gray-800 text-sm flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold" style="font-size:10px">{{ $index + 1 }}</span>
-                            Passenger {{ $index + 1 }}
+                            @if($this->completedPassengers[$index] ?? false)
+                                <span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center font-black shadow-sm" style="font-size:10px">✓</span>
+                                Passenger {{ $index + 1 }}
+                                @if(!empty($passenger['first_name']))
+                                    <span class="text-gray-400 font-medium" style="font-size:11px">({{ $passenger['first_name'] }} {{ $passenger['last_name'] }})</span>
+                                @endif
+                            @else
+                                <span class="w-5 h-5 rounded-full {{ $activePassengerIndex === $index ? 'bg-indigo-600 shadow-md shadow-indigo-600/30' : 'bg-gray-200 text-gray-500' }} text-white flex items-center justify-center font-bold transition-colors" style="font-size:10px">{{ $index + 1 }}</span>
+                                <span class="{{ $activePassengerIndex === $index ? 'text-indigo-900' : 'text-gray-600' }}">Passenger {{ $index + 1 }}</span>
+                            @endif
                         </h2>
                         @php
                             $typeLabel = match($passenger['type']) {
@@ -82,136 +90,155 @@
                                 default => 'Passenger'
                             };
                         @endphp
-                        <span class="text-gray-400" style="font-size:10px">{{ $typeLabel }}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-400" style="font-size:10px">{{ $typeLabel }}</span>
+                            <svg class="w-4 h-4 text-gray-400 transition-transform {{ $activePassengerIndex === $index ? 'rotate-180 text-indigo-500' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
                     </div>
 
-                    {{-- Info notice --}}
-                    <div class="mx-4 mt-3 flex items-start gap-2 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
-                        <svg class="w-3.5 h-3.5 text-indigo-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4M12 16h.01"/></svg>
-                        <p class="text-indigo-600" style="font-size:10px">To avoid boarding difficulties, enter all first and last names exactly as they appear on your Passport/ID.</p>
-                    </div>
-
-                    <div class="px-4 py-3 space-y-3">
-
-                        {{-- First / Last name --}}
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-gray-500 mb-1" style="font-size:10px">First Name</label>
-                                <input
-                                    type="text"
-                                    wire:model.live.debounce.400ms="passengers.{{ $index }}.first_name"
-                                    placeholder="First Name"
-                                    class="w-full px-3 py-2 border @error('passengers.'.$index.'.first_name') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700"
-                                />
-                                @error('passengers.'.$index.'.first_name')
-                                    <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            <div>
-                                <label class="block text-gray-500 mb-1" style="font-size:10px">Last Name</label>
-                                <input
-                                    type="text"
-                                    wire:model.live.debounce.400ms="passengers.{{ $index }}.last_name"
-                                    placeholder="Last Name"
-                                    class="w-full px-3 py-2 border @error('passengers.'.$index.'.last_name') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700"
-                                />
-                                @error('passengers.'.$index.'.last_name')
-                                    <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
-                                @enderror
-                            </div>
+                    <div x-show="$wire.activePassengerIndex === {{ $index }}" x-collapse.duration.300ms x-cloak>
+                        {{-- Info notice --}}
+                        <div class="mx-4 mt-3 flex items-start gap-2 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
+                            <svg class="w-3.5 h-3.5 text-indigo-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4M12 16h.01"/></svg>
+                            <p class="text-indigo-600" style="font-size:10px">To avoid boarding difficulties, enter all first and last names exactly as they appear on your Passport/ID.</p>
                         </div>
 
-                        {{-- Date of Birth --}}
-                        <div>
-                            <label class="block text-gray-500 mb-1" style="font-size:10px">Date of Birth</label>
-                            <div class="flex gap-2">
-                                {{-- Day --}}
-                                <select
-                                    wire:model="passengers.{{ $index }}.dob_day"
-                                    class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.dob_day') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white"
-                                >
-                                    <option value="">Day</option>
-                                    @foreach ($this->days as $day)
-                                        <option value="{{ $day }}">{{ $day }}</option>
-                                    @endforeach
-                                </select>
-                                {{-- Month --}}
-                                <select
-                                    wire:model="passengers.{{ $index }}.dob_month"
-                                    class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.dob_month') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white"
-                                >
-                                    <option value="">Month</option>
-                                    @foreach ($this->months as $month)
-                                        <option value="{{ $month }}">{{ $month }}</option>
-                                    @endforeach
-                                </select>
-                                {{-- Year --}}
-                                <select
-                                    wire:model="passengers.{{ $index }}.dob_year"
-                                    class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.dob_year') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white"
-                                >
-                                    <option value="">Year</option>
-                                    @foreach ($this->years as $year)
-                                        <option value="{{ $year }}">{{ $year }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @error('passengers.'.$index.'.dob_day')
-                                <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <div class="px-4 py-4 space-y-4">
 
-                        {{-- Nationality + Gender / Passport --}}
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {{-- First / Last name --}}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-500 mb-1" style="font-size:10px">First Name</label>
+                                    <input
+                                        type="text"
+                                        wire:model.live.debounce.400ms="passengers.{{ $index }}.first_name"
+                                        placeholder="First Name"
+                                        class="w-full px-3 py-2 border @error('passengers.'.$index.'.first_name') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all"
+                                    />
+                                    @error('passengers.'.$index.'.first_name')
+                                        <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-gray-500 mb-1" style="font-size:10px">Last Name</label>
+                                    <input
+                                        type="text"
+                                        wire:model.live.debounce.400ms="passengers.{{ $index }}.last_name"
+                                        placeholder="Last Name"
+                                        class="w-full px-3 py-2 border @error('passengers.'.$index.'.last_name') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all"
+                                    />
+                                    @error('passengers.'.$index.'.last_name')
+                                        <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            {{-- Date of Birth --}}
                             <div>
-                                <label class="block text-gray-500 mb-1" style="font-size:10px">Nationality</label>
+                                <label class="block text-gray-500 mb-1" style="font-size:10px">Date of Birth</label>
                                 <div class="flex gap-2">
+                                    {{-- Day --}}
                                     <select
-                                        wire:model="passengers.{{ $index }}.nationality"
-                                        class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.nationality') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white"
+                                        wire:model.live="passengers.{{ $index }}.dob_day"
+                                        class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.dob_day') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all"
                                     >
-                                        <option value="">Select</option>
-                                        <option>Turkish</option>
-                                        <option>German</option>
-                                        <option>American</option>
-                                        <option>British</option>
+                                        <option value="">Day</option>
+                                        @foreach ($this->days as $day)
+                                            <option value="{{ $day }}">{{ $day }}</option>
+                                        @endforeach
                                     </select>
+                                    {{-- Month --}}
                                     <select
-                                        wire:model="passengers.{{ $index }}.gender"
-                                        class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.gender') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white"
+                                        wire:model.live="passengers.{{ $index }}.dob_month"
+                                        class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.dob_month') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all"
                                     >
-                                        <option value="">Gender</option>
-                                        <option>Male</option>
-                                        <option>Female</option>
+                                        <option value="">Month</option>
+                                        @foreach ($this->months as $month)
+                                            <option value="{{ $month }}">{{ $month }}</option>
+                                        @endforeach
+                                    </select>
+                                    {{-- Year --}}
+                                    <select
+                                        wire:model.live="passengers.{{ $index }}.dob_year"
+                                        class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.dob_year') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all"
+                                    >
+                                        <option value="">Year</option>
+                                        @foreach ($this->years as $year)
+                                            <option value="{{ $year }}">{{ $year }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
-                                @error('passengers.'.$index.'.nationality')
-                                    <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
-                                @enderror
-                                @error('passengers.'.$index.'.gender')
+                                @error('passengers.'.$index.'.dob_day')
                                     <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div>
-                                <label class="block text-gray-500 mb-1" style="font-size:10px">Passport Number (or ID)</label>
-                                <input
-                                    type="text"
-                                    wire:model.live.debounce.400ms="passengers.{{ $index }}.passport"
-                                    placeholder="Passport Number (or ID)"
-                                    class="w-full px-3 py-2 border @error('passengers.'.$index.'.passport') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700"
-                                />
-                                @error('passengers.'.$index.'.passport')
-                                    <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
-                                @enderror
+
+                            {{-- Nationality + Gender / Passport --}}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-500 mb-1" style="font-size:10px">Nationality & Gender</label>
+                                    <div class="flex gap-2">
+                                        <select
+                                            wire:model.live="passengers.{{ $index }}.nationality"
+                                            class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.nationality') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all"
+                                        >
+                                            <option value="">Select Nationality</option>
+                                            <option>Turkish</option>
+                                            <option>German</option>
+                                            <option>American</option>
+                                            <option>British</option>
+                                            <option>Emirati</option>
+                                        </select>
+                                        <select
+                                            wire:model.live="passengers.{{ $index }}.gender"
+                                            class="flex-1 px-2 py-2 border @error('passengers.'.$index.'.gender') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all"
+                                        >
+                                            <option value="">Gender</option>
+                                            <option>Male</option>
+                                            <option>Female</option>
+                                        </select>
+                                    </div>
+                                    @error('passengers.'.$index.'.nationality')
+                                        <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
+                                    @enderror
+                                    @error('passengers.'.$index.'.gender')
+                                        <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-gray-500 mb-1" style="font-size:10px">Passport Number (or ID)</label>
+                                    <input
+                                        type="text"
+                                        wire:model.live.debounce.400ms="passengers.{{ $index }}.passport"
+                                        placeholder="Passport Number (or ID)"
+                                        class="w-full px-3 py-2 border @error('passengers.'.$index.'.passport') border-red-400 @else border-gray-200 @enderror rounded-lg text-xs text-gray-700 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all"
+                                    />
+                                    @error('passengers.'.$index.'.passport')
+                                        <p class="mt-0.5 text-red-500" style="font-size:10px">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>
 
-                        {{-- Visa disclaimer --}}
-                        <div class="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
-                            <svg class="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4M12 16h.01"/></svg>
-                            <p class="text-amber-700" style="font-size:10px">Erkan is not liable for any passenger who is denied boarding or entry to any destination due to visa.</p>
-                        </div>
+                            {{-- Visa disclaimer --}}
+                            <div class="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 mt-2">
+                                <svg class="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4M12 16h.01"/></svg>
+                                <p class="text-amber-700" style="font-size:10px">FlightBook is not liable for any passenger who is denied boarding or entry to any destination due to visa.</p>
+                            </div>
 
+                            {{-- Next Button (Only show if not the very last passenger) --}}
+                            @if($index < count($passengers) - 1)
+                                <div class="pt-4 border-t border-gray-50 flex justify-end">
+                                    <button
+                                        type="button"
+                                        wire:click="nextPassenger"
+                                        class="px-5 py-2.5 bg-indigo-50 text-indigo-700 font-bold border border-indigo-100 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm flex items-center gap-2 text-[11px]"
+                                    >
+                                        Save & Next Passenger
+                                        <svg class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 @endforeach

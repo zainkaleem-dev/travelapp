@@ -41,6 +41,21 @@ class PassengerDetail extends Component
     // ── Summary line items ────────────────────────────────────────────────────
     public array $summaryItems = [];
 
+    // ── Accordion State ───────────────────────────────────────────────────────
+    public int $activePassengerIndex = 0;
+
+    public function setActivePassenger(int $index): void
+    {
+        $this->activePassengerIndex = $index;
+    }
+
+    public function nextPassenger(): void
+    {
+        if ($this->activePassengerIndex < count($this->passengers) - 1) {
+            $this->activePassengerIndex++;
+        }
+    }
+
     // ── Boot ──────────────────────────────────────────────────────────────────
     public function mount()
     {
@@ -93,6 +108,20 @@ class PassengerDetail extends Component
     public function total(): float
     {
         return collect($this->summaryItems)->sum('amount');
+    }
+
+    #[Computed]
+    public function completedPassengers(): array
+    {
+        $completed = [];
+        foreach ($this->passengers as $idx => $p) {
+            if (!empty($p['first_name']) && !empty($p['last_name']) && !empty($p['dob_year']) && !empty($p['nationality']) && !empty($p['passport'])) {
+                $completed[$idx] = true;
+            } else {
+                $completed[$idx] = false;
+            }
+        }
+        return $completed;
     }
 
     #[Computed]
