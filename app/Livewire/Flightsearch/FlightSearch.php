@@ -31,10 +31,6 @@ class FlightSearch extends Component
     public int $returnChildren = 0;
     public int $returnInfants = 0;
 
-    // Airport autocomplete state (Return tab)
-    public bool $showReturnDepAirports = false;
-    public bool $showReturnArrAirports = false;
-
     // ── One-way fields ─────────────────────────────────────────────────
     public string $onewayDep = '';
     public string $onewayArr = '';
@@ -45,8 +41,6 @@ class FlightSearch extends Component
     public int $onewayAdults = 1;
     public int $onewayChildren = 0;
     public int $onewayInfants = 0;
-    public bool $showOnewayDepAirports = false;
-    public bool $showOnewayArrAirports = false;
 
     // ── Multi-city fields ──────────────────────────────────────────────
     public array $multiFlights = [
@@ -59,8 +53,6 @@ class FlightSearch extends Component
     public int $multiAdults = 1;
     public int $multiChildren = 0;
     public int $multiInfants = 0;
-    public array $showMultiDepAirports = [false, false];
-    public array $showMultiArrAirports = [false, false];
 
     // ── Searching state ────────────────────────────────────────────────
     public bool $searching = false;
@@ -94,8 +86,6 @@ class FlightSearch extends Component
     {
         if (count($this->multiFlights) < self::MAX_FLIGHTS) {
             $this->multiFlights[] = ['dep' => '', 'arr' => '', 'date' => ''];
-            $this->showMultiDepAirports[] = false;
-            $this->showMultiArrAirports[] = false;
         }
     }
 
@@ -178,7 +168,7 @@ class FlightSearch extends Component
                 ]
             ]);
 
-            $this->redirectRoute('flights.list');
+            $this->redirectRoute('flights.list', navigate: true);
             return;
         }
         if ($this->tripType === 'oneway') {
@@ -214,7 +204,7 @@ class FlightSearch extends Component
                 ]
             ]);
 
-            $this->redirectRoute('flights.list');
+            $this->redirectRoute('flights.list', navigate: true);
             return;
         }
 
@@ -254,7 +244,7 @@ class FlightSearch extends Component
                 ]
             ]);
 
-            $this->redirectRoute('flights.list');
+            $this->redirectRoute('flights.list', navigate: true);
             return;
         }
 
@@ -326,7 +316,6 @@ class FlightSearch extends Component
         if (str_contains($this->returnDep, ' (')) {
             return;
         }
-        $this->showReturnDepAirports = true;
         $this->fetchAirports($this->returnDep, 'returnDep');
     }
 
@@ -335,7 +324,6 @@ class FlightSearch extends Component
         if (str_contains($this->returnArr, ' (')) {
             return;
         }
-        $this->showReturnArrAirports = true;
         $this->fetchAirports($this->returnArr, 'returnArr');
     }
 
@@ -343,23 +331,14 @@ class FlightSearch extends Component
     {
         \Log::info("selectReturnDepAirport called with: " . $display);
         $this->returnDep = $display;
-        $this->showReturnDepAirports = false;
     }
 
     public function selectReturnArrAirport(string $display): void
     {
         \Log::info("selectReturnArrAirport called with: " . $display);
         $this->returnArr = $display;
-        $this->showReturnArrAirports = false;
     }
 
-    public function closeAirportDropdowns(): void
-    {
-        $this->showReturnDepAirports = false;
-        $this->showReturnArrAirports = false;
-        $this->showOnewayDepAirports = false;
-        $this->showOnewayArrAirports = false;
-    }
 
     public function updatedOnewayDep(): void
     {
@@ -382,13 +361,11 @@ class FlightSearch extends Component
     public function selectOnewayDepAirport(string $display): void
     {
         $this->onewayDep = $display;
-        $this->showOnewayDepAirports = false;
     }
 
     public function selectOnewayArrAirport(string $display): void
     {
         $this->onewayArr = $display;
-        $this->showOnewayArrAirports = false;
     }
 
     public function selectMultiDepAirport(int $index, string $display): void
@@ -398,7 +375,6 @@ class FlightSearch extends Component
             return;
         }
         $this->multiFlights[$index]['dep'] = $display;
-        $this->showMultiDepAirports[$index] = false;
     }
 
     public function selectMultiArrAirport(int $index, string $display): void
@@ -408,7 +384,6 @@ class FlightSearch extends Component
             return;
         }
         $this->multiFlights[$index]['arr'] = $display;
-        $this->showMultiArrAirports[$index] = false;
     }
 
     public function updated($propertyName): void
@@ -425,10 +400,8 @@ class FlightSearch extends Component
                 // Only search if the user is typing (not a final selection which has "City (CODE)")
                 if (!str_contains($value, ' (')) {
                     if ($field === 'dep') {
-                        $this->showMultiDepAirports[$index] = true;
                         $this->fetchAirports($value, "multi.$index.dep");
                     } else if ($field === 'arr') {
-                        $this->showMultiArrAirports[$index] = true;
                         $this->fetchAirports($value, "multi.$index.arr");
                     }
                 }

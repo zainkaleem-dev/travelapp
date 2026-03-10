@@ -400,33 +400,6 @@
             /* Firefox */
         }
 
-        /* ── Global top line loader ── */
-        .page-line-loader {
-            position: fixed;
-            /* navbar height is h-12 (~3rem), so place loader just below it */
-            top: 3rem;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: rgba(42, 180, 192, 0.18);
-            overflow: hidden;
-            z-index: 9999;
-            display: none;
-        }
-
-        .page-line-loader-bar {
-            position: absolute;
-            left: -30%;
-            width: 30%;
-            height: 100%;
-            background: #2ab4c0;
-            animation: page-line-loading 1.2s infinite ease-in-out;
-        }
-
-        .page-line-loader--active {
-            display: block;
-        }
-
         @keyframes page-line-loading {
             0% {
                 left: -30%;
@@ -511,10 +484,7 @@
         </div>
     </nav>
 
-    {{-- Global top line loader (under navbar) --}}
-    <div id="page-line-loader" class="page-line-loader">
-        <div class="page-line-loader-bar"></div>
-    </div>
+    </nav>
 
     {{-- ── Step bar ── --}}
     <div class="bg-white border-b border-gray-200">
@@ -554,53 +524,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const loader = document.getElementById('page-line-loader');
-
-            if (!loader) return;
-
-            const showLoader = () => {
-                loader.classList.add('page-line-loader--active');
-            };
-
-            const hideLoader = () => {
-                loader.classList.remove('page-line-loader--active');
-            };
-
-            // 1) Buttons / links used to change view
-            // Add attribute data-view-change on any button/link that should trigger this.
-            document.querySelectorAll('[data-view-change]').forEach(el => {
-                el.addEventListener('click', () => {
-                    showLoader();
-                });
-            });
-
-            // 2) Any form submit that redirects
-            // To skip loader for a specific form, add data-no-loader on that form.
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', () => {
-                    if (form.hasAttribute('data-no-loader')) {
-                        return;
-                    }
-                    showLoader();
-                });
-            });
-
-            // 3) When page is reloaded / navigated
-            window.addEventListener('beforeunload', function() {
-                showLoader();
-            });
-
-            // Optional: hide loader after Livewire finishes a request (if Livewire is used on the page)
-            if (window.Livewire) {
-                window.Livewire.hook('request', ({
-                    respond
-                }) => {
-                    showLoader();
-                    respond(() => {
-                        hideLoader();
-                    });
-                });
-            }
+            // Loader logic removed
         });
     </script>
 

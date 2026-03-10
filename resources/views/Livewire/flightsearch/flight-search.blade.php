@@ -34,119 +34,119 @@
 
                             {{-- Departure --}}
                             <div class="field-wrap" style="position:relative;"
-                                wire:click.outside="$set('showReturnDepAirports', false)">
+                                x-data="{ show: false }" @click.outside="show = false">
                                 <span class="field-label">Departure airport</span>
                                 <input class="field-input" type="text" wire:model.live.debounce.150ms="returnDep"
-                                    wire:key="return-dep-input" wire:focus="$set('showReturnDepAirports', true)"
+                                    wire:key="return-dep-input" @focus="show = true"
                                     placeholder="City or airport" autocomplete="off">
                                 @if($returnDep)
                                     <button class="field-clear" wire:click.stop="$set('returnDep', '')" title="Clear">×</button>
                                 @endif
                                 @error('returnDep') <span class="field-error">{{ $message }}</span> @enderror
-                                @if($showReturnDepAirports)
-                                    <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                        style="min-width: 280px;">
-                                        <div class="px-4 py-3">
-                                            <div class="flex items-center gap-2 text-xs text-gray-500">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                                    <circle cx="12" cy="11" r="2" />
-                                                </svg>
-                                                <span>All locations</span>
-                                            </div>
-                                        </div>
-                                        <div class="h-px bg-gray-100"></div>
-                                        <div class="max-h-72 overflow-auto">
-                                            @php
-                                                $items = $this->airportSearchResults;
-                                            @endphp
-                                            @if($searchType === 'returnDep')
-                                                @forelse($items as $a)
-                                                    @php
-                                                        $display = $a['city'] . ' (' . $a['code'] . ')';
-                                                    @endphp
-                                                    <button type="button"
-                                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                        wire:click.stop="selectReturnDepAirport('{{ $display }}')">
-                                                        <div>
-                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                                {{ $a['country'] }}
-                                                            </div>
-                                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                                        </div>
-                                                        <span
-                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                                    </button>
-                                                @empty
-                                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                                @endforelse
-                                            @endif
+                                
+                                <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                    style="min-width: 280px;">
+                                    <div class="px-4 py-3">
+                                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                                <circle cx="12" cy="11" r="2" />
+                                            </svg>
+                                            <span>All locations</span>
                                         </div>
                                     </div>
-                                @endif
+                                    <div class="h-px bg-gray-100"></div>
+                                    <div class="max-h-72 overflow-auto">
+                                        @php
+                                            $items = $this->airportSearchResults;
+                                        @endphp
+                                        @if($searchType === 'returnDep')
+                                            @forelse($items as $a)
+                                                @php
+                                                    $display = $a['city'] . ' (' . $a['code'] . ')';
+                                                @endphp
+                                                <button type="button"
+                                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                    wire:click.stop="selectReturnDepAirport('{{ $display }}')"
+                                                    @click="show = false">
+                                                    <div>
+                                                        <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                            {{ $a['country'] }}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                                    </div>
+                                                    <span
+                                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
+                                                </button>
+                                            @empty
+                                                <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                                            @endforelse
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
 
                             {{-- Arrival --}}
                             <div class="field-wrap" style="position:relative;"
-                                wire:click.outside="$set('showReturnArrAirports', false)">
+                                x-data="{ show: false }" @click.outside="show = false">
                                 <span class="field-label">Arrival airport</span>
                                 <input class="field-input" type="text" wire:model.live.debounce.150ms="returnArr"
-                                    wire:key="return-arr-input" wire:focus="$set('showReturnArrAirports', true)"
+                                    wire:key="return-arr-input" @focus="show = true"
                                     placeholder="City or airport" autocomplete="off">
                                 @error('returnArr') <span class="field-error">{{ $message }}</span> @enderror
-                                @if($showReturnArrAirports)
-                                    <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                        style="min-width: 280px;">
-                                        <div class="px-4 py-3">
-                                            <div class="flex items-center gap-2 text-xs text-gray-500">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                                    <circle cx="12" cy="11" r="2" />
-                                                </svg>
-                                                <span>All locations</span>
-                                            </div>
-                                        </div>
-                                        <div class="h-px bg-gray-100"></div>
-                                        <div class="max-h-72 overflow-auto">
-                                            @php
-                                                $items = $this->airportSearchResults;
-                                            @endphp
-                                            @if($searchType === 'returnArr')
-                                                @forelse($items as $a)
-                                                    @php
-                                                        $display = $a['city'] . ' (' . $a['code'] . ')';
-                                                    @endphp
-                                                    <button type="button"
-                                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                        wire:click.stop="selectReturnArrAirport('{{ $display }}')">
-                                                        <div>
-                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                                {{ $a['country'] }}
-                                                            </div>
-                                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                                        </div>
-                                                        <span
-                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                                    </button>
-                                                @empty
-                                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                                @endforelse
-                                            @endif
+                                
+                                <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                    style="min-width: 280px;">
+                                    <div class="px-4 py-3">
+                                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                                <circle cx="12" cy="11" r="2" />
+                                            </svg>
+                                            <span>All locations</span>
                                         </div>
                                     </div>
-                                @endif
+                                    <div class="h-px bg-gray-100"></div>
+                                    <div class="max-h-72 overflow-auto">
+                                        @php
+                                            $items = $this->airportSearchResults;
+                                        @endphp
+                                        @if($searchType === 'returnArr')
+                                            @forelse($items as $a)
+                                                @php
+                                                    $display = $a['city'] . ' (' . $a['code'] . ')';
+                                                @endphp
+                                                <button type="button"
+                                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                    wire:click.stop="selectReturnArrAirport('{{ $display }}')"
+                                                    @click="show = false">
+                                                    <div>
+                                                        <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                            {{ $a['country'] }}
+                                                        </div>
+                                                        <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                                    </div>
+                                                    <span
+                                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
+                                                </button>
+                                            @empty
+                                                <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                                            @endforelse
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
 
                             {{-- Date range --}}
                             <div class="field-wrap"
                                 style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
                                 <div x-data="singleDatePicker({
-                                                                                                                                                                                                                                                                                                                                                    value: @js($returnDepDate),
-                                                                                                                                                                                                                                                                                                                                                    wireValueKey: 'returnDepDate',
-                                                                                                                                                                                                                                                                                                                                                    title: 'Please choose your departure date',
-                                                                                                                                                                                                                                                                                                                                                })"
+                                                                                                                                                                                                                                                                                                                                                                value: @js($returnDepDate),
+                                                                                                                                                                                                                                                                                                                                                                wireValueKey: 'returnDepDate',
+                                                                                                                                                                                                                                                                                                                                                                title: 'Please choose your departure date',
+                                                                                                                                                                                                                                                                                                                                                            })"
                                     x-init="init()">
                                     <span class="field-label">Departing</span>
                                     <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
@@ -244,10 +244,10 @@
                                 <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">–</span>
 
                                 <div x-data="singleDatePicker({
-                                                                                                                                                                                                                                                                                                                                                    value: @js($returnRetDate),
-                                                                                                                                                                                                                                                                                                                                                    wireValueKey: 'returnRetDate',
-                                                                                                                                                                                                                                                                                                                                                    title: 'When would you like to return?',
-                                                                                                                                                                                                                                                                                                                                                })"
+                                                                                                                                                                                                                                                                                                                                                                value: @js($returnRetDate),
+                                                                                                                                                                                                                                                                                                                                                                wireValueKey: 'returnRetDate',
+                                                                                                                                                                                                                                                                                                                                                                title: 'When would you like to return?',
+                                                                                                                                                                                                                                                                                                                                                            })"
                                     x-init="init()">
                                     <span class="field-label">Returning</span>
                                     <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
@@ -539,17 +539,12 @@
                         {{-- Search Button --}}
                         <div class="flex justify-end mt-4">
                             <div class="w-full md:w-1/3">
-                                <button class="btn-search" wire:click.prevent="search" wire:loading.attr="disabled">
+                                <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
+                                    :disabled="searching" wire:loading.attr="disabled">
                                     <div class="flex items-center justify-center gap-2">
-                                        {{-- Loader (visible only when loading) --}}
-                                        <svg wire:loading wire:target="search" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                                        </svg>
-
-                                        {{-- Icon (hidden when loading) --}}
-                                        <svg wire:loading.remove wire:target="search" class="w-4 h-4" fill="none"
-                                            stroke="currentColor" viewBox="0 0 24 24">
+                                        {{-- Icon --}}
+                                        <svg class="w-4 h-4"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <circle cx="11" cy="11" r="8"></circle>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M21 21l-4.35-4.35"></path>
@@ -575,115 +570,117 @@ PANEL: ONE WAY
     <div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
 
-            <div class="field-wrap" style="position:relative;" wire:click.outside="$set('showOnewayDepAirports', false)">
+            <div class="field-wrap" style="position:relative;"
+                x-data="{ show: false }" @click.outside="show = false">
                 <span class="field-label">Departure airport</span>
                 <input class="field-input" type="text" wire:model.live.debounce.150ms="onewayDep"
-                    wire:key="oneway-dep-input" wire:focus="$set('showOnewayDepAirports', true)"
+                    wire:key="oneway-dep-input" @focus="show = true"
                     placeholder="City or airport" autocomplete="off">
                 @if($onewayDep)
                     <button class="field-clear" wire:click.stop="$set('onewayDep', '')" title="Clear">×</button>
                 @endif
                 @error('onewayDep') <span class="field-error">{{ $message }}</span> @enderror
-                @if($showOnewayDepAirports)
-                    <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                        style="min-width: 280px;">
-                        <div class="px-4 py-3">
-                            <div class="flex items-center gap-2 text-xs text-gray-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                    <circle cx="12" cy="11" r="2" />
-                                </svg>
-                                <span>All locations</span>
-                            </div>
-                        </div>
-                        <div class="h-px bg-gray-100"></div>
-                        <div class="max-h-72 overflow-auto">
-                            @php
-                                $items = $this->airportSearchResults;
-                            @endphp
-                            @if($searchType === 'onewayDep')
-                                @forelse($items as $a)
-                                    @php
-                                        $display = $a['city'] . ' (' . $a['code'] . ')';
-                                    @endphp
-                                    <button type="button"
-                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                        wire:click.stop="selectOnewayDepAirport('{{ $display }}')">
-                                        <div>
-                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                {{ $a['country'] }}
-                                            </div>
-                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                        </div>
-                                        <span
-                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                    </button>
-                                @empty
-                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                @endforelse
-                            @endif
+                
+                <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                    style="min-width: 280px;">
+                    <div class="px-4 py-3">
+                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                <circle cx="12" cy="11" r="2" />
+                            </svg>
+                            <span>All locations</span>
                         </div>
                     </div>
-                @endif
+                    <div class="h-px bg-gray-100"></div>
+                    <div class="max-h-72 overflow-auto">
+                        @php
+                            $items = $this->airportSearchResults;
+                        @endphp
+                        @if($searchType === 'onewayDep')
+                            @forelse($items as $a)
+                                @php
+                                    $display = $a['city'] . ' (' . $a['code'] . ')';
+                                @endphp
+                                <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                    wire:click.stop="selectOnewayDepAirport('{{ $display }}')"
+                                    @click="show = false">
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                            {{ $a['country'] }}
+                                        </div>
+                                        <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                    </div>
+                                    <span
+                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
+                                </button>
+                            @empty
+                                <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                            @endforelse
+                        @endif
+                    </div>
+                </div>
             </div>
 
-            <div class="field-wrap" style="position:relative;" wire:click.outside="$set('showOnewayArrAirports', false)">
+            <div class="field-wrap" style="position:relative;"
+                x-data="{ show: false }" @click.outside="show = false">
                 <span class="field-label">Arrival airport</span>
                 <input class="field-input" type="text" wire:model.live.debounce.150ms="onewayArr"
-                    wire:key="oneway-arr-input" wire:focus="$set('showOnewayArrAirports', true)"
+                    wire:key="oneway-arr-input" @focus="show = true"
                     placeholder="City or airport" autocomplete="off">
                 @error('onewayArr') <span class="field-error">{{ $message }}</span> @enderror
-                @if($showOnewayArrAirports)
-                    <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                        style="min-width: 280px;">
-                        <div class="px-4 py-3">
-                            <div class="flex items-center gap-2 text-xs text-gray-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                    <circle cx="12" cy="11" r="2" />
-                                </svg>
-                                <span>All locations</span>
-                            </div>
-                        </div>
-                        <div class="h-px bg-gray-100"></div>
-                        <div class="max-h-72 overflow-auto">
-                            @php
-                                $items = $this->airportSearchResults;
-                            @endphp
-                            @if($searchType === 'onewayArr')
-                                @forelse($items as $a)
-                                    @php
-                                        $display = $a['city'] . ' (' . $a['code'] . ')';
-                                    @endphp
-                                    <button type="button"
-                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                        wire:click.stop="selectOnewayArrAirport('{{ $display }}')">
-                                        <div>
-                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                {{ $a['country'] }}
-                                            </div>
-                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                        </div>
-                                        <span
-                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                    </button>
-                                @empty
-                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                @endforelse
-                            @endif
+                
+                <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                    style="min-width: 280px;">
+                    <div class="px-4 py-3">
+                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                <circle cx="12" cy="11" r="2" />
+                            </svg>
+                            <span>All locations</span>
                         </div>
                     </div>
-                @endif
+                    <div class="h-px bg-gray-100"></div>
+                    <div class="max-h-72 overflow-auto">
+                        @php
+                            $items = $this->airportSearchResults;
+                        @endphp
+                        @if($searchType === 'onewayArr')
+                            @forelse($items as $a)
+                                @php
+                                    $display = $a['city'] . ' (' . $a['code'] . ')';
+                                @endphp
+                                <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                    wire:click.stop="selectOnewayArrAirport('{{ $display }}')"
+                                    @click="show = false">
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                            {{ $a['country'] }}
+                                        </div>
+                                        <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                    </div>
+                                    <span
+                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
+                                </button>
+                            @empty
+                                <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                            @endforelse
+                        @endif
+                    </div>
+                </div>
             </div>
 
             <div class="field-wrap"
                 x-data="singleDatePicker({
-                                                                                                                                                                                                            value: @js($onewayDepDate),
-                                                                                                                                                                                                            wireValueKey: 'onewayDepDate',
-                                                                                                                                                                                                            title: 'Please choose your departure date',
-                                                                                                                                                                                                        })"
+                                                                                                                                                                                                                value: @js($onewayDepDate),
+                                                                                                                                                                                                                wireValueKey: 'onewayDepDate',
+                                                                                                                                                                                                                title: 'Please choose your departure date',
+                                                                                                                                                                                                            })"
                 x-init="init()">
                 <span class="field-label">Departing</span>
                 <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none"
@@ -954,18 +951,12 @@ PANEL: ONE WAY
         {{-- Search Button --}}
         <div class="flex justify-end mt-4">
             <div class="w-full md:w-1/3">
-                <button class="btn-search" wire:click.prevent="search" wire:loading.attr="disabled">
+                <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
+                    :disabled="searching" wire:loading.attr="disabled">
                     <div class="flex items-center justify-center gap-2">
-                        {{-- Loader (visible only when loading) --}}
-                        <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                stroke-width="4" />
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                        </svg>
-
-                        {{-- Icon (hidden when loading) --}}
-                        <svg wire:loading.remove wire:target="search" class="w-4 h-4" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                        {{-- Icon --}}
+                        <svg class="w-4 h-4" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <circle cx="11" cy="11" r="8"></circle>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35">
                             </path>
@@ -993,123 +984,123 @@ PANEL: MULTI-CITY
                     <div class="mc-row">
 
                         <div class="field-wrap" style="position:relative;"
-                            wire:click.outside="$set('showMultiDepAirports.{{ $index }}', false)">
+                            x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">Departure airport</span>
                             <input class="field-input" type="text"
                                 wire:model.live.debounce.150ms="multiFlights.{{ $index }}.dep"
                                 wire:key="multi-dep-input-{{ $index }}"
-                                wire:focus="$set('showMultiDepAirports.{{ $index }}', true)" placeholder="City or airport"
+                                @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
                             @if($flight['dep'] && $index === 0)
                                 <button class="field-clear" wire:click.stop="$set('multiFlights.0.dep', '')"
                                     title="Clear">×</button>
                             @endif
                             @error("multiFlights.$index.dep") <span class="field-error">{{ $message }}</span> @enderror
-                            @if(($showMultiDepAirports[$index] ?? false))
-                                <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                    style="min-width: 280px;">
-                                    <div class="px-4 py-3">
-                                        <div class="flex items-center gap-2 text-xs text-gray-500">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                                <circle cx="12" cy="11" r="2" />
-                                            </svg>
-                                            <span>All locations</span>
-                                        </div>
-                                    </div>
-                                    <div class="h-px bg-gray-100"></div>
-                                    <div class="max-h-72 overflow-auto">
-                                        @php
-                                            $q = $multiFlights[$index]['dep'] ?? '';
-                                            $items = $this->airportSearchResults;
-                                        @endphp
-                                        @if($searchType === "multi.$index.dep")
-                                            @forelse($items as $a)
-                                                @php
-                                                    $display = $a['city'] . ' (' . $a['code'] . ')';
-                                                @endphp
-                                                <button type="button"
-                                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                    wire:click.stop="selectMultiDepAirport({{ $index }}, '{{ $display }}')">
-                                                    <div>
-                                                        <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                            {{ $a['country'] }}
-                                                        </div>
-                                                        <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                                    </div>
-                                                    <span
-                                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                                </button>
-                                            @empty
-                                                <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                            @endforelse
-                                        @endif
+                            
+                            <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                style="min-width: 280px;">
+                                <div class="px-4 py-3">
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                            <circle cx="12" cy="11" r="2" />
+                                        </svg>
+                                        <span>All locations</span>
                                     </div>
                                 </div>
-                            @endif
+                                <div class="h-px bg-gray-100"></div>
+                                <div class="max-h-72 overflow-auto">
+                                    @php
+                                        $q = $multiFlights[$index]['dep'] ?? '';
+                                        $items = $this->airportSearchResults;
+                                    @endphp
+                                    @if($searchType === "multi.$index.dep")
+                                        @forelse($items as $a)
+                                            @php
+                                                $display = $a['city'] . ' (' . $a['code'] . ')';
+                                            @endphp
+                                            <button type="button"
+                                                class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                wire:click.stop="selectMultiDepAirport({{ $index }}, '{{ $display }}')"
+                                                @click="show = false">
+                                                <div>
+                                                    <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                        {{ $a['country'] }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                                </div>
+                                                <span
+                                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
+                                            </button>
+                                        @empty
+                                            <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                                        @endforelse
+                                    @endif
+                                </div>
+                            </div>
                         </div>
 
                         <div class="field-wrap" style="position:relative;"
-                            wire:click.outside="$set('showMultiArrAirports.{{ $index }}', false)">
+                            x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">Arrival airport</span>
                             <input class="field-input" type="text"
                                 wire:model.live.debounce.150ms="multiFlights.{{ $index }}.arr"
                                 wire:key="multi-arr-input-{{ $index }}"
-                                wire:focus="$set('showMultiArrAirports.{{ $index }}', true)" placeholder="City or airport"
+                                @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
                             @error("multiFlights.$index.arr") <span class="field-error">{{ $message }}</span> @enderror
-                            @if(($showMultiArrAirports[$index] ?? false))
-                                <div class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                    style="min-width: 280px;">
-                                    <div class="px-4 py-3">
-                                        <div class="flex items-center gap-2 text-xs text-gray-500">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                                <circle cx="12" cy="11" r="2" />
-                                            </svg>
-                                            <span>All locations</span>
-                                        </div>
-                                    </div>
-                                    <div class="h-px bg-gray-100"></div>
-                                    <div class="max-h-72 overflow-auto">
-                                        @php
-                                            $q = $multiFlights[$index]['arr'] ?? '';
-                                            $items = $this->airportSearchResults;
-                                        @endphp
-                                        @if($searchType === "multi.$index.arr")
-                                            @forelse($items as $a)
-                                                @php
-                                                    $display = $a['city'] . ' (' . $a['code'] . ')';
-                                                @endphp
-                                                <button type="button"
-                                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                    wire:click.stop="selectMultiArrAirport({{ $index }}, '{{ $display }}')">
-                                                    <div>
-                                                        <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                            {{ $a['country'] }}
-                                                        </div>
-                                                        <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                                    </div>
-                                                    <span
-                                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                                </button>
-                                            @empty
-                                                <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                            @endforelse
-                                        @endif
+                            
+                            <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                style="min-width: 280px;">
+                                <div class="px-4 py-3">
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                            <circle cx="12" cy="11" r="2" />
+                                        </svg>
+                                        <span>All locations</span>
                                     </div>
                                 </div>
-                            @endif
+                                <div class="h-px bg-gray-100"></div>
+                                <div class="max-h-72 overflow-auto">
+                                    @php
+                                        $q = $multiFlights[$index]['arr'] ?? '';
+                                        $items = $this->airportSearchResults;
+                                    @endphp
+                                    @if($searchType === "multi.$index.arr")
+                                        @forelse($items as $a)
+                                            @php
+                                                $display = $a['city'] . ' (' . $a['code'] . ')';
+                                            @endphp
+                                            <button type="button"
+                                                class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                wire:click.stop="selectMultiArrAirport({{ $index }}, '{{ $display }}')"
+                                                @click="show = false">
+                                                <div>
+                                                    <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                        {{ $a['country'] }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                                </div>
+                                                <span
+                                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
+                                            </button>
+                                        @empty
+                                            <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                                        @endforelse
+                                    @endif
+                                </div>
+                            </div>
                         </div>
 
                         <div class="field-wrap"
                             x-data="singleDatePicker({
-                                                                                                                                                                                                                                                                                                                                                                                                                 value: @js($multiFlights[$index]['date'] ?? ''),
-                                                                                                                                                                                                                                                                                                                                                                                                                 wireValueKey: 'multiFlights.{{ $index }}.date',
-                                                                                                                                                                                                                                                                                                                                                                                                                 title: 'Please choose your departure date',
-                                                                                                                                                                                                                                                                                                                                                                                                            })"
+                                                                                                                                                                                                                                                                                                                                                                                                                         value: @js($multiFlights[$index]['date'] ?? ''),
+                                                                                                                                                                                                                                                                                                                                                                                                                         wireValueKey: 'multiFlights.{{ $index }}.date',
+                                                                                                                                                                                                                                                                                                                                                                                                                         title: 'Please choose your departure date',
+                                                                                                                                                                                                                                                                                                                                                                                                                    })"
                             x-init="init()">
                             <span class="field-label">Departing</span>
                             <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none"
@@ -1400,18 +1391,12 @@ PANEL: MULTI-CITY
         {{-- Search Button --}}
         <div class="flex justify-end mt-4">
             <div class="w-full md:w-1/3">
-                <button class="btn-search" wire:click.prevent="search" wire:loading.attr="disabled">
+                <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
+                    :disabled="searching" wire:loading.attr="disabled">
                     <div class="flex items-center justify-center gap-2">
-                        {{-- Loader (visible only when loading) --}}
-                        <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                stroke-width="4" />
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                        </svg>
-
-                        {{-- Icon (hidden when loading) --}}
-                        <svg wire:loading.remove wire:target="search" class="w-4 h-4" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                        {{-- Icon --}}
+                        <svg class="w-4 h-4" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <circle cx="11" cy="11" r="8"></circle>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35">
                             </path>
