@@ -76,6 +76,8 @@
                                     @endphp
 
                                     <div wire:click="changeSegment({{ $segIdx }})" 
+                                         wire:key="segment-{{ $segIdx }}"
+                                         wire:loading.class="opacity-50 pointer-events-none"
                                          class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4 sm:gap-6 p-4 rounded-xl cursor-pointer transition-all border-2 {{ $currentSegmentIndex === $segIdx ? 'border-[#2ab4c0] bg-[#2ab4c0]/5 shadow-sm' : 'border-transparent hover:bg-gray-50' }}">
                                         {{-- Airline Column --}}
                                         <div class="flex items-center gap-2 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
@@ -259,153 +261,155 @@
                  @endforeach
             </div>
 
-             <!-- Seat Map Legend -->
-                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                        @if(isset($flightInfo[$currentSegmentIndex]))
-                            @php $currSeg = $flightInfo[$currentSegmentIndex]; @endphp
-                            <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50/30">
-                                <h3 class="text-xs font-bold text-gray-700 flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                                    Seating for {{ $currSeg['origin'] }} → {{ $currSeg['destination'] }}
-                                    <span class="text-gray-400 font-medium font-mono text-[10px]">({{ $currSeg['flightNumber'] }})</span>
-                                </h3>
-                                <div class="px-2 py-0.5 rounded bg-amber-50 text-amber-600 text-[9px] font-black uppercase tracking-widest border border-amber-100">
-                                    Segment {{ $currentSegmentIndex + 1 }} of {{ count($flightInfo) }}
-                                </div>
-                            </div>
-                        @endif
-                        <div class="px-4 py-2.5 border-b border-gray-100 flex flex-wrap gap-4">
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-4 h-4 rounded bg-gray-100 border border-gray-300 flex-shrink-0"
-                                    style="border-radius:3px 3px 2px 2px"></div>
-                                <span class="text-gray-600" style="font-size:10px">Standard Seats</span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-4 h-4 flex-shrink-0"
-                                    style="background:#a5f3fc;border:1px solid #67e8f9;border-radius:3px 3px 2px 2px">
-                                </div>
-                                <span class="text-gray-600" style="font-size:10px">Extra Legroom</span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-4 h-4 flex-shrink-0"
-                                    style="background:#cbd5e1;border:1px solid #94a3b8;border-radius:3px 3px 2px 2px">
-                                </div>
-                                <span class="text-gray-600" style="font-size:10px">Occupied</span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-4 h-4 flex-shrink-0"
-                                    style="background:#6366f1;border:1px solid #4f46e5;border-radius:3px 3px 2px 2px">
-                                </div>
-                                <span class="text-gray-600" style="font-size:10px">Selected</span>
-                            </div>
+            {{-- Passenger Selection Tabs --}}
+            <div class="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
+                @for ($i = 0; $i < $passengerCount; $i++)
+                    @php
+                        $hasSeat = !empty($passengerSeats[$currentSegmentIndex][$i]['id']);
+                        $isActive = $currentPassengerIndex === $i;
+                    @endphp
+                    <button wire:click="selectPassenger({{ $i }})"
+                            class="flex items-center gap-3 px-4 py-3 rounded-2xl border-2 transition-all font-bold text-sm min-w-max {{ $isActive ? 'border-[#2ab4c0] bg-[#2ab4c0]/5' : ($hasSeat ? 'border-gray-200 bg-white hover:border-gray-300' : 'border-dashed border-gray-300 bg-gray-50 hover:border-gray-400') }}">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs {{ $isActive ? 'bg-[#2ab4c0] text-white shadow-md shadow-[#2ab4c0]/30' : ($hasSeat ? 'bg-[#2ab4c0] text-white' : 'bg-gray-200 text-gray-500') }}">
+                            @if($hasSeat && !$isActive)
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            @else
+                                {{ $i + 1 }}
+                            @endif
                         </div>
+                        <div class="flex flex-col text-left">
+                            <span class="{{ $isActive ? 'text-[#2ab4c0]' : ($hasSeat ? 'text-gray-800' : 'text-gray-500') }}">Passenger {{ $i + 1 }}</span>
+                            @if($hasSeat)
+                                <span class="text-[10px] font-black uppercase tracking-widest {{ $isActive ? 'text-[#2ab4c0]' : 'text-[#2ab4c0]' }}">Seat {{ $passengerSeats[$currentSegmentIndex][$i]['id'] }}</span>
+                            @else
+                                <span class="text-[10px] font-medium text-gray-400 uppercase tracking-widest">Select Seat</span>
+                            @endif
+                        </div>
+                    </button>
+                @endfor
+            </div>
 
-                        <!-- Seat Map (dynamic) -->
-                        <div class="px-4 py-4 overflow-x-auto">
-                            <div class="min-w-max mx-auto" style="max-width:340px">
-                                @if(empty($rows))
-                                    <!-- Fallback: seatmap unavailable -->
-                                    <div class="text-center py-10">
-                                        <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                                d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
-                                        </svg>
-                                        <p class="text-gray-500 font-medium text-sm">Seat map is not available for this
-                                            flight.
-                                        </p>
-                                        <p class="text-gray-400 mt-1" style="font-size:10px">You can proceed without
-                                            selecting a
-                                            seat.</p>
-                                    </div>
-                                @else
-                                    <!-- Column headers -->
-                                    <div class="flex items-center mb-2 pl-7">
-                                        <div class="flex gap-1.5 mr-4">
-                                            @foreach($leftCols as $col)
-                                                <div class="w-[22px] text-center text-gray-400 font-semibold"
-                                                    style="font-size:9px">
-                                                    {{ $col }}
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                        <div class="w-5"></div>
-                                        <div class="flex gap-1.5 ml-4">
-                                            @foreach($rightCols as $col)
-                                                <div class="w-[22px] text-center text-gray-400 font-semibold"
-                                                    style="font-size:9px">
-                                                    {{ $col }}
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-
-                                    <!-- Rows (dynamic from Amadeus seatmap API) -->
-                                    <div id="seat-map" class="space-y-1">
-                                        @foreach($rows as $row)
-                                            {{-- Extra legroom row divider (not before first row) --}}
-                                            @if($row['isExtra'] && !$loop->first)
-                                                <div class="h-2 flex items-center">
-                                                    <div class="flex-1 border-t border-dashed border-cyan-300 mx-7"></div>
-                                                </div>
-                                            @endif
-
-                                            <div class="flex items-center gap-1">
-                                                {{-- Row number --}}
-                                                <div class="w-6 text-right text-gray-400 font-medium flex-shrink-0"
-                                                    style="font-size:9px">
-                                                    {{ $row['number'] }}
-                                                </div>
-
-                                                {{-- Left seat group --}}
-                                                <div class="flex gap-1.5">
-                                                    @foreach($leftCols as $col)
-                                                        @if(isset($row['seats'][$col]))
-                                                            @php $seat = $row['seats'][$col]; @endphp
-                                                            <button id="seat-{{ $seat['id'] }}"
-                                                                wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})"
-                                                                @disabled($seat['state'] === 'occupied')
-                                                                class="seat seat-{{ $seat['state'] === 'extra' ? 'extra-legroom' : $seat['state'] }}">
-                                                                {{ $seat['state'] === 'selected' ? '✓' : '' }}
-                                                            </button>
-                                                        @else
-                                                            <div class="w-[22px]"></div>
-                                                        @endif
-                                                    @endforeach
-                                                </div>
-
-                                                {{-- Aisle --}}
-                                                <div class="w-5 flex-shrink-0"></div>
-
-                                                {{-- Right seat group --}}
-                                                <div class="flex gap-1.5">
-                                                    @foreach($rightCols as $col)
-                                                        @if(isset($row['seats'][$col]))
-                                                            @php $seat = $row['seats'][$col]; @endphp
-                                                            <button id="seat-{{ $seat['id'] }}"
-                                                                wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})"
-                                                                @disabled($seat['state'] === 'occupied')
-                                                                class="seat seat-{{ $seat['state'] === 'extra' ? 'extra-legroom' : $seat['state'] }}">
-                                                                {{ $seat['state'] === 'selected' ? '✓' : '' }}
-                                                            </button>
-                                                        @else
-                                                            <div class="w-[22px]"></div>
-                                                        @endif
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-
-                                    <!-- Exit row labels -->
-                                    <div class="flex justify-between mt-2 px-1">
-                                        <span class="text-gray-400 font-medium" style="font-size:9px">Exit Row</span>
-                                        <span class="text-gray-400 font-medium" style="font-size:9px">Exit Row</span>
-                                    </div>
-                                @endif
-                            </div>
+            <!-- Enhanced Seat Map UI -->
+            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mt-4">
+                @if(isset($flightInfo[$currentSegmentIndex]))
+                    @php $currSeg = $flightInfo[$currentSegmentIndex]; @endphp
+                    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                        <div>
+                            <h3 class="text-sm font-black text-gray-800 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                                Seating for {{ $currSeg['origin'] }} → {{ $currSeg['destination'] }}
+                            </h3>
+                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">Flight {{ $currSeg['flightNumber'] }} • Segment {{ $currentSegmentIndex + 1 }} of {{ count($flightInfo) }}</p>
+                        </div>
+                        <div class="hidden md:flex gap-4">
+                             <!-- Legend inside header -->
+                             <div class="flex flex-col gap-1.5">
+                                 <div class="flex items-center gap-2">
+                                     <div class="w-3.5 h-3.5 rounded-sm bg-gray-100 border border-gray-200"></div>
+                                     <span class="text-[10px] font-bold text-gray-500 uppercase">Standard</span>
+                                 </div>
+                                 <div class="flex items-center gap-2">
+                                     <div class="w-3.5 h-3.5 rounded-sm bg-sky-100 border border-sky-200 relative"><div class="absolute -top-1 left-1.5 w-1 h-2 bg-sky-400 rounded-full"></div></div>
+                                     <span class="text-[10px] font-bold text-gray-500 uppercase">Extra Legroom</span>
+                                 </div>
+                             </div>
+                             <div class="flex flex-col gap-1.5">
+                                 <div class="flex items-center gap-2">
+                                     <div class="w-3.5 h-3.5 rounded-sm bg-gray-50 border border-gray-100 text-gray-300 flex items-center justify-center text-[10px] font-bold">×</div>
+                                     <span class="text-[10px] font-bold text-gray-400 uppercase">Occupied</span>
+                                 </div>
+                                 <div class="flex items-center gap-2">
+                                     <div class="w-3.5 h-3.5 rounded-sm bg-[#2ab4c0] shadow-sm shadow-[#2ab4c0]/30 text-white flex items-center justify-center text-[8px] font-bold">✓</div>
+                                     <span class="text-[10px] font-bold text-[#2ab4c0] uppercase">Selected</span>
+                                 </div>
+                             </div>
                         </div>
                     </div>
+                @endif
+                
+                <div class="px-4 py-8 bg-gray-50 min-h-[400px]">
+                    <div class="min-w-max mx-auto fuselage-container" style="max-width:380px;">
+                        @if(empty($rows))
+                            <div class="text-center py-20">
+                                <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+                                </svg>
+                                <p class="text-gray-800 font-bold text-lg">Seat map unavailable</p>
+                                <p class="text-gray-500 text-sm mt-1">You can proceed without selecting a seat.</p>
+                            </div>
+                        @else
+                            <!-- Column headers -->
+                            <div class="flex items-center mb-6 pl-8">
+                                <div class="flex gap-2 mr-5">
+                                    @foreach($leftCols as $col)
+                                        <div class="w-[40px] text-center text-gray-400 font-black text-xs uppercase">{{ $col }}</div>
+                                    @endforeach
+                                </div>
+                                <div class="w-6"></div>
+                                <div class="flex gap-2 ml-5">
+                                    @foreach($rightCols as $col)
+                                        <div class="w-[40px] text-center text-gray-400 font-black text-xs uppercase">{{ $col }}</div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <!-- Rows -->
+                            <div class="space-y-3 pb-8 relative z-10">
+                                @foreach($rows as $row)
+                                    @if($row['isExtra'] && !$loop->first)
+                                        <div class="h-6 flex items-center justify-center mt-6 mb-4">
+                                            <div class="px-4 py-1 bg-sky-50 text-sky-600 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border border-sky-100 flex items-center gap-2 shadow-sm">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                                                Extra Legroom
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <div class="flex items-center">
+                                        <div class="w-8 text-center text-gray-400 font-black text-xs flex-shrink-0 relative focus-within:z-50">
+                                            {{ $row['number'] }}
+                                        </div>
+
+                                        <div class="flex gap-2">
+                                            @foreach($leftCols as $col)
+                                                @if(isset($row['seats'][$col]))
+                                                    @php $seat = $row['seats'][$col]; @endphp
+                                                    <button wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})"
+                                                            @disabled($seat['state'] === 'occupied')
+                                                            class="seat-btn seat-{{ $seat['state'] }}" title="{{ $seat['id'] }} - {{ $currencyCode }}{{ number_format($seat['price'], 2) }}">
+                                                            <span class="opacity-0 hover:opacity-100 transition-opacity">{{ $seat['id'] }}</span>
+                                                    </button>
+                                                @else
+                                                    <div class="w-[40px]"></div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+
+                                        <div class="w-10 flex-shrink-0 flex items-center justify-center">
+                                            <div class="w-0.5 h-12 bg-gray-200/50 rounded-full"></div>
+                                        </div>
+
+                                        <div class="flex gap-2">
+                                            @foreach($rightCols as $col)
+                                                @if(isset($row['seats'][$col]))
+                                                    @php $seat = $row['seats'][$col]; @endphp
+                                                    <button wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})"
+                                                            @disabled($seat['state'] === 'occupied')
+                                                            class="seat-btn seat-{{ $seat['state'] }}" title="{{ $seat['id'] }} - {{ $currencyCode }}{{ number_format($seat['price'], 2) }}">
+                                                            <span class="opacity-0 hover:opacity-100 transition-opacity">{{ $seat['id'] }}</span>
+                                                    </button>
+                                                @else
+                                                    <div class="w-[40px]"></div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
                     
 
         </div>
@@ -497,6 +501,70 @@
         @keyframes loading {
             from { transform: translateX(-100%); }
             to { transform: translateX(400%); }
+        }
+
+        /* Premium Seat Map Styles */
+        .seat-btn {
+            width: 40px;
+            height: 44px;
+            border-radius: 8px 8px 4px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 900;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1.5px solid transparent;
+            position: relative;
+            color: transparent;
+        }
+        .seat-btn span {
+            z-index: 10;
+        }
+        .seat-btn:not(:disabled):hover { 
+            color: #4b5563; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .seat-available { background: #ffffff; border-color: #e2e8f0; color: #94a3b8; }
+        .seat-available:hover { background: #f8fafc; border-color: #cbd5e1; color: #64748b; }
+
+        .seat-extra { background: #f0f9ff; border-color: #bae6fd; color: #7dd3fc; }
+        .seat-extra::after {
+            content: ''; position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+            width: 14px; height: 3px; background: #38bdf8; border-radius: 2px;
+        }
+        .seat-extra:hover { background: #e0f2fe; border-color: #7dd3fc; color: #0284c7; }
+
+        .seat-occupied { background: #f8fafc; border-color: #f1f5f9; cursor: not-allowed; opacity: 0.6; }
+        .seat-occupied::before {
+            content: '×'; color: #cbd5e1; font-size: 18px; font-weight: 300; position: absolute; line-height: 1;
+        }
+
+        .seat-selected { background: #2ab4c0; border-color: #239ba6; color: white !important; box-shadow: 0 4px 10px rgba(42,180,192,0.3); transform: translateY(-3px); }
+        .seat-selected::before {
+            content: '✓'; font-size: 14px; position: absolute; line-height: 1; color: white;
+        }
+        .seat-selected:hover {
+            color: white !important;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 14px rgba(42,180,192,0.4);
+        }
+
+        .fuselage-container {
+            background: #ffffff;
+            border: 4px solid #f1f5f9;
+            border-radius: 120px 120px 0 0;
+            padding: 70px 20px 40px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.02), 0 10px 40px rgba(0,0,0,0.03);
+            border-bottom: none;
+        }
+        .fuselage-container::before {
+            content: ''; position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+            width: 70px; height: 120px; border: 2px solid #e2e8f0; border-radius: 100px; opacity: 0.4;
         }
     </style>
 </div>

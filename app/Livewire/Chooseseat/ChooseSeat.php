@@ -102,6 +102,7 @@ class ChooseSeat extends Component
             foreach ($itin['segments'] ?? [] as $sIdx => $segment) {
                 $this->flightInfo[] = [
                     'index' => $segIdx,
+                    'segmentId' => $segment['id'] ?? null,
                     'type' => ($itinIdx === 0) ? 'Departure' : 'Return',
                     'airlineCode' => $segment['carrierCode'] ?? '',
                     'flightNumber' => ($segment['carrierCode'] ?? '') . ($segment['number'] ?? ''),
@@ -155,9 +156,14 @@ class ChooseSeat extends Component
 
     public function loadSeatMap()
     {
+        $currentSegment = $this->flightInfo[$this->currentSegmentIndex] ?? null;
+        $segmentId = $currentSegment['segmentId'] ?? null;
+
+        \Illuminate\Support\Facades\Log::info("Loading Seatmap for Segment Index: {$this->currentSegmentIndex}, ID: {$segmentId}");
+
         // Check cache first
-        if (isset($this->allSeatMaps[$this->currentSegmentIndex])) {
-            $this->seatMapData = $this->allSeatMaps[$this->currentSegmentIndex];
+        if ($segmentId && isset($this->allSeatMaps[$segmentId])) {
+            $this->seatMapData = $this->allSeatMaps[$segmentId];
             $this->parseSeatMap();
             $this->refreshSeatMapStates();
             return;
@@ -170,10 +176,32 @@ class ChooseSeat extends Component
             // Fetch all seatmaps for the offer
             $response = $amadeus->getFlightSeatmap($offer);
 
+            $offerSegmentIds = [];
+            foreach ($offer['itineraries'] ?? [] as $itin) {
+                foreach ($itin['segments'] ?? [] as $s) {
+                    $offerSegmentIds[] = $s['id'] ?? 'N/A';
+                }
+            }
+            \Illuminate\Support\Facades\Log::info('Flight Offer Segment IDs:', ['ids' => $offerSegmentIds]);
+            \Illuminate\Support\Facades\Log::info('Seatmap fetched.');
+
             if (isset($response['data']) && !empty($response['data'])) {
-                // Store all seatmaps and pick the current one
-                $this->allSeatMaps = $response['data'];
-                $this->seatMapData = $this->allSeatMaps[$this->currentSegmentIndex] ?? $this->allSeatMaps[0] ?? [];
+                // Store all seatmaps indexed by segmentId
+                foreach ($response['data'] as $seatMap) {
+                    $sid = $seatMap['segmentId'] ?? null;
+                    if ($sid) {
+                        $this->allSeatMaps[$sid] = $seatMap;
+                    }
+                }
+
+                // Pick the current one based on segmentId
+                if ($segmentId) {
+                    $this->seatMapData = $this->allSeatMaps[$segmentId] ?? $response['data'][0] ?? [];
+                } else {
+                    $this->seatMapData = $response['data'][0] ?? [];
+                }
+            } else {
+                \Illuminate\Support\Facades\Log::warning('Seatmap API returned empty data for offer', ['offer' => $offer]);
             }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Seatmap load error: ' . $e->getMessage());
@@ -188,57 +216,67 @@ class ChooseSeat extends Component
     {
         if (empty($this->seatMapData))
             return;
+
         $decks = $this->seatMapData['decks'] ?? [];
         $deck = $decks[0] ?? [];
-        $seatingPlan = $deck['seatingPlan'] ?? [];
+        $seats = $deck['seats'] ?? [];
 
         $allLetters = [];
-        $rows = [];
+        $rowsData = [];
 
-        foreach ($seatingPlan as $planRow) {
-            $rowNum = $planRow['rowNumber'] ?? null;
-            if (!$rowNum)
+        foreach ($seats as $seatElement) {
+            $seatNumber = $seatElement['number'] ?? '';
+            if (!$seatNumber)
                 continue;
 
-            $rowSeats = [];
+            preg_match('/^(\d+)([A-Z]+)$/', $seatNumber, $matches);
+            if (count($matches) < 3)
+                continue;
+
+            $rowNum = $matches[1];
+            $letter = $matches[2];
+
+            if ($letter) {
+                $allLetters[] = $letter;
+            }
+
+            $travelerPricing = $seatElement['travelerPricing'][0] ?? [];
+            $status = $travelerPricing['seatAvailabilityStatus'] ?? 'AVAILABLE';
+
+            $priceBase = $travelerPricing['price']['base'] ?? 0;
+            $priceTotal = $travelerPricing['price']['total'] ?? 0;
+            $price = (float) ($priceBase ?: $priceTotal);
+
+            $characteristics = $seatElement['characteristicsCodes'] ?? [];
+            $state = ($status === 'OCCUPIED' || $status === 'BLOCKED') ? 'occupied' : 'available';
+
             $isExtra = false;
-
-            $elements = $planRow['elements'] ?? [];
-            foreach ($elements as $element) {
-                if (($element['type'] ?? '') !== 'seat')
-                    continue;
-
-                $seat = $element['seat']['number'] ?? '';
-                $letter = preg_replace('/[0-9]/', '', $seat);
-                if ($letter)
-                    $allLetters[] = $letter;
-
-                $travelerPricing = $element['seat']['travelerPricing'][0] ?? [];
-                $status = $travelerPricing['seatAvailabilityStatus'] ?? 'AVAILABLE';
-                $price = (float) ($travelerPricing['price']['base']['amount'] ?? 0.00);
-
-                $characteristics = $element['seat']['characteristicsCodes'] ?? [];
-                $state = ($status === 'OCCUPIED') ? 'occupied' : 'available';
-                if ($state === 'available' && in_array('XL', $characteristics)) {
-                    $state = 'extra';
-                    $isExtra = true;
-                }
-
-                $rowSeats[$letter] = [
-                    'id' => $seat,
-                    'price' => $price,
-                    'state' => $state
-                ];
+            if ($state === 'available' && (in_array('XL', $characteristics) || in_array('1A_AQC_PREMIUM_SEAT', $characteristics))) {
+                $state = 'extra';
+                $isExtra = true;
             }
 
-            if (!empty($rowSeats)) {
-                $rows[] = [
+            if (!isset($rowsData[$rowNum])) {
+                $rowsData[$rowNum] = [
                     'number' => $rowNum,
-                    'isExtra' => $isExtra,
-                    'seats' => $rowSeats
+                    'isExtra' => false,
+                    'seats' => []
                 ];
             }
+
+            if ($isExtra) {
+                $rowsData[$rowNum]['isExtra'] = true;
+            }
+
+            $rowsData[$rowNum]['seats'][$letter] = [
+                'id' => $seatNumber,
+                'price' => $price,
+                'state' => $state
+            ];
         }
+
+        ksort($rowsData, SORT_NUMERIC);
+        $rows = array_values($rowsData);
 
         $uniqueLetters = array_unique($allLetters);
         sort($uniqueLetters);
@@ -311,13 +349,10 @@ class ChooseSeat extends Component
 
     protected function refreshSeatMapStates()
     {
+        $this->parseSeatMap();
+
         foreach ($this->rows as &$row) {
             foreach ($row['seats'] as $letter => &$seat) {
-                // Reset to base state based on original data (simplified here)
-                if ($seat['state'] === 'selected') {
-                    $seat['state'] = 'available';
-                }
-
                 // Apply selected state only for CURRENT segment
                 foreach ($this->passengerSeats[$this->currentSegmentIndex] ?? [] as $s) {
                     if ($s['id'] === $seat['id']) {

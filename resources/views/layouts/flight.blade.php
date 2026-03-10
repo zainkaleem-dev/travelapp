@@ -33,8 +33,6 @@
         rel="stylesheet">
 
     @livewireStyles
-    <!-- Alpine.js Core -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         [x-cloak] {

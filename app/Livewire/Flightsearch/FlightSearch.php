@@ -14,6 +14,7 @@ class FlightSearch extends Component
 {
     // Search results from Amadeus
     public array $airportSearchResults = [];
+    public string $searchType = ''; // 'returnDep', 'returnArr', 'onewayDep', 'onewayArr', 'multi.0.dep', etc.
 
     // ── Trip type tab ──────────────────────────────────────────────────
     public string $tripType = 'return'; // return | oneway | multi
@@ -266,8 +267,10 @@ class FlightSearch extends Component
         $this->searching = false;
     }
 
-    public function fetchAirports(string $query): void
+    public function fetchAirports(string $query, string $type = ''): void
     {
+        $this->searchType = $type;
+        \Log::info("fetchAirports called with query: '$query' for type: '$type'");
         $q = trim(mb_strtolower($query));
         if ($q === '' || strlen($q) < 2) {
             $this->airportSearchResults = [];
@@ -280,7 +283,7 @@ class FlightSearch extends Component
 
             if (isset($response['data']) && is_array($response['data'])) {
                 // Map Amadeus response to a simple array for the dropdown
-                $this->airportSearchResults = array_map(function ($location) {
+                $results = array_map(function ($location) {
                     $cityName = $location['address']['cityName'] ?? '';
                     $countryName = $location['address']['countryName'] ?? '';
                     $airportName = $location['name'] ?? '';
@@ -302,35 +305,50 @@ class FlightSearch extends Component
                         'display' => $display,
                     ];
                 }, array_slice($response['data'], 0, 8)); // Limit to top 8 results
+
+                \Log::info("fetchAirports found " . count($results) . " results for '$q'");
+                if (count($results) > 0) {
+                    \Log::info("Sample result: " . $results[0]['display']);
+                }
+                $this->airportSearchResults = $results;
             } else {
+                \Log::info("fetchAirports no results for '$q'");
                 $this->airportSearchResults = [];
             }
-        } catch (Exception $e) {
-            // Silently fail or log the error
+        } catch (\Exception $e) {
+            \Log::error('Amadeus Airport Search Error: ' . $e->getMessage());
             $this->airportSearchResults = [];
         }
     }
 
     public function updatedReturnDep(): void
     {
+        if (str_contains($this->returnDep, ' (')) {
+            return;
+        }
         $this->showReturnDepAirports = true;
-        $this->fetchAirports($this->returnDep);
+        $this->fetchAirports($this->returnDep, 'returnDep');
     }
 
     public function updatedReturnArr(): void
     {
+        if (str_contains($this->returnArr, ' (')) {
+            return;
+        }
         $this->showReturnArrAirports = true;
-        $this->fetchAirports($this->returnArr);
+        $this->fetchAirports($this->returnArr, 'returnArr');
     }
 
     public function selectReturnDepAirport(string $display): void
     {
+        \Log::info("selectReturnDepAirport called with: " . $display);
         $this->returnDep = $display;
         $this->showReturnDepAirports = false;
     }
 
     public function selectReturnArrAirport(string $display): void
     {
+        \Log::info("selectReturnArrAirport called with: " . $display);
         $this->returnArr = $display;
         $this->showReturnArrAirports = false;
     }
@@ -345,14 +363,20 @@ class FlightSearch extends Component
 
     public function updatedOnewayDep(): void
     {
+        if (str_contains($this->onewayDep, ' (')) {
+            return;
+        }
         $this->showOnewayDepAirports = true;
-        $this->fetchAirports($this->onewayDep);
+        $this->fetchAirports($this->onewayDep, 'onewayDep');
     }
 
     public function updatedOnewayArr(): void
     {
+        if (str_contains($this->onewayArr, ' (')) {
+            return;
+        }
         $this->showOnewayArrAirports = true;
-        $this->fetchAirports($this->onewayArr);
+        $this->fetchAirports($this->onewayArr, 'onewayArr');
     }
 
     public function selectOnewayDepAirport(string $display): void
@@ -369,6 +393,7 @@ class FlightSearch extends Component
 
     public function selectMultiDepAirport(int $index, string $display): void
     {
+        \Log::info("selectMultiDepAirport called for index $index with: " . $display);
         if (!isset($this->multiFlights[$index])) {
             return;
         }
@@ -378,6 +403,7 @@ class FlightSearch extends Component
 
     public function selectMultiArrAirport(int $index, string $display): void
     {
+        \Log::info("selectMultiArrAirport called for index $index with: " . $display);
         if (!isset($this->multiFlights[$index])) {
             return;
         }
@@ -396,13 +422,16 @@ class FlightSearch extends Component
                 $field = $parts[2];
                 $value = $this->multiFlights[$index][$field] ?? '';
 
-                if ($field === 'dep') {
-                    $this->showMultiDepAirports[$index] = true;
-                } else if ($field === 'arr') {
-                    $this->showMultiArrAirports[$index] = true;
+                // Only search if the user is typing (not a final selection which has "City (CODE)")
+                if (!str_contains($value, ' (')) {
+                    if ($field === 'dep') {
+                        $this->showMultiDepAirports[$index] = true;
+                        $this->fetchAirports($value, "multi.$index.dep");
+                    } else if ($field === 'arr') {
+                        $this->showMultiArrAirports[$index] = true;
+                        $this->fetchAirports($value, "multi.$index.arr");
+                    }
                 }
-
-                $this->fetchAirports($value);
             }
         }
     }
