@@ -542,11 +542,9 @@
                                 <button class="btn-search" wire:click.prevent="search" wire:loading.attr="disabled">
                                     <div class="flex items-center justify-center gap-2">
                                         {{-- Loader (visible only when loading) --}}
-                                        <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none"
-                                            viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                                stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                        <svg wire:loading wire:target="search" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                         </svg>
 
                                         {{-- Icon (hidden when loading) --}}
@@ -960,9 +958,9 @@ PANEL: ONE WAY
                     <div class="flex items-center justify-center gap-2">
                         {{-- Loader (visible only when loading) --}}
                         <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                            </circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                         </svg>
 
                         {{-- Icon (hidden when loading) --}}
@@ -1406,9 +1404,9 @@ PANEL: MULTI-CITY
                     <div class="flex items-center justify-center gap-2">
                         {{-- Loader (visible only when loading) --}}
                         <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                            </circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                         </svg>
 
                         {{-- Icon (hidden when loading) --}}
