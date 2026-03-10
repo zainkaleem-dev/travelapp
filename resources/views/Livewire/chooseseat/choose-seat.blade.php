@@ -1,4 +1,4 @@
-﻿<div>
+<div>
     {{-- ── Outbound Header (Teal Bar) ── --}}
     <div class="max-w-7xl mx-auto px-4 pt-6">
         <div class="bg-[#2ab4c0] text-white rounded-xl px-4 py-3 mb-6 flex items-center justify-between flex-wrap gap-2 shadow-lg shadow-[#2ab4c0]/20" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
@@ -319,7 +319,7 @@
                                      <span class="text-[10px] font-bold text-gray-400 uppercase">Occupied</span>
                                  </div>
                                  <div class="flex items-center gap-2">
-                                     <div class="w-3.5 h-3.5 rounded-sm bg-[#2ab4c0] shadow-sm shadow-[#2ab4c0]/30 text-white flex items-center justify-center text-[8px] font-bold">✓</div>
+                                     <div class="w-3.5 h-3.5 rounded-sm bg-[#2ab4c0] shadow-sm shadow-[#2ab4c0]/30 text-white flex items-center justify-center text-[10px] font-bold">14A</div>
                                      <span class="text-[10px] font-bold text-[#2ab4c0] uppercase">Selected</span>
                                  </div>
                              </div>
@@ -377,7 +377,7 @@
                                                     <button wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})"
                                                             @disabled($seat['state'] === 'occupied')
                                                             class="seat-btn seat-{{ $seat['state'] }}" title="{{ $seat['id'] }} - {{ $currencyCode }}{{ number_format($seat['price'], 2) }}">
-                                                            <span class="opacity-0 hover:opacity-100 transition-opacity">{{ $seat['id'] }}</span>
+                                                            <span>{{ $seat['id'] }}</span>
                                                     </button>
                                                 @else
                                                     <div class="w-[40px]"></div>
@@ -396,7 +396,7 @@
                                                     <button wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})"
                                                             @disabled($seat['state'] === 'occupied')
                                                             class="seat-btn seat-{{ $seat['state'] }}" title="{{ $seat['id'] }} - {{ $currencyCode }}{{ number_format($seat['price'], 2) }}">
-                                                            <span class="opacity-0 hover:opacity-100 transition-opacity">{{ $seat['id'] }}</span>
+                                                            <span>{{ $seat['id'] }}</span>
                                                     </button>
                                                 @else
                                                     <div class="w-[40px]"></div>
@@ -516,7 +516,6 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1.5px solid transparent;
             position: relative;
-            color: transparent;
         }
         .seat-btn span {
             z-index: 10;
@@ -543,9 +542,6 @@
         }
 
         .seat-selected { background: #2ab4c0; border-color: #239ba6; color: white !important; box-shadow: 0 4px 10px rgba(42,180,192,0.3); transform: translateY(-3px); }
-        .seat-selected::before {
-            content: '✓'; font-size: 14px; position: absolute; line-height: 1; color: white;
-        }
         .seat-selected:hover {
             color: white !important;
             transform: translateY(-4px);
