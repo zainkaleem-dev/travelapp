@@ -42,32 +42,33 @@ class PassengerDetail extends Component
     public array $summaryItems = [];
 
     // ── Boot ──────────────────────────────────────────────────────────────────
-    public function mount(): void
+    public function mount()
     {
         $this->selectedFlight = session('selected_flight');
-        $this->searchParams = session('search_params');
+        $this->searchParams = session('flight_search_params', []);
 
         // If no flight selected, redirect back to search
         if (!$this->selectedFlight) {
-            $this->redirect(route('flights.search'), navigate: true);
-            return;
+            return redirect()->route('flights.search');
         }
 
         // Initialize from session summary
         $this->summaryItems = session('booking_summary', []);
 
-        $counts = $this->searchParams['passengers'] ?? ['adults' => 1, 'children' => 0, 'infants' => 0];
+        $adults = $this->searchParams['adultCount'] ?? 1;
+        $children = $this->searchParams['childCount'] ?? 0;
+        $infants = $this->searchParams['infantCount'] ?? 0;
 
         // Initialize passengers array
         $this->passengers = [];
 
-        for ($i = 0; $i < ($counts['adults'] ?? 0); $i++) {
+        for ($i = 0; $i < $adults; $i++) {
             $this->passengers[] = array_merge($this->emptyPassenger(), ['type' => 'ADULT']);
         }
-        for ($i = 0; $i < ($counts['children'] ?? 0); $i++) {
+        for ($i = 0; $i < $children; $i++) {
             $this->passengers[] = array_merge($this->emptyPassenger(), ['type' => 'CHILD']);
         }
-        for ($i = 0; $i < ($counts['infants'] ?? 0); $i++) {
+        for ($i = 0; $i < $infants; $i++) {
             $this->passengers[] = array_merge($this->emptyPassenger(), ['type' => 'HELD_INFANT']);
         }
 
@@ -121,7 +122,7 @@ class PassengerDetail extends Component
         }
     }
 
-    public function continue(\App\Services\AmadeusService $amadeusService): void
+    public function continue(\App\Services\AmadeusService $amadeusService)
     {
         $this->validate();
 
@@ -178,7 +179,7 @@ class PassengerDetail extends Component
 
                 // Order perfectly created! Proceed to confirmation view.
                 session()->flash('success', 'Flight successfully booked!');
-                $this->redirect(route('flight.confirmation'), navigate: true);
+                return redirect()->route('flight.confirmation');
             } else {
                 $errorMsg = $orderResult['errors'][0]['detail'] ?? 'Amadeus rejected the booking order parameters.';
                 session()->flash('error', $errorMsg);
@@ -190,9 +191,9 @@ class PassengerDetail extends Component
         }
     }
 
-    public function back(): void
+    public function back()
     {
-        $this->redirect(route('seating'), navigate: true);
+        return redirect()->route('seating');
     }
 
     public function render()
