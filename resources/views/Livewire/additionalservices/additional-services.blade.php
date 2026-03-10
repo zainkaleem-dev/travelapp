@@ -361,7 +361,7 @@
                         <button wire:click="continue" wire:loading.attr="disabled"
                                 class="flex-1 min-w-0 py-4 bg-[#2ab4c0] text-white text-sm font-black rounded-2xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-3 group">
                             <span wire:loading.remove wire:target="continue" class="flex items-center gap-3">
-                                Seating
+                                Continue
                                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                             </span>
                             <span wire:loading wire:target="continue" class="flex items-center gap-3">
@@ -372,7 +372,7 @@
 
                         <button wire:click="back" class="flex-1 min-w-0 py-3 bg-white border border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-xs">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-                            Back to Flight List
+                            Back
                         </button>
                     </div>
                 </div>

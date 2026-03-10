@@ -78,7 +78,7 @@
                                     <div wire:click="changeSegment({{ $segIdx }})"
                                          wire:key="segment-{{ $segIdx }}"
                                          wire:loading.class="opacity-50 pointer-events-none"
-                                         class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4 sm:gap-6 p-4 rounded-xl cursor-pointer transition-all border-2 {{ $currentSegmentIndex === $segIdx ? 'border-[#2ab4c0] bg-[#2ab4c0]/5 shadow-sm' : 'border-transparent hover:bg-gray-50' }}">
+                                         class="flex flex-col sm:grid sm:grid-cols-3 items-center gap-4 sm:gap-6 p-4 rounded-xl cursor-pointer transition-all border-2 {{ $currentSegmentIndex === $segIdx ? 'border-[#2ab4c0] bg-[#2ab4c0]/5 shadow-sm' : 'border-transparent hover:bg-gray-50' }}">
                                         {{-- Airline Column --}}
                                         <div class="flex items-center gap-2 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
                                             <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-white border border-gray-100 p-1 shadow-sm">
@@ -98,20 +98,52 @@
                                         </div>
 
                                         {{-- Time & Route --}}
-                                        <div class="flex flex-col justify-center">
-                                            <div class="flex items-center gap-2 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
-                                                <span>{{ $depTime }}</span>
-                                                <span class="text-gray-300 font-light">–</span>
-                                                <span>{{ $arrTime }}</span>
+                                        <div class="flex flex-col justify-center gap-1.5">
+                                            {{-- Flight number centered --}}
+                                            <div class="flex justify-center">
+                                                <span class="text-[10px] text-gray-500 tracking-[0.22em] uppercase">{{ $flightNumber }}</span>
                                             </div>
-                                            <div class="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
-                                                <span class="border-b border-dotted border-gray-300">{{ $segment['departure']['iataCode'] }}</span>
-                                                <span class="text-gray-300 font-normal ml-0.5">–</span>
-                                                <span class="border-b border-dotted border-gray-300 ml-0.5">{{ $segment['arrival']['iataCode'] }}</span>
-                                                <span class="mx-1 text-gray-300">|</span>
-                                                <span class="text-gray-500">{{ $flightNumber }}</span>
-                                                <span class="mx-1 text-gray-300">|</span>
-                                                <span class="text-[10px] text-gray-400 font-medium">{{ $aircraftCode }}</span>
+
+                                            {{-- Times --}}
+                                            <div class="flex items-center gap-3 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
+                                                <div class="flex flex-col">
+                                                    <span class="text-[10px] font-bold text-gray-400 tracking-[0.18em] uppercase">Depart</span>
+                                                    <span>{{ $depTime }}</span>
+                                                </div>
+                                                <div class="flex items-center justify-center flex-1 mx-1">
+                                                    <div class="w-full max-w-[140px] h-[2px] bg-gray-200 rounded-full relative">
+                                                        <div class="absolute inset-y-[-3px] left-1/2 -translate-x-1/2 flex items-center justify-center">
+                                                            <span class="px-1.5 py-0.5 rounded-full bg-white border border-gray-200 text-[9px] font-black text-gray-500 tracking-[0.18em] uppercase">
+                                                                Non‑stop
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="flex flex-col items-end">
+                                                    <span class="text-[10px] font-bold text-gray-400 tracking-[0.18em] uppercase">Arrive</span>
+                                                    <span>{{ $arrTime }}</span>
+                                                </div>
+                                            </div>
+
+                                            {{-- Route trail --}}
+                                            <div class="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-500">
+                                                <div class="flex items-center gap-1.5 w-full">
+                                                    <span class="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700">
+                                                        {{ $segment['departure']['iataCode'] }}
+                                                    </span>
+                                                    <span class="flex items-center gap-2 text-gray-300 flex-1">
+                                                        <span class="flex-1 h-[2px] bg-gray-300 rounded-full"></span>
+                                                        <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 6l6 6-6 6" />
+                                                        </svg>
+                                                        <span class="flex-1 h-[2px] bg-gray-300 rounded-full"></span>
+                                                    </span>
+                                                    <span class="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700">
+                                                        {{ $segment['arrival']['iataCode'] }}
+                                                    </span>
+                                                </div>
+
+
                                             </div>
                                         </div>
 
@@ -137,69 +169,6 @@
                                             @endif
                                         </div>
 
-                                        {{-- Tools/Seats --}}
-                                        <div class="w-full flex flex-col items-center justify-center gap-1.5 group relative" @click.stop>
-                                            <div class="flex gap-4 text-gray-400">
-                                                <div class="cursor-pointer">
-                                                    <div class="flex gap-1.5 hover:text-[#2ab4c0] transition-colors">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                                                    </div>
-
-                                                    <div class="absolute bottom-full right-0 mb-3 hidden group-hover:block w-52 bg-white border border-gray-100 text-gray-600 shadow-2xl rounded-xl z-[100] overflow-hidden ring-1 ring-black/5">
-                                                        <div class="p-3 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-widest">Flight Amenities</div>
-                                                        <div class="p-3 space-y-2 text-left">
-                                                            @php
-                                                                $segmentId = $segment['id'];
-                                                                $fareDetails = collect($selectedFlight['rawOffer']['travelerPricings'][0]['fareDetailsBySegment'] ?? []);
-                                                                $segmentFare = $fareDetails->firstWhere('segmentId', $segmentId);
-
-                                                                $segmentAmenities = [];
-                                                                if ($segmentFare && isset($segmentFare['amenities'])) {
-                                                                    foreach ($segmentFare['amenities'] as $am) {
-                                                                        $segmentAmenities[] = $am['description'] ?? 'Amenity';
-                                                                    }
-                                                                }
-
-                                                                $segmentBaggage = 'No checked bags';
-                                                                if ($segmentFare && isset($segmentFare['includedCheckedBags'])) {
-                                                                    $qty = $segmentFare['includedCheckedBags']['quantity'] ?? null;
-                                                                    $weight = $segmentFare['includedCheckedBags']['weight'] ?? null;
-                                                                    if ($qty !== null) {
-                                                                        $segmentBaggage = $qty . ' Check-in bag' . ($qty > 1 ? 's' : '');
-                                                                    } elseif ($weight !== null) {
-                                                                        $segmentBaggage = $weight . ($segmentFare['includedCheckedBags']['weightUnit'] ?? 'KG') . ' Check-in bag';
-                                                                    }
-                                                                }
-                                                            @endphp
-
-                                                            @forelse($segmentAmenities as $am)
-                                                                <div class="flex items-center gap-2.5 text-[11px] font-medium">
-                                                                    <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                                                    {{ $am }}
-                                                                </div>
-                                                            @empty
-                                                                <div class="text-[10px] text-gray-400 italic">No specific amenities info</div>
-                                                            @endforelse
-
-                                                            <div class="flex items-center gap-2.5 text-[11px] font-medium border-t border-gray-50 pt-2 mt-2">
-                                                                <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                                                Baggage: {{ $segmentBaggage }}
-                                                            </div>
-                                                        </div>
-                                                        <div class="absolute top-full right-4 -mt-1 border-4 border-transparent border-t-white"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {{-- Seats Indicator --}}
-                                            @if(($selectedFlight['seats'] ?? 0) > 0)
-                                                <div class="flex items-center gap-1">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
-                                                    <span class="text-[11px] font-black text-orange-500 uppercase tracking-tighter">{{ $selectedFlight['seats'] }} Seats Left</span>
-                                                </div>
-                                            @endif
-                                        </div>
                                     </div>
                                     @php $segIdx++; @endphp
 
@@ -457,7 +426,7 @@
                         <button wire:click="continue" wire:loading.attr="disabled"
                                 class="flex-1 min-w-0 py-4 bg-[#2ab4c0] text-white text-sm font-black rounded-2xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-3 group">
                             <span wire:loading.remove wire:target="continue" class="flex items-center gap-3">
-                                Review Seating
+                                Continue
                                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                             </span>
                             <span wire:loading wire:target="continue" class="flex items-center gap-3">
@@ -468,7 +437,7 @@
 
                         <button wire:click="back" class="flex-1 min-w-0 py-3 bg-white border border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-xs">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-                            Back to Flight List
+                            Back
                         </button>
                     </div>
                 </div>
