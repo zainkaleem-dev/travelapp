@@ -25,14 +25,14 @@
         <div class="flex-1 min-w-0 space-y-6">
 
             {{-- Flight Card styling --}}
-            <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 relative hover:z-50" 
-                 x-data="{ 
-                    fareOpen: {{ !empty($availableFares) ? 'true' : 'false' }}, 
-                    cabin: '{{ !empty($availableFares) ? strtolower(array_key_first($availableFares)) : 'economy' }}' 
+            <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 relative hover:z-50"
+                 x-data="{
+                    fareOpen: {{ !empty($availableFares) ? 'true' : 'false' }},
+                    cabin: '{{ !empty($availableFares) ? strtolower(array_key_first($availableFares)) : 'economy' }}'
                  }">
                 <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between rounded-t-xl">
                     <h2 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-                        
+
                         Selected Flight Details
                     </h2>
                     <button type="button" @click="fareOpen = !fareOpen" class="bg-[#2ab4c0]/10 text-[#2ab4c0] hover:bg-[#2ab4c0] hover:text-white px-3 py-1.5 rounded-lg transition-all text-xs font-bold flex items-center gap-2">
@@ -44,14 +44,14 @@
 
                 {{-- Unified Flight Card --}}
                 <div class="flex flex-col lg:flex-row">
-                    
+
                     {{-- Left Content: Itinerary --}}
                     <div class="lg:w-[83%] flex-1 border-r border-gray-100 p-4 sm:p-5">
                         {{-- Flight Details Column --}}
                         <div class="flex-1 space-y-1">
                             @php $segIdx = 0; @endphp
                             @foreach($selectedFlight['rawOffer']['itineraries'] ?? [] as $idx => $rawItin)
-                                @php 
+                                @php
                                     $mappedItin = $selectedFlight['itineraries'][$idx] ?? [];
                                     $segments = $rawItin['segments'] ?? [];
                                 @endphp
@@ -60,7 +60,7 @@
                                     @php
                                         $depTime = \Carbon\Carbon::parse($segment['departure']['at'])->format('H:i');
                                         $arrTime = \Carbon\Carbon::parse($segment['arrival']['at'])->format('H:i');
-                                        
+
                                         $durationRaw = $segment['duration'] ?? '';
                                         $segmentDuration = '0h 0m';
                                         if (preg_match('/PT(?:(\d+)H)?(?:(\d+)M)?/', $durationRaw, $matches)) {
@@ -68,22 +68,22 @@
                                             $m = (int)($matches[2] ?? 0);
                                             $segmentDuration = "{$h}h {$m}m";
                                         }
-                                        
+
                                         $carrierCode = $segment['carrierCode'] ?? '';
                                         $airlineName = ($carrierCode === ($mappedItin['airlineCode'] ?? '')) ? ($mappedItin['airline'] ?? $carrierCode) : $carrierCode;
                                         $flightNumber = $carrierCode . ($segment['number'] ?? '');
                                         $aircraftCode = $segment['aircraft']['code'] ?? '';
                                     @endphp
 
-                                    <div wire:click="changeSegment({{ $segIdx }})" 
+                                    <div wire:click="changeSegment({{ $segIdx }})"
                                          wire:key="segment-{{ $segIdx }}"
                                          wire:loading.class="opacity-50 pointer-events-none"
                                          class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4 sm:gap-6 p-4 rounded-xl cursor-pointer transition-all border-2 {{ $currentSegmentIndex === $segIdx ? 'border-[#2ab4c0] bg-[#2ab4c0]/5 shadow-sm' : 'border-transparent hover:bg-gray-50' }}">
                                         {{-- Airline Column --}}
                                         <div class="flex items-center gap-2 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
                                             <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-white border border-gray-100 p-1 shadow-sm">
-                                                <img src="https://pics.avs.io/128/128/{{ $carrierCode }}.png" 
-                                                     alt="{{ $airlineName }}" 
+                                                <img src="https://pics.avs.io/128/128/{{ $carrierCode }}.png"
+                                                     alt="{{ $airlineName }}"
                                                      class="w-full h-full object-contain">
                                             </div>
                                             <div class="flex flex-col">
@@ -149,18 +149,18 @@
                                                     <div class="absolute bottom-full right-0 mb-3 hidden group-hover:block w-52 bg-white border border-gray-100 text-gray-600 shadow-2xl rounded-xl z-[100] overflow-hidden ring-1 ring-black/5">
                                                         <div class="p-3 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-widest">Flight Amenities</div>
                                                         <div class="p-3 space-y-2 text-left">
-                                                            @php 
+                                                            @php
                                                                 $segmentId = $segment['id'];
                                                                 $fareDetails = collect($selectedFlight['rawOffer']['travelerPricings'][0]['fareDetailsBySegment'] ?? []);
                                                                 $segmentFare = $fareDetails->firstWhere('segmentId', $segmentId);
-                                                                
+
                                                                 $segmentAmenities = [];
                                                                 if ($segmentFare && isset($segmentFare['amenities'])) {
                                                                     foreach ($segmentFare['amenities'] as $am) {
                                                                         $segmentAmenities[] = $am['description'] ?? 'Amenity';
                                                                     }
                                                                 }
-                                                                
+
                                                                 $segmentBaggage = 'No checked bags';
                                                                 if ($segmentFare && isset($segmentFare['includedCheckedBags'])) {
                                                                     $qty = $segmentFare['includedCheckedBags']['quantity'] ?? null;
@@ -175,7 +175,7 @@
 
                                                             @forelse($segmentAmenities as $am)
                                                                 <div class="flex items-center gap-2.5 text-[11px] font-medium">
-                                                                    <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> 
+                                                                    <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                                                     {{ $am }}
                                                                 </div>
                                                             @empty
@@ -183,7 +183,7 @@
                                                             @endforelse
 
                                                             <div class="flex items-center gap-2.5 text-[11px] font-medium border-t border-gray-50 pt-2 mt-2">
-                                                                <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> 
+                                                                <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                                                                 Baggage: {{ $segmentBaggage }}
                                                             </div>
                                                         </div>
@@ -191,7 +191,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             {{-- Seats Indicator --}}
                                             @if(($selectedFlight['seats'] ?? 0) > 0)
                                                 <div class="flex items-center gap-1">
@@ -236,7 +236,7 @@
                                 @endif
                             @endforeach
                         </div>
-                    </div>                
+                    </div>
                 </div>
             </div>
 
@@ -326,7 +326,7 @@
                         </div>
                     </div>
                 @endif
-                
+
                 <div class="px-4 py-8 bg-gray-50 min-h-[400px]">
                     <div class="min-w-max mx-auto fuselage-container" style="max-width:380px;">
                         @if(empty($rows))
@@ -410,7 +410,7 @@
                     </div>
                 </div>
             </div>
-                    
+
 
         </div>
 
@@ -452,10 +452,10 @@
                         <p class="text-[9px] text-gray-400 font-medium">Prices include all taxes and carrier-imposed fees.</p>
                     </div>
 
-                    {{-- Primary Action Buttons --}}
-                    <div class="space-y-3 pt-2">
+                    {{-- Primary Action Buttons (same line) --}}
+                    <div class="flex flex-wrap gap-3 pt-2">
                         <button wire:click="continue" wire:loading.attr="disabled"
-                                class="w-full py-4 bg-[#2ab4c0] text-white font-black rounded-2xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-3 group">
+                                class="flex-1 min-w-0 py-4 bg-[#2ab4c0] text-white text-sm font-black rounded-2xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-3 group">
                             <span wire:loading.remove wire:target="continue" class="flex items-center gap-3">
                                 Review Seating
                                 <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
@@ -466,28 +466,16 @@
                             </span>
                         </button>
 
-                        <button wire:click="back" class="w-full py-3 bg-white border border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-xs">
+                        <button wire:click="back" class="flex-1 min-w-0 py-3 bg-white border border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-xs">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
                             Back to Flight List
                         </button>
                     </div>
                 </div>
-
-                {{-- Trust Badges --}}
-                <div class="px-5 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-center gap-4">
-                    <div class="flex items-center gap-1 opacity-40">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
-                        <span class="text-[9px] font-black uppercase tracking-widest">Safe</span>
-                    </div>
-                    <div class="flex items-center gap-1 opacity-40">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-                        <span class="text-[9px] font-black uppercase tracking-widest">Secure</span>
-                    </div>
-                </div>
             </div>
         </div>
 
-          
+
 
     </div>
 
@@ -520,8 +508,8 @@
         .seat-btn span {
             z-index: 10;
         }
-        .seat-btn:not(:disabled):hover { 
-            color: #4b5563; 
+        .seat-btn:not(:disabled):hover {
+            color: #4b5563;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
