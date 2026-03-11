@@ -174,7 +174,7 @@
             </div>
 
             {{-- Passenger Selection Tabs --}}
-            <div class="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
+            <div class="mt-4 bg-white rounded-2xl border border-gray-200 shadow-sm px-4 py-3 flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
                 @for ($i = 0; $i < $passengerCount; $i++)
                     @php
                         $hasSeat = !empty($passengerSeats[$currentSegmentIndex][$i]['id']);

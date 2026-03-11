@@ -90,6 +90,11 @@
                             {{ $label }}
                         </button>
                 @endforeach
+
+                <button type="button" wire:click="toggleItineraryLayout"
+                        class="ml-auto flex-shrink-0 px-4 py-2 text-xs font-semibold {{ $itineraryLayoutVertical ? 'bg-[#2ab4c0] text-white' : 'text-[#2ab4c0] border border-[#2ab4c0]' }} rounded-lg hover:bg-[#2ab4c0]/5 transition-colors whitespace-nowrap">
+                    {{ $itineraryLayoutVertical ? 'Horizontal view' : 'Filters' }}
+                </button>
             </div>
 
             {{-- Date rail --}}
@@ -164,105 +169,122 @@
                                     {{-- Flight Details Column --}}
                                     <div class="flex-1 pl-4 sm:pl-5 space-y-1">
                                         @php $itineraries = $flight['itineraries'] ?? []; @endphp
-                                        @foreach($itineraries as $idx => $itin)
-                                            <div class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4 sm:gap-6">
-                                                {{-- Time & Route --}}
 
-                                            {{-- Airline Column --}}
-                                                <div class="flex items-center gap-2 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
-                                                    <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 p-1 shadow-sm">
-                                                        <img src="https://www.gstatic.com/flights/airline_logos/70px/{{ $flight['airlineCode'] }}.png"
-                                                            alt="{{ $flight['airline'] }}"
-                                                            onerror="this.src='https://pics.avs.io/128/128/{{ $flight['airlineCode'] }}.png'"
-                                                            class="w-full h-full object-contain">
-                                                    </div>
-                                                    <span class="text-[10px] font-bold text-gray-500 text-center uppercase tracking-tighter leading-none">{{ $flight['airline'] }}</span>
+                                        @if($itineraryLayoutVertical && count($itineraries) >= 2)
+                                            {{-- Vertical layout: One-way | separator | Return --}}
+                                            <div class="grid grid-cols-[1fr_auto_1fr] gap-0 items-stretch min-h-[120px]">
+                                                {{-- Left: One-way --}}
+                                                <div class="pr-4 border-r border-gray-200 flex flex-col">
+                                                    <p class="text-[10px] font-black text-[#2ab4c0] uppercase tracking-widest mb-2">One-way</p>
+                                                    @php $itin = $itineraries[0]; @endphp
+                                                    @include('livewire.flightslist.partials.itinerary-leg', ['flight' => $flight, 'itin' => $itin])
                                                 </div>
-
-                                                <div class="flex flex-col justify-center">
-
-                                                    <div class="flex items-center gap-2 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
-                                                        <span>{{ $itin['dep'] }}</span>
-                                                        <span class="text-gray-300 font-light">–</span>
-                                                        <span>{{ $itin['arr'] }}</span>
-                                                        @if(isset($itin['daysNext']) && $itin['daysNext'] > 0)
-                                                            <sup class="text-[#2ab4c0] text-[10px] font-bold">+{{ $itin['daysNext'] }}</sup>
-                                                        @endif
-                                                    </div>
-                                                    <div class="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
-                                                        <span title="{{ $itin['depCity'] }}" class="cursor-help border-b border-dotted border-gray-300">{{ $itin['depAirport'] }}</span>
-                                                        <span class="text-gray-300 font-normal ml-0.5">–</span>
-                                                        <span title="{{ $itin['arrCity'] }}" class="cursor-help border-b border-dotted border-gray-300 ml-0.5">{{ $itin['arrAirport'] }}</span>
-                                                        <span class="mx-1 text-gray-300">|</span>
-                                                        <span class="text-gray-500">{{ $itin['flightNumber'] }}</span>
-                                                        <span class="mx-1 text-gray-300">|</span>
-                                                        <span class="text-[10px] text-gray-400 font-medium">{{ $itin['aircraft'] }}</span>
-
-                                                    </div>
+                                                {{-- Center: Separator --}}
+                                                <div class="flex flex-col items-center justify-center px-3">
+                                                    <div class="w-px h-full min-h-[80px] bg-gray-200 rounded-full" aria-hidden="true"></div>
                                                 </div>
-
-                                                {{-- Duration & Stops --}}
-                                                <div class="w-full text-center py-2 sm:py-0 border-y sm:border-y-0 border-gray-50">
-                                                    <div class="text-sm font-black text-gray-800">{{ $itin['duration'] }}</div>
-                                                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-0.5">{{ $itin['stops'] }}</div>
-                                                    @if($itin['technicalStops'] > 0)
-                                                        <div class="mt-1 flex items-center justify-center gap-1 text-[9px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full ring-1 ring-red-100 uppercase tracking-tighter">
-                                                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                            {{ $itin['technicalStops'] }} Tech Stop{{ $itin['technicalStops'] > 1 ? 's' : '' }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-
-
-                                                {{-- Icons & Seats - Triggers amenities tooltip on hover --}}
-                                                <div class="w-full flex flex-col items-center justify-center gap-1.5 group relative">
-                                                    <div class="flex gap-4 text-gray-400">
-                                                        <div class="cursor-pointer">
-                                                            <div class="flex gap-1.5 group-hover:text-[#2ab4c0] transition-colors">
-                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                                                            </div>
-
-                                                            @php
-                                                                $allFlightAmenities = collect($flight['itineraries'] ?? [])
-                                                                    ->pluck('amenities')
-                                                                    ->flatten()
-                                                                    ->unique()
-                                                                    ->values();
-                                                            @endphp
-
-                                                            <div class="absolute top-full right-0 mt-3 hidden group-hover:block w-52 bg-white border border-gray-100 text-gray-600 shadow-2xl rounded-xl z-[100] overflow-hidden ring-1 ring-black/5">
-                                                                <div class="p-3 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-widest">Flight Amenities</div>
-                                                                <div class="p-3 space-y-2">
-                                                                    @foreach($allFlightAmenities as $am)
-                                                                        <div class="flex items-center gap-2.5 text-[11px] font-medium">
-                                                                            <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                                                            {{ $am }}
-                                                                        </div>
-                                                                    @endforeach
-                                                                    <div class="flex items-center gap-2.5 text-[11px] font-medium">
-                                                                        <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                                                        Baggage: {{ $itin['baggage'] ?? 'Included' }}
-                                                                    </div>
-                                                                </div>
-                                                                <div class="absolute bottom-full right-4 -mb-1 border-4 border-transparent border-b-white"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    @if(isset($flight['seats']) && $flight['seats'] > 0)
-                                                        <div class="flex items-center gap-1">
-                                                            <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
-                                                            <span class="text-[11px] font-black text-orange-500 uppercase tracking-tighter">{{ $flight['seats'] }} Seats Left</span>
-                                                        </div>
-                                                    @endif
+                                                {{-- Right: Return --}}
+                                                <div class="pl-4 flex flex-col">
+                                                    <p class="text-[10px] font-black text-[#2ab4c0] uppercase tracking-widest mb-2">Return</p>
+                                                    @php $itin = $itineraries[1]; @endphp
+                                                    @include('livewire.flightslist.partials.itinerary-leg', ['flight' => $flight, 'itin' => $itin])
                                                 </div>
                                             </div>
-                                            @if($idx < count($itineraries) - 1)
-                                                <div class="relative py-2">
-                                                    <div class="absolute inset-0 flex items-center" aria-hidden="true"><div class="w-full border-t border-gray-50"></div></div>
+                                        @elseif($itineraryLayoutVertical && count($itineraries) === 1)
+                                            {{-- Vertical layout but only one leg: show One-way left, separator, empty right --}}
+                                            <div class="grid grid-cols-[1fr_auto_1fr] gap-0 items-stretch min-h-[120px]">
+                                                <div class="pr-4 border-r border-gray-200 flex flex-col">
+                                                    <p class="text-[10px] font-black text-[#2ab4c0] uppercase tracking-widest mb-2">One-way</p>
+                                                    @include('livewire.flightslist.partials.itinerary-leg', ['flight' => $flight, 'itin' => $itineraries[0]])
                                                 </div>
-                                            @endif
-                                        @endforeach
+                                                <div class="flex flex-col items-center justify-center px-4">
+                                                    <div class="w-px h-full min-h-[80px] bg-gray-200 rounded-full"></div>
+                                                </div>
+                                                <div class="pl-4 flex flex-col justify-center text-gray-400 text-xs font-medium">—</div>
+                                            </div>
+                                        @else
+                                            {{-- Horizontal layout (default) --}}
+                                            @foreach($itineraries as $idx => $itin)
+                                                <div class="flex flex-col sm:grid sm:grid-cols-4 items-center gap-4 sm:gap-6">
+                                                    <div class="flex items-center gap-2 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
+                                                        <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 p-1 shadow-sm">
+                                                            <img src="https://www.gstatic.com/flights/airline_logos/70px/{{ $flight['airlineCode'] }}.png"
+                                                                alt="{{ $flight['airline'] }}"
+                                                                onerror="this.src='https://pics.avs.io/128/128/{{ $flight['airlineCode'] }}.png'"
+                                                                class="w-full h-full object-contain">
+                                                        </div>
+                                                        <span class="text-[10px] font-bold text-gray-500 text-center uppercase tracking-tighter leading-none">{{ $flight['airline'] }}</span>
+                                                    </div>
+                                                    <div class="flex flex-col justify-center">
+                                                        <div class="flex items-center gap-2 text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">
+                                                            <span>{{ $itin['dep'] }}</span>
+                                                            <span class="text-gray-300 font-light">–</span>
+                                                            <span>{{ $itin['arr'] }}</span>
+                                                            @if(isset($itin['daysNext']) && $itin['daysNext'] > 0)
+                                                                <sup class="text-[#2ab4c0] text-[10px] font-bold">+{{ $itin['daysNext'] }}</sup>
+                                                            @endif
+                                                        </div>
+                                                        <div class="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">
+                                                            <span title="{{ $itin['depCity'] }}" class="cursor-help border-b border-dotted border-gray-300">{{ $itin['depAirport'] }}</span>
+                                                            <span class="text-gray-300 font-normal ml-0.5">–</span>
+                                                            <span title="{{ $itin['arrCity'] }}" class="cursor-help border-b border-dotted border-gray-300 ml-0.5">{{ $itin['arrAirport'] }}</span>
+                                                            <span class="mx-1 text-gray-300">|</span>
+                                                            <span class="text-gray-500">{{ $itin['flightNumber'] }}</span>
+                                                            <span class="mx-1 text-gray-300">|</span>
+                                                            <span class="text-[10px] text-gray-400 font-medium">{{ $itin['aircraft'] }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="w-full text-center py-2 sm:py-0 border-y sm:border-y-0 border-gray-50">
+                                                        <div class="text-sm font-black text-gray-800">{{ $itin['duration'] }}</div>
+                                                        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-0.5">{{ $itin['stops'] }}</div>
+                                                        @if(isset($itin['technicalStops']) && $itin['technicalStops'] > 0)
+                                                            <div class="mt-1 flex items-center justify-center gap-1 text-[9px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full ring-1 ring-red-100 uppercase tracking-tighter">
+                                                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                                {{ $itin['technicalStops'] }} Tech Stop{{ $itin['technicalStops'] > 1 ? 's' : '' }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="w-full flex flex-col items-center justify-center gap-1.5 group relative">
+                                                        <div class="flex gap-4 text-gray-400">
+                                                            <div class="cursor-pointer">
+                                                                <div class="flex gap-1.5 group-hover:text-[#2ab4c0] transition-colors">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                                                </div>
+                                                                @php $allFlightAmenities = collect($flight['itineraries'] ?? [])->pluck('amenities')->flatten()->unique()->values(); @endphp
+                                                                <div class="absolute top-full right-0 mt-3 hidden group-hover:block w-52 bg-white border border-gray-100 text-gray-600 shadow-2xl rounded-xl z-[100] overflow-hidden ring-1 ring-black/5">
+                                                                    <div class="p-3 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-widest">Flight Amenities</div>
+                                                                    <div class="p-3 space-y-2">
+                                                                        @foreach($allFlightAmenities as $am)
+                                                                            <div class="flex items-center gap-2.5 text-[11px] font-medium">
+                                                                                <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                                                {{ $am }}
+                                                                            </div>
+                                                                        @endforeach
+                                                                        <div class="flex items-center gap-2.5 text-[11px] font-medium">
+                                                                            <svg class="w-3.5 h-3.5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                                            Baggage: {{ $itin['baggage'] ?? 'Included' }}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="absolute bottom-full right-4 -mb-1 border-4 border-transparent border-b-white"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        @if(isset($flight['seats']) && $flight['seats'] > 0)
+                                                            <div class="flex items-center gap-1">
+                                                                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                                                                <span class="text-[11px] font-black text-orange-500 uppercase tracking-tighter">{{ $flight['seats'] }} Seats Left</span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                @if($idx < count($itineraries) - 1)
+                                                    <div class="relative py-2">
+                                                        <div class="absolute inset-0 flex items-center" aria-hidden="true"><div class="w-full border-t border-gray-50"></div></div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             </div>

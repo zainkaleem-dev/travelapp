@@ -498,15 +498,14 @@
 
             <div class="flex items-center">
                 <div
-                    class="flex items-center gap-1 px-4 py-2 {{ request()->is('flights-search') || request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-400' }} text-xs">
+                    class="flex items-center gap-1 px-4 py-2 {{ request()->is('flights-search') || request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
                     </svg>
                     Search Flight
                 </div>
-                <div
-                    class="px-4 py-2 {{ request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
+                <div class="px-4 py-2 text-gray-600 text-xs">
                     Flights
                 </div>
                 <div

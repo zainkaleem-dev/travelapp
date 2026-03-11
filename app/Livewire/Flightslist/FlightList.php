@@ -62,6 +62,9 @@ class FlightList extends Component
     public bool $isLoading = false;
     public bool $isInitialLoad = true;
 
+    // ─── Itinerary layout: false = horizontal (default), true = vertical (One-way | separator | Return)
+    public bool $itineraryLayoutVertical = false;
+
     // ─── Date rail (7 days around selected date) ──────────────────
     public array $dateRail = [];
 
@@ -375,6 +378,11 @@ class FlightList extends Component
     public function setSort(string $tab): void
     {
         $this->sortTab = $tab;
+    }
+
+    public function toggleItineraryLayout(): void
+    {
+        $this->itineraryLayoutVertical = !$this->itineraryLayoutVertical;
     }
 
     public function clearFilters(): void
@@ -1103,7 +1111,7 @@ class FlightList extends Component
             return;
         }
 
-        $cacheKey = 'flight_offer_' . session()->getId() . '_' . $id;
+        $cacheKey = "flight_offer_" . session()->getId() . "_" . $id;
         $rawOffer = Cache::get($cacheKey);
 
         // Inject the raw offer back before sending it to session for booking
