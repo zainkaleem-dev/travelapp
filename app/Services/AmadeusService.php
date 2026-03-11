@@ -520,13 +520,9 @@ class AmadeusService
 
         $url = $this->baseUrl . "/v2/shopping/flight-offers";
 
-        // Ensure currencyCode is in searchCriteria if provided
+        // currencyCode should remain at the root of the payload
         if (isset($payload["currencyCode"])) {
-            $payload["searchCriteria"] = $payload["searchCriteria"] ?? [];
-            $payload["searchCriteria"]["currencyCode"] = strtoupper(
-                $payload["currencyCode"],
-            );
-            unset($payload["currencyCode"]);
+            $payload["currencyCode"] = strtoupper($payload["currencyCode"]);
         }
 
         $response = $this->client->post($url, [

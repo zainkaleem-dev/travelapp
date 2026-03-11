@@ -1,8 +1,5 @@
 <div>
 
-
-
-
 {{-- ══════════════════════════════════════════════════════════
      MAIN CONTENT
 ══════════════════════════════════════════════════════════ --}}
@@ -99,7 +96,7 @@
             @if(!$isMulti)
             <div class="flex items-center px-4 py-3 border-b border-gray-100 bg-gray-50/70 relative">
                 {{-- Global loading overlay for date rail --}}
-                <div wire:loading wire:target="fetchDateRailPrices,shiftDate" class="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10 flex items-center justify-center">
+                <div wire:loading wire:target="fetchDateRailPrices,shiftDate,selectDate" class="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10 flex items-center justify-center">
                     <div class="flex gap-1.5">
                         <div class="w-1.5 h-1.5 rounded-full bg-[#2ab4c0] animate-bounce [animation-delay:-0.3s]"></div>
                         <div class="w-1.5 h-1.5 rounded-full bg-[#2ab4c0] animate-bounce [animation-delay:-0.15s]"></div>
@@ -155,7 +152,7 @@
             @endif
 
             {{-- Flight list --}}
-            <div class="space-y-4 p-4" wire:loading.class="opacity-50" wire:target="search">
+            <div class="space-y-4 p-4" wire:loading.class="opacity-50" wire:target="loadFlights">
                 @forelse($this->flights as $flight)
                     <div wire:key="flight-{{ $flight['id'] }}" class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 mb-5 relative hover:z-50" x-data="{ open: false }">
                         <div class="flex flex-col lg:flex-row">
@@ -308,7 +305,7 @@
 
                                 <button wire:click="selectFlight('{{ $flight['id'] }}')"
                                         wire:loading.attr="disabled"
-                                       
+
                                         class="w-full bg-[#2ab4c0] hover:bg-[#239ba6] text-white text-[13px] font-black uppercase tracking-widest py-3.5 rounded-xl shadow-xl shadow-[#2ab4c0]/20 transition-all duration-200 hover:-translate-y-1 active:scale-[0.98] disabled:opacity-50 relative overflow-hidden group">
                                     Select
                                 </button>
@@ -330,7 +327,7 @@
             </div>
 
             {{-- Loading overlay --}}
-            <div wire:loading wire:target="search,priceMin,priceMax,stops,airlines,departTimes"
+            <div wire:loading wire:target="loadFlights,search,priceMin,priceMax,stops,airlines,departTimes"
                  class="flex items-center justify-center py-8">
                 <div class="flex items-center gap-2 text-[#2ab4c0] text-sm font-medium">
                     <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">

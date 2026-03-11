@@ -365,10 +365,10 @@ class ChooseSeat extends Component
 
     public function back()
     {
-        return redirect()->route('additional.services');
+        return $this->redirect(route('additional.services'), navigate: true);
     }
 
-    public function continue()
+    public function goToPassengerDetails()
     {
         $summary = session('booking_summary', []);
 
@@ -388,7 +388,7 @@ class ChooseSeat extends Component
         }
 
         session(['booking_summary' => array_values($summary)]);
-        return redirect()->route('passenger.details');
+        return $this->redirect(route('passenger.details'), navigate: true);
     }
 
     public function render()

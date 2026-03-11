@@ -32,6 +32,14 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Lora:wght@400;600&display=swap"
         rel="stylesheet">
 
+    {{-- NProgress for Loading Bar --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+    <style>
+        #nprogress .bar { background: #2ab4c0 !important; height: 3px !important; }
+        #nprogress .peg { box-shadow: 0 0 10px #2ab4c0, 0 0 5px #2ab4c0 !important; }
+        #nprogress .spinner-icon { border-top-color: #2ab4c0 !important; border-left-color: #2ab4c0 !important; }
+    </style>
+
     @livewireStyles
 
     <style>
@@ -517,14 +525,20 @@
 
 
 
-    {{-- ── Page content (Livewire slot) ── --}}
+    {{-- Page Content Slot --}}
     <div class="px-4 pb-16">
         {{ $slot }}
     </div>
 
+    {{-- NProgress Script and Livewire Integration --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Loader logic removed
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
+                NProgress.start();
+                succeed(() => { NProgress.done(); });
+                fail(() => { NProgress.done(); });
+            });
         });
     </script>
 

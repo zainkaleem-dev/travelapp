@@ -275,7 +275,7 @@ class AdditionalServices extends Component
         $this->redirect(route('flights.list'), navigate: true);
     }
 
-    public function continue(): void
+    public function goToSeating(): void
     {
         // ── Store updated summary in session for the next step (Seating) ──
         session([
@@ -283,7 +283,7 @@ class AdditionalServices extends Component
             'booking_total' => $this->total()
         ]);
 
-        $this->redirect(route('seating'));
+        $this->redirect(route('seating'), navigate: true);
     }
 
     public function render()

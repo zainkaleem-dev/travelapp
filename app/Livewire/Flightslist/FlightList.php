@@ -123,7 +123,9 @@ class FlightList extends Component
                 return;
             }
 
-            $responses = \Illuminate\Support\Facades\Http::pool(function (\Illuminate\Http\Client\Pool $pool, ) use ($token, $baseUrl) {
+            $responses = \Illuminate\Support\Facades\Http::pool(function (
+                \Illuminate\Http\Client\Pool $pool,
+            ) use ($token, $baseUrl) {
                 $reqs = [];
 
                 // Build common traveler structure
@@ -177,6 +179,7 @@ class FlightList extends Component
                     }
 
                     $payload = [
+                        "currencyCode" => $this->currencyCode,
                         "originDestinations" => $originDestinations,
                         "travelers" => $travelers,
                         "sources" => ["GDS"],
@@ -225,10 +228,7 @@ class FlightList extends Component
                         if (isset($data["data"][0]["price"]["currency"])) {
                             $apiCurrency =
                                 $data["data"][0]["price"]["currency"];
-                            if (
-                                empty($this->currencyCode) ||
-                                $this->currencyCode !== $apiCurrency
-                            ) {
+                            if (empty($this->currencyCode)) {
                                 $this->currencyCode = $apiCurrency;
                             }
                         }
@@ -315,21 +315,21 @@ class FlightList extends Component
                 usort(
                     $results,
                     fn($a, $b) => (int) $a["durationMinutes"] <=>
-                    (int) $b["durationMinutes"],
+                        (int) $b["durationMinutes"],
                 );
                 break;
             case "early":
                 usort(
                     $results,
                     fn($a, $b) => (int) $a["departureTimestamp"] <=>
-                    (int) $b["departureTimestamp"],
+                        (int) $b["departureTimestamp"],
                 );
                 break;
             case "late":
                 usort(
                     $results,
                     fn($a, $b) => (int) $b["departureTimestamp"] <=>
-                    (int) $a["departureTimestamp"],
+                        (int) $a["departureTimestamp"],
                 );
                 break;
             case "best":
@@ -402,7 +402,8 @@ class FlightList extends Component
         $params["travelClassEnum"] = $this->travelClassEnum;
         session(["flight_search_params" => $params]);
 
-        $this->loadFlights();
+        $this->allFlights = [];
+        $this->dispatch("loadFlights");
         $this->dispatch("loadDateRailPrices");
     }
 
@@ -416,7 +417,8 @@ class FlightList extends Component
         $params["travelClassEnum"] = $this->travelClassEnum;
         session(["flight_search_params" => $params]);
 
-        $this->loadFlights();
+        $this->allFlights = [];
+        $this->dispatch("loadFlights");
         $this->dispatch("loadDateRailPrices");
     }
 
@@ -486,8 +488,11 @@ class FlightList extends Component
         session(["flight_search_params" => $params]);
 
         $this->initDateRail();
-        $this->loadFlights();
-        $this->fetchDateRailPrices();
+
+        // ─── THE FIX: Dispatch separately to avoid blocking one request ──
+        $this->allFlights = []; // Clear current results to show loading
+        $this->dispatch("loadFlights");
+        $this->dispatch("loadDateRailPrices");
     }
 
     public function shiftDate(int $days): void
@@ -508,6 +513,7 @@ class FlightList extends Component
         $this->selectDate($newDate);
     }
 
+    #[On("loadFlights")]
     public function loadFlights(): void
     {
         $this->errorMessage = null;
@@ -732,10 +738,10 @@ class FlightList extends Component
                     $itinStopsCount = count($itin["segments"]) - 1;
                     $itinStopsLabel =
                         $itinStopsCount === 0
-                        ? "Direct"
-                        : $itinStopsCount .
-                        " Stop" .
-                        ($itinStopsCount > 1 ? "s" : "");
+                            ? "Direct"
+                            : $itinStopsCount .
+                                " Stop" .
+                                ($itinStopsCount > 1 ? "s" : "");
 
                     $itinCarrierCode = $itinFirstSeg["carrierCode"];
                     $itinAirlineName =
@@ -1157,10 +1163,10 @@ class FlightList extends Component
                     // Re-inject amenities if the pricing response stripped them out
                     if (
                         isset(
-                        $pricedOffer["travelerPricings"][0][
-                            "fareDetailsBySegment"
-                        ],
-                    )
+                            $pricedOffer["travelerPricings"][0][
+                                "fareDetailsBySegment"
+                            ],
+                        )
                     ) {
                         foreach (
                             $pricedOffer["travelerPricings"][0][
