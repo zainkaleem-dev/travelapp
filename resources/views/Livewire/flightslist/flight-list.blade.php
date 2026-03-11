@@ -315,6 +315,7 @@
                         </div>
                     </div>
                 @empty
+                    @if(!$isLoading && !$isInitialLoad)
                     <div class="flex flex-col items-center justify-center py-16 text-gray-400">
                         <svg class="w-12 h-12 mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
@@ -322,6 +323,7 @@
                         <p class="text-sm font-medium">{{ $this->errorMessage ?: 'No flights match your filters' }}</p>
                         <button wire:click="clearFilters" class="mt-2 text-xs text-blue-500 hover:underline">Clear all filters</button>
                     </div>
+                    @endif
                 @endforelse
 
             </div>

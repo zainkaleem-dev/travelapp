@@ -58,6 +58,10 @@ class FlightList extends Component
     public array $fareDetails = [];
     public array $loadingFares = [];
 
+    // ─── Loading States ──────────────────────────────────────────
+    public bool $isLoading = false;
+    public bool $isInitialLoad = true;
+
     // ─── Date rail (7 days around selected date) ──────────────────
     public array $dateRail = [];
 
@@ -403,6 +407,7 @@ class FlightList extends Component
         session(["flight_search_params" => $params]);
 
         $this->allFlights = [];
+        $this->isLoading = true;
         $this->dispatch("loadFlights");
         $this->dispatch("loadDateRailPrices");
     }
@@ -418,6 +423,7 @@ class FlightList extends Component
         session(["flight_search_params" => $params]);
 
         $this->allFlights = [];
+        $this->isLoading = true;
         $this->dispatch("loadFlights");
         $this->dispatch("loadDateRailPrices");
     }
@@ -489,6 +495,7 @@ class FlightList extends Component
 
         // ─── THE FIX: Dispatch separately to avoid blocking one request ──
         $this->allFlights = []; // Clear current results to show loading
+        $this->isLoading = true;
         $this->dispatch("loadFlights");
         $this->dispatch("loadDateRailPrices");
     }
@@ -515,6 +522,7 @@ class FlightList extends Component
     public function loadFlights(): void
     {
         $this->errorMessage = null;
+        $this->isLoading = true;
 
         $amadeusService = app(AmadeusService::class);
         $controller = new FlightApiController($amadeusService);
@@ -952,6 +960,8 @@ class FlightList extends Component
                     "We could not fetch flights at this time. Please try again later.";
             }
         }
+        $this->isLoading = false;
+        $this->isInitialLoad = false;
     }
 
     public function loadFareDetails($id): void
