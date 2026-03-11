@@ -506,6 +506,10 @@
                     Search Flight
                 </div>
                 <div
+                    class="px-4 py-2 {{ request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
+                    Flights
+                </div>
+                <div
                     class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
                     Additional Services
                 </div>
