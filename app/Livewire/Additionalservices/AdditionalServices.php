@@ -181,7 +181,7 @@ class AdditionalServices extends Component
             $label = ucwords(strtolower($anc['description']));
             $isChargeable = $anc['isChargeable'] ?? false;
             $this->summaryItems[] = [
-                'label' => $label . ($isChargeable ? ' (price at checkout)' : ''),
+                'label' => 'Ancillary: ' . $label . ($isChargeable ? ' (price at checkout)' : ''),
                 'removable' => true,
                 'amount' => 0.00, // Chargeable ancillaries priced at checkout via Amadeus
                 'code' => $code

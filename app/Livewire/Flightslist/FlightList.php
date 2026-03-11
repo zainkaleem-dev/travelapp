@@ -473,8 +473,6 @@ class FlightList extends Component
 
         $this->syncPassengersTotal();
         $this->initDateRail();
-        $this->loadFlights();
-        $this->fetchDateRailPrices();
     }
 
     public function selectDate(string $date): void
@@ -880,10 +878,9 @@ class FlightList extends Component
                     ];
                 }
 
-                // Removed Cache usage as per user request. We'll store it in the array.
-                // Note: This adds to Livewire payload size.
-                // $cacheKey = 'flight_offer_' . session()->getId() . '_' . $offer['id'];
-                // Cache::put($cacheKey, $offer, now()->addHours(1));
+                // Store the raw offer in Cache to avoid blowing up the Livewire payload size.
+                $cacheKey = 'flight_offer_' . session()->getId() . '_' . $offer['id'];
+                Cache::put($cacheKey, $offer, now()->addMinutes(5));
 
                 $mappedFlights[] = [
                     "id" => $offer["id"],
@@ -919,7 +916,6 @@ class FlightList extends Component
                         "taxes" => $taxAmount,
                     ],
                     "seats" => $seats,
-                    "rawOffer" => $offer,
                     "itineraries" => $mappedItineraries,
                 ];
             }
@@ -968,7 +964,9 @@ class FlightList extends Component
 
         // Find the flight in our current list
         $flight = collect($this->allFlights)->firstWhere("id", $id);
-        $rawOffer = $flight["rawOffer"] ?? null;
+        
+        $cacheKey = 'flight_offer_' . session()->getId() . '_' . $id;
+        $rawOffer = Cache::get($cacheKey);
 
         if (!$flight || !$rawOffer) {
             $this->loadingFares[$id] = false;
@@ -1095,7 +1093,8 @@ class FlightList extends Component
             return;
         }
 
-        $rawOffer = $flight["rawOffer"] ?? null;
+        $cacheKey = 'flight_offer_' . session()->getId() . '_' . $id;
+        $rawOffer = Cache::get($cacheKey);
 
         // Inject the raw offer back before sending it to session for booking
         if ($rawOffer) {

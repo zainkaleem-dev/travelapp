@@ -336,7 +336,7 @@
                     @foreach ($summaryItems as $i => $item)
                         <div class="flex items-start justify-between gap-3 group">
                             <div class="flex flex-col min-w-0">
-                                <span class="text-[11px] font-bold text-gray-500 uppercase tracking-tight leading-tight truncate">{{ $item['label'] }}</span>
+                                <span class="text-[11px] font-bold text-gray-500 uppercase tracking-tight leading-tight truncate">{{ str_replace('Ancillary: ', '', $item['label']) }}</span>
                                 @if ($item['removable'])
                                     <button wire:click="removeItem({{ $i }})" class="text-[10px] font-bold text-red-400 hover:text-red-600 flex items-center gap-0.5 mt-0.5">
                                         Remove

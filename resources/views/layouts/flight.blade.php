@@ -35,9 +35,19 @@
     {{-- NProgress for Loading Bar --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
     <style>
-        #nprogress .bar { background: #2ab4c0 !important; height: 3px !important; }
-        #nprogress .peg { box-shadow: 0 0 10px #2ab4c0, 0 0 5px #2ab4c0 !important; }
-        #nprogress .spinner-icon { border-top-color: #2ab4c0 !important; border-left-color: #2ab4c0 !important; }
+        #nprogress .bar {
+            background: #2ab4c0 !important;
+            height: 3px !important;
+        }
+
+        #nprogress .peg {
+            box-shadow: 0 0 10px #2ab4c0, 0 0 5px #2ab4c0 !important;
+        }
+
+        #nprogress .spinner-icon {
+            border-top-color: #2ab4c0 !important;
+            border-left-color: #2ab4c0 !important;
+        }
     </style>
 
     @livewireStyles
@@ -426,7 +436,7 @@
         }
     </style>
 
- </head>
+</head>
 
 <body>
 
@@ -506,6 +516,10 @@
                             d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
                     </svg>
                     Search Flight
+                </div>
+                <div
+                    class="px-4 py-2 {{ request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
+                    Flights
                 </div>
                 <div
                     class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
