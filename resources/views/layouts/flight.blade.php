@@ -32,27 +32,15 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Lora:wght@400;600&display=swap"
         rel="stylesheet">
 
-    {{-- NProgress for Loading Bar --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
-    <style>
-        #nprogress .bar {
-            background: #2ab4c0 !important;
-            height: 3px !important;
-        }
-
-        #nprogress .peg {
-            box-shadow: 0 0 10px #2ab4c0, 0 0 5px #2ab4c0 !important;
-        }
-
-        #nprogress .spinner-icon {
-            border-top-color: #2ab4c0 !important;
-            border-left-color: #2ab4c0 !important;
-        }
-    </style>
-
     @livewireStyles
 
     <style>
+        /* Livewire / NProgress spinner ko globally hide karo */
+        #nprogress .spinner,
+        #nprogress .spinner-icon {
+            display: none !important;
+        }
+
         [x-cloak] {
             display: none !important;
         }
@@ -518,10 +506,6 @@
                     Search Flight
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
-                    Flights
-                </div>
-                <div
                     class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
                     Additional Services
                 </div>
@@ -547,6 +531,9 @@
     {{-- NProgress Script and Livewire Integration --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
     <script>
+        // Spinner ko disable karo, sirf top progress bar dikhayega
+        NProgress.configure({ showSpinner: false });
+
         document.addEventListener('livewire:initialized', () => {
             Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
                 NProgress.start();
