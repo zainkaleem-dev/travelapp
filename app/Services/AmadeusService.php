@@ -545,26 +545,10 @@ class AmadeusService
         array $sessionContact,
     ): array {
         $travelers = [];
+        $countryHelper = new \App\Helpers\CountryHelper();
 
         foreach ($sessionPassengers as $index => $p) {
-            // Month mapping
-            $months = [
-                "Jan" => "01",
-                "Feb" => "02",
-                "Mar" => "03",
-                "Apr" => "04",
-                "May" => "05",
-                "Jun" => "06",
-                "Jul" => "07",
-                "Aug" => "08",
-                "Sep" => "09",
-                "Oct" => "10",
-                "Nov" => "11",
-                "Dec" => "12",
-            ];
-            $m = $months[$p["dob_month"]] ?? "01";
-            $d = str_pad($p["dob_day"], 2, "0", STR_PAD_LEFT);
-            $y = $p["dob_year"];
+            $dob = $p["dob"] ?? "1990-01-01";
 
             $gender =
                 strtolower($p["gender"]) === "male"
@@ -575,7 +559,7 @@ class AmadeusService
 
             $traveler = [
                 "id" => (string) ($index + 1),
-                "dateOfBirth" => "{$y}-{$m}-{$d}",
+                "dateOfBirth" => $dob,
                 "name" => [
                     "firstName" => strtoupper($p["first_name"]),
                     "lastName" => strtoupper($p["last_name"]),
@@ -598,13 +582,7 @@ class AmadeusService
             ];
 
             // Nationality to ISO 3166-1 alpha-2 mapping
-            $natMap = [
-                "Turkish" => "TR",
-                "German" => "DE",
-                "American" => "US",
-                "British" => "GB",
-            ];
-            $countryCode = $natMap[$p["nationality"] ?? "American"] ?? "US";
+            $countryCode = \App\Helpers\CountryHelper::getCodeByName($p["nationality"] ?? "United States");
 
             // If Passport is provided
             if (!empty($p["passport"])) {

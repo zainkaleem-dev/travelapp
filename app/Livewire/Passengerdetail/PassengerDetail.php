@@ -6,35 +6,39 @@ use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Layout;
+use App\Helpers\CountryHelper;
 
 #[Layout('layouts.flight')]
 class PassengerDetail extends Component
 {
 
     // ── Contact ──────────────────────────────────────────────────────────────
-    #[Rule('required|email')]
     public string $contactEmail = '';
 
-    #[Rule('required|string|in:+1,+44,+49,+90')]
     public string $phoneCode = '+90';
 
-    #[Rule('required|string|min:7|max:20')]
     public string $phoneNumber = '';
 
-    // ── Passengers (array of passenger data) ─────────────────────────────────
-    // Each item: ['first_name','last_name','dob_day','dob_month','dob_year','nationality','gender','passport']
-    #[Rule([
-        'passengers' => 'required|array|min:1',
-        'passengers.*.first_name' => 'required|string|min:2',
-        'passengers.*.last_name' => 'required|string|min:2',
-        'passengers.*.dob_day' => 'required|integer|between:1,31',
-        'passengers.*.dob_month' => 'required|string|not_in:Month',
-        'passengers.*.dob_year' => 'required|integer|min:1930',
-        'passengers.*.nationality' => 'required|string|not_in:Select',
-        'passengers.*.gender' => 'required|string|in:Male,Female',
-        'passengers.*.passport' => 'required|string|min:5',
-    ])]
     public array $passengers = [];
+
+    public function rules(): array
+    {
+        $validCodes = implode(',', CountryHelper::getDialCodes());
+        $validNationalities = implode(',', CountryHelper::getCountryNames());
+
+        return [
+            'contactEmail' => 'required|email',
+            'phoneCode' => 'required|string|in:' . $validCodes,
+            'phoneNumber' => 'required|string|min:7|max:20',
+            'passengers' => 'required|array|min:1',
+            'passengers.*.first_name' => 'required|string|min:2',
+            'passengers.*.last_name' => 'required|string|min:2',
+            'passengers.*.dob' => 'required|date|before:today',
+            'passengers.*.nationality' => 'required|string|in:' . $validNationalities,
+            'passengers.*.gender' => 'required|string|in:Male,Female',
+            'passengers.*.passport' => 'required|string|min:5',
+        ];
+    }
 
     public array $selectedFlight = [];
     public array $searchParams = [];
@@ -94,9 +98,7 @@ class PassengerDetail extends Component
         return [
             'first_name' => '',
             'last_name' => '',
-            'dob_day' => '',
-            'dob_month' => '',
-            'dob_year' => '',
+            'dob' => '',
             'nationality' => '',
             'gender' => '',
             'passport' => '',
@@ -104,6 +106,12 @@ class PassengerDetail extends Component
     }
 
     // ── Computed ──────────────────────────────────────────────────────────────
+    #[Computed]
+    public function countries(): array
+    {
+        return CountryHelper::getAllCountries();
+    }
+
     #[Computed]
     public function total(): float
     {
@@ -115,7 +123,7 @@ class PassengerDetail extends Component
     {
         $completed = [];
         foreach ($this->passengers as $idx => $p) {
-            if (!empty($p['first_name']) && !empty($p['last_name']) && !empty($p['dob_year']) && !empty($p['nationality']) && !empty($p['passport'])) {
+            if (!empty($p['first_name']) && !empty($p['last_name']) && !empty($p['dob']) && !empty($p['nationality']) && !empty($p['passport'])) {
                 $completed[$idx] = true;
             } else {
                 $completed[$idx] = false;
@@ -124,24 +132,6 @@ class PassengerDetail extends Component
         return $completed;
     }
 
-    #[Computed]
-    public function days(): array
-    {
-        return range(1, 31);
-    }
-
-    #[Computed]
-    public function months(): array
-    {
-        return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    }
-
-    #[Computed]
-    public function years(): array
-    {
-        // For adults, minimum 12 years old
-        return range(date('Y'), 1930);
-    }
 
     // ── Actions ───────────────────────────────────────────────────────────────
     public function removeItem(int $index): void
