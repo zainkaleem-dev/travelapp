@@ -601,14 +601,11 @@
             });
         });
 
-        // Global search modal animation (dropdown-style)
-        const searchOverlay = document.getElementById('flight_search_overlay');
-        const searchModal = document.getElementById('flight_search_modal');
-
         function openGlobalSearch(value) {
-            if (!searchOverlay || !searchModal) return;
-            const modalCl = searchModal.classList;
-            const overlayEl = searchOverlay;
+            const overlayEl = document.getElementById('flight_search_overlay');
+            const modalEl = document.getElementById('flight_search_modal');
+            if (!overlayEl || !modalEl) return;
+            const modalCl = modalEl.classList;
 
             if (value) {
                 overlayEl.classList.remove('hidden');
