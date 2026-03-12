@@ -1,11 +1,13 @@
 <div>
 
     {{-- ── Hero ── --}}
-    <div class="py-10 text-center px-4">
-        <h1 class="hero-title">Book a flight</h1>
-        <p class="hero-sub">Search for flights and book online. See our routes and schedules, and discover more about
-            the experience you can look forward to on board.</p>
-    </div>
+    @empty($quick)
+        <div class="py-10 text-center px-4">
+            <h1 class="hero-title">Book a flight</h1>
+            <p class="hero-sub">Search for flights and book online. See our routes and schedules, and discover more about
+                the experience you can look forward to on board.</p>
+        </div>
+    @endempty
 
     {{-- ════════════════════════════════════════
     SEARCH CARD

@@ -431,7 +431,7 @@
 <body>
 
     {{-- ── Navbar ── --}}
-    <nav>
+    <nav class="relative z-50">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center justify-between h-12 min-h-[48px]">
             <div class="flex items-center gap-5">
 
@@ -454,7 +454,7 @@
                         </button>
 
                         <div x-cloak x-show="open" x-transition.origin.top.right
-                            class="absolute right-0 mt-2 w-60 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                            class="absolute right-0 mt-2 w-60 bg-white border border-gray-200 rounded-xl shadow-lg z-[9999] overflow-hidden">
                             <div class="px-4 py-3 border-b border-gray-100">
                                 <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->name }}</p>
                                 <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
@@ -493,7 +493,7 @@
     </nav>
 
     {{-- ── Step bar ── --}}
-    <div class="bg-white border-b border-gray-200 overflow-hidden sticky top-0 z-50">
+    <div class="bg-white border-b border-gray-200 overflow-hidden sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-3 sm:px-4">
             <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0" style="-webkit-overflow-scrolling: touch;">
                 <div
@@ -540,213 +540,42 @@
 
     {{-- Global search modal (JS controlled) --}}
     <div id="flight_search_overlay"
-         class="hidden fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm h-screen w-full flex justify-center items-start md:items-center pt-20 md:pt-20 z-50">
+         class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm h-screen w-full flex justify-center items-start md:items-center pt-24 md:pt-24 z-50">
         <div id="flight_search_modal"
-             class="opacity-0 transform -translate-y-full scale-110 relative w-11/12 md:w-2/3 lg:w-1/2 bg-white rounded-b-2xl rounded-t-none shadow-2xl border border-gray-200 transition-all duration-300 ease-out">
+             class="opacity-0 transform -translate-y-full scale-105 relative w-11/12 md:w-3/4 lg:w-2/3 bg-gradient-to-b from-white to-slate-50 rounded-3xl shadow-[0_24px_70px_rgba(15,23,42,0.25)] border border-white/70 ring-1 ring-slate-900/5 transition-all duration-300 ease-out">
 
             {{-- close button --}}
             <button
                 type="button"
                 onclick="openGlobalSearch(false)"
-                class="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-2xl w-9 h-9 rounded-full focus:outline-none text-white flex items-center justify-center">
-                &times;
+                class="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white text-lg w-9 h-9 rounded-full focus:outline-none shadow-[0_6px_14px_rgba(248,113,113,0.55)] flex items-center justify-center border border-white/80 z-50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
+                          d="M6 6l12 12M6 18L18 6" />
+                </svg>
             </button>
 
             {{-- header --}}
-            <div class="px-4 py-3 border-b border-gray-200 bg-gray-50/80">
-                <h3 class="text-sm font-semibold text-gray-700">Search Flights</h3>
-            </div>
-
-            {{-- body: search card clone (UI only, no backend) --}}
-            <div class="px-5 py-5 space-y-4">
-                {{-- Trip type tabs (static UI) --}}
-                <div class="inline-flex rounded-full bg-gray-100 p-1 text-xs font-semibold text-gray-500">
-                    <button class="px-3 py-1.5 rounded-full bg-white text-[#2ab4c0] shadow-sm">Return</button>
-                    <button class="px-3 py-1.5 rounded-full hover:text-gray-700">One way</button>
-                    <button class="px-3 py-1.5 rounded-full hover:text-gray-700">Multi-city</button>
-                </div>
-
-                {{-- Form fields row 1 --}}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {{-- Departure airport (UI cloned from flights-search) --}}
-                    <div class="text-left" x-data="{ openDep: false }" @click.outside="openDep = false">
-                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
-                            Departure Airport
-                        </label>
-                        <div class="relative">
-                            <input type="text"
-                                   class="w-full field-input"
-                                   placeholder="City or airport"
-                                   autocomplete="off"
-                                   @focus="openDep = true">
-                            <button type="button"
-                                    class="field-clear"
-                                    @click.prevent="$el.previousElementSibling.value = ''; openDep = false">
-                                ×
-                            </button>
-
-                            {{-- dropdown --}}
-                            <div x-cloak x-show="openDep"
-                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                 style="min-width: 280px;">
-                                <div class="px-4 py-3">
-                                    <div class="flex items-center gap-2 text-xs text-gray-500">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                  d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                            <circle cx="12" cy="11" r="2" />
-                                        </svg>
-                                        <span>All locations</span>
-                                    </div>
-                                </div>
-                                <div class="h-px bg-gray-100"></div>
-                                <div class="max-h-72 overflow-auto">
-                                    {{-- Static demo items; hook real search later --}}
-                                    <button type="button"
-                                            class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                            @click="openDep = false">
-                                        <div>
-                                            <div class="text-sm font-semibold text-gray-800">Dubai, United Arab Emirates</div>
-                                            <div class="text-xs text-gray-500">Dubai International Airport</div>
-                                        </div>
-                                        <span
-                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">DXB</span>
-                                    </button>
-                                    <button type="button"
-                                            class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                            @click="openDep = false">
-                                        <div>
-                                            <div class="text-sm font-semibold text-gray-800">London, United Kingdom</div>
-                                            <div class="text-xs text-gray-500">Heathrow Airport</div>
-                                        </div>
-                                        <span
-                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">LHR</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+            <div class="px-5 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-sm flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-2xl bg-[#2ab4c0]/10 text-[#2ab4c0] flex items-center justify-center shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
+                        </svg>
                     </div>
-
-                    {{-- Arrival airport --}}
-                    <div class="text-left">
-                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
-                            Arrival Airport
-                        </label>
-                        <div class="relative">
-                            <input type="text"
-                                   class="w-full field-input"
-                                   placeholder="City or airport"
-                                   autocomplete="off">
-                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Dates --}}
-                    <div class="text-left">
-                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
-                            Dates
-                        </label>
-                        <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-1.5">
-                            <input type="text"
-                                   class="field-input text-sm"
-                                   placeholder="mm/dd/yyyy">
-                            <span class="text-[10px] text-gray-400 text-center">—</span>
-                            <input type="text"
-                                   class="field-input text-sm"
-                                   placeholder="mm/dd/yyyy">
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Form fields row 2 --}}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {{-- Passengers --}}
-                    <div class="text-left">
-                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
-                            Passengers
-                        </label>
-                        <div class="relative">
-                            <select class="w-full field-input pr-8">
-                                <option>1 Adult</option>
-                                <option>2 Adults</option>
-                                <option>3 Adults</option>
-                                <option>4 Adults</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Class --}}
-                    <div class="text-left">
-                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
-                            Class
-                        </label>
-                        <div class="relative">
-                            <select class="w-full field-input pr-8">
-                                <option>Economy Class</option>
-                                <option>Premium Economy</option>
-                                <option>Business Class</option>
-                                <option>First Class</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Currency --}}
-                    <div class="text-left">
-                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
-                            Currency
-                        </label>
-                        <div class="relative">
-                            <select class="w-full field-input pr-8">
-                                <option>USD</option>
-                                <option>EUR</option>
-                                <option>GBP</option>
-                                <option>AED</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </div>
-                        </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-slate-800 tracking-tight">Quick flight search</h3>
+                        <p class="text-[11px] text-slate-500">Update your route without leaving the current step.</p>
                     </div>
                 </div>
             </div>
 
-            {{-- footer --}}
-            <div class="px-4 py-3 border-t border-gray-200 flex justify-end items-center gap-3 bg-gray-50">
-                <button
-                    type="button"
-                    class="bg-[#2ab4c0] hover:bg-[#239ea9] px-4 py-2 rounded-xl text-white text-sm font-semibold focus:outline-none inline-flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
-                    </svg>
-                    <span>Search</span>
-                </button>
-                <button
-                    type="button"
-                    onclick="openGlobalSearch(false)"
-                    class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl text-gray-700 text-sm font-semibold focus:outline-none">
-                    Close
-                </button>
+            {{-- body: Livewire quick search (same backend as flights-search) --}}
+            <div class="px-5 pb-5 pt-5">
+                <div class="max-w-5xl mx-auto">
+                    @livewire('quick-search')
+                </div>
             </div>
         </div>
     </div>

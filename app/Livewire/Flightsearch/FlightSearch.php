@@ -563,7 +563,7 @@ class FlightSearch extends Component
 
     public function render()
     {
-        return view('livewire.flightsearch.flight-search');
+        return view('livewire.flightsearch.flight-search', ['quick' => false]);
     }
 
 }
