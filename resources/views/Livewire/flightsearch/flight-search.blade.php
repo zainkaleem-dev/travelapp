@@ -12,17 +12,19 @@
     {{-- ════════════════════════════════════════
     SEARCH CARD
     ════════════════════════════════════════ --}}
-    <div class="search-card">
+    <div class="search-card {{ !empty($quick) ? 'quick-inline-search' : '' }}">
 
-        {{-- Tab row --}}
-        <div class="trip-tabs">
-            <button class="trip-tab {{ $tripType === 'return' ? 'active' : '' }}"
-                wire:click="switchTab('return')">Return</button>
-            <button class="trip-tab {{ $tripType === 'oneway' ? 'active' : '' }}" wire:click="switchTab('oneway')">One
-                way</button>
-            <button class="trip-tab {{ $tripType === 'multi' ? 'active' : '' }}"
-                wire:click="switchTab('multi')">Multi-city</button>
-        </div>
+        {{-- Tab row (hidden in quick inline variant) --}}
+        @empty($quick)
+            <div class="trip-tabs">
+                <button class="trip-tab {{ $tripType === 'return' ? 'active' : '' }}"
+                    wire:click="switchTab('return')">Return</button>
+                <button class="trip-tab {{ $tripType === 'oneway' ? 'active' : '' }}" wire:click="switchTab('oneway')">One
+                    way</button>
+                <button class="trip-tab {{ $tripType === 'multi' ? 'active' : '' }}"
+                    wire:click="switchTab('multi')">Multi-city</button>
+            </div>
+        @endempty
 
 
 
@@ -30,7 +32,7 @@
         PANEL: RETURN
         ══════════════════════════════════════ --}}
         @if($tripType === 'return')
-                    <div>
+                    <div class="{{ !empty($quick) ? 'qs-row-wrapper' : '' }}">
                         {{-- Row 1 --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
 
@@ -45,7 +47,7 @@
                                     <button class="field-clear" wire:click.stop="$set('returnDep', '')" title="Clear">×</button>
                                 @endif
                                 @error('returnDep') <span class="field-error">{{ $message }}</span> @enderror
-                                
+
                                 <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                     style="min-width: 280px;">
                                     <div class="px-4 py-3">
@@ -97,7 +99,7 @@
                                     wire:key="return-arr-input" @focus="show = true"
                                     placeholder="City or airport" autocomplete="off">
                                 @error('returnArr') <span class="field-error">{{ $message }}</span> @enderror
-                                
+
                                 <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                     style="min-width: 280px;">
                                     <div class="px-4 py-3">
@@ -540,22 +542,17 @@
 
                         {{-- Search Button --}}
                         <div class="flex justify-end mt-4">
-                            <div class="w-full md:w-1/3">
-                                <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
-                                    :disabled="searching" wire:loading.attr="disabled">
-                                    <div class="flex items-center justify-center gap-2">
-                                        {{-- Icon --}}
-                                        <svg class="w-4 h-4"
-                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <circle cx="11" cy="11" r="8"></circle>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M21 21l-4.35-4.35"></path>
-                                        </svg>
-
-                                        <span>Search flights</span>
-                                    </div>
-                                </button>
-                            </div>
+                            <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
+                                :disabled="searching" wire:loading.attr="disabled">
+                                {{-- Icon --}}
+                                <svg class="w-6 h-6"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-4.35-4.35"></path>
+                                </svg>
+                                <span>Search flights</span>
+                            </button>
                         </div>
                     </div>
 
@@ -582,7 +579,7 @@ PANEL: ONE WAY
                     <button class="field-clear" wire:click.stop="$set('onewayDep', '')" title="Clear">×</button>
                 @endif
                 @error('onewayDep') <span class="field-error">{{ $message }}</span> @enderror
-                
+
                 <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                     style="min-width: 280px;">
                     <div class="px-4 py-3">
@@ -633,7 +630,7 @@ PANEL: ONE WAY
                     wire:key="oneway-arr-input" @focus="show = true"
                     placeholder="City or airport" autocomplete="off">
                 @error('onewayArr') <span class="field-error">{{ $message }}</span> @enderror
-                
+
                 <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                     style="min-width: 280px;">
                     <div class="px-4 py-3">
@@ -998,7 +995,7 @@ PANEL: MULTI-CITY
                                     title="Clear">×</button>
                             @endif
                             @error("multiFlights.$index.dep") <span class="field-error">{{ $message }}</span> @enderror
-                            
+
                             <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                 style="min-width: 280px;">
                                 <div class="px-4 py-3">
@@ -1052,7 +1049,7 @@ PANEL: MULTI-CITY
                                 @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
                             @error("multiFlights.$index.arr") <span class="field-error">{{ $message }}</span> @enderror
-                            
+
                             <div x-cloak x-show="show" class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
                                 style="min-width: 280px;">
                                 <div class="px-4 py-3">

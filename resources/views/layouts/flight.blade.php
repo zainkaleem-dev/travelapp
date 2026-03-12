@@ -200,21 +200,23 @@
             background: #2ab4c0;
             color: #fff;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             border: none;
-            border-radius: 4px;
+            border-radius: 999px;
             cursor: pointer;
-            transition: background .15s, transform .1s;
-            display: flex;
+            transition: background .15s, transform .1s, box-shadow .15s;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            height: 44px;
-            width: 100%;
+            gap: 6px;
+            height: 34px;
+            padding: 0 18px;
+            white-space: nowrap;
         }
 
         .btn-search:hover {
             background: #239ea9;
+            box-shadow: 0 4px 10px rgba(35, 158, 169, .45);
         }
 
         .btn-search:active {
@@ -376,6 +378,38 @@
             margin: 0 auto;
         }
 
+        /* Quick inline search variant (under navigation) */
+        .quick-inline-search {
+            background: #2ab4c0;
+            color: #ffffff;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
+            max-width: 86vw;
+            width: 86vw;
+        }
+
+        /* Compact height + softer radius for inline quick search fields */
+        .quick-inline-search .field-wrap {
+            padding: 6px 10px 4px;
+            border-radius: 8px;
+        }
+
+        /* Large screens: put all fields in one row (inline quick search) */
+        @media (min-width: 1024px) {
+            .quick-inline-search .qs-row-wrapper {
+                display: flex;
+                flex-wrap: nowrap;
+                gap: 12px;
+            }
+
+            .quick-inline-search .qs-row-wrapper > .grid {
+                display: contents;
+            }
+
+            .quick-inline-search .qs-row-wrapper > .grid > div {
+                flex: 1 1 0;
+            }
+        }
+
         /* Navbar */
         nav {
             background: #fff;
@@ -428,7 +462,7 @@
 
 </head>
 
-<body>
+<body x-data="{ searchOpen: false }">
 
     {{-- ── Navbar ── --}}
     <nav class="relative z-50">
@@ -524,10 +558,10 @@
                     <span class="sm:hidden">Details</span>
                 </div>
 
-                {{-- Right-side search icon --}}
+                {{-- Right-side search toggle --}}
                 <button
                     type="button"
-                    onclick="openGlobalSearch(true)"
+                    @click="searchOpen = !searchOpen"
                     class="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 shadow-sm flex-shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -538,45 +572,11 @@
         </div>
     </div>
 
-    {{-- Global search modal (JS controlled) --}}
-    <div id="flight_search_overlay"
-         class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm h-screen w-full flex justify-center items-start md:items-center pt-24 md:pt-24 z-50">
-        <div id="flight_search_modal"
-             class="opacity-0 transform -translate-y-full scale-105 relative w-11/12 md:w-3/4 lg:w-2/3 bg-gradient-to-b from-white to-slate-50 rounded-3xl shadow-[0_24px_70px_rgba(15,23,42,0.25)] border border-white/70 ring-1 ring-slate-900/5 transition-all duration-300 ease-out">
-
-            {{-- close button --}}
-            <button
-                type="button"
-                onclick="openGlobalSearch(false)"
-                class="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white text-lg w-9 h-9 rounded-full focus:outline-none shadow-[0_6px_14px_rgba(248,113,113,0.55)] flex items-center justify-center border border-white/80 z-50">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"
-                          d="M6 6l12 12M6 18L18 6" />
-                </svg>
-            </button>
-
-            {{-- header --}}
-            <div class="px-5 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-sm flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-2xl bg-[#2ab4c0]/10 text-[#2ab4c0] flex items-center justify-center shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-semibold text-slate-800 tracking-tight">Quick flight search</h3>
-                        <p class="text-[11px] text-slate-500">Update your route without leaving the current step.</p>
-                    </div>
-                </div>
-            </div>
-
-            {{-- body: Livewire quick search (same backend as flights-search) --}}
-            <div class="px-5 pb-5 pt-5">
-                <div class="max-w-5xl mx-auto">
-                    @livewire('quick-search')
-                </div>
-            </div>
+    {{-- Inline quick search panel (under navigation) --}}
+    <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms>
+        <div class="max-w-none mx-auto px-3 sm:px-4 py-4">
+            {{-- Directly render the search card without extra outer chrome --}}
+            @livewire('quick-search')
         </div>
     </div>
 
@@ -601,39 +601,12 @@
             });
         });
 
-        function openGlobalSearch(value) {
-            const overlayEl = document.getElementById('flight_search_overlay');
-            const modalEl = document.getElementById('flight_search_modal');
-            if (!overlayEl || !modalEl) return;
-            const modalCl = modalEl.classList;
-
-            if (value) {
-                overlayEl.classList.remove('hidden');
-                setTimeout(() => {
-                    modalCl.remove('opacity-0');
-                    modalCl.remove('-translate-y-full');
-                    modalCl.remove('scale-110');
-                    modalCl.add('opacity-100');
-                    modalCl.add('translate-y-0');
-                    modalCl.add('scale-100');
-                }, 20);
-            } else {
-                modalCl.remove('translate-y-0');
-                modalCl.remove('scale-100');
-                modalCl.add('-translate-y-full');
-                setTimeout(() => {
-                    modalCl.add('opacity-0');
-                    modalCl.add('scale-110');
-                    modalCl.remove('opacity-100');
-                }, 150);
-                setTimeout(() => overlayEl.classList.add('hidden'), 320);
-            }
-        }
-
         // Close on ESC
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                openGlobalSearch(false);
+                if (document.body.__x && document.body.__x.$data && typeof document.body.__x.$data.searchOpen !== 'undefined') {
+                    document.body.__x.$data.searchOpen = false;
+                }
             }
         });
     </script>
