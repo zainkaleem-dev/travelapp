@@ -1,6 +1,6 @@
 <div>
     {{-- ── Outbound Header (Teal Bar) ── --}}
-    <div class="max-w-7xl mx-auto px-4 pt-6">
+    <div class="w-full lg:w-[90%] mx-auto px-4 pt-6">
         <div class="bg-[#2ab4c0] text-white rounded-xl px-4 py-3 mb-6 flex items-center justify-between flex-wrap gap-2 shadow-lg shadow-[#2ab4c0]/20" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
             <div>
                 <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} → {{ $searchParams['destination'] ?? '' }}</p>
@@ -19,7 +19,7 @@
     </div>
 
     {{-- ── Main Body ── --}}
-    <div class="max-w-7xl mx-auto px-4 pb-12 flex flex-col lg:flex-row gap-6">
+    <div class="w-full lg:w-[90%] mx-auto px-4 pb-12 flex flex-col lg:flex-row gap-6">
 
         {{-- ── LEFT: Flight Details & Fares ── --}}
         <div class="flex-1 min-w-0 space-y-6">
@@ -74,7 +74,7 @@
                                     <div wire:click="changeSegment({{ $segIdx }})"
                                         wire:key="segment-{{ $segIdx }}"
                                         wire:loading.class="opacity-50 pointer-events-none"
-                                        class="w-full sm:w-1/2 lg:w-1/4 max-w-[260px] flex-shrink-0 items-center gap-4 sm:gap-6 p-4 rounded-2xl cursor-pointer transition-all border-2 bg-white {{ $currentSegmentIndex === $segIdx ? 'border-[#2ab4c0] shadow-md shadow-[#2ab4c0]/30' : 'border-gray-200 hover:border-[#2ab4c0]/40 hover:shadow-sm' }}">
+                                        class="w-full sm:w-1/2 lg:w-1/5 max-w-[220px] flex-shrink-0 items-center gap-4 sm:gap-6 p-4 rounded-2xl cursor-pointer transition-all border-2 bg-white {{ $currentSegmentIndex === $segIdx ? 'border-[#2ab4c0] shadow-md shadow-[#2ab4c0]/30' : 'border-gray-200 hover:border-[#2ab4c0]/40 hover:shadow-sm' }}">
 
                                         {{-- Time & Route --}}
                                         <div class="flex flex-col justify-center gap-1.5 w-full">
@@ -137,15 +137,6 @@
                                         </div>
                                     @endif
                                 @endforeach
-
-                                @if($idx < count($selectedFlight['rawOffer']['itineraries']) - 1)
-                                    <div class="relative py-6">
-                                        <div class="absolute inset-0 flex items-center" aria-hidden="true"><div class="w-full border-t-2 border-gray-100"></div></div>
-                                        <div class="relative flex justify-center">
-                                            <span class="px-3 py-1 bg-gray-100 rounded-lg text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Next Flight</span>
-                                        </div>
-                                    </div>
-                                @endif
                             @endforeach
                         </div>
                     </div>

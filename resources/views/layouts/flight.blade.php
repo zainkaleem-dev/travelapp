@@ -48,6 +48,8 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: #f2f2f2;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* ── Trip type tabs ── */
@@ -430,7 +432,7 @@
 
     {{-- ── Navbar ── --}}
     <nav>
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-12">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center justify-between h-12 min-h-[48px]">
             <div class="flex items-center gap-5">
 
             </div>
@@ -482,7 +484,7 @@
                     </div>
                 @else
                     <a href="{{ route('login') }}"
-                        class="px-3 py-1.5 text-sm font-semibold bg-[#2ab4c0] text-white rounded-md hover:bg-[#239ea9] transition-colors">
+                        class="px-2.5 py-1.5 sm:px-3 text-xs sm:text-sm font-semibold bg-[#2ab4c0] text-white rounded-md hover:bg-[#239ea9] transition-colors whitespace-nowrap">
                         Login / Register
                     </a>
                 @endauth
@@ -490,36 +492,261 @@
         </div>
     </nav>
 
-    </nav>
-
     {{-- ── Step bar ── --}}
-    <div class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4">
-
-            <div class="flex items-center">
+    <div class="bg-white border-b border-gray-200 overflow-hidden sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4">
+            <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0" style="-webkit-overflow-scrolling: touch;">
                 <div
-                    class="flex items-center gap-1 px-4 py-2 {{ request()->is('flights-search') || request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
-                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                    class="flex items-center gap-1 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('flights-search') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path
                             d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
                     </svg>
-                    Search Flight
+                    <span class="hidden sm:inline">Search Flight</span>
+                    <span class="sm:hidden">Search</span>
                 </div>
-                <div class="px-4 py-2 text-gray-600 text-xs">
+                <div
+                    class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
                     Flights
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('additional-services') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
-                    Additional Services
+                    class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('additional-services') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
+                    <span class="hidden sm:inline">Additional Services</span>
+                    <span class="sm:hidden">Services</span>
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('seating') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
+                    class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('seating') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
                     Choice Seat
                 </div>
                 <div
-                    class="px-4 py-2 {{ request()->is('passenger-details') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs">
-                    Passenger Details
+                    class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('passenger-details') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
+                    <span class="hidden sm:inline">Passenger Details</span>
+                    <span class="sm:hidden">Details</span>
                 </div>
+
+                {{-- Right-side search icon --}}
+                <button
+                    type="button"
+                    onclick="openGlobalSearch(true)"
+                    class="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 shadow-sm flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Global search modal (JS controlled) --}}
+    <div id="flight_search_overlay"
+         class="hidden fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm h-screen w-full flex justify-center items-start md:items-center pt-20 md:pt-20 z-50">
+        <div id="flight_search_modal"
+             class="opacity-0 transform -translate-y-full scale-110 relative w-11/12 md:w-2/3 lg:w-1/2 bg-white rounded-b-2xl rounded-t-none shadow-2xl border border-gray-200 transition-all duration-300 ease-out">
+
+            {{-- close button --}}
+            <button
+                type="button"
+                onclick="openGlobalSearch(false)"
+                class="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-2xl w-9 h-9 rounded-full focus:outline-none text-white flex items-center justify-center">
+                &times;
+            </button>
+
+            {{-- header --}}
+            <div class="px-4 py-3 border-b border-gray-200 bg-gray-50/80">
+                <h3 class="text-sm font-semibold text-gray-700">Search Flights</h3>
+            </div>
+
+            {{-- body: search card clone (UI only, no backend) --}}
+            <div class="px-5 py-5 space-y-4">
+                {{-- Trip type tabs (static UI) --}}
+                <div class="inline-flex rounded-full bg-gray-100 p-1 text-xs font-semibold text-gray-500">
+                    <button class="px-3 py-1.5 rounded-full bg-white text-[#2ab4c0] shadow-sm">Return</button>
+                    <button class="px-3 py-1.5 rounded-full hover:text-gray-700">One way</button>
+                    <button class="px-3 py-1.5 rounded-full hover:text-gray-700">Multi-city</button>
+                </div>
+
+                {{-- Form fields row 1 --}}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {{-- Departure airport (UI cloned from flights-search) --}}
+                    <div class="text-left" x-data="{ openDep: false }" @click.outside="openDep = false">
+                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
+                            Departure Airport
+                        </label>
+                        <div class="relative">
+                            <input type="text"
+                                   class="w-full field-input"
+                                   placeholder="City or airport"
+                                   autocomplete="off"
+                                   @focus="openDep = true">
+                            <button type="button"
+                                    class="field-clear"
+                                    @click.prevent="$el.previousElementSibling.value = ''; openDep = false">
+                                ×
+                            </button>
+
+                            {{-- dropdown --}}
+                            <div x-cloak x-show="openDep"
+                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                 style="min-width: 280px;">
+                                <div class="px-4 py-3">
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                            <circle cx="12" cy="11" r="2" />
+                                        </svg>
+                                        <span>All locations</span>
+                                    </div>
+                                </div>
+                                <div class="h-px bg-gray-100"></div>
+                                <div class="max-h-72 overflow-auto">
+                                    {{-- Static demo items; hook real search later --}}
+                                    <button type="button"
+                                            class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                            @click="openDep = false">
+                                        <div>
+                                            <div class="text-sm font-semibold text-gray-800">Dubai, United Arab Emirates</div>
+                                            <div class="text-xs text-gray-500">Dubai International Airport</div>
+                                        </div>
+                                        <span
+                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">DXB</span>
+                                    </button>
+                                    <button type="button"
+                                            class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                            @click="openDep = false">
+                                        <div>
+                                            <div class="text-sm font-semibold text-gray-800">London, United Kingdom</div>
+                                            <div class="text-xs text-gray-500">Heathrow Airport</div>
+                                        </div>
+                                        <span
+                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">LHR</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Arrival airport --}}
+                    <div class="text-left">
+                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
+                            Arrival Airport
+                        </label>
+                        <div class="relative">
+                            <input type="text"
+                                   class="w-full field-input"
+                                   placeholder="City or airport"
+                                   autocomplete="off">
+                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Dates --}}
+                    <div class="text-left">
+                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
+                            Dates
+                        </label>
+                        <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-1.5">
+                            <input type="text"
+                                   class="field-input text-sm"
+                                   placeholder="mm/dd/yyyy">
+                            <span class="text-[10px] text-gray-400 text-center">—</span>
+                            <input type="text"
+                                   class="field-input text-sm"
+                                   placeholder="mm/dd/yyyy">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Form fields row 2 --}}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {{-- Passengers --}}
+                    <div class="text-left">
+                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
+                            Passengers
+                        </label>
+                        <div class="relative">
+                            <select class="w-full field-input pr-8">
+                                <option>1 Adult</option>
+                                <option>2 Adults</option>
+                                <option>3 Adults</option>
+                                <option>4 Adults</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Class --}}
+                    <div class="text-left">
+                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
+                            Class
+                        </label>
+                        <div class="relative">
+                            <select class="w-full field-input pr-8">
+                                <option>Economy Class</option>
+                                <option>Premium Economy</option>
+                                <option>Business Class</option>
+                                <option>First Class</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Currency --}}
+                    <div class="text-left">
+                        <label class="block text-[11px] font-semibold text-gray-500 mb-1 uppercase tracking-[0.14em]">
+                            Currency
+                        </label>
+                        <div class="relative">
+                            <select class="w-full field-input pr-8">
+                                <option>USD</option>
+                                <option>EUR</option>
+                                <option>GBP</option>
+                                <option>AED</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- footer --}}
+            <div class="px-4 py-3 border-t border-gray-200 flex justify-end items-center gap-3 bg-gray-50">
+                <button
+                    type="button"
+                    class="bg-[#2ab4c0] hover:bg-[#239ea9] px-4 py-2 rounded-xl text-white text-sm font-semibold focus:outline-none inline-flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
+                    </svg>
+                    <span>Search</span>
+                </button>
+                <button
+                    type="button"
+                    onclick="openGlobalSearch(false)"
+                    class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl text-gray-700 text-sm font-semibold focus:outline-none">
+                    Close
+                </button>
             </div>
         </div>
     </div>
@@ -527,7 +754,7 @@
 
 
     {{-- Page Content Slot --}}
-    <div class="px-4 pb-16">
+    <div class="px-3 sm:px-4 lg:px-6 pb-12 sm:pb-16 max-w-[90%] mx-auto w-full">
         {{ $slot }}
     </div>
 
@@ -543,6 +770,45 @@
                 succeed(() => { NProgress.done(); });
                 fail(() => { NProgress.done(); });
             });
+        });
+
+        // Global search modal animation (dropdown-style)
+        const searchOverlay = document.getElementById('flight_search_overlay');
+        const searchModal = document.getElementById('flight_search_modal');
+
+        function openGlobalSearch(value) {
+            if (!searchOverlay || !searchModal) return;
+            const modalCl = searchModal.classList;
+            const overlayEl = searchOverlay;
+
+            if (value) {
+                overlayEl.classList.remove('hidden');
+                setTimeout(() => {
+                    modalCl.remove('opacity-0');
+                    modalCl.remove('-translate-y-full');
+                    modalCl.remove('scale-110');
+                    modalCl.add('opacity-100');
+                    modalCl.add('translate-y-0');
+                    modalCl.add('scale-100');
+                }, 20);
+            } else {
+                modalCl.remove('translate-y-0');
+                modalCl.remove('scale-100');
+                modalCl.add('-translate-y-full');
+                setTimeout(() => {
+                    modalCl.add('opacity-0');
+                    modalCl.add('scale-110');
+                    modalCl.remove('opacity-100');
+                }, 150);
+                setTimeout(() => overlayEl.classList.add('hidden'), 320);
+            }
+        }
+
+        // Close on ESC
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                openGlobalSearch(false);
+            }
         });
     </script>
 

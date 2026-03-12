@@ -3,7 +3,7 @@
 {{-- ══════════════════════════════════════════════════════════
      MAIN CONTENT
 ══════════════════════════════════════════════════════════ --}}
-<div class="max-w-7xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6" wire:init="$dispatch('loadFlights'); $dispatch('loadDateRailPrices')">
+<div class="max-w-8xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6" wire:init="$dispatch('loadFlights'); $dispatch('loadDateRailPrices')">
 
     {{-- ─── MAIN RESULTS ────────────────────────────────────── --}}
     <main class="flex-1 min-w-0">
@@ -91,10 +91,14 @@
                         </button>
                 @endforeach
 
-                <button type="button" wire:click="toggleItineraryLayout"
-                        class="ml-auto flex-shrink-0 px-4 py-2 text-xs font-semibold {{ $itineraryLayoutVertical ? 'bg-[#2ab4c0] text-white' : 'text-[#2ab4c0] border border-[#2ab4c0]' }} rounded-lg hover:bg-[#2ab4c0]/5 transition-colors whitespace-nowrap">
-                    {{ $itineraryLayoutVertical ? 'Horizontal view' : 'Filters' }}
-                </button>
+                <div class="ml-auto flex-shrink-0 flex items-center gap-2">
+
+                    <button type="button" wire:click="toggleItineraryLayout" role="switch" aria-checked="{{ $itineraryLayoutVertical ? 'true' : 'false' }}"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-0 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2ab4c0] focus:ring-offset-2 {{ $itineraryLayoutVertical ? 'bg-[#2ab4c0]' : 'bg-gray-200' }}">
+                        <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition-transform {{ $itineraryLayoutVertical ? 'translate-x-5' : 'translate-x-0.5' }}"
+                              aria-hidden="true"></span>
+                    </button>
+                </div>
             </div>
 
             {{-- Date rail --}}

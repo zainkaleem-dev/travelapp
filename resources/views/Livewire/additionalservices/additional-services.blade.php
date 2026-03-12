@@ -7,7 +7,7 @@
 --}}
 <div>
     {{-- ── Outbound Header (Teal Bar) ── --}}
-    <div class="max-w-7xl mx-auto px-4 pt-6">
+    <div class="w-full lg:w-[90%] mx-auto px-4 pt-6">
         <div class="bg-[#2ab4c0] text-white rounded-xl px-4 py-3 mb-6 flex items-center justify-between flex-wrap gap-2 shadow-lg shadow-[#2ab4c0]/20" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
             <div>
                 <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} → {{ $searchParams['destination'] ?? '' }}</p>
@@ -26,7 +26,7 @@
     </div>
 
     {{-- ── Main Body ── --}}
-    <div class="max-w-7xl mx-auto px-4 pb-12 flex flex-col lg:flex-row gap-6">
+    <div class="w-full lg:w-[90%] mx-auto px-4 pb-12 flex flex-col lg:flex-row gap-6">
 
         {{-- ── LEFT: Flight Details & Fares ── --}}
         <div class="flex-1 min-w-0 space-y-6">
