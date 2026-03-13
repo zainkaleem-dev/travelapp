@@ -146,7 +146,8 @@
                             {{-- Date range --}}
                             <div class="field-wrap"
                                 style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
-                                <div x-data="singleDatePicker({
+                                <div wire:key="return-departure-picker-{{ $returnDepDate ?: 'empty' }}-{{ $errors->has('returnDepDate') ? 'error' : 'ok' }}"
+                                    x-data="singleDatePicker({
                                                                                                                                                                                                                                                                                                                                                                 value: @js($returnDepDate),
                                                                                                                                                                                                                                                                                                                                                                 wireValueKey: 'returnDepDate',
                                                                                                                                                                                                                                                                                                                                                                 title: 'Please choose your departure date',
@@ -247,7 +248,8 @@
 
                                 <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">–</span>
 
-                                <div x-data="singleDatePicker({
+                                <div wire:key="return-arrival-picker-{{ $returnRetDate ?: 'empty' }}-{{ $errors->has('returnRetDate') ? 'error' : 'ok' }}"
+                                    x-data="singleDatePicker({
                                                                                                                                                                                                                                                                                                                                                                 value: @js($returnRetDate),
                                                                                                                                                                                                                                                                                                                                                                 wireValueKey: 'returnRetDate',
                                                                                                                                                                                                                                                                                                                                                                 title: 'When would you like to return?',

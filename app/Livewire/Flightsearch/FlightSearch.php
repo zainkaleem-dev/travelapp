@@ -132,7 +132,12 @@ class FlightSearch extends Component
             ],
         };
 
-        $this->validate($rules);
+        try {
+            $this->validate($rules);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->searching = false;
+            throw $e;
+        }
 
         // Simulate search delay — in a real app dispatch a job or redirect
         if ($this->tripType === 'return') {
@@ -317,6 +322,24 @@ class FlightSearch extends Component
             return;
         }
         $this->fetchAirports($this->returnDep, 'returnDep');
+    }
+
+    public function updatedReturnDepDate(): void
+    {
+        $this->resetValidation(['returnDepDate', 'returnRetDate']);
+
+        if (
+            $this->returnDepDate !== '' &&
+            $this->returnRetDate !== '' &&
+            $this->returnRetDate <= $this->returnDepDate
+        ) {
+            $this->returnRetDate = '';
+        }
+    }
+
+    public function updatedReturnRetDate(): void
+    {
+        $this->resetValidation('returnRetDate');
     }
 
     public function updatedReturnArr(): void
