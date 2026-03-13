@@ -25,7 +25,7 @@
         <div class="flex-1 min-w-0 space-y-6">
 
             {{-- Flight Card styling --}}
-            <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 relative hover:z-50"
+            <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 relative"
                  x-data="{
                     fareOpen: {{ !empty($availableFares) ? 'true' : 'false' }},
                     cabin: '{{ !empty($availableFares) ? strtolower(array_key_first($availableFares)) : 'economy' }}'
@@ -42,9 +42,52 @@
                 <div class="flex flex-col lg:flex-row">
 
                     {{-- Left Content: Itinerary --}}
-                    <div class="lg:w-[83%] flex-1 border-r border-gray-100 p-4 sm:p-5">
+                    <div class="lg:w-[83%] flex-1 border-b border-gray-100 p-3 sm:p-5 overflow-hidden lg:border-b-0 lg:border-r">
                         {{-- Flight Details Column --}}
-                        <div class="flex flex-wrap gap-4">
+                        <div x-data="{
+                                canScrollLeft: false,
+                                canScrollRight: false,
+                                updateButtons() {
+                                    const el = this.$refs.scroller;
+                                    if (!el) return;
+                                    this.canScrollLeft = el.scrollLeft > 0;
+                                    this.canScrollRight = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+                                },
+                                scrollCards(direction) {
+                                    const el = this.$refs.scroller;
+                                    if (!el) return;
+                                    el.scrollBy({ left: direction * 288, behavior: 'smooth' });
+                                    setTimeout(() => this.updateButtons(), 250);
+                                }
+                            }"
+                            x-init="$nextTick(() => updateButtons())"
+                            @resize.window="updateButtons()"
+                            class="relative">
+                            <button type="button"
+                                x-show="canScrollLeft"
+                                x-transition.opacity
+                                @click.prevent="scrollCards(-1)"
+                                class="absolute left-0 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-md hover:bg-gray-50 lg:flex"
+                                aria-label="Scroll left">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+
+                            <button type="button"
+                                x-show="canScrollRight"
+                                x-transition.opacity
+                                @click.prevent="scrollCards(1)"
+                                class="absolute right-0 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-md hover:bg-gray-50 lg:flex"
+                                aria-label="Scroll right">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+
+                            <div x-ref="scroller"
+                                @scroll.passive="updateButtons()"
+                                class="flex flex-nowrap items-stretch gap-2 overflow-x-auto px-0 py-2 pr-3 scroll-smooth no-scrollbar touch-pan-x sm:pr-0 lg:px-2">
                             @php $segIdx = 0; @endphp
                             @foreach($selectedFlight['rawOffer']['itineraries'] ?? [] as $idx => $rawItin)
                                 @php
@@ -74,70 +117,43 @@
                                     <div wire:click="changeSegment({{ $segIdx }})"
                                         wire:key="segment-{{ $segIdx }}"
                                         wire:loading.class="opacity-50 pointer-events-none"
-                                        class="w-full sm:w-1/2 lg:w-1/5 max-w-[220px] flex-shrink-0 items-center gap-4 sm:gap-6 p-4 rounded-2xl cursor-pointer transition-all border-2 bg-white {{ $currentSegmentIndex === $segIdx ? 'border-[#2ab4c0] shadow-md shadow-[#2ab4c0]/30' : 'border-gray-200 hover:border-[#2ab4c0]/40 hover:shadow-sm' }}">
+                                        class="w-[240px] min-w-[240px] sm:w-[280px] sm:min-w-[280px] flex-shrink-0 rounded-2xl border-2 bg-white px-2 py-1.5 cursor-pointer transition-all {{ $currentSegmentIndex === $segIdx ? 'border-[#2ab4c0] shadow-md shadow-[#2ab4c0]/30' : 'border-gray-200 hover:border-[#2ab4c0]/40 hover:shadow-sm' }}">
 
                                         {{-- Time & Route --}}
-                                        <div class="flex flex-col justify-center gap-1.5 w-full">
-                                            {{-- Flight number centered --}}
-                                            <div class="flex justify-center">
-                                                <span class="text-[10px] text-gray-500 tracking-[0.22em] uppercase">{{ $flightNumber }}</span>
-                                            </div>
-                                            {{-- Times --}}
-                                            <div class="flex items-center justify-between text-xl sm:text-2xl font-black text-gray-900 tracking-tighter w-full">
-                                                <div class="flex flex-col">
-                                                    <span class="text-[10px] font-bold text-gray-400 tracking-[0.18em] uppercase">Depart</span>
-                                                    <span>{{ $segment['departure']['iataCode'] }}</span>
+                                        <div class="flex items-center w-full rounded-xl bg-gray-50/80 px-2 py-1.5">
+                                            <div class="flex items-center w-full gap-1 text-gray-900">
+                                                <div class="flex min-w-0 flex-1 flex-col">
+                                                    <span class="leading-tight font-black text-base sm:text-inherit">{{ $segment['departure']['iataCode'] }}</span>
+                                                    <span class="text-[11px] font-semibold leading-tight text-gray-600">{{ $depTime }}</span>
                                                 </div>
 
-                                                <div class="flex flex-col items-end">
-                                                    <span class="text-[10px] font-bold text-gray-400 tracking-[0.18em] uppercase">Arrive</span>
-                                                    <span>{{ $segment['arrival']['iataCode'] }}</span>
-                                                </div>
-                                            </div>
-
-                                            {{-- Route trail --}}
-                                            <div class="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-500">
-                                                <div class="flex items-center gap-1.5 w-full">
-                                                    <span class="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700">
-                                                        {{ $depTime }}
-                                                    </span>
-                                                    <span class="flex items-center gap-2 text-gray-300 flex-1">
-                                                        {{-- <span class="flex-1 h-[2px] bg-gray-300 rounded-full"></span> --}}
-                                                        <svg class="w-3 h-3 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 6l6 6-6 6" />
-                                                        </svg>
-                                                        {{-- <span class="flex-1 h-[2px] bg-gray-300 rounded-full"></span> --}}
-                                                    </span>
-                                                    <span class="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700">
-                                                        {{ $arrTime }}
-                                                    </span>
+                                                <div class="flex min-w-0 flex-[1.15] flex-col justify-center text-center">
+                                                    <span class="truncate text-[10px] font-bold uppercase tracking-[0.18em] text-gray-500">{{ $flightNumber }}</span>
                                                 </div>
 
+                                                <div class="flex flex-shrink-0 items-center justify-center text-gray-300">
+                                                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 mx-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 6l6 6-6 6" />
+                                                    </svg>
+                                                </div>
 
+                                                <div class="flex min-w-0 flex-[1.05] flex-col justify-center text-center">
+                                                    <span class="truncate text-[10px] font-semibold uppercase tracking-[0.12em] text-gray-400">{{ $segmentDuration }}</span>
+                                                </div>
+
+                                                <div class="flex min-w-0 flex-1 flex-col items-end text-right">
+                                                    <span class="leading-tight font-black text-base sm:text-inherit">{{ $segment['arrival']['iataCode'] }}</span>
+                                                    <span class="text-[11px] font-semibold leading-tight text-gray-600">{{ $arrTime }}</span>
+                                                </div>
                                             </div>
                                         </div>
 
                                     </div>
                                     @php $segIdx++; @endphp
 
-                                    {{-- Layover Information --}}
-                                    @if(isset($segments[$sIdx + 1]))
-                                        @php
-                                            $arrAt = \Carbon\Carbon::parse($segment['arrival']['at']);
-                                            $nextDepAt = \Carbon\Carbon::parse($segments[$sIdx + 1]['departure']['at']);
-                                            $diff = $nextDepAt->diff($arrAt);
-                                            $layoverDuration = ($diff->h > 0 ? $diff->h . 'h ' : '') . $diff->i . 'm';
-                                            $layoverCity = $segment['arrival']['iataCode'];
-                                        @endphp
-                                        <div class="py-4 my-2 relative">
-                                            <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                                                <div class="w-full border-t border-dashed border-gray-200"></div>
-                                            </div>
-
-                                        </div>
-                                    @endif
                                 @endforeach
                             @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -193,45 +209,47 @@
             </div>
 
             <!-- Enhanced Seat Map UI -->
-            <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mt-4">
+            <div class="mt-4 overflow-hidden rounded-[28px] border border-gray-200/80 bg-white shadow-[0_18px_45px_-20px_rgba(15,23,42,0.28)] ring-1 ring-gray-100">
                 @if(isset($flightInfo[$currentSegmentIndex]))
                     @php $currSeg = $flightInfo[$currentSegmentIndex]; @endphp
-                    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                        <div>
-                            <h3 class="text-sm font-black text-gray-800 flex items-center gap-2">
-                                <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    <div class="flex items-center justify-between border-b border-gray-100/80 bg-gradient-to-r from-white via-slate-50 to-gray-50 px-5 py-4">
+                        <div class="min-w-0">
+                            <h3 class="flex items-center gap-2 text-sm font-black text-gray-800">
+                                <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2ab4c0]/10 text-[#2ab4c0] ring-1 ring-[#2ab4c0]/15">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                                </span>
                                 Seating for {{ $currSeg['origin'] }} → {{ $currSeg['destination'] }}
                             </h3>
-                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">Flight {{ $currSeg['flightNumber'] }} • Segment {{ $currentSegmentIndex + 1 }} of {{ count($flightInfo) }}</p>
+                            <p class="mt-1 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-400">Flight {{ $currSeg['flightNumber'] }} • Segment {{ $currentSegmentIndex + 1 }} of {{ count($flightInfo) }}</p>
                         </div>
-                        <div class="hidden md:flex gap-4">
+                        <div class="hidden md:flex items-start gap-3">
                              <!-- Legend inside header -->
-                             <div class="flex flex-col gap-1.5">
+                             <div class="flex flex-col gap-2 rounded-2xl border border-gray-200/80 bg-white/90 px-3 py-2 shadow-sm shadow-gray-200/40">
                                  <div class="flex items-center gap-2">
-                                     <div class="w-3.5 h-3.5 rounded-sm bg-gray-100 border border-gray-200"></div>
-                                     <span class="text-[10px] font-bold text-gray-500 uppercase">Standard</span>
+                                     <div class="inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-sm border border-gray-200 bg-gray-100"></div>
+                                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-500">Standard</span>
                                  </div>
                                  <div class="flex items-center gap-2">
-                                     <div class="w-3.5 h-3.5 rounded-sm bg-sky-100 border border-sky-200 relative"><div class="absolute -top-1 left-1.5 w-1 h-2 bg-sky-400 rounded-full"></div></div>
-                                     <span class="text-[10px] font-bold text-gray-500 uppercase">Extra Legroom</span>
+                                     <div class="relative inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-sm border border-sky-200 bg-sky-100"><div class="absolute -top-1 left-1.5 w-1 h-2 rounded-full bg-sky-400"></div></div>
+                                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-500">Extra Legroom</span>
                                  </div>
                              </div>
-                             <div class="flex flex-col gap-1.5">
-                                 <div class="flex items-center gap-2">
-                                     <div class="w-3.5 h-3.5 rounded-sm bg-gray-50 border border-gray-100 text-gray-300 flex items-center justify-center text-[10px] font-bold">×</div>
-                                     <span class="text-[10px] font-bold text-gray-400 uppercase">Occupied</span>
+                             <div class="flex flex-col gap-2 rounded-2xl border border-gray-200/80 bg-white/90 px-3 py-2 shadow-sm shadow-gray-200/40">
+                                 <div class="flex items-center gap-2">                                    
+                                    <div class="inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-sm bg-gray-100 text-[10px] font-bold text-white rounded-sm border border-gray-200"></div>
+                                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400">Occupied</span>
                                  </div>
                                  <div class="flex items-center gap-2">
-                                     <div class="w-3.5 h-3.5 rounded-sm bg-[#2ab4c0] shadow-sm shadow-[#2ab4c0]/30 text-white flex items-center justify-center text-[10px] font-bold">14A</div>
-                                     <span class="text-[10px] font-bold text-[#2ab4c0] uppercase">Selected</span>
+                                   <div class="inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-sm bg-[#2ab4c0] text-[10px] font-bold text-white"></div>
+                                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-[#2ab4c0]">Selected</span>
                                  </div>
                              </div>
                         </div>
                     </div>
                 @endif
 
-                <div class="px-4 py-8 bg-gray-50 min-h-[400px]">
-                    <div class="min-w-max mx-auto fuselage-container" style="max-width:380px;">
+                <div class="min-h-[400px] bg-gradient-to-b from-slate-50 via-gray-50 to-white px-4 py-8 sm:px-5">
+                    <div class="mx-auto min-w-max fuselage-container" style="max-width:380px;">
                         @if(empty($rows))
                             <div class="text-center py-20">
                                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,34 +260,35 @@
                             </div>
                         @else
                             <!-- Column headers -->
-                            <div class="flex items-center mb-6 pl-8">
+                            <div class="mb-6 flex items-center rounded-full bg-white/80 px-3 py-2 shadow-sm ring-1 ring-gray-100 backdrop-blur-sm">
+                                <div class="w-8 text-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-300">Row</div>
                                 <div class="flex gap-2 mr-5">
                                     @foreach($leftCols as $col)
-                                        <div class="w-[40px] text-center text-gray-400 font-black text-xs uppercase">{{ $col }}</div>
+                                        <div class="w-[40px] text-center text-xs font-black uppercase tracking-[0.2em] text-gray-400">{{ $col }}</div>
                                     @endforeach
                                 </div>
                                 <div class="w-6"></div>
                                 <div class="flex gap-2 ml-5">
                                     @foreach($rightCols as $col)
-                                        <div class="w-[40px] text-center text-gray-400 font-black text-xs uppercase">{{ $col }}</div>
+                                        <div class="w-[40px] text-center text-xs font-black uppercase tracking-[0.2em] text-gray-400">{{ $col }}</div>
                                     @endforeach
                                 </div>
                             </div>
 
                             <!-- Rows -->
-                            <div class="space-y-3 pb-8 relative z-10">
+                            <div class="relative z-10 space-y-3 pb-8">
                                 @foreach($rows as $row)
                                     @if($row['isExtra'] && !$loop->first)
-                                        <div class="h-6 flex items-center justify-center mt-6 mb-4">
-                                            <div class="px-4 py-1 bg-sky-50 text-sky-600 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border border-sky-100 flex items-center gap-2 shadow-sm">
+                                        <div class="mt-6 mb-4 flex h-6 items-center justify-center">
+                                            <div class="flex items-center gap-2 rounded-full border border-sky-100 bg-white px-4 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-sky-600 shadow-sm shadow-sky-100/70">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                                                 Extra Legroom
                                             </div>
                                         </div>
                                     @endif
 
-                                    <div class="flex items-center">
-                                        <div class="w-8 text-center text-gray-400 font-black text-xs flex-shrink-0 relative focus-within:z-50">
+                                    <div class="flex items-center rounded-2xl px-1.5 py-1 transition-colors hover:bg-white/70">
+                                        <div class="relative flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white text-center text-xs font-black text-gray-400 shadow-sm ring-1 ring-gray-100 focus-within:z-50">
                                             {{ $row['number'] }}
                                         </div>
 
@@ -288,8 +307,8 @@
                                             @endforeach
                                         </div>
 
-                                        <div class="w-10 flex-shrink-0 flex items-center justify-center">
-                                            <div class="w-0.5 h-12 bg-gray-200/50 rounded-full"></div>
+                                        <div class="flex w-10 flex-shrink-0 items-center justify-center">
+                                            <div class="h-12 w-px rounded-full bg-gradient-to-b from-transparent via-gray-200 to-transparent"></div>
                                         </div>
 
                                         <div class="flex gap-2">
@@ -443,10 +462,6 @@
             position: relative;
             box-shadow: inset 0 0 40px rgba(0,0,0,0.02), 0 10px 40px rgba(0,0,0,0.03);
             border-bottom: none;
-        }
-        .fuselage-container::before {
-            content: ''; position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-            width: 70px; height: 120px; border: 2px solid #e2e8f0; border-radius: 100px; opacity: 0.4;
         }
     </style>
 </div>
