@@ -153,6 +153,7 @@ class FlightList extends Component
                     $travelers[] = [
                         "id" => (string) (count($travelers) + 1),
                         "travelerType" => "HELD_INFANT",
+                        "associatedAdultId" => "1",
                     ];
                 }
 
@@ -590,6 +591,7 @@ class FlightList extends Component
             $travelers[] = [
                 "id" => (string) (count($travelers) + 1),
                 "travelerType" => "HELD_INFANT",
+                "associatedAdultId" => "1",
             ];
         }
 
