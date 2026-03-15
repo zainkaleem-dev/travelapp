@@ -260,7 +260,7 @@
                                             <div class="absolute -right-4 -top-4 w-12 h-12 bg-white/10 rounded-full blur-xl"></div>
                                             <p class="text-[10px] font-bold uppercase tracking-widest text-white/80 mb-1">{{ $fare['name'] }}</p>
                                             <div class="flex items-baseline gap-1">
-                                                <span class="text-2xl font-black">{{ $currencyCode }}{{ number_format($fare['price']) }}</span>
+                                                <span class="text-2xl font-black">{{ $currencyCode }}{{ $fare['price'] }}</span>
                                                 <span class="text-[10px] font-medium text-white/70">Total price</span>
                                             </div>
                                         </div>
@@ -343,7 +343,7 @@
                                     </button>
                                 @endif
                             </div>
-                            <span class="text-sm font-bold text-gray-900">{{ $currencyCode }}{{ number_format($item['amount'], 2) }}</span>
+                            <span class="text-sm font-bold text-gray-900">{{ $currencyCode }}{{ $item['amount'] }}</span>
                         </div>
                     @endforeach
 
@@ -351,7 +351,7 @@
                     <div class="pt-5 mt-2 border-t border-gray-100">
                         <div class="flex items-center justify-between mb-1">
                             <span class="text-gray-500 text-xs font-bold uppercase tracking-wider">Final Total</span>
-                            <span class="text-gray-900 text-2xl font-black">{{ $currencyCode }}{{ number_format($this->total, 2) }}</span>
+                            <span class="text-gray-900 text-2xl font-black">{{ $currencyCode }}{{ $this->total }}</span>
                         </div>
                         <p class="text-[9px] text-gray-400 font-medium">Prices include all taxes and carrier-imposed fees.</p>
                     </div>

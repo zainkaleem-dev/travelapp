@@ -404,7 +404,7 @@
                                     </button>
                                 @endif
                             </div>
-                            <span class="text-sm font-bold text-gray-900">{{ $currencyCode }}{{ number_format($item['amount'], 2) }}</span>
+                            <span class="text-sm font-bold text-gray-900">{{ $currencyCode }}{{ $item['amount'] }}</span>
                         </div>
                     @endforeach
 
@@ -412,7 +412,7 @@
                     <div class="pt-5 mt-2 border-t border-gray-100">
                         <div class="flex items-center justify-between mb-1">
                             <span class="text-gray-500 text-xs font-bold uppercase tracking-wider">Final Total</span>
-                            <span class="text-gray-900 text-2xl font-black">{{ $currencyCode }}{{ number_format($this->total, 2) }}</span>
+                            <span class="text-gray-900 text-2xl font-black">{{ $currencyCode }}{{ $this->total }}</span>
                         </div>
                         <p class="text-[9px] text-gray-400 font-medium">Prices include all taxes and carrier-imposed fees.</p>
                     </div>

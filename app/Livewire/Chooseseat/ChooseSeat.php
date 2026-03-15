@@ -103,7 +103,7 @@ class ChooseSeat extends Component
                 $this->flightInfo[] = [
                     'index' => $segIdx,
                     'segmentId' => $segment['id'] ?? null,
-                    'type' => ($itinIdx === 0) ? 'Departure' : 'Return',
+                    'type' => "Itinerary " . ($itinIdx + 1),
                     'airlineCode' => $segment['carrierCode'] ?? '',
                     'flightNumber' => ($segment['carrierCode'] ?? '') . ($segment['number'] ?? ''),
                     'departureTime' => \Carbon\Carbon::parse($segment['departure']['at'])->format('H:i'),

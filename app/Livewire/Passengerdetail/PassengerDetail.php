@@ -25,6 +25,7 @@ class PassengerDetail extends Component
     {
         $validCodes = implode(',', CountryHelper::getDialCodes());
         $validNationalities = implode(',', CountryHelper::getCountryNames());
+        $departDate = $this->searchParams['departDate'] ?? now();
 
         return [
             'contactEmail' => 'required|email',
@@ -33,7 +34,29 @@ class PassengerDetail extends Component
             'passengers' => 'required|array|min:1',
             'passengers.*.first_name' => 'required|string|min:2',
             'passengers.*.last_name' => 'required|string|min:2',
-            'passengers.*.dob' => 'required|date|before:today',
+            'passengers.*.dob' => [
+                'required',
+                'date',
+                'before:today',
+                function ($attribute, $value, $fail) use ($departDate) {
+                    // Extract index
+                    if (!preg_match('/passengers\.(\d+)\.dob/', $attribute, $matches)) return;
+                    $index = $matches[1];
+                    $type = $this->passengers[$index]['type'] ?? 'ADULT';
+                    
+                    $birthDate = \Carbon\Carbon::parse($value);
+                    $travelDate = \Carbon\Carbon::parse($departDate);
+                    $age = $birthDate->diffInYears($travelDate);
+
+                    if ($type === 'ADULT' && $age < 12) {
+                        $fail("Adults must be 12 years or older on the date of travel.");
+                    } elseif ($type === 'CHILD' && ($age < 2 || $age >= 12)) {
+                        $fail("Children must be between 2 and 11 years old on the date of travel.");
+                    } elseif ($type === 'HELD_INFANT' && $age >= 2) {
+                        $fail("Infants must be under 2 years old on the date of travel.");
+                    }
+                }
+            ],
             'passengers.*.nationality' => 'required|string|in:' . $validNationalities,
             'passengers.*.gender' => 'required|string|in:Male,Female',
             'passengers.*.passport' => 'required|string|min:5',
@@ -42,6 +65,7 @@ class PassengerDetail extends Component
 
     public array $selectedFlight = [];
     public array $searchParams = [];
+    public string $currencyCode = 'USD';
     // ── Summary line items ────────────────────────────────────────────────────
     public array $summaryItems = [];
 
@@ -65,6 +89,9 @@ class PassengerDetail extends Component
     {
         $this->selectedFlight = session('selected_flight');
         $this->searchParams = session('flight_search_params', []);
+
+        // Initial currency code
+        $this->currencyCode = $this->searchParams['currency'] ?? ($this->selectedFlight['currency'] ?? 'USD');
 
         // If no flight selected, redirect back to search
         if (!$this->selectedFlight) {
@@ -123,11 +150,30 @@ class PassengerDetail extends Component
     {
         $completed = [];
         foreach ($this->passengers as $idx => $p) {
-            if (!empty($p['first_name']) && !empty($p['last_name']) && !empty($p['dob']) && !empty($p['nationality']) && !empty($p['passport'])) {
-                $completed[$idx] = true;
-            } else {
-                $completed[$idx] = false;
+            $isFilled = !empty($p['first_name']) && 
+                        !empty($p['last_name']) && 
+                        !empty($p['dob']) && 
+                        !empty($p['nationality']) && 
+                        !empty($p['passport']);
+            
+            // Simple age check for the checkmark
+            $ageValid = true;
+            if (!empty($p['dob'])) {
+                try {
+                    $birthDate = \Carbon\Carbon::parse($p['dob']);
+                    $travelDate = \Carbon\Carbon::parse($this->searchParams['departDate'] ?? now());
+                    $age = $birthDate->diffInYears($travelDate);
+                    $type = $p['type'] ?? 'ADULT';
+
+                    if ($type === 'ADULT' && $age < 12) $ageValid = false;
+                    elseif ($type === 'CHILD' && ($age < 2 || $age >= 12)) $ageValid = false;
+                    elseif ($type === 'HELD_INFANT' && $age >= 2) $ageValid = false;
+                } catch (\Exception $e) {
+                    $ageValid = false;
+                }
             }
+
+            $completed[$idx] = $isFilled && $ageValid;
         }
         return $completed;
     }

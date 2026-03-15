@@ -557,8 +557,11 @@ class AmadeusService
                         ? "FEMALE"
                         : "UNSPECIFIED");
 
+            $type = $p['type'] ?? 'ADULT';
+            
             $traveler = [
                 "id" => (string) ($index + 1),
+                "travelerType" => $type,
                 "dateOfBirth" => $dob,
                 "name" => [
                     "firstName" => strtoupper($p["first_name"]),
@@ -580,6 +583,12 @@ class AmadeusService
                     ],
                 ],
             ];
+
+            // For INFANTS, Amadeus requires associatedAdultId
+            if ($type === 'HELD_INFANT') {
+                // Link to the first adult (ID "1")
+                $traveler['associatedAdultId'] = "1";
+            }
 
             // Nationality to ISO 3166-1 alpha-2 mapping
             $countryCode = \App\Helpers\CountryHelper::getCodeByName($p["nationality"] ?? "United States");

@@ -220,7 +220,7 @@
                                 </span>
                                 Seating for {{ $currSeg['origin'] }} → {{ $currSeg['destination'] }}
                             </h3>
-                            <p class="mt-1 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-400">Flight {{ $currSeg['flightNumber'] }} • Segment {{ $currentSegmentIndex + 1 }} of {{ count($flightInfo) }}</p>
+                            <p class="mt-1 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-400">Flight {{ $currSeg['flightNumber'] }} • {{ $currSeg['type'] }} • Segment {{ $currentSegmentIndex + 1 }}</p>
                         </div>
                         <div class="hidden md:flex items-start gap-3">
                              <!-- Legend inside header -->
@@ -298,7 +298,7 @@
                                                     @php $seat = $row['seats'][$col]; @endphp
                                                     <button wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})"
                                                             @disabled($seat['state'] === 'occupied')
-                                                            class="seat-btn seat-{{ $seat['state'] }}" title="{{ $seat['id'] }} - {{ $currencyCode }}{{ number_format($seat['price'], 2) }}">
+                                                            class="seat-btn seat-{{ $seat['state'] }}" title="{{ $seat['id'] }} - {{ $currencyCode }}{{ $seat['price'] }}">
                                                             <span>{{ $seat['id'] }}</span>
                                                     </button>
                                                 @else
@@ -317,7 +317,7 @@
                                                     @php $seat = $row['seats'][$col]; @endphp
                                                     <button wire:click="selectSeat('{{ $seat['id'] }}', {{ $seat['price'] }})"
                                                             @disabled($seat['state'] === 'occupied')
-                                                            class="seat-btn seat-{{ $seat['state'] }}" title="{{ $seat['id'] }} - {{ $currencyCode }}{{ number_format($seat['price'], 2) }}">
+                                                            class="seat-btn seat-{{ $seat['state'] }}" title="{{ $seat['id'] }} - {{ $currencyCode }}{{ $seat['price'] }}">
                                                             <span>{{ $seat['id'] }}</span>
                                                     </button>
                                                 @else
@@ -361,7 +361,7 @@
                                     </button>
                                 @endif
                             </div>
-                            <span class="text-sm font-bold text-gray-900">{{ $currencyCode }}{{ number_format($item['amount'], 2) }}</span>
+                            <span class="text-sm font-bold text-gray-900">{{ $currencyCode }}{{ $item['amount'] }}</span>
                         </div>
                     @endforeach
 
@@ -369,7 +369,7 @@
                     <div class="pt-5 mt-2 border-t border-gray-100">
                         <div class="flex items-center justify-between mb-1">
                             <span class="text-gray-500 text-xs font-bold uppercase tracking-wider">Final Total</span>
-                            <span class="text-gray-900 text-2xl font-black">{{ $currencyCode }}{{ number_format($this->total, 2) }}</span>
+                            <span class="text-gray-900 text-2xl font-black">{{ $currencyCode }}{{ $this->total }}</span>
                         </div>
                         <p class="text-[9px] text-gray-400 font-medium">Prices include all taxes and carrier-imposed fees.</p>
                     </div>
