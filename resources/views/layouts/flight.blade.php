@@ -380,7 +380,7 @@
 
         /* Quick inline search variant (under navigation) */
         .quick-inline-search {
-            background: #2ab4c0;
+            background: #d8dde2;
             color: #ffffff;
             box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
             max-width: 86vw;

@@ -94,8 +94,8 @@
                 <div class="ml-auto flex-shrink-0 flex items-center gap-2">
 
                     <button type="button" wire:click="toggleItineraryLayout" role="switch" aria-checked="{{ $itineraryLayoutVertical ? 'true' : 'false' }}"
-                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-0 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2ab4c0] focus:ring-offset-2 {{ $itineraryLayoutVertical ? 'bg-[#2ab4c0]' : 'bg-gray-200' }}">
-                        <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition-transform {{ $itineraryLayoutVertical ? 'translate-x-5' : 'translate-x-0.5' }}"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full border-0 p-0.5 transition-colors focus:outline-none {{ $itineraryLayoutVertical ? 'bg-[#2ab4c0]' : 'bg-gray-200' }}">
+                        <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition-transform {{ $itineraryLayoutVertical ? 'translate-x-5' : 'translate-x-0' }}"
                               aria-hidden="true"></span>
                     </button>
                 </div>
