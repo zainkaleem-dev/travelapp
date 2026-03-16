@@ -383,8 +383,8 @@
             background: #d8dde2;
             color: #ffffff;
             box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
-            max-width: 86vw;
-            width: 86vw;
+            max-width: 100%;
+            width: 100%;
         }
 
         /* Compact height + softer radius for inline quick search fields */
@@ -407,6 +407,11 @@
 
             .quick-inline-search .qs-row-wrapper > .grid > div {
                 flex: 1 1 0;
+            }
+
+            .quick-inline-search .qs-search-button-wrap {
+                margin-top: 0 !important;
+                align-self: center;
             }
         }
 
@@ -583,7 +588,7 @@
 
 
     {{-- Page Content Slot --}}
-    <div class="px-3 sm:px-4 lg:px-6 pb-12 sm:pb-16 max-w-[90%] mx-auto w-full">
+    <div class="px-3 sm:px-4 lg:px-6 pb-12 sm:pb-16 w-full {{ request()->is('flights-list') ? 'max-w-none' : 'max-w-[90%] mx-auto' }}">
         {{ $slot }}
     </div>
 

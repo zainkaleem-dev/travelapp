@@ -540,12 +540,12 @@
                                 </div>
                             </div>
 
-                        </div>
+	                        </div>
 
-                        {{-- Search Button --}}
-                        <div class="flex justify-end mt-4">
-                            <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
-                                :disabled="searching" wire:loading.attr="disabled">
+	                        {{-- Search Button --}}
+	                        <div class="flex justify-end mt-4 {{ !empty($quick) ? 'qs-search-button-wrap' : '' }}">
+	                            <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
+	                                :disabled="searching" wire:loading.attr="disabled">
                                 {{-- Icon --}}
                                 <svg class="w-6 h-6"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -947,13 +947,13 @@ PANEL: ONE WAY
                 </div>
             </div>
 
-        </div>
+	        </div>
 
-        {{-- Search Button --}}
-        <div class="flex justify-end mt-4">
-            <div class="w-full md:w-1/3">
-                <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
-                    :disabled="searching" wire:loading.attr="disabled">
+	        {{-- Search Button --}}
+	        <div class="flex justify-end mt-4 {{ !empty($quick) ? 'qs-search-button-wrap' : '' }}">
+	            <div class="{{ !empty($quick) ? 'w-auto' : 'w-full md:w-1/3' }}">
+	                <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
+	                    :disabled="searching" wire:loading.attr="disabled">
                     <div class="flex items-center justify-center gap-2">
                         {{-- Icon --}}
                         <svg class="w-4 h-4" fill="none"
@@ -1387,13 +1387,13 @@ PANEL: MULTI-CITY
                 </div>
             </div>
 
-        </div>
+	        </div>
 
-        {{-- Search Button --}}
-        <div class="flex justify-end mt-4">
-            <div class="w-full md:w-1/3">
-                <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
-                    :disabled="searching" wire:loading.attr="disabled">
+	        {{-- Search Button --}}
+	        <div class="flex justify-end mt-4 {{ !empty($quick) ? 'qs-search-button-wrap' : '' }}">
+	            <div class="{{ !empty($quick) ? 'w-auto' : 'w-full md:w-1/3' }}">
+	                <button class="btn-search" x-data="{ searching: false }" @click="searching = true; $wire.search().finally(() => { searching = false })"
+	                    :disabled="searching" wire:loading.attr="disabled">
                     <div class="flex items-center justify-center gap-2">
                         {{-- Icon --}}
                         <svg class="w-4 h-4" fill="none"

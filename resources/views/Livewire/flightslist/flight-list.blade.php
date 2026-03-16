@@ -3,7 +3,7 @@
 {{-- ══════════════════════════════════════════════════════════
      MAIN CONTENT
 ══════════════════════════════════════════════════════════ --}}
-<div class="max-w-8xl mx-auto px-4 py-4 flex flex-col lg:flex-row gap-6" wire:init="$dispatch('loadFlights'); $dispatch('loadDateRailPrices')">
+<div class="w-full py-4 flex flex-col lg:flex-row gap-6" wire:init="$dispatch('loadFlights'); $dispatch('loadDateRailPrices')">
 
     {{-- ─── MAIN RESULTS ────────────────────────────────────── --}}
     <main class="flex-1 min-w-0">
