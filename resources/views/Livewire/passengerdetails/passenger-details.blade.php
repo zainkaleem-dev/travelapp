@@ -269,31 +269,35 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Nationality & Gender</label>
-                                <div class="flex gap-2">
-                                    <select
-                                        wire:model.live="passengers.{{ $index }}.nationality"
-                                        class="flex-1 px-2 py-2.5 border @error('passengers.'.$index.'.nationality') border-red-400 @else border-gray-200 @enderror rounded-lg text-sm text-gray-800 bg-white focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
-                                    >
-                                        <option value="">Select Nationality</option>
-                                        @foreach($this->countries as $c)
-                                            <option value="{{ $c['name'] }}">{{ $c['name'] }}</option>
-                                        @endforeach
-                                    </select>
-                                    <select
-                                        wire:model.live="passengers.{{ $index }}.gender"
-                                        class="flex-1 px-2 py-2.5 border @error('passengers.'.$index.'.gender') border-red-400 @else border-gray-200 @enderror rounded-lg text-sm text-gray-800 bg-white focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
-                                    >
-                                        <option value="">Gender</option>
-                                        <option>Male</option>
-                                        <option>Female</option>
-                                    </select>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <select
+                                            wire:model.live="passengers.{{ $index }}.nationality"
+                                            class="w-full px-2 py-2.5 border @error('passengers.'.$index.'.nationality') border-red-400 @else border-gray-200 @enderror rounded-lg text-sm text-gray-800 bg-white focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
+                                        >
+                                            <option value="">Select Nationality</option>
+                                            @foreach($this->countries as $c)
+                                                <option value="{{ $c['name'] }}">{{ $c['name'] }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('passengers.'.$index.'.nationality')
+                                            <p class="mt-0.5 text-red-500 text-[10px] font-medium">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <select
+                                            wire:model.live="passengers.{{ $index }}.gender"
+                                            class="w-full px-2 py-2.5 border @error('passengers.'.$index.'.gender') border-red-400 @else border-gray-200 @enderror rounded-lg text-sm text-gray-800 bg-white focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
+                                        >
+                                            <option value="">Gender</option>
+                                            <option>Male</option>
+                                            <option>Female</option>
+                                        </select>
+                                        @error('passengers.'.$index.'.gender')
+                                            <p class="mt-0.5 text-red-500 text-[10px] font-medium">{{ $message }}</p>
+                                        @enderror
+                                    </div>
                                 </div>
-                                @error('passengers.'.$index.'.nationality')
-                                    <p class="mt-0.5 text-red-500 text-[10px] font-medium">{{ $message }}</p>
-                                @enderror
-                                @error('passengers.'.$index.'.gender')
-                                    <p class="mt-0.5 text-red-500 text-[10px] font-medium">{{ $message }}</p>
-                                @enderror
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Passport Number (or ID)</label>

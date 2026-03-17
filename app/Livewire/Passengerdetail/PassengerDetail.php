@@ -63,6 +63,59 @@ class PassengerDetail extends Component
         ];
     }
 
+    public function validationAttributes(): array
+    {
+        return [
+            'contactEmail' => 'contact email',
+            'phoneCode' => 'country code',
+            'phoneNumber' => 'phone number',
+            'passengers.*.first_name' => 'first name',
+            'passengers.*.last_name' => 'last name',
+            'passengers.*.dob' => 'date of birth',
+            'passengers.*.nationality' => 'nationality',
+            'passengers.*.gender' => 'gender',
+            'passengers.*.passport' => 'passport number (or ID)',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'contactEmail.required' => 'Contact email is required.',
+            'contactEmail.email' => 'Please enter a valid email address.',
+
+            'phoneCode.required' => 'Country code is required.',
+            'phoneCode.in' => 'Please select a valid country code.',
+
+            'phoneNumber.required' => 'Phone number is required.',
+            'phoneNumber.min' => 'Phone number must be at least :min digits.',
+            'phoneNumber.max' => 'Phone number must be at most :max characters.',
+
+            'passengers.required' => 'At least one passenger is required.',
+            'passengers.array' => 'Passenger details must be a valid list.',
+            'passengers.min' => 'At least one passenger is required.',
+
+            'passengers.*.first_name.required' => 'First name is required.',
+            'passengers.*.first_name.min' => 'First name must be at least :min characters.',
+
+            'passengers.*.last_name.required' => 'Last name is required.',
+            'passengers.*.last_name.min' => 'Last name must be at least :min characters.',
+
+            'passengers.*.dob.required' => 'Date of birth is required.',
+            'passengers.*.dob.date' => 'Please enter a valid date of birth.',
+            'passengers.*.dob.before' => 'Date of birth must be in the past.',
+
+            'passengers.*.nationality.required' => 'Nationality is required.',
+            'passengers.*.nationality.in' => 'Please select a valid nationality.',
+
+            'passengers.*.gender.required' => 'Gender is required.',
+            'passengers.*.gender.in' => 'Please select a valid gender.',
+
+            'passengers.*.passport.required' => 'Passport number (or ID) is required.',
+            'passengers.*.passport.min' => 'Passport number (or ID) must be at least :min characters.',
+        ];
+    }
+
     public array $selectedFlight = [];
     public array $searchParams = [];
     public string $currencyCode = 'USD';
