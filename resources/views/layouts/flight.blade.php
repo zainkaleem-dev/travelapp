@@ -401,11 +401,11 @@
                 gap: 12px;
             }
 
-            .quick-inline-search .qs-row-wrapper > .grid {
+            .quick-inline-search .qs-row-wrapper>.grid {
                 display: contents;
             }
 
-            .quick-inline-search .qs-row-wrapper > .grid > div {
+            .quick-inline-search .qs-row-wrapper>.grid>div {
                 flex: 1 1 0;
             }
 
@@ -534,7 +534,8 @@
     {{-- ── Step bar ── --}}
     <div class="bg-white border-b border-gray-200 overflow-hidden sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-3 sm:px-4">
-            <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0" style="-webkit-overflow-scrolling: touch;">
+            <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
+                style="-webkit-overflow-scrolling: touch;">
                 <div
                     class="flex items-center gap-1 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('flights-search') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
@@ -564,13 +565,11 @@
                 </div>
 
                 {{-- Right-side search toggle --}}
-                <button
-                    type="button"
-                    @click="searchOpen = !searchOpen"
+                <button type="button" @click="searchOpen = !searchOpen"
                     class="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 shadow-sm flex-shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
+                            d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
                     </svg>
                 </button>
             </div>
@@ -588,7 +587,7 @@
 
 
     {{-- Page Content Slot --}}
-    <div class="px-3 sm:px-4 lg:px-6 pb-12 sm:pb-16 w-full {{ request()->is('flights-list') ? 'max-w-none' : 'max-w-[90%] mx-auto' }}">
+    <div class="px-3 sm:px-4 lg:px-6 pb-12 sm:pb-16 w-full max-w-none">
         {{ $slot }}
     </div>
 
