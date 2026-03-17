@@ -37,8 +37,9 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
 
                             {{-- Departure --}}
-                            <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
-                                @click.outside="show = false">
+                            <div>
+                                <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
+                                    @click.outside="show = false">
                                 <span class="field-label">Departure airport</span>
                                 <input class="field-input" type="text" wire:model.live.debounce.150ms="returnDep"
                                     wire:key="return-dep-input" @focus="show = true" placeholder="City or airport"
@@ -46,7 +47,6 @@
                                 @if($returnDep)
                                     <button class="field-clear" wire:click.stop="$set('returnDep', '')" title="Clear">×</button>
                                 @endif
-                                @error('returnDep') <span class="field-error">{{ $message }}</span> @enderror
 
                                 <div x-cloak x-show="show"
                                     class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
@@ -90,15 +90,17 @@
                                     </div>
                                 </div>
                             </div>
+                            @error('returnDep') <span class="field-error">{{ $message }}</span> @enderror
+                        </div>
 
                             {{-- Arrival --}}
-                            <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
-                                @click.outside="show = false">
+                            <div>
+                                <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
+                                    @click.outside="show = false">
                                 <span class="field-label">Arrival airport</span>
                                 <input class="field-input" type="text" wire:model.live.debounce.150ms="returnArr"
                                     wire:key="return-arr-input" @focus="show = true" placeholder="City or airport"
                                     autocomplete="off">
-                                @error('returnArr') <span class="field-error">{{ $message }}</span> @enderror
 
                                 <div x-cloak x-show="show"
                                     class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
@@ -142,22 +144,24 @@
                                     </div>
                                 </div>
                             </div>
+                            @error('returnArr') <span class="field-error">{{ $message }}</span> @enderror
+                        </div>
 
                             {{-- Date range --}}
-                            <div class="field-wrap"
-                                style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
+                            <div>
+                                <div class="field-wrap"
+                                    style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
                                 <div wire:key="return-departure-picker-{{ $returnDepDate ?: 'empty' }}-{{ $errors->has('returnDepDate') ? 'error' : 'ok' }}"
                                     x-data="singleDatePicker({
-                                                                                                                                                                                                                                                                                                                                                                            value: @js($returnDepDate),
-                                                                                                                                                                                                                                                                                                                                                                            wireValueKey: 'returnDepDate',
-                                                                                                                                                                                                                                                                                                                                                                            title: 'Please choose your departure date',
-                                                                                                                                                                                                                                                                                                                                                                        })"
+                                                                                                                                                                                                                                                                                                                                                                             value: @js($returnDepDate),
+                                                                                                                                                                                                                                                                                                                                                                             wireValueKey: 'returnDepDate',
+                                                                                                                                                                                                                                                                                                                                                                             title: 'Please choose your departure date',
+                                                                                                                                                                                                                                                                                                                                                                         })"
                                     x-init="init()">
                                     <span class="field-label">Departing</span>
                                     <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
                                         inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
                                         @click="open = true">
-                                    @error('returnDepDate') <span class="field-error">{{ $message }}</span> @enderror
 
                                     {{-- Calendar modal --}}
                                     <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
@@ -259,7 +263,6 @@
                                     <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
                                         inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
                                         @click="open = true">
-                                    @error('returnRetDate') <span class="field-error">{{ $message }}</span> @enderror
 
                                     {{-- Calendar modal --}}
                                     <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
@@ -348,6 +351,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px;">
+                                <div>@error('returnDepDate') <span class="field-error">{{ $message }}</span> @enderror</div>
+                                <div></div>
+                                <div>@error('returnRetDate') <span class="field-error">{{ $message }}</span> @enderror</div>
+                            </div>
+                        </div>
 
                         </div>
 
@@ -571,14 +580,14 @@ PANEL: ONE WAY
     <div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
 
-            <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
+            <div>
+                <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                 <span class="field-label">Departure airport</span>
                 <input class="field-input" type="text" wire:model.live.debounce.150ms="onewayDep"
                     wire:key="oneway-dep-input" @focus="show = true" placeholder="City or airport" autocomplete="off">
                 @if($onewayDep)
                     <button class="field-clear" wire:click.stop="$set('onewayDep', '')" title="Clear">×</button>
                 @endif
-                @error('onewayDep') <span class="field-error">{{ $message }}</span> @enderror
 
                 <div x-cloak x-show="show"
                     class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
@@ -622,12 +631,14 @@ PANEL: ONE WAY
                     </div>
                 </div>
             </div>
+                @error('onewayDep') <span class="field-error">{{ $message }}</span> @enderror
+            </div>
 
-            <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
+            <div>
+                <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                 <span class="field-label">Arrival airport</span>
                 <input class="field-input" type="text" wire:model.live.debounce.150ms="onewayArr"
                     wire:key="oneway-arr-input" @focus="show = true" placeholder="City or airport" autocomplete="off">
-                @error('onewayArr') <span class="field-error">{{ $message }}</span> @enderror
 
                 <div x-cloak x-show="show"
                     class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
@@ -671,18 +682,20 @@ PANEL: ONE WAY
                     </div>
                 </div>
             </div>
+                @error('onewayArr') <span class="field-error">{{ $message }}</span> @enderror
+            </div>
 
-            <div class="field-wrap"
-                x-data="singleDatePicker({
-                                                                                                                                                                                                                    value: @js($onewayDepDate),
-                                                                                                                                                                                                                    wireValueKey: 'onewayDepDate',
-                                                                                                                                                                                                                    title: 'Please choose your departure date',
-                                                                                                                                                                                                                })"
-                x-init="init()">
-                <span class="field-label">Departing</span>
-                <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none"
-                    readonly :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
-                @error('onewayDepDate') <span class="field-error">{{ $message }}</span> @enderror
+            <div>
+                <div class="field-wrap"
+                    x-data="singleDatePicker({
+                                                                                                                                                                                                                     value: @js($onewayDepDate),
+                                                                                                                                                                                                                     wireValueKey: 'onewayDepDate',
+                                                                                                                                                                                                                     title: 'Please choose your departure date',
+                                                                                                                                                                                                                 })"
+                    x-init="init()">
+                    <span class="field-label">Departing</span>
+                    <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none"
+                        readonly :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
 
                 {{-- Calendar modal --}}
                 <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center" aria-modal="true"
@@ -765,6 +778,8 @@ PANEL: ONE WAY
                         </div>
                     </div>
                 </div>
+            </div>
+                @error('onewayDepDate') <span class="field-error">{{ $message }}</span> @enderror
             </div>
 
         </div>
@@ -980,8 +995,9 @@ PANEL: MULTI-CITY
                     <p class="text-xs font-semibold text-gray-500 mb-2">Flight {{ $index + 1 }}</p>
                     <div class="mc-row">
 
-                        <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
-                            @click.outside="show = false">
+                        <div>
+                            <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
+                                @click.outside="show = false">
                             <span class="field-label">Departure airport</span>
                             <input class="field-input" type="text"
                                 wire:model.live.debounce.150ms="multiFlights.{{ $index }}.dep"
@@ -991,7 +1007,6 @@ PANEL: MULTI-CITY
                                 <button class="field-clear" wire:click.stop="$set('multiFlights.0.dep', '')"
                                     title="Clear">×</button>
                             @endif
-                            @error("multiFlights.$index.dep") <span class="field-error">{{ $message }}</span> @enderror
 
                             <div x-cloak x-show="show"
                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
@@ -1037,15 +1052,17 @@ PANEL: MULTI-CITY
                                 </div>
                             </div>
                         </div>
+                            @error("multiFlights.$index.dep") <span class="field-error">{{ $message }}</span> @enderror
+                        </div>
 
-                        <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
-                            @click.outside="show = false">
+                        <div>
+                            <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
+                                @click.outside="show = false">
                             <span class="field-label">Arrival airport</span>
                             <input class="field-input" type="text"
                                 wire:model.live.debounce.150ms="multiFlights.{{ $index }}.arr"
                                 wire:key="multi-arr-input-{{ $index }}" @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
-                            @error("multiFlights.$index.arr") <span class="field-error">{{ $message }}</span> @enderror
 
                             <div x-cloak x-show="show"
                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
@@ -1091,18 +1108,20 @@ PANEL: MULTI-CITY
                                 </div>
                             </div>
                         </div>
+                            @error("multiFlights.$index.arr") <span class="field-error">{{ $message }}</span> @enderror
+                        </div>
 
-                        <div class="field-wrap"
-                            x-data="singleDatePicker({
-                                                                                                                                                                                                                                                                                                                                                                                                                                 value: @js($multiFlights[$index]['date'] ?? ''),
-                                                                                                                                                                                                                                                                                                                                                                                                                                 wireValueKey: 'multiFlights.{{ $index }}.date',
-                                                                                                                                                                                                                                                                                                                                                                                                                                 title: 'Please choose your departure date',
-                                                                                                                                                                                                                                                                                                                                                                                                                            })"
-                            x-init="init()">
-                            <span class="field-label">Departing</span>
-                            <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none"
-                                readonly :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
-                            @error("multiFlights.$index.date") <span class="field-error">{{ $message }}</span> @enderror
+                        <div>
+                            <div class="field-wrap"
+                                x-data="singleDatePicker({
+                                                                                                                                                                                                                                                                                                                                                                                                                                  value: @js($multiFlights[$index]['date'] ?? ''),
+                                                                                                                                                                                                                                                                                                                                                                                                                                  wireValueKey: 'multiFlights.{{ $index }}.date',
+                                                                                                                                                                                                                                                                                                                                                                                                                                  title: 'Please choose your departure date',
+                                                                                                                                                                                                                                                                                                                                                                                                                             })"
+                                x-init="init()">
+                                <span class="field-label">Departing</span>
+                                <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text" inputmode="none"
+                                    readonly :value="display || ''" placeholder="mm/dd/yyyy" @click="open = true">
 
                             {{-- Calendar modal --}}
                             <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
@@ -1187,6 +1206,8 @@ PANEL: MULTI-CITY
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                            @error("multiFlights.$index.date") <span class="field-error">{{ $message }}</span> @enderror
                         </div>
 
                         {{-- Remove button (only for flight 3+) --}}
