@@ -156,14 +156,27 @@
             border-radius: 50%;
             background: #d1d5db;
             color: #6b7280;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 0;
             cursor: pointer;
             border: none;
-            line-height: 1;
             transition: background .15s;
+        }
+
+        .field-clear::before,
+        .field-clear::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 999px;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .field-clear::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
         }
 
         .field-clear:hover {
@@ -308,19 +321,40 @@
             color: #2ab4c0;
         }
 
-        .btn-add-flight .add-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            border: 1.5px solid #d1d5db;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            line-height: 1;
-            color: #6b7280;
-            transition: all .15s;
-        }
+	        .btn-add-flight .add-icon {
+	            width: 26px;
+	            height: 26px;
+	            border-radius: 50%;
+	            border: 1.5px solid #d1d5db;
+	            display: inline-block;
+	            position: relative;
+	            color: #6b7280;
+	            transition: all .15s;
+	        }
+	
+	        .btn-add-flight .add-icon::before {
+	            content: '';
+	            position: absolute;
+	            top: 50%;
+	            left: 50%;
+	            width: 10px;
+	            height: 2px;
+	            background: currentColor;
+	            border-radius: 999px;
+	            transform: translate(-50%, -50%);
+	        }
+	
+	        .btn-add-flight .add-icon::after {
+	            content: '';
+	            position: absolute;
+	            top: 50%;
+	            left: 50%;
+	            width: 2px;
+	            height: 10px;
+	            background: currentColor;
+	            border-radius: 999px;
+	            transform: translate(-50%, -50%);
+	        }
 
         .btn-add-flight:hover .add-icon {
             border-color: #2ab4c0;

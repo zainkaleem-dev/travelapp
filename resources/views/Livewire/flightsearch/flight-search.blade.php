@@ -1202,12 +1202,12 @@ PANEL: MULTI-CITY
         </div>
 
         {{-- Add flight --}}
-        @if($this->canAddFlight)
-            <button class="btn-add-flight mb-5" wire:click="addFlight">
-                <span class="add-icon">+</span>
-                Add a flight
-            </button>
-        @endif
+	        @if($this->canAddFlight)
+	            <button class="btn-add-flight mb-5" wire:click="addFlight">
+	                <span class="add-icon" aria-hidden="true"></span>
+	                Add a flight
+	            </button>
+	        @endif
 
         {{-- Passengers / Class / Search --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
