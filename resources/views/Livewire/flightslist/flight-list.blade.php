@@ -95,14 +95,23 @@
                         </button>
                 @endforeach
 
-                <div class="ml-auto flex-shrink-0 flex items-center gap-2">
+	                <div class="ml-auto flex-shrink-0 flex items-center gap-2">
+	                    <span id="itinerary-layout-label"
+	                          class="inline-flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap select-none {{ $itineraryLayoutVertical ? 'text-[#2ab4c0]' : 'text-gray-500' }}">
+	                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+	                            <rect x="3" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+	                            <rect x="13" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+	                        </svg>
+	                        Side-by-side view
+	                    </span>
 
-                    <button type="button" wire:click="toggleItineraryLayout" role="switch" aria-checked="{{ $itineraryLayoutVertical ? 'true' : 'false' }}"
-                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full border-0 p-0.5 transition-colors focus:outline-none {{ $itineraryLayoutVertical ? 'bg-[#2ab4c0]' : 'bg-gray-200' }}">
-                        <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition-transform {{ $itineraryLayoutVertical ? 'translate-x-5' : 'translate-x-0' }}"
-                              aria-hidden="true"></span>
-                    </button>
-                </div>
+	                    <button type="button" wire:click="toggleItineraryLayout" role="switch" aria-labelledby="itinerary-layout-label"
+	                            aria-checked="{{ $itineraryLayoutVertical ? 'true' : 'false' }}"
+	                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full border-0 p-0.5 transition-colors focus:outline-none {{ $itineraryLayoutVertical ? 'bg-[#2ab4c0]' : 'bg-gray-200' }}">
+	                        <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition-transform {{ $itineraryLayoutVertical ? 'translate-x-5' : 'translate-x-0' }}"
+	                              aria-hidden="true"></span>
+	                    </button>
+	                </div>
             </div>
 
             {{-- Date rail --}}
