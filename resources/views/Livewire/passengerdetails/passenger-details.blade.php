@@ -1,7 +1,7 @@
 <div>
-
+    <div class="w-full py-4 flex flex-col lg:flex-row gap-6">
+        <main class="flex-1 min-w-0">
     {{-- ── Teal header bar (match choose-seat) ── --}}
-    <div class="w-full lg:w-[90%] mx-auto px-4 pt-6">
         <div class="bg-[#2ab4c0] text-white rounded-xl px-4 py-3 mb-6 flex items-center justify-between flex-wrap gap-2 shadow-lg shadow-[#2ab4c0]/20" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
             <div>
                 <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? 'Origin' }} → {{ $searchParams['destination'] ?? 'Destination' }}</p>
@@ -17,10 +17,9 @@
                 <p class="text-base font-bold text-white">{{ isset($searchParams['departDate']) ? \Carbon\Carbon::parse($searchParams['departDate'])->format('l d.m.Y') : '—' }}</p>
             </div>
         </div>
-    </div>
 
     {{-- ─── Page Body ───────────────────────────────────────────────────────── --}}
-    <div class="w-full lg:w-[90%] mx-auto px-4 pb-12 flex flex-col lg:flex-row gap-6">
+    <div class="flex flex-col lg:flex-row gap-6 rounded-xl mb-3 overflow-hidden">
 
         {{-- ── LEFT: Main Form ─────────────────────────────────────────── --}}
         <div class="flex-1 min-w-0 space-y-6">
@@ -88,57 +87,117 @@
                 </div>
             </div>
 
-            {{-- ── Passenger Forms (loop) ───────────────────────────────── --}}
-            @php $typeCounts = []; @endphp
-            @foreach ($passengers as $index => $passenger)
-            @php
-                $type = $passenger['type'];
-                $typeCounts[$type] = ($typeCounts[$type] ?? 0) + 1;
-                $currentCount = $typeCounts[$type];
+            {{-- ── Passenger Selection Tabs ───────────────────────────────── --}}
+            <div x-data="{
+                canScrollLeft: false,
+                canScrollRight: false,
+                updateButtons() {
+                    const el = this.$refs.passengerScroller;
+                    if (!el) return;
+                    this.canScrollLeft = el.scrollLeft > 0;
+                    this.canScrollRight = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+                },
+                scrollPassenger(direction) {
+                    const el = this.$refs.passengerScroller;
+                    if (!el) return;
+                    el.scrollBy({ left: direction * 200, behavior: 'smooth' });
+                    setTimeout(() => this.updateButtons(), 250);
+                }
+            }" x-init="$nextTick(() => updateButtons())" @resize.window="updateButtons()"
+                class="relative group/passengers bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                 
-                $shortType = match($type) {
-                    'ADULT' => 'Adult',
-                    'CHILD' => 'Child',
-                    'HELD_INFANT' => 'Infant',
-                    default => 'Passenger'
-                };
-                $displayLabel = $shortType . ' ' . $currentCount;
-                
-                $typeLabel = match($type) {
-                    'ADULT' => 'Adult (over 12 years)',
-                    'CHILD' => 'Child (2-11 years)',
-                    'HELD_INFANT' => 'Infant (under 2 years)',
-                    default => 'Passenger'
-                };
-            @endphp
-            <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 overflow-hidden">
-                <div wire:click="setActivePassenger({{ $index }})" class="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/50 cursor-pointer hover:bg-gray-100/50 transition-colors">
-                    <h2 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-                        @if($this->completedPassengers[$index] ?? false)
-                            <span class="w-8 h-8 rounded-full bg-[#2ab4c0] text-white flex items-center justify-center font-black shadow-sm shadow-[#2ab4c0]/30 text-xs">✓</span>
-                            {{ $displayLabel }}
-                            @if(!empty($passenger['first_name']))
-                                <span class="text-gray-500 font-medium text-[11px]">({{ $passenger['first_name'] }} {{ $passenger['last_name'] }})</span>
-                            @endif
-                        @else
-                            <span class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors {{ $activePassengerIndex === $index ? 'bg-[#2ab4c0] text-white shadow-md shadow-[#2ab4c0]/30' : 'bg-gray-200 text-gray-500' }}">{{ $index + 1 }}</span>
-                            <span class="{{ $activePassengerIndex === $index ? 'text-[#2ab4c0]' : 'text-gray-600' }}">{{ $displayLabel }}</span>
-                        @endif
-                    </h2>
-                    <div class="flex items-center gap-3">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ $typeLabel }}</span>
-                        <svg class="w-4 h-4 text-gray-400 transition-transform {{ $activePassengerIndex === $index ? 'rotate-180 text-[#2ab4c0]' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </div>
-                </div>
+                {{-- Scroll Buttons --}}
+                <button type="button" x-show="canScrollLeft" x-transition.opacity
+                    @click.prevent="scrollPassenger(-1)"
+                    class="absolute left-2 top-1/2 z-50 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-[#2ab4c0] shadow-sm hover:bg-white hover:shadow-md transition-all backdrop-blur-sm"
+                    aria-label="Scroll left">
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
 
-                <div x-show="$wire.activePassengerIndex === {{ $index }}" x-collapse.duration.300ms x-cloak>
-                    {{-- Info notice --}}
-                    <div class="mx-4 mt-3 flex items-start gap-2 bg-[#2ab4c0]/5 border border-[#2ab4c0]/20 rounded-lg px-3 py-2">
-                        <svg class="w-3.5 h-3.5 text-[#2ab4c0] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4M12 16h.01"/></svg>
-                        <p class="text-[#2399a3] text-[10px] font-medium">To avoid boarding difficulties, enter all first and last names exactly as they appear on your Passport/ID.</p>
+                <button type="button" x-show="canScrollRight" x-transition.opacity
+                    @click.prevent="scrollPassenger(1)"
+                    class="absolute right-2 top-1/2 z-50 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-[#2ab4c0] shadow-sm hover:bg-white hover:shadow-md transition-all backdrop-blur-sm"
+                    aria-label="Scroll right">
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+
+                <div x-ref="passengerScroller" @scroll.passive="updateButtons()"
+                    class="flex items-center gap-3 overflow-x-auto px-4 py-3 pb-2 no-scrollbar touch-pan-x scroll-smooth">
+                    @foreach ($passengers as $index => $passenger)
+                        @php
+                            $type = $passenger['type'];
+                            $isCompleted = $this->completedPassengers[$index] ?? false;
+                            $isActive = $activePassengerIndex === $index;
+                            
+                            $shortType = match($type) {
+                                'ADULT' => 'Adult',
+                                'CHILD' => 'Child',
+                                'HELD_INFANT' => 'Infant',
+                                default => 'Passenger'
+                            };
+                        @endphp
+                        <button wire:click="setActivePassenger({{ $index }})"
+                            class="flex items-center gap-3 px-4 py-3 rounded-2xl border-2 transition-all font-bold text-sm min-w-max {{ $isActive ? 'border-[#2ab4c0] bg-[#2ab4c0]/5' : ($isCompleted ? 'border-gray-200 bg-white hover:border-gray-300' : 'border-dashed border-gray-300 bg-gray-50 hover:border-gray-400') }}">
+                            <div
+                                class="w-8 h-8 rounded-full flex items-center justify-center text-xs {{ $isActive ? 'bg-[#2ab4c0] text-white shadow-md shadow-[#2ab4c0]/30' : ($isCompleted ? 'bg-[#2ab4c0] text-white' : 'bg-gray-200 text-gray-500') }}">
+                                @if($isCompleted && !$isActive)
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                @else
+                                    {{ $index + 1 }}
+                                @endif
+                            </div>
+                            <div class="flex flex-col text-left">
+                                <span class="{{ $isActive ? 'text-[#2ab4c0]' : ($isCompleted ? 'text-gray-800' : 'text-gray-500') }}">
+                                    {{ $shortType }} {{ $index + 1 }}
+                                </span>
+                                @if($isCompleted && !empty($passenger['first_name']))
+                                    <span class="text-[10px] font-medium text-[#2ab4c0] uppercase tracking-widest truncate max-w-[80px]">
+                                        {{ $passenger['first_name'] }}
+                                    </span>
+                                @else
+                                    <span class="text-[10px] font-medium text-gray-400 uppercase tracking-widest">Details Info</span>
+                                @endif
+                            </div>
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- ── Active Passenger Form area ────────────────────────────── --}}
+            @if(isset($passengers[$activePassengerIndex]))
+                @php
+                    $index = $activePassengerIndex;
+                    $passenger = $passengers[$index];
+                    $type = $passenger['type'];
+                    $typeLabel = match($type) {
+                        'ADULT' => 'Adult (over 12 years)',
+                        'CHILD' => 'Child (2-11 years)',
+                        'HELD_INFANT' => 'Infant (under 2 years)',
+                        default => 'Passenger'
+                    };
+                @endphp
+                <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 overflow-hidden" wire:key="passenger-form-{{ $index }}">
+                    <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                        <h2 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-[#2ab4c0] text-white flex items-center justify-center font-bold text-xs shadow-md shadow-[#2ab4c0]/30">{{ $index + 1 }}</span>
+                            Passenger Details
+                        </h2>
+                        <span class="text-[10px] font-bold text-[#2ab4c0] bg-[#2ab4c0]/10 px-2 py-1 rounded-lg uppercase tracking-wider">{{ $typeLabel }}</span>
                     </div>
 
                     <div class="px-4 py-4 space-y-4">
+                        {{-- Info notice --}}
+                        <div class="flex items-start gap-2 bg-[#2ab4c0]/5 border border-[#2ab4c0]/20 rounded-lg px-3 py-2">
+                            <svg class="w-3.5 h-3.5 text-[#2ab4c0] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4M12 16h.01"/></svg>
+                            <p class="text-[#2399a3] text-[10px] font-medium">To avoid boarding difficulties, enter all first and last names exactly as they appear on your Passport/ID.</p>
+                        </div>
 
                         {{-- First / Last name --}}
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -233,7 +292,7 @@
                             <p class="text-amber-700 text-[10px] font-medium">FlightBook is not liable for any passenger who is denied boarding or entry to any destination due to visa.</p>
                         </div>
 
-                        {{-- Next Button (Only show if not the very last passenger) --}}
+                        {{-- Next Button --}}
                         @if($index < count($passengers) - 1)
                             <div class="pt-4 border-t border-gray-100 flex justify-end">
                                 <button
@@ -248,13 +307,12 @@
                         @endif
                     </div>
                 </div>
-            </div>
-            @endforeach
+            @endif
 
         </div>{{-- end LEFT --}}
 
         {{-- ── RIGHT: Summary Sidebar (match choose-seat) ───────────────────────────────────── --}}
-        <div class="w-full lg:w-80 flex-shrink-0">
+        <div class="w-full lg:w-80 flex-shrink-0 self-start">
             <div class="bg-white rounded-xl border border-gray-200 shadow-xl shadow-gray-200/40 overflow-hidden sticky top-6">
 
                 <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
@@ -307,5 +365,8 @@
             </div>
         </div>
 
+    </div>
+
+    </main>
     </div>
 </div>
