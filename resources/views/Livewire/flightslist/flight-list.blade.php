@@ -11,26 +11,30 @@
         {{-- Outbound header --}}
         <div class="bg-[#2ab4c0] text-white rounded-xl px-4 py-3 mb-3 flex items-center justify-between flex-wrap gap-2" style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
             <div>
-                @if($isMulti && count($multiFlights) > 0)
+                @if ($isMulti && count($multiFlights) > 0)
                     <p class="text-base font-bold text-white">Multi-City Trip</p>
-                    <p class="text-xs font-medium text-white/90">{{ count($multiFlights) }} Flights: {{ $multiFlights[0]['dep'] }} →  {{ end($multiFlights)['arr'] }}</p>
+                    <p class="text-xs font-medium text-white/90">{{ count($multiFlights) }} Flights:
+                        {{ $multiFlights[0]['dep'] }} →
+                        {{ $multiFlights[count($multiFlights) - 1]['arr'] }}</p>
                 @elseif($tripType === 'return')
-                    <p class="text-base font-bold text-white">Return Trip</p>
-                    <p class="text-xs font-medium text-white/90">{{ $origin }} → {{ $destination }}</p>
+                    <p class="text-base font-bold text-white">{{ $origin }} → {{ $destination }}</p>
+                    <p class="text-xs font-medium text-white/90">Return Trip</p>
                 @elseif($tripType === 'oneway')
-                    <p class="text-base font-bold text-white">One-way Trip</p>
-                    <p class="text-xs font-medium text-white/90">{{ $origin }} → {{ $destination }}</p>
+                    <p class="text-base font-bold text-white">{{ $origin }} → {{ $destination }}</p>
+                    <p class="text-xs font-medium text-white/90">One-way Trip</p>
                 @else
                     <p class="text-base font-bold text-white">{{ $origin }} → {{ $destination }}</p>
                 @endif
             </div>
             <div class="text-right">
-                @if($isMulti && count($multiFlights) > 0)
-                    <p class="text-xs font-medium text-white">{{ $multiFlights[0]['dep'] }} → {{ end($multiFlights)['arr'] }}</p>
-                    <p class="text-base font-bold text-white">{{ \Carbon\Carbon::parse($multiFlights[0]['date'])->format('l d.m.Y') }}</p>
+                @if ($isMulti && count($multiFlights) > 0)
+                    <p class="text-xs font-medium text-white/90">First Departure</p>
+                    <p class="text-base font-bold text-white">
+                        {{ \Carbon\Carbon::parse($multiFlights[0]['date'])->format('l d.m.Y') }}</p>
                 @else
-                    <p class="text-xs font-medium text-white">{{ $origin }} → {{ $destination }}</p>
-                    <p class="text-base font-bold text-white">{{ \Carbon\Carbon::parse($departDate)->format('l d.m.Y') }}</p>
+                    <p class="text-xs font-medium text-white/90">Departure Date</p>
+                    <p class="text-base font-bold text-white">
+                        {{ \Carbon\Carbon::parse($departDate)->format('l d.m.Y') }}</p>
                 @endif
             </div>
         </div>
@@ -105,13 +109,13 @@
             @if(!$isMulti)
             <div class="flex items-center px-4 py-3 border-b border-gray-100 bg-gray-50/70 relative">
                 {{-- Global loading overlay for date rail --}}
-                <div wire:loading wire:target="fetchDateRailPrices,shiftDate,selectDate" class="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10 flex items-center justify-center">
+                {{-- <div wire:loading wire:target="fetchDateRailPrices,shiftDate,selectDate" class="absolute inset-0 bg-white/40 backdrop-blur-[1px] z-10 flex items-center justify-center">
                     <div class="flex gap-1.5">
                         <div class="w-1.5 h-1.5 rounded-full bg-[#2ab4c0] animate-bounce [animation-delay:-0.3s]"></div>
                         <div class="w-1.5 h-1.5 rounded-full bg-[#2ab4c0] animate-bounce [animation-delay:-0.15s]"></div>
                         <div class="w-1.5 h-1.5 rounded-full bg-[#2ab4c0] animate-bounce"></div>
                     </div>
-                </div>
+                </div> --}}
                 <button wire:click="shiftDate(-1)" wire:loading.attr="disabled"
                         class="w-8 h-8 flex items-center justify-center bg-white border border-gray-100 rounded-full shadow-sm text-gray-400 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/20 hover:shadow-md transition-all flex-shrink-0 disabled:opacity-50">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,27 +172,25 @@
                             {{-- Main Content Area (83%) --}}
                             <div class="lg:w-[83%] flex-1 border-r border-gray-100 p-4 sm:p-5">
                                 <div class="flex sm:flex-row">
-
-
                                     {{-- Flight Details Column --}}
-                                    <div class="flex-1 pl-4 sm:pl-5 space-y-1">
+                                    <div class="flex-1 sm:pl-5 space-y-1">
                                         @php $itineraries = $flight['itineraries'] ?? []; @endphp
 
                                         @if($itineraryLayoutVertical && count($itineraries) >= 2)
                                             {{-- Vertical layout: One-way | separator | Return --}}
-                                            <div class="grid grid-cols-[1fr_auto_1fr] gap-0 items-stretch min-h-[120px]">
+                                            <div class="grid grid-cols-2 divide-x divide-gray-200 items-stretch min-h-[120px]">
                                                 {{-- Left: One-way --}}
-                                                <div class="pr-4 border-r border-gray-200 flex flex-col">
+                                                <div class="  flex flex-col pr-4">
                                                     <p class="text-[10px] font-black text-[#2ab4c0] uppercase tracking-widest mb-2">One-way</p>
                                                     @php $itin = $itineraries[0]; @endphp
                                                     @include('livewire.flightslist.partials.itinerary-leg', ['flight' => $flight, 'itin' => $itin])
                                                 </div>
                                                 {{-- Center: Separator --}}
-                                                <div class="flex flex-col items-center justify-center px-3">
+                                                {{-- <div class="flex flex-col items-center justify-center px-3">
                                                     <div class="w-px h-full min-h-[80px] bg-gray-200 rounded-full" aria-hidden="true"></div>
-                                                </div>
+                                                </div> --}}
                                                 {{-- Right: Return --}}
-                                                <div class="pl-4 flex flex-col">
+                                                <div class=" flex flex-col pl-4">
                                                     <p class="text-[10px] font-black text-[#2ab4c0] uppercase tracking-widest mb-2">Return</p>
                                                     @php $itin = $itineraries[1]; @endphp
                                                     @include('livewire.flightslist.partials.itinerary-leg', ['flight' => $flight, 'itin' => $itin])

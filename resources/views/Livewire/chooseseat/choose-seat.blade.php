@@ -6,22 +6,45 @@
             <div class="bg-[#2ab4c0] text-white rounded-xl px-4 py-3 mb-6 flex items-center justify-between flex-wrap gap-2 shadow-lg shadow-[#2ab4c0]/20"
                 style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
                 <div>
-                    <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} →
-                        {{ $searchParams['destination'] ?? '' }}
-                    </p>
-                    <div class="flex items-center gap-2 mt-0.5">
-                        <span
-                            class="px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-bold uppercase tracking-wider">{{ $searchParams['travelClass'] ?? 'Economy' }}</span>
-                        <span class="px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-bold uppercase tracking-wider">
-                            {{ ($searchParams['adultCount'] ?? 1) + ($searchParams['childCount'] ?? 0) + ($searchParams['infantCount'] ?? 0) }}
-                            Passenger(s)
-                        </span>
-                    </div>
+                    @if ($searchParams['isMulti'] ?? false && !empty($searchParams['segments']))
+                        <p class="text-base font-bold text-white">Multi-City Trip</p>
+                        <p class="text-xs font-medium text-white/90">
+                            {{ count($searchParams['segments']) }} Flights:
+                            {{ $searchParams['segments'][0]['origin'] }} →
+                            {{ $searchParams['segments'][count($searchParams['segments']) - 1]['destination'] }}
+                        </p>
+                    @elseif(($searchParams['tripType'] ?? '') === 'return')
+                        <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} →
+                            {{ $searchParams['destination'] ?? '' }}
+                        </p>
+                        <p class="text-xs font-medium text-white/90">Return Trip</p>
+                    @elseif(($searchParams['tripType'] ?? '') === 'oneway')
+                        <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} →
+                            {{ $searchParams['destination'] ?? '' }}
+                        </p>
+                        <p class="text-xs font-medium text-white/90">One-way Trip</p>
+                    @else
+                        <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} →
+                            {{ $searchParams['destination'] ?? '' }}
+                        </p>
+                    @endif
                 </div>
                 <div class="text-right">
-                    <p class="text-xs font-medium text-white/90">Departure Date</p>
+                    <p class="text-xs font-medium text-white/90">
+                        @if ($searchParams['isMulti'] ?? false)
+                            First Departure
+                        @else
+                            Departure Date
+                        @endif
+                    </p>
                     <p class="text-base font-bold text-white">
-                        {{ \Carbon\Carbon::parse($searchParams['departDate'] ?? now())->format('l d.m.Y') }}
+                        @php
+                            $dateToParse = $searchParams['departDate'] ?? now();
+                            if ($searchParams['isMulti'] ?? false && !empty($searchParams['segments'])) {
+                                $dateToParse = $searchParams['segments'][0]['date'];
+                            }
+                        @endphp
+                        {{ \Carbon\Carbon::parse($dateToParse)->format('l d.m.Y') }}
                     </p>
                 </div>
             </div>

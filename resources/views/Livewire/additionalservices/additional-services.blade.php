@@ -12,22 +12,45 @@ Walkthrough: Detailed Multi-Stop Flight Segments
             <div class="bg-[#2ab4c0] text-white rounded-xl px-4 py-3 mb-6 flex items-center justify-between flex-wrap gap-2 shadow-lg shadow-[#2ab4c0]/20"
                 style="text-shadow: 0 1px 2px rgba(0,0,0,0.15);">
                 <div>
-                    <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} →
-                        {{ $searchParams['destination'] ?? '' }}
-                    </p>
-                    <div class="flex items-center gap-2 mt-0.5">
-                        <span
-                            class="px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-bold uppercase tracking-wider">{{ $searchParams['travelClass'] ?? 'Economy' }}</span>
-                        <span class="px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-bold uppercase tracking-wider">
-                            {{ ($searchParams['adultCount'] ?? 1) + ($searchParams['childCount'] ?? 0) + ($searchParams['infantCount'] ?? 0) }}
-                            Passenger(s)
-                        </span>
-                    </div>
+                    @if ($searchParams['isMulti'] ?? false && !empty($searchParams['segments']))
+                        <p class="text-base font-bold text-white">Multi-City Trip</p>
+                        <p class="text-xs font-medium text-white/90">
+                            {{ count($searchParams['segments']) }} Flights:
+                            {{ $searchParams['segments'][0]['origin'] }} →
+                            {{ $searchParams['segments'][count($searchParams['segments']) - 1]['destination'] }}
+                        </p>
+                    @elseif(($searchParams['tripType'] ?? '') === 'return')
+                        <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} →
+                            {{ $searchParams['destination'] ?? '' }}
+                        </p>
+                        <p class="text-xs font-medium text-white/90">Return Trip</p>
+                    @elseif(($searchParams['tripType'] ?? '') === 'oneway')
+                        <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} →
+                            {{ $searchParams['destination'] ?? '' }}
+                        </p>
+                        <p class="text-xs font-medium text-white/90">One-way Trip</p>
+                    @else
+                        <p class="text-base font-bold text-white">{{ $searchParams['origin'] ?? '' }} →
+                            {{ $searchParams['destination'] ?? '' }}
+                        </p>
+                    @endif
                 </div>
                 <div class="text-right">
-                    <p class="text-xs font-medium text-white/90">Departure Date</p>
+                    <p class="text-xs font-medium text-white/90">
+                        @if ($searchParams['isMulti'] ?? false)
+                            First Departure
+                        @else
+                            Departure Date
+                        @endif
+                    </p>
                     <p class="text-base font-bold text-white">
-                        {{ \Carbon\Carbon::parse($searchParams['departDate'] ?? now())->format('l d.m.Y') }}
+                        @php
+                            $dateToParse = $searchParams['departDate'] ?? now();
+                            if ($searchParams['isMulti'] ?? false && !empty($searchParams['segments'])) {
+                                $dateToParse = $searchParams['segments'][0]['date'];
+                            }
+                        @endphp
+                        {{ \Carbon\Carbon::parse($dateToParse)->format('l d.m.Y') }}
                     </p>
                 </div>
             </div>
@@ -169,34 +192,23 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                                                         class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-0.5">
                                                         Non-stop</div>
                                                 </div>
-
-                                                {{-- Tools/Seats --}}
-                                                <div
-                                                    class="w-full flex flex-col items-center justify-center gap-1.5 group relative">
+                                                {{-- Tools/Amenities --}}
+                                                <div class="w-full flex flex-col items-center justify-center gap-1.5 group relative">
                                                     <div class="flex gap-4 text-gray-400">
-                                                        <div class="cursor-pointer">
-                                                            <div
-                                                                class="flex gap-1.5 group-hover:text-[#2ab4c0] transition-colors">
-                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                                    viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2"
-                                                                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                                        <div class="cursor-pointer relative">
+                                                            <div class="flex gap-1.5 group-hover:text-[#2ab4c0] transition-colors">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                                                                 </svg>
-                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                                    viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2"
-                                                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                                                                    </path>
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                                                                 </svg>
                                                             </div>
 
-                                                            <div
-                                                                class="absolute bottom-full right-0 mb-3 hidden group-hover:block w-52 bg-white border border-gray-100 text-gray-600 shadow-2xl rounded-xl z-[100] overflow-hidden ring-1 ring-black/5">
-                                                                <div
-                                                                    class="p-3 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-widest">
-                                                                    Flight Amenities</div>
+                                                            <div class="absolute top-full right-0 mt-3 hidden group-hover:block w-52 bg-white border border-gray-100 text-gray-600 shadow-2xl rounded-xl z-[100] overflow-hidden ring-1 ring-black/5">
+                                                                <div class="p-3 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-widest">
+                                                                    Flight Amenities
+                                                                </div>
                                                                 <div class="p-3 space-y-2 text-left">
                                                                     @php
                                                                         $segmentId = $segment['id'];
@@ -247,9 +259,7 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                                                                         Baggage: {{ $segmentBaggage }}
                                                                     </div>
                                                                 </div>
-                                                                <div
-                                                                    class="absolute top-full right-4 -mt-1 border-4 border-transparent border-t-white">
-                                                                </div>
+                                                                <div class="absolute bottom-full right-4 -mb-1 border-4 border-transparent border-b-white"></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -257,11 +267,8 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                                                     {{-- Seats Indicator --}}
                                                     @if(($selectedFlight['seats'] ?? 0) > 0)
                                                         <div class="flex items-center gap-1">
-                                                            <span
-                                                                class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
-                                                            <span
-                                                                class="text-[11px] font-black text-orange-500 uppercase tracking-tighter">{{ $selectedFlight['seats'] }}
-                                                                Seats Left</span>
+                                                            <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                                                            <span class="text-[11px] font-black text-orange-500 uppercase tracking-tighter">{{ $selectedFlight['seats'] }} Seats Left</span>
                                                         </div>
                                                     @endif
                                                 </div>
