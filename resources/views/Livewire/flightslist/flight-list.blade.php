@@ -95,15 +95,15 @@
                         </button>
                 @endforeach
 
-	                <div class="ml-auto flex-shrink-0 flex items-center gap-2">
-	                    <span id="itinerary-layout-label"
-	                          class="inline-flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap select-none {{ $itineraryLayoutVertical ? 'text-[#2ab4c0]' : 'text-gray-500' }}">
-	                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-	                            <rect x="3" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width="2" />
-	                            <rect x="13" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width="2" />
-	                        </svg>
-	                        Side-by-side view
-	                    </span>
+		                <div class="ml-auto flex-shrink-0 flex items-center gap-2">
+		                    <span id="itinerary-layout-label"
+		                          class="inline-flex items-center gap-1.5 text-xs font-semibold whitespace-nowrap select-none text-gray-500">
+		                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+		                            <rect x="3" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+		                            <rect x="13" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+		                        </svg>
+		                        Side-by-side view
+		                    </span>
 
 	                    <button type="button" wire:click="toggleItineraryLayout" role="switch" aria-labelledby="itinerary-layout-label"
 	                            aria-checked="{{ $itineraryLayoutVertical ? 'true' : 'false' }}"
