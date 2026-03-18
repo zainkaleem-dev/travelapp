@@ -363,14 +363,14 @@
                         {{-- Row 2 --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-                            <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
+                            <div class="field-wrap" style="position:relative;"
+                                x-data="paxDropdown({ adults: @entangle('returnAdults').defer, children: @entangle('returnChildren').defer, infants: @entangle('returnInfants').defer })"
                                 @click.outside="open = false">
                                 <span class="field-label">Passengers</span>
 
                                 <button type="button" class="field-select text-left w-full flex items-center justify-between"
                                     @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                                    <span
-                                        class="text-gray-900">{{ $this->paxSummary($returnAdults, $returnChildren, $returnInfants) }}</span>
+                                    <span class="text-gray-900" x-text="summary"></span>
                                     <span class="select-arrow static">
                                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
@@ -393,16 +393,16 @@
                                         <div class="flex items-center justify-between">
                                             <button type="button"
                                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                                wire:click="decrementReturnPax('adult')" @disabled($returnAdults <= 1)>
+                                                @click.prevent="dec('adult')" :disabled="adults <= 1">
                                                 <span class="text-xl leading-none">−</span>
                                             </button>
                                             <div class="text-center">
-                                                <div class="text-base font-semibold text-gray-900">{{ $returnAdults }} Adult</div>
+                                                <div class="text-base font-semibold text-gray-900"><span x-text="adults"></span> Adult</div>
                                                 <div class="text-xs text-gray-500">Ages 12+</div>
                                             </div>
                                             <button type="button"
                                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                                wire:click="incrementReturnPax('adult')" @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9)>
+                                                @click.prevent="inc('adult')" :disabled="total >= 9">
                                                 <span class="text-xl leading-none">+</span>
                                             </button>
                                         </div>
@@ -411,16 +411,16 @@
                                         <div class="flex items-center justify-between">
                                             <button type="button"
                                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                                wire:click="decrementReturnPax('child')" @disabled($returnChildren <= 0)>
+                                                @click.prevent="dec('child')" :disabled="children <= 0">
                                                 <span class="text-xl leading-none">−</span>
                                             </button>
                                             <div class="text-center">
-                                                <div class="text-base font-semibold text-gray-900">{{ $returnChildren }} Child</div>
+                                                <div class="text-base font-semibold text-gray-900"><span x-text="children"></span> Child</div>
                                                 <div class="text-xs text-gray-500">Ages 2-11</div>
                                             </div>
                                             <button type="button"
                                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                                wire:click="incrementReturnPax('child')" @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9)>
+                                                @click.prevent="inc('child')" :disabled="total >= 9">
                                                 <span class="text-xl leading-none">+</span>
                                             </button>
                                         </div>
@@ -429,16 +429,16 @@
                                         <div class="flex items-center justify-between">
                                             <button type="button"
                                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                                wire:click="decrementReturnPax('infant')" @disabled($returnInfants <= 0)>
+                                                @click.prevent="dec('infant')" :disabled="infants <= 0">
                                                 <span class="text-xl leading-none">−</span>
                                             </button>
                                             <div class="text-center">
-                                                <div class="text-base font-semibold text-gray-900">{{ $returnInfants }} Infant</div>
+                                                <div class="text-base font-semibold text-gray-900"><span x-text="infants"></span> Infant</div>
                                                 <div class="text-xs text-gray-500">Ages under 2, on lap</div>
                                             </div>
                                             <button type="button"
                                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                                wire:click="incrementReturnPax('infant')" @disabled(($returnAdults + $returnChildren + $returnInfants) >= 9 || $returnInfants >= $returnAdults)>
+                                                @click.prevent="inc('infant')" :disabled="total >= 9 || infants >= adults">
                                                 <span class="text-xl leading-none">+</span>
                                             </button>
                                         </div>
@@ -786,13 +786,14 @@ PANEL: ONE WAY
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-            <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
+            <div class="field-wrap" style="position:relative;"
+                x-data="paxDropdown({ adults: @entangle('onewayAdults').defer, children: @entangle('onewayChildren').defer, infants: @entangle('onewayInfants').defer })"
+                @click.outside="open = false">
                 <span class="field-label">Passengers</span>
 
                 <button type="button" class="field-select text-left w-full flex items-center justify-between"
                     @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                    <span
-                        class="text-gray-900">{{ $this->paxSummary($onewayAdults, $onewayChildren, $onewayInfants) }}</span>
+                    <span class="text-gray-900" x-text="summary"></span>
                     <span class="select-arrow static">
                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
@@ -813,16 +814,16 @@ PANEL: ONE WAY
                         <div class="flex items-center justify-between">
                             <button type="button"
                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="decrementOnewayPax('adult')" @disabled($onewayAdults <= 1)>
+                                @click.prevent="dec('adult')" :disabled="adults <= 1">
                                 <span class="text-xl leading-none">−</span>
                             </button>
                             <div class="text-center">
-                                <div class="text-base font-semibold text-gray-900">{{ $onewayAdults }} Adult</div>
+                                <div class="text-base font-semibold text-gray-900"><span x-text="adults"></span> Adult</div>
                                 <div class="text-xs text-gray-500">Ages 12+</div>
                             </div>
                             <button type="button"
                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="incrementOnewayPax('adult')" @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9)>
+                                @click.prevent="inc('adult')" :disabled="total >= 9">
                                 <span class="text-xl leading-none">+</span>
                             </button>
                         </div>
@@ -830,16 +831,16 @@ PANEL: ONE WAY
                         <div class="flex items-center justify-between">
                             <button type="button"
                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="decrementOnewayPax('child')" @disabled($onewayChildren <= 0)>
+                                @click.prevent="dec('child')" :disabled="children <= 0">
                                 <span class="text-xl leading-none">−</span>
                             </button>
                             <div class="text-center">
-                                <div class="text-base font-semibold text-gray-900">{{ $onewayChildren }} Child</div>
+                                <div class="text-base font-semibold text-gray-900"><span x-text="children"></span> Child</div>
                                 <div class="text-xs text-gray-500">Ages 2-11</div>
                             </div>
                             <button type="button"
                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="incrementOnewayPax('child')" @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9)>
+                                @click.prevent="inc('child')" :disabled="total >= 9">
                                 <span class="text-xl leading-none">+</span>
                             </button>
                         </div>
@@ -847,16 +848,16 @@ PANEL: ONE WAY
                         <div class="flex items-center justify-between">
                             <button type="button"
                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="decrementOnewayPax('infant')" @disabled($onewayInfants <= 0)>
+                                @click.prevent="dec('infant')" :disabled="infants <= 0">
                                 <span class="text-xl leading-none">−</span>
                             </button>
                             <div class="text-center">
-                                <div class="text-base font-semibold text-gray-900">{{ $onewayInfants }} Infant</div>
+                                <div class="text-base font-semibold text-gray-900"><span x-text="infants"></span> Infant</div>
                                 <div class="text-xs text-gray-500">Ages under 2, on lap</div>
                             </div>
                             <button type="button"
                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="incrementOnewayPax('infant')" @disabled(($onewayAdults + $onewayChildren + $onewayInfants) >= 9 || $onewayInfants >= $onewayAdults)>
+                                @click.prevent="inc('infant')" :disabled="total >= 9 || infants >= adults">
                                 <span class="text-xl leading-none">+</span>
                             </button>
                         </div>
@@ -1233,12 +1234,14 @@ PANEL: MULTI-CITY
         {{-- Passengers / Class / Search --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-            <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
-                <span class="field-label">Passengers</span>
+	            <div class="field-wrap" style="position:relative;"
+	                x-data="paxDropdown({ adults: @entangle('multiAdults').defer, children: @entangle('multiChildren').defer, infants: @entangle('multiInfants').defer })"
+	                @click.outside="open = false">
+	                <span class="field-label">Passengers</span>
 
                 <button type="button" class="field-select text-left w-full flex items-center justify-between"
                     @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                    <span class="text-gray-900">{{ $this->paxSummary($multiAdults, $multiChildren, $multiInfants) }}</span>
+	                    <span class="text-gray-900" x-text="summary"></span>
                     <span class="select-arrow static">
                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
@@ -1259,16 +1262,16 @@ PANEL: MULTI-CITY
                         <div class="flex items-center justify-between">
                             <button type="button"
                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="decrementMultiPax('adult')" @disabled($multiAdults <= 1)>
+	                                @click.prevent="dec('adult')" :disabled="adults <= 1">
                                 <span class="text-xl leading-none">−</span>
                             </button>
                             <div class="text-center">
-                                <div class="text-base font-semibold text-gray-900">{{ $multiAdults }} Adult</div>
+	                                <div class="text-base font-semibold text-gray-900"><span x-text="adults"></span> Adult</div>
                                 <div class="text-xs text-gray-500">Ages 12+</div>
                             </div>
                             <button type="button"
                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="incrementMultiPax('adult')" @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9)>
+	                                @click.prevent="inc('adult')" :disabled="total >= 9">
                                 <span class="text-xl leading-none">+</span>
                             </button>
                         </div>
@@ -1276,16 +1279,16 @@ PANEL: MULTI-CITY
                         <div class="flex items-center justify-between">
                             <button type="button"
                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="decrementMultiPax('child')" @disabled($multiChildren <= 0)>
+	                                @click.prevent="dec('child')" :disabled="children <= 0">
                                 <span class="text-xl leading-none">−</span>
                             </button>
                             <div class="text-center">
-                                <div class="text-base font-semibold text-gray-900">{{ $multiChildren }} Child</div>
+	                                <div class="text-base font-semibold text-gray-900"><span x-text="children"></span> Child</div>
                                 <div class="text-xs text-gray-500">Ages 2-11</div>
                             </div>
                             <button type="button"
                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="incrementMultiPax('child')" @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9)>
+	                                @click.prevent="inc('child')" :disabled="total >= 9">
                                 <span class="text-xl leading-none">+</span>
                             </button>
                         </div>
@@ -1293,16 +1296,16 @@ PANEL: MULTI-CITY
                         <div class="flex items-center justify-between">
                             <button type="button"
                                 class="w-10 h-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="decrementMultiPax('infant')" @disabled($multiInfants <= 0)>
+	                                @click.prevent="dec('infant')" :disabled="infants <= 0">
                                 <span class="text-xl leading-none">−</span>
                             </button>
                             <div class="text-center">
-                                <div class="text-base font-semibold text-gray-900">{{ $multiInfants }} Infant</div>
+	                                <div class="text-base font-semibold text-gray-900"><span x-text="infants"></span> Infant</div>
                                 <div class="text-xs text-gray-500">Ages under 2, on lap</div>
                             </div>
                             <button type="button"
                                 class="w-10 h-10 rounded-full border border-gray-200 text-gray-700 flex items-center justify-center disabled:opacity-50"
-                                wire:click="incrementMultiPax('infant')" @disabled(($multiAdults + $multiChildren + $multiInfants) >= 9 || $multiInfants >= $multiAdults)>
+	                                @click.prevent="inc('infant')" :disabled="total >= 9 || infants >= adults">
                                 <span class="text-xl leading-none">+</span>
                             </button>
                         </div>
@@ -1434,7 +1437,75 @@ PANEL: MULTI-CITY
 </div>
 
 <script>
-    window.dateRangePicker = function (opts) {
+	    window.paxDropdown = function (opts) {
+	        const toInt = (v) => {
+	            const n = parseInt(v, 10);
+	            return Number.isFinite(n) ? n : 0;
+	        };
+
+	        return {
+	            open: false,
+	            adults: opts?.adults ?? 1,
+	            children: opts?.children ?? 0,
+	            infants: opts?.infants ?? 0,
+
+	            get total() {
+	                return toInt(this.adults) + toInt(this.children) + toInt(this.infants);
+	            },
+
+	            get summary() {
+	                const parts = [];
+	                const a = toInt(this.adults);
+	                const c = toInt(this.children);
+	                const i = toInt(this.infants);
+
+	                if (a > 0) parts.push(`${a} ${a === 1 ? 'Adult' : 'Adults'}`);
+	                if (c > 0) parts.push(`${c} ${c === 1 ? 'Child' : 'Children'}`);
+	                if (i > 0) parts.push(`${i} ${i === 1 ? 'Infant' : 'Infants'}`);
+
+	                return parts.length ? parts.join(', ') : '0 Passengers';
+	            },
+
+	            inc(type) {
+	                const a = toInt(this.adults);
+	                const c = toInt(this.children);
+	                const i = toInt(this.infants);
+	                const total = a + c + i;
+
+	                if (total >= 9) return;
+	                if (type === 'adult') this.adults = a + 1;
+	                if (type === 'child') this.children = c + 1;
+	                if (type === 'infant' && i < a) this.infants = i + 1;
+	            },
+
+	            dec(type) {
+	                const a = toInt(this.adults);
+	                const c = toInt(this.children);
+	                const i = toInt(this.infants);
+
+	                if (type === 'adult') {
+	                    if (a <= 1) return;
+	                    const nextAdults = a - 1;
+	                    this.adults = nextAdults;
+	                    if (toInt(this.infants) > nextAdults) this.infants = nextAdults;
+	                    return;
+	                }
+
+	                if (type === 'child') {
+	                    if (c <= 0) return;
+	                    this.children = c - 1;
+	                    return;
+	                }
+
+	                if (type === 'infant') {
+	                    if (i <= 0) return;
+	                    this.infants = i - 1;
+	                }
+	            },
+	        };
+	    };
+
+	    window.dateRangePicker = function (opts) {
         const pad = (n) => String(n).padStart(2, '0');
         const toIso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
         const parseIso = (iso) => {
