@@ -364,7 +364,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
                             <div class="field-wrap" style="position:relative;"
-                                x-data="paxDropdown({ adults: @entangle('returnAdults').defer, children: @entangle('returnChildren').defer, infants: @entangle('returnInfants').defer })"
+                                x-data="paxDropdown({ adults: @entangle('returnAdults'), children: @entangle('returnChildren'), infants: @entangle('returnInfants') })"
                                 @click.outside="open = false">
                                 <span class="field-label">Passengers</span>
 
@@ -451,13 +451,13 @@
                                 </div>
                             </div>
 
-                            <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
-                                @click.outside="open = false">
+                            <div class="field-wrap" style="position:relative;"
+                                x-data="{ open: false, selected: @entangle('returnClass') }" @click.outside="open = false">
                                 <span class="field-label">Class</span>
 
                                 <button type="button" class="field-select text-left w-full flex items-center justify-between"
                                     @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                                    <span class="text-gray-900">{{ $returnClass }}</span>
+                                    <span class="text-gray-900" x-text="selected"></span>
                                     <span class="select-arrow static">
                                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
@@ -481,34 +481,32 @@
 
                                     <div class="py-2">
                                         @foreach($classes as $class)
-                                            @php $isSelected = $returnClass === $class; @endphp
                                             <button type="button"
                                                 class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                                wire:click="$set('returnClass', '{{ $class }}')" @click="open = false">
+                                                @click.prevent="selected = '{{ $class }}'; open = false">
                                                 <span
-                                                    class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium' }}">
+                                                    :class="selected === '{{ $class }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium'">
                                                     {{ $class }}
                                                 </span>
-                                                @if($isSelected)
-                                                    <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                                            d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                @endif
+                                                <svg x-cloak x-show="selected === '{{ $class }}'"
+                                                    class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
                                             </button>
                                         @endforeach
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="field-wrap" style="position:relative;" x-data="{ open: false }"
-                                @click.outside="open = false">
+                            <div class="field-wrap" style="position:relative;"
+                                x-data="{ open: false, selected: @entangle('currency') }" @click.outside="open = false">
                                 <span class="field-label">Currency</span>
 
                                 <button type="button" class="field-select text-left w-full flex items-center justify-between"
                                     @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                                    <span class="text-gray-900">{{ $currency }}</span>
+                                    <span class="text-gray-900" x-text="selected"></span>
                                     <span class="select-arrow static">
                                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
@@ -528,21 +526,18 @@
 
                                     <div class="py-2">
                                         @foreach($currencies as $code => $label)
-                                            @php $isSelected = $currency === $code; @endphp
                                             <button type="button"
                                                 class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                                wire:click="$set('currency', '{{ $code }}')" @click="open = false">
+                                                @click.prevent="selected = '{{ $code }}'; open = false">
                                                 <span
-                                                    class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs' }}">
+                                                    :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
                                                     {{ $label }}
                                                 </span>
-                                                @if($isSelected)
-                                                    <svg class="w-4 h-4 text-[#2ab4c0]" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                                            d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                @endif
+                                                <svg x-cloak x-show="selected === '{{ $code }}'" class="w-4 h-4 text-[#2ab4c0]"
+                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
                                             </button>
                                         @endforeach
                                     </div>
@@ -787,7 +782,7 @@ PANEL: ONE WAY
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
             <div class="field-wrap" style="position:relative;"
-                x-data="paxDropdown({ adults: @entangle('onewayAdults').defer, children: @entangle('onewayChildren').defer, infants: @entangle('onewayInfants').defer })"
+                x-data="paxDropdown({ adults: @entangle('onewayAdults'), children: @entangle('onewayChildren'), infants: @entangle('onewayInfants') })"
                 @click.outside="open = false">
                 <span class="field-label">Passengers</span>
 
@@ -870,16 +865,17 @@ PANEL: ONE WAY
                 </div>
             </div>
 
-            <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
-                <span class="field-label">Class</span>
+	            <div class="field-wrap" style="position:relative;"
+	                x-data="{ open: false, selected: @entangle('onewayClass') }" @click.outside="open = false">
+	                <span class="field-label">Class</span>
 
-                <button type="button" class="field-select text-left w-full flex items-center justify-between"
-                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                    <span class="text-gray-900">{{ $onewayClass }}</span>
-                    <span class="select-arrow static">
-                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+	                <button type="button" class="field-select text-left w-full flex items-center justify-between"
+	                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
+	                    <span class="text-gray-900" x-text="selected"></span>
+	                    <span class="select-arrow static">
+	                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+	                            stroke="currentColor" viewBox="0 0 24 24">
+	                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </span>
                 </button>
@@ -896,36 +892,37 @@ PANEL: ONE WAY
                         $classes = ['Economy Class', 'Premium Economy', 'Business Class', 'First Class'];
                     @endphp
 
-                    <div class="py-2">
-                        @foreach($classes as $class)
-                            @php $isSelected = $onewayClass === $class; @endphp
-                            <button type="button"
-                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                wire:click="$set('onewayClass', '{{ $class }}')" @click="open = false">
-                                <span class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium' }}">
-                                    {{ $class }}
-                                </span>
-                                @if($isSelected)
-                                    <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                @endif
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
+	                    <div class="py-2">
+	                        @foreach($classes as $class)
+	                            <button type="button"
+	                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+	                                @click.prevent="selected = '{{ $class }}'; open = false">
+	                                <span
+	                                    :class="selected === '{{ $class }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium'">
+	                                    {{ $class }}
+	                                </span>
+	                                <svg x-cloak x-show="selected === '{{ $class }}'" class="w-5 h-5 text-[#2ab4c0]"
+	                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+	                                        d="M5 13l4 4L19 7" />
+	                                </svg>
+	                            </button>
+	                        @endforeach
+	                    </div>
+	                </div>
+	            </div>
 
-            <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
-                <span class="field-label">Currency</span>
+	            <div class="field-wrap" style="position:relative;"
+	                x-data="{ open: false, selected: @entangle('currency') }" @click.outside="open = false">
+	                <span class="field-label">Currency</span>
 
-                <button type="button" class="field-select text-left w-full flex items-center justify-between"
-                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                    <span class="text-gray-900">{{ $currency }}</span>
-                    <span class="select-arrow static">
-                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+	                <button type="button" class="field-select text-left w-full flex items-center justify-between"
+	                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
+	                    <span class="text-gray-900" x-text="selected"></span>
+	                    <span class="select-arrow static">
+	                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+	                            stroke="currentColor" viewBox="0 0 24 24">
+	                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </span>
                 </button>
@@ -938,26 +935,25 @@ PANEL: ONE WAY
                         <div class="h-px bg-gray-100 mt-2"></div>
                     </div>
 
-                    <div class="py-2">
-                        @foreach($currencies as $code => $label)
-                            @php $isSelected = $currency === $code; @endphp
-                            <button type="button"
-                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                wire:click="$set('currency', '{{ $code }}')" @click="open = false">
-                                <span
-                                    class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs' }}">
-                                    {{ $label }}
-                                </span>
-                                @if($isSelected)
-                                    <svg class="w-4 h-4 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                @endif
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
+	                    <div class="py-2">
+	                        @foreach($currencies as $code => $label)
+	                            <button type="button"
+	                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+	                                @click.prevent="selected = '{{ $code }}'; open = false">
+	                                <span
+	                                    :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
+	                                    {{ $label }}
+	                                </span>
+	                                <svg x-cloak x-show="selected === '{{ $code }}'" class="w-4 h-4 text-[#2ab4c0]"
+	                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+	                                        d="M5 13l4 4L19 7" />
+	                                </svg>
+	                            </button>
+	                        @endforeach
+	                    </div>
+	                </div>
+	            </div>
 
         </div>
 
@@ -1235,7 +1231,7 @@ PANEL: MULTI-CITY
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
 	            <div class="field-wrap" style="position:relative;"
-	                x-data="paxDropdown({ adults: @entangle('multiAdults').defer, children: @entangle('multiChildren').defer, infants: @entangle('multiInfants').defer })"
+	                x-data="paxDropdown({ adults: @entangle('multiAdults'), children: @entangle('multiChildren'), infants: @entangle('multiInfants') })"
 	                @click.outside="open = false">
 	                <span class="field-label">Passengers</span>
 
@@ -1318,12 +1314,13 @@ PANEL: MULTI-CITY
                 </div>
             </div>
 
-            <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
-                <span class="field-label">Class</span>
+	            <div class="field-wrap" style="position:relative;"
+	                x-data="{ open: false, selected: @entangle('multiClass') }" @click.outside="open = false">
+	                <span class="field-label">Class</span>
 
-                <button type="button" class="field-select text-left w-full flex items-center justify-between"
-                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                    <span class="text-gray-900">{{ $multiClass }}</span>
+	                <button type="button" class="field-select text-left w-full flex items-center justify-between"
+	                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
+	                    <span class="text-gray-900" x-text="selected"></span>
                     <span class="select-arrow static">
                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
@@ -1344,32 +1341,33 @@ PANEL: MULTI-CITY
                         $classes = ['Economy Class', 'Premium Economy', 'Business Class', 'First Class'];
                     @endphp
 
-                    <div class="py-2">
-                        @foreach($classes as $class)
-                            @php $isSelected = $multiClass === $class; @endphp
-                            <button type="button"
-                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                wire:click="$set('multiClass', '{{ $class }}')" @click="open = false">
-                                <span class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium' }}">
-                                    {{ $class }}
-                                </span>
-                                @if($isSelected)
-                                    <svg class="w-5 h-5 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                @endif
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
+	                    <div class="py-2">
+	                        @foreach($classes as $class)
+	                            <button type="button"
+	                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+	                                @click.prevent="selected = '{{ $class }}'; open = false">
+	                                <span
+	                                    :class="selected === '{{ $class }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium'">
+	                                    {{ $class }}
+	                                </span>
+	                                <svg x-cloak x-show="selected === '{{ $class }}'" class="w-5 h-5 text-[#2ab4c0]"
+	                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+	                                        d="M5 13l4 4L19 7" />
+	                                </svg>
+	                            </button>
+	                        @endforeach
+	                    </div>
+	                </div>
+	            </div>
 
-            <div class="field-wrap" style="position:relative;" x-data="{ open: false }" @click.outside="open = false">
-                <span class="field-label">Currency</span>
+	            <div class="field-wrap" style="position:relative;"
+	                x-data="{ open: false, selected: @entangle('currency') }" @click.outside="open = false">
+	                <span class="field-label">Currency</span>
 
-                <button type="button" class="field-select text-left w-full flex items-center justify-between"
-                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-                    <span class="text-gray-900">{{ $currency }}</span>
+	                <button type="button" class="field-select text-left w-full flex items-center justify-between"
+	                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
+	                    <span class="text-gray-900" x-text="selected"></span>
                     <span class="select-arrow static">
                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
@@ -1386,26 +1384,25 @@ PANEL: MULTI-CITY
                         <div class="h-px bg-gray-100 mt-2"></div>
                     </div>
 
-                    <div class="py-2">
-                        @foreach($currencies as $code => $label)
-                            @php $isSelected = $currency === $code; @endphp
-                            <button type="button"
-                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                wire:click="$set('currency', '{{ $code }}')" @click="open = false">
-                                <span
-                                    class="{{ $isSelected ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs' }}">
-                                    {{ $label }}
-                                </span>
-                                @if($isSelected)
-                                    <svg class="w-4 h-4 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                @endif
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
+	                    <div class="py-2">
+	                        @foreach($currencies as $code => $label)
+	                            <button type="button"
+	                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+	                                @click.prevent="selected = '{{ $code }}'; open = false">
+	                                <span
+	                                    :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
+	                                    {{ $label }}
+	                                </span>
+	                                <svg x-cloak x-show="selected === '{{ $code }}'" class="w-4 h-4 text-[#2ab4c0]"
+	                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+	                                        d="M5 13l4 4L19 7" />
+	                                </svg>
+	                            </button>
+	                        @endforeach
+	                    </div>
+	                </div>
+	            </div>
 
         </div>
 
