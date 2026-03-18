@@ -425,6 +425,7 @@
         .quick-inline-search .field-wrap {
             padding: 6px 10px 4px;
             border-radius: 8px;
+            min-height: 52px;
         }
 
         /* Large screens: put all fields in one row (inline quick search) */
@@ -433,6 +434,7 @@
                 display: flex;
                 flex-wrap: nowrap;
                 gap: 12px;
+                align-items: flex-start;
             }
 
             .quick-inline-search .qs-row-wrapper>.grid {
