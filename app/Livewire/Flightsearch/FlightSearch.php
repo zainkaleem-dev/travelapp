@@ -12,6 +12,29 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.flight')]
 class FlightSearch extends Component
 {
+    protected array $messages = [
+        // Return
+        'returnDep.required' => 'Departure airport is required.',
+        'returnArr.required' => 'Arrival airport is required.',
+        'returnDepDate.required' => 'Departure date is required.',
+        'returnDepDate.date' => 'Departure date must be a valid date.',
+        'returnRetDate.required' => 'Return date is required.',
+        'returnRetDate.date' => 'Return date must be a valid date.',
+        'returnRetDate.after' => 'Return date must be after the departure date.',
+
+        // One-way
+        'onewayDep.required' => 'Departure airport is required.',
+        'onewayArr.required' => 'Arrival airport is required.',
+        'onewayDepDate.required' => 'Departure date is required.',
+        'onewayDepDate.date' => 'Departure date must be a valid date.',
+
+        // Multi-city
+        'multiFlights.*.dep.required' => 'Departure airport is required.',
+        'multiFlights.*.arr.required' => 'Arrival airport is required.',
+        'multiFlights.*.date.required' => 'Departure date is required.',
+        'multiFlights.*.date.date' => 'Departure date must be a valid date.',
+    ];
+
     // Search results from Amadeus
     public array $airportSearchResults = [];
     public string $searchType = ''; // 'returnDep', 'returnArr', 'onewayDep', 'onewayArr', 'multi.0.dep', etc.
