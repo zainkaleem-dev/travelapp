@@ -331,7 +331,7 @@
 	            color: #6b7280;
 	            transition: all .15s;
 	        }
-	
+
 	        .btn-add-flight .add-icon::before {
 	            content: '';
 	            position: absolute;
@@ -343,7 +343,7 @@
 	            border-radius: 999px;
 	            transform: translate(-50%, -50%);
 	        }
-	
+
 	        .btn-add-flight .add-icon::after {
 	            content: '';
 	            position: absolute;
@@ -544,6 +544,17 @@
                                 Profile
                             </a> --}}
 
+                            <a href="{{ route('settings') }}"
+                                class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
+                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19.5 12a7.5 7.5 0 0 1-.2 1.7l2 1.6-2 3.4-2.4-1a7.6 7.6 0 0 1-2.9 1.7L13 22H11l-.8-2.6a7.6 7.6 0 0 1-2.9-1.7l-2.4 1-2-3.4 2-1.6A7.5 7.5 0 0 1 4.5 12c0-.6.07-1.15.2-1.7l-2-1.6 2-3.4 2.4 1a7.6 7.6 0 0 1 2.9-1.7L11 2h2l.8 2.6a7.6 7.6 0 0 1 2.9 1.7l2.4-1 2 3.4-2 1.6c.13.55.2 1.1.2 1.7z" />
+                                </svg>
+                                Settings
+                            </a>
+
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"
@@ -570,7 +581,7 @@
     {{-- ── Step bar ── --}}
     <div class="bg-white border-b border-gray-200 overflow-hidden sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-3 sm:px-4">
-            <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
+           {{--  <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
                 style="-webkit-overflow-scrolling: touch;">
                 <div
                     class="flex items-center gap-1 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('flights-search') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
@@ -598,7 +609,27 @@
                     class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('passenger-details') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
                     <span class="hidden sm:inline">Passenger Details</span>
                     <span class="sm:hidden">Details</span>
-                </div>
+                </div> --}}
+
+                {{-- Frontend-only service step bar --}}
+                <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
+                    style="-webkit-overflow-scrolling: touch;">
+                    <a href="{{ route('flights.search') }}"
+                        class="px-3 py-2 sm:px-4 flex-shrink-0 bg-[#2ab4c0] text-white font-semibold rounded-t text-xs whitespace-nowrap">
+                        Flight
+                    </a>
+                    <div
+                        class="px-3 py-2 sm:px-4 flex-shrink-0 text-gray-600 text-xs whitespace-nowrap">
+                        Hotel
+                    </div>
+                    <div
+                        class="px-3 py-2 sm:px-4 flex-shrink-0 text-gray-600 text-xs whitespace-nowrap">
+                        Car
+                    </div>
+                    <div
+                        class="px-3 py-2 sm:px-4 flex-shrink-0 text-gray-600 text-xs whitespace-nowrap">
+                        Concierge
+                    </div>
 
                 {{-- Right-side search toggle --}}
                 <button type="button" @click="searchOpen = !searchOpen"
@@ -612,14 +643,103 @@
         </div>
     </div>
 
+    <div class="flex flex-col">
+
+    {{-- Form Wizard (frontend services) --}}
+    @php
+        $routeName = request()->route()?->getName();
+        $activeStep = match ($routeName) {
+            'flights.list' => 1,
+            'additional.services' => 2,
+            'passenger.details' => 3,
+            default => 1,
+        };
+
+        // 3-step connector: fill up to active circle.
+        // Steps are rendered in 3 equal parts (w-1/3), so step 1 circle center ~ 16.67%.
+        $connectorPercent = match ($activeStep) {
+            1 => 16.67,
+            2 => 50,
+            3 => 100,
+            default => 16.67,
+        };
+    @endphp
+
+    <div class="px-3 sm:px-4 lg:px-6 pt-4 pb-2 order-2">
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+            <div class="flex items-center justify-between gap-3 mb-3">
+                <div>
+                    <div class="text-sm font-bold text-gray-800">Service Wizard</div>
+                    <div class="text-xs mt-0.5">
+                        <span class="{{ $activeStep === 1 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-500' }}">Flight List</span>
+                        <span class="text-gray-500"> / </span>
+                        <span class="{{ $activeStep === 2 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-500' }}">Additional Services</span>
+                        <span class="text-gray-500"> / </span>
+                        <span class="{{ $activeStep === 3 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-500' }}">Passenger Details</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                {{-- connector line --}}
+                <div class="absolute left-0 right-0 top-5 h-[2px] bg-gray-200"></div>
+                <div class="absolute left-0 top-5 h-[2px] bg-[#2ab4c0]" style="width: {{ $connectorPercent }}%"></div>
+
+                <div class="flex items-start justify-between">
+                    {{-- 1. Flight List --}}
+                    <div class="flex flex-col items-center w-1/3">
+                        <a href="{{ route('flights.list') }}"
+                            class="w-10 h-10 rounded-full border-2 flex items-center justify-center z-10 transition-colors
+                            {{ $activeStep === 1 ? 'bg-[#2ab4c0] border-[#2ab4c0] text-white' : 'bg-white border-gray-200 text-gray-400' }}">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 6h16" />
+                                <path d="M4 12h16" />
+                                <path d="M4 18h10" />
+                            </svg>
+                        </a>
+                        <div class="mt-2 text-[11px] {{ $activeStep === 1 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-600' }}">
+                            Flight List
+                        </div>
+                    </div>
+
+                    {{-- 2. Additional Services --}}
+                    <div class="flex flex-col items-center w-1/3">
+                        <div
+                            class="w-10 h-10 rounded-full border-2 flex items-center justify-center z-10
+                            {{ $activeStep === 2 ? 'bg-[#2ab4c0] border-[#2ab4c0] text-white' : 'bg-white border-gray-200 text-gray-400' }}">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 6H9l-2 4H20l-2 4H7l-2 4" />
+                            </svg>
+                        </div>
+                        <div class="mt-2 text-[11px] {{ $activeStep === 2 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-600' }}">Additional Services</div>
+                    </div>
+
+                    {{-- 3. Passenger Details --}}
+                    <div class="flex flex-col items-center w-1/3">
+                        <div
+                            class="w-10 h-10 rounded-full border-2 flex items-center justify-center z-10
+                            {{ $activeStep === 3 ? 'bg-[#2ab4c0] border-[#2ab4c0] text-white' : 'bg-white border-gray-200 text-gray-400' }}">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
+                        <div class="mt-2 text-[11px] {{ $activeStep === 3 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-600' }}">Passenger Details</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Inline quick search panel (under navigation) --}}
-    <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms>
+    <div class="order-1" x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms>
         <div class="max-w-none mx-auto px-3 sm:px-4 py-4">
             {{-- Directly render the search card without extra outer chrome --}}
             @livewire('quick-search')
         </div>
     </div>
 
+    </div>
 
 
     {{-- Page Content Slot --}}

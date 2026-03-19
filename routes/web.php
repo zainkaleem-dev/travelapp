@@ -13,6 +13,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\SignUp;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Settings\Setting;
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -83,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', function () {
         return view('dashboard');
     })->name('profile');
+
+    Route::get('/settings', Setting::class)->name('settings');
 
     Route::get('/flights-search', FlightSearch::class)
         ->name('flights.search');
