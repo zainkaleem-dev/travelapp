@@ -65,7 +65,7 @@
             padding: 8px 20px;
             font-size: 13px;
             font-weight: 600;
-            color: #4b5563;
+            color: black;
             cursor: pointer;
             border: none;
             background: transparent;
@@ -76,7 +76,7 @@
         }
 
         .trip-tab:hover {
-            color: #111827;
+            color: #4b5563;
         }
 
         .trip-tab.active {
@@ -103,7 +103,7 @@
         .field-label {
             display: block;
             font-size: 10px;
-            color: #9ca3af;
+            color: black;
             letter-spacing: .02em;
             margin-bottom: 2px;
             text-transform: capitalize;
@@ -121,7 +121,7 @@
         }
 
         .field-input::placeholder {
-            color: #9ca3af;
+            color: black;
             font-weight: 400;
         }
 
@@ -414,40 +414,206 @@
 
         /* Quick inline search variant (under navigation) */
         .quick-inline-search {
-            background: #d8dde2;
-            color: #ffffff;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
-            max-width: 100%;
+            background: #fff;
+            color: inherit;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, .08);
+            max-width: none;
+            margin: 0;
             width: 100%;
+            box-sizing: border-box;
         }
 
         /* Compact height + softer radius for inline quick search fields */
         .quick-inline-search .field-wrap {
             padding: 6px 10px 4px;
-            border-radius: 8px;
-            min-height: 52px;
+            border-radius: 6px;
+            min-height: auto;
+        }
+
+        .quick-inline-search .trip-tabs {
+            margin-bottom: 8px;
+            padding: 2px;
+        }
+
+        .quick-inline-search .trip-tab {
+            padding: 6px 16px;
+            font-size: 12px;
+        }
+
+        .quick-inline-search .field-label {
+            font-size: 9px;
+            margin-bottom: 1px;
+        }
+
+        .quick-inline-search .field-input {
+            font-size: 12px;
+        }
+
+        /* Keep Return panel second-row fields visually equal height */
+        .return-second-row > .field-wrap {
+            min-height: 60px;
+        }
+
+        .oneway-second-row > .field-wrap {
+            min-height: 60px;
+        }
+
+        .multi-second-row > .field-wrap {
+            min-height: 60px;
+        }
+
+        .quick-inline-search .btn-search {
+            height: auto;
+            padding: 0 14px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        /* Make the Search button wrapper in Return quick-search fill the same height as a field-wrap */
+        .quick-inline-search .qs-search-button-return-wrap {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .quick-inline-search .qs-search-button-return-wrap .btn-search {
+            flex: 1;
+            height: auto;
+            align-self: stretch;
         }
 
         /* Large screens: put all fields in one row (inline quick search) */
         @media (min-width: 1024px) {
-            .quick-inline-search .qs-row-wrapper {
+            /* Multi-city main form: keep second-row controls on one line */
+            .multi-bottom-wrapper {
                 display: flex;
-                flex-wrap: nowrap;
                 gap: 12px;
-                align-items: flex-start;
+                align-items: stretch;
             }
 
+            .multi-bottom-wrapper > .grid {
+                flex: 1;
+            }
+
+            .multi-bottom-wrapper .multi-search-btn {
+                display: flex;
+                align-items: stretch;
+                flex-shrink: 0;
+            }
+
+            .multi-bottom-wrapper .multi-search-btn > div {
+                display: flex;
+                width: 100%;
+            }
+
+            .multi-bottom-wrapper .multi-search-btn .btn-search {
+                flex: 1;
+                height: auto;
+                align-self: stretch;
+                white-space: nowrap;
+            }
+
+            /* Make Return-trip controls flow like:
+               Row 1: Departure, Arrival, Departing/Returning, Passengers
+               Row 2: Class, Currency (starting on the left) */
+            .quick-inline-search .qs-row-wrapper {
+                display: grid !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            /* Flatten the two internal "grid" rows into the parent grid */
             .quick-inline-search .qs-row-wrapper>.grid {
-                display: contents;
+                display: contents !important;
             }
 
-            .quick-inline-search .qs-row-wrapper>.grid>div {
-                flex: 1 1 0;
-            }
-
+            /* Search button should always take its own full-width row */
             .quick-inline-search .qs-search-button-wrap {
+                grid-column: 1 / -1;
+                margin-top: 0.75rem !important;
+                justify-self: end;
+            }
+
+            /* Return quick-search: allow Search button to sit next to New box */
+            .quick-inline-search .qs-return-row-wrapper .qs-search-button-return-wrap {
+                grid-column: auto !important;
                 margin-top: 0 !important;
-                align-self: center;
+                justify-self: stretch;
+            }
+
+            .quick-inline-search .qs-return-row-wrapper .qs-search-button-return-wrap .btn-search {
+                width: 100%;
+            }
+
+            /* One-way quick-search:
+               Row 1: Departure | Arrival | Departing | Passengers
+               Row 2: Class     | Currency | New box   | Search     */
+            .quick-inline-search .qs-oneway-row-wrapper {
+                display: grid !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            /* Flatten both inner grid rows into the parent 4-col grid */
+            .quick-inline-search .qs-oneway-row-wrapper > .grid {
+                display: contents !important;
+            }
+
+            /* Pin Passengers to row 1, col 4 (moving it up from row 2) */
+            .quick-inline-search .qs-oneway-row-wrapper .qs-oneway-pax {
+                grid-row: 1;
+                grid-column: 4;
+            }
+
+            /* Search button: auto-placed as a normal grid cell, full height */
+            .quick-inline-search .qs-oneway-row-wrapper .qs-oneway-search-btn {
+                grid-column: auto !important;
+                margin-top: 0 !important;
+                display: flex;
+                align-items: stretch;
+            }
+
+            .quick-inline-search .qs-oneway-row-wrapper .qs-oneway-search-btn > div {
+                width: 100%;
+                display: flex;
+            }
+
+            .quick-inline-search .qs-oneway-row-wrapper .qs-oneway-search-btn .btn-search {
+                flex: 1;
+                height: auto;
+                align-self: stretch;
+            }
+
+            /* Multi-city quick-search bottom row:
+               Passengers | Class | Currency | New box | Search flights — all on one line */
+            .quick-inline-search .qs-multi-bottom-wrapper {
+                display: flex;
+                gap: 12px;
+                align-items: stretch;
+            }
+
+            .quick-inline-search .qs-multi-bottom-wrapper > .grid {
+                flex: 1;
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .quick-inline-search .qs-multi-bottom-wrapper .qs-multi-search-btn {
+                display: flex;
+                align-items: stretch;
+                flex-shrink: 0;
+            }
+
+            .quick-inline-search .qs-multi-bottom-wrapper .qs-multi-search-btn > div {
+                display: flex;
+                width: 100%;
+            }
+
+            .quick-inline-search .qs-multi-bottom-wrapper .qs-multi-search-btn .btn-search {
+                flex: 1;
+                height: auto;
+                align-self: stretch;
+                white-space: nowrap;
             }
         }
 
@@ -746,7 +912,7 @@
     @endif
 
     {{-- Inline quick search panel (under navigation) --}}
-    <div class="order-1" x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms>
+    <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms>
         <div class="max-w-none mx-auto px-3 sm:px-4 py-4">
             {{-- Directly render the search card without extra outer chrome --}}
             @livewire('quick-search')
