@@ -14,17 +14,47 @@
     ════════════════════════════════════════ --}}
     <div class="search-card {{ !empty($quick) ? 'quick-inline-search' : '' }}">
 
-        {{-- Tab row (hidden in quick inline variant) --}}
+        {{-- Tabs + saved trip purpose from `settings` (user_id + trip_type) --}}
         @empty($quick)
-            <div class="trip-tabs">
-                <button class="trip-tab {{ $tripType === 'return' ? 'active' : '' }}"
-                    wire:click="switchTab('return')">Return</button>
-                <button class="trip-tab {{ $tripType === 'oneway' ? 'active' : '' }}" wire:click="switchTab('oneway')">One
-                    way</button>
-                <button class="trip-tab {{ $tripType === 'multi' ? 'active' : '' }}"
-                    wire:click="switchTab('multi')">Multi-city</button>
+            <div class="flex w-full flex-wrap items-center justify-between gap-3" style="margin-bottom: 24px;">
+                <div class="trip-tabs" style="margin-bottom: 0;">
+                    <button class="trip-tab {{ $tripType === 'return' ? 'active' : '' }}"
+                        wire:click="switchTab('return')">Return</button>
+                    <button class="trip-tab {{ $tripType === 'oneway' ? 'active' : '' }}" wire:click="switchTab('oneway')">One
+                        way</button>
+                    <button class="trip-tab {{ $tripType === 'multi' ? 'active' : '' }}"
+                        wire:click="switchTab('multi')">Multi-city</button>
+                </div>
+                @auth
+                    @if (!empty($savedTripPurposeLabel))
+                        <div
+                            class="inline-flex max-w-full shrink-0 items-center gap-2 rounded-xl border border-[#2ab4c0]/35 bg-gradient-to-r from-[#2ab4c0]/12 to-[#239ea9]/8 px-3 py-2 shadow-sm">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Trip purpose</span>
+                            <span class="text-sm font-semibold text-[#239ea9]">{{ $savedTripPurposeLabel }}</span>
+                        </div>
+                    @else
+                        <a href="{{ route('settings') }}"
+                            class="shrink-0 text-xs font-semibold text-[#239ea9] underline decoration-[#2ab4c0]/40 underline-offset-2 hover:text-[#2ab4c0]">
+                            Set trip purpose in Settings
+                        </a>
+                    @endif
+                @endauth
             </div>
         @endempty
+
+        @if (!empty($quick))
+            @auth
+                @if (!empty($savedTripPurposeLabel))
+                    <div class="mb-3 flex w-full justify-end">
+                        <div
+                            class="inline-flex max-w-full items-center gap-2 rounded-xl border border-[#2ab4c0]/35 bg-gradient-to-r from-[#2ab4c0]/12 to-[#239ea9]/8 px-3 py-1.5 shadow-sm">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Trip purpose</span>
+                            <span class="text-xs font-semibold text-[#239ea9]">{{ $savedTripPurposeLabel }}</span>
+                        </div>
+                    </div>
+                @endif
+            @endauth
+        @endif
 
 
 

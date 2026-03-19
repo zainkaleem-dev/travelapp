@@ -13,10 +13,13 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\SignUp;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Profile\Profile;
 use App\Livewire\Settings\Setting;
 use App\Livewire\Hotel\Hotel;
 use App\Livewire\Car\Car;
 use App\Livewire\Concierge\Concierge;
+use App\Livewire\Profile\Family\FamilyCreate;
+use App\Livewire\Profile\Family\FamilyEdit;
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -83,10 +86,10 @@ Route::get('/auth/facebook', fn() => 'Facebook OAuth redirect')->name('auth.face
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', Profile::class)->name('profile');
 
-    Route::get('/profile', function () {
-        return view('dashboard');
-    })->name('profile');
+    Route::get('/profile/family/create', FamilyCreate::class)->name('family.create');
+    Route::get('/profile/family/{id}/edit', FamilyEdit::class)->name('family.edit');
 
     Route::get('/settings', Setting::class)->name('settings');
 

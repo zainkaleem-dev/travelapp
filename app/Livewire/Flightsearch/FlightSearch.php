@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Flightsearch;
 
-use Livewire\Attributes\Computed;
-use Livewire\Component;
+use App\Models\UserSetting;
 use App\Services\AmadeusService;
 use Exception;
-
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 #[Layout('layouts.flight')]
 class FlightSearch extends Component
@@ -38,6 +40,9 @@ class FlightSearch extends Component
     // Search results from Amadeus
     public array $airportSearchResults = [];
     public string $searchType = ''; // 'returnDep', 'returnArr', 'onewayDep', 'onewayArr', 'multi.0.dep', etc.
+
+    /** From `settings.trip_type` for logged-in user (display only) */
+    public ?string $savedTripPurposeLabel = null;
 
     // ── Trip type tab ──────────────────────────────────────────────────
     public string $tripType = 'return'; // return | oneway | multi
@@ -92,6 +97,25 @@ class FlightSearch extends Component
 
     // ── Constants ─────────────────────────────────────────────────────
     const MAX_FLIGHTS = 5;
+
+    public function mount(): void
+    {
+        $this->loadSavedTripPurposeFromSettings();
+    }
+
+    #[On('user-settings-updated')]
+    public function loadSavedTripPurposeFromSettings(): void
+    {
+        $user = Auth::user();
+        if (!$user) {
+            $this->savedTripPurposeLabel = null;
+
+            return;
+        }
+
+        $key = UserSetting::query()->where('user_id', $user->id)->value('trip_type');
+        $this->savedTripPurposeLabel = UserSetting::tripTypeLabel($key);
+    }
 
     // ── Computed helpers ───────────────────────────────────────────────
     public function getCanAddFlightProperty(): bool
