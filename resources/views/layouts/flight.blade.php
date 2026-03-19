@@ -615,21 +615,21 @@
                 <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
                     style="-webkit-overflow-scrolling: touch;">
                     <a href="{{ route('flights.search') }}"
-                        class="px-3 py-2 sm:px-4 flex-shrink-0 bg-[#2ab4c0] text-white font-semibold rounded-t text-xs whitespace-nowrap">
+                        class="px-3 py-2 sm:px-4 flex-shrink-0 {{ (request()->is('flights-search') || request()->is('flights-list') || request()->is('additional-services') || request()->is('passenger-details')) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
                         Flight
                     </a>
-                    <div
-                        class="px-3 py-2 sm:px-4 flex-shrink-0 text-gray-600 text-xs whitespace-nowrap">
+                    <a href="{{ route('hotels') }}"
+                        class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('hotels') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
                         Hotel
-                    </div>
-                    <div
-                        class="px-3 py-2 sm:px-4 flex-shrink-0 text-gray-600 text-xs whitespace-nowrap">
+                    </a>
+                    <a href="{{ route('cars') }}"
+                        class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('cars') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
                         Car
-                    </div>
-                    <div
-                        class="px-3 py-2 sm:px-4 flex-shrink-0 text-gray-600 text-xs whitespace-nowrap">
+                    </a>
+                    <a href="{{ route('concierge') }}"
+                        class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('concierge') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
                         Concierge
-                    </div>
+                    </a>
 
                 {{-- Right-side search toggle --}}
                 <button type="button" @click="searchOpen = !searchOpen"
@@ -645,6 +645,7 @@
 
     <div class="flex flex-col">
 
+    @if (in_array(request()->route()?->getName(), ['flights.list', 'additional.services', 'passenger.details'], true))
     {{-- Form Wizard (frontend services) --}}
     @php
         $routeName = request()->route()?->getName();
@@ -671,11 +672,11 @@
                 <div>
                     <div class="text-sm font-bold text-gray-800">Service Wizard</div>
                     <div class="text-xs mt-0.5">
-                        <span class="{{ $activeStep === 1 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-500' }}">Flight List</span>
+                        <span class="{{ $activeStep === 1 ? 'font-bold text-[#000000]' : 'font-normal text-gray-500' }}">Flight List</span>
                         <span class="text-gray-500"> / </span>
-                        <span class="{{ $activeStep === 2 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-500' }}">Additional Services</span>
+                        <span class="{{ $activeStep === 2 ? 'font-bold text-[#000000]' : 'font-normal text-gray-500' }}">Additional Services</span>
                         <span class="text-gray-500"> / </span>
-                        <span class="{{ $activeStep === 3 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-500' }}">Passenger Details</span>
+                        <span class="{{ $activeStep === 3 ? 'font-bold text-[#000000]' : 'font-normal text-gray-500' }}">Passenger Details</span>
                     </div>
                 </div>
             </div>
@@ -730,6 +731,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     {{-- Inline quick search panel (under navigation) --}}
     <div class="order-1" x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms>

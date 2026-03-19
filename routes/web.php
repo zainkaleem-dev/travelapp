@@ -14,6 +14,9 @@ use App\Livewire\Auth\SignUp;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Settings\Setting;
+use App\Livewire\Hotel\Hotel;
+use App\Livewire\Car\Car;
+use App\Livewire\Concierge\Concierge;
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -86,6 +89,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('profile');
 
     Route::get('/settings', Setting::class)->name('settings');
+
+    Route::get('/hotels', Hotel::class)->name('hotels');
+    Route::get('/cars', Car::class)->name('cars');
+    Route::get('/concierge', Concierge::class)->name('concierge');
 
     Route::get('/flights-search', FlightSearch::class)
         ->name('flights.search');
