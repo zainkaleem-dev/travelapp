@@ -342,9 +342,17 @@
 
                                 <button wire:click="selectFlight('{{ $flight['id'] }}')"
                                         wire:loading.attr="disabled"
+                                        wire:target="selectFlight('{{ $flight['id'] }}')"
 
-                                        class="w-full bg-[#2ab4c0] hover:bg-[#239ba6] text-white text-[13px] font-black uppercase tracking-widest py-3.5 rounded-xl shadow-xl shadow-[#2ab4c0]/20 transition-all duration-200 hover:-translate-y-1 active:scale-[0.98] disabled:opacity-50 relative overflow-hidden group">
-                                    Select
+                                        class="w-full bg-[#2ab4c0] hover:bg-[#239ba6] text-white text-[13px] font-black uppercase tracking-widest py-3.5 rounded-xl shadow-xl shadow-[#2ab4c0]/20 transition-all duration-200 hover:-translate-y-1 active:scale-[0.98] disabled:opacity-50 relative overflow-hidden group flex items-center justify-center"
+                                        aria-label="Select flight">
+                                    <span wire:loading.remove wire:target="selectFlight('{{ $flight['id'] }}')">Select</span>
+                                    <svg wire:loading wire:target="selectFlight('{{ $flight['id'] }}')" class="animate-spin w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" aria-hidden="true">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4" />
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                    </svg>
                                 </button>
 
 

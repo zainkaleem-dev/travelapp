@@ -29,9 +29,9 @@
             @auth
                 @if (!empty($savedTripPurposeLabel))
                     <div
-                        class="inline-flex max-w-full items-center gap-2 rounded-xl border border-[#2ab4c0]/35 bg-gradient-to-r from-[#2ab4c0]/12 to-[#239ea9]/8 px-3 py-1.5 shadow-sm">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Trip purpose</span>
-                        <span class="text-xs font-semibold text-[#239ea9]">{{ $savedTripPurposeLabel }}</span>
+                        class="inline-flex max-w-full items-center gap-2 rounded-xl border border-[#2ab4c0]/45 bg-[#eaf9fb] px-3 py-1.5 shadow-[0_2px_10px_rgba(42,180,192,0.18)] ring-1 ring-[#2ab4c0]/15">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-[#4b5563]">Trip purpose</span>
+                        <span class="text-xs font-semibold text-[#1f9aa6]">{{ $savedTripPurposeLabel }}</span>
                     </div>
                 @endif
             @endauth
@@ -462,66 +462,6 @@
                                 </div>
                             </div>
 
-                            @empty($quick)
-                                {{-- New box (main flight search: below Passengers) --}}
-                                <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
-                                    @click.outside="show = false">
-                                    <span class="field-label">New box</span>
-                                    <input class="field-input" type="text"
-                                        wire:model.live.debounce.150ms="returnDep" wire:key="return-main-newdep-input"
-                                        @focus="show = true" placeholder="New functionality" autocomplete="off">
-
-                                    @if($returnDep)
-                                        <button class="field-clear" wire:click.stop="$set('returnDep', '')"
-                                            title="Clear">×</button>
-                                    @endif
-
-                                    <div x-cloak x-show="show"
-                                        class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                        style="min-width: 280px;">
-                                        <div class="px-4 py-3">
-                                            <div class="flex items-center gap-2 text-xs text-gray-500">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                                    <circle cx="12" cy="11" r="2" />
-                                                </svg>
-                                                <span>All locations</span>
-                                            </div>
-                                        </div>
-                                        <div class="h-px bg-gray-100"></div>
-                                        <div class="max-h-72 overflow-auto">
-                                            @php
-                                                $items = $this->airportSearchResults;
-                                            @endphp
-                                            @if($searchType === 'returnDep')
-                                                @forelse($items as $a)
-                                                    @php
-                                                        $display = $a['city'] . ' (' . $a['code'] . ')';
-                                                    @endphp
-                                                    <button type="button"
-                                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                        wire:click.stop="selectReturnDepAirport('{{ $display }}')" @click="show = false">
-                                                        <div>
-                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                                {{ $a['country'] }}
-                                                            </div>
-                                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                                        </div>
-                                                        <span
-                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                                    </button>
-                                                @empty
-                                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                                @endforelse
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            @endempty
-
                             <div class="field-wrap" style="position:relative;"
                                 x-data="{ open: false, selected: @entangle('returnClass') }" @click.outside="open = false">
                                 <span class="field-label">Class</span>
@@ -615,6 +555,66 @@
                                 </div>
                             </div>
 
+                            @empty($quick)
+                                {{-- New box (main flight search: right-most in row) --}}
+                                <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
+                                    @click.outside="show = false">
+                                    <span class="field-label">New box</span>
+                                    <input class="field-input" type="text"
+                                        wire:model.live.debounce.150ms="returnDep" wire:key="return-main-newdep-input"
+                                        @focus="show = true" placeholder="New functionality" autocomplete="off">
+
+                                    @if($returnDep)
+                                        <button class="field-clear" wire:click.stop="$set('returnDep', '')"
+                                            title="Clear">×</button>
+                                    @endif
+
+                                    <div x-cloak x-show="show"
+                                        class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                        style="min-width: 280px;">
+                                        <div class="px-4 py-3">
+                                            <div class="flex items-center gap-2 text-xs text-gray-500">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                                    <circle cx="12" cy="11" r="2" />
+                                                </svg>
+                                                <span>All locations</span>
+                                            </div>
+                                        </div>
+                                        <div class="h-px bg-gray-100"></div>
+                                        <div class="max-h-72 overflow-auto">
+                                            @php
+                                                $items = $this->airportSearchResults;
+                                            @endphp
+                                            @if($searchType === 'returnDep')
+                                                @forelse($items as $a)
+                                                    @php
+                                                        $display = $a['city'] . ' (' . $a['code'] . ')';
+                                                    @endphp
+                                                    <button type="button"
+                                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                        wire:click.stop="selectReturnDepAirport('{{ $display }}')" @click="show = false">
+                                                        <div>
+                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
+                                                                {{ $a['country'] }}
+                                                            </div>
+                                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
+                                                        </div>
+                                                        <span
+                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
+                                                    </button>
+                                                @empty
+                                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
+                                                @endforelse
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            @endempty
+
                             @if(!empty($quick))
                                 {{-- New box (duplicate departure airport behaviour) --}}
                                 <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
@@ -680,17 +680,25 @@
                         {{-- Search Button --}}
                         <div
                             class="{{ !empty($quick) ? 'qs-search-button-wrap qs-search-button-return-wrap' : 'flex justify-end mt-4' }}">
-                            <button class="btn-search" x-data="{ searching: false }"
-                                @click="searching = true; $wire.search().finally(() => { searching = false })" :disabled="searching"
-                                wire:loading.attr="disabled">
-                                {{-- Icon --}}
-                                <svg class="{{ !empty($quick) ? 'w-4 h-4' : 'w-4 h-4' }}" fill="none"
+                            <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
+                                {{-- Spinner (visible only when loading) --}}
+                                <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4" />
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                </svg>
+
+                                {{-- Search Icon (hidden when loading) --}}
+                                <svg wire:loading.remove wire:target="search" class="{{ !empty($quick) ? 'w-4 h-4' : 'w-4 h-4' }}" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <circle cx="11" cy="11" r="8"></circle>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35">
                                     </path>
                                 </svg>
-                                <span>Search flights</span>
+
+                                <span wire:loading.remove wire:target="search">Search flights</span>
+                                <span wire:loading wire:target="search">Searching...</span>
                             </button>
                         </div>
                     </div>
@@ -1213,18 +1221,25 @@ PANEL: ONE WAY
         {{-- Search Button --}}
         <div class="{{ !empty($quick) ? 'qs-oneway-search-btn' : 'flex justify-end mt-4' }}">
             <div class="{{ !empty($quick) ? 'w-full' : 'w-full md:w-1/3 text-end' }}">
-                <button class="btn-search" x-data="{ searching: false }"
-                    @click="searching = true; $wire.search().finally(() => { searching = false })" :disabled="searching"
-                    wire:loading.attr="disabled">
+                <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
                     <div class="flex items-center justify-center gap-2">
-                        {{-- Icon --}}
-                        <svg class="{{ !empty($quick) ? 'w-4 h-4' : 'w-4 h-4' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {{-- Spinner (visible only when loading) --}}
+                        <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+
+                        {{-- Search Icon (hidden when loading) --}}
+                        <svg wire:loading.remove wire:target="search" class="{{ !empty($quick) ? 'w-4 h-4' : 'w-4 h-4' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <circle cx="11" cy="11" r="8"></circle>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35">
                             </path>
                         </svg>
 
-                        <span>Search flights</span>
+                        <span wire:loading.remove wire:target="search">Search flights</span>
+                        <span wire:loading wire:target="search">Searching...</span>
                     </div>
                 </button>
             </div>
@@ -1765,18 +1780,25 @@ PANEL: MULTI-CITY
         {{-- Search Button (inside wrapper when quick so it sits on same row) --}}
         <div class="{{ !empty($quick) ? 'qs-multi-search-btn' : 'multi-search-btn' }}">
             <div class="{{ !empty($quick) ? 'w-full' : 'w-full md:w-1/3 text-end' }}">
-                <button class="btn-search" x-data="{ searching: false }"
-                    @click="searching = true; $wire.search().finally(() => { searching = false })" :disabled="searching"
-                    wire:loading.attr="disabled">
+                <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
                     <div class="flex items-center justify-center gap-2">
-                        {{-- Icon --}}
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {{-- Spinner (visible only when loading) --}}
+                        <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+
+                        {{-- Search Icon (hidden when loading) --}}
+                        <svg wire:loading.remove wire:target="search" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <circle cx="11" cy="11" r="8"></circle>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35">
                             </path>
                         </svg>
 
-                        <span>Search flights</span>
+                        <span wire:loading.remove wire:target="search">Search flights</span>
+                        <span wire:loading wire:target="search">Searching...</span>
                     </div>
                 </button>
             </div>

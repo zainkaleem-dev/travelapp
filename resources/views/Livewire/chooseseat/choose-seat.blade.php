@@ -118,7 +118,9 @@
                                     setTimeout(() => this.updateButtons(), 250);
                                 }
                             }" x-init="$nextTick(() => updateButtons())" @resize.window="updateButtons()"
-                                    class="relative">
+                                    class="relative"
+                                    wire:loading.class="opacity-70 pointer-events-none"
+                                    wire:target="changeSegment">
                                     <button type="button" x-show="canScrollLeft" x-transition.opacity
                                         @click.prevent="scrollCards(-1)"
                                         class="absolute left-0 top-1/2 z-50 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-md hover:bg-gray-50 lg:flex"
@@ -138,6 +140,16 @@
                                                 d="M9 5l7 7-7 7" />
                                         </svg>
                                     </button>
+
+                                    <div wire:loading wire:target="changeSegment"
+                                        class="absolute left-1/2 top-1/2 z-[60] -translate-x-1/2 -translate-y-1/2 bg-white/25 backdrop-blur-[1px] rounded-xl p-2 pointer-events-none">
+                                        <svg class="animate-spin w-6 h-6 text-[#2ab4c0]" fill="none" viewBox="0 0 24 24"
+                                            aria-hidden="true">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                stroke="currentColor" stroke-width="4" />
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                        </svg>
+                                    </div>
 
                                     <div x-ref="scroller" @scroll.passive="updateButtons()"
                                         class="flex flex-nowrap items-stretch gap-2 overflow-x-auto px-0 py-2 pr-3 scroll-smooth no-scrollbar touch-pan-x sm:pr-0 lg:px-2">
@@ -553,23 +565,37 @@
 
                             {{-- Primary Action Buttons (same line) --}}
                             <div class="flex flex-wrap gap-3 pt-2">
-                                <button wire:click="back"
+                                <button wire:click="back" wire:loading.attr="disabled" wire:target="back"
                                     class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
+                                    <span wire:loading.remove wire:target="back" class="flex items-center gap-2">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M15 19l-7-7 7-7" />
                                     </svg>
                                     Back
+                                    </span>
+                                    <svg wire:loading wire:target="back" class="animate-spin w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" aria-hidden="true">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4" />
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                    </svg>
                                 </button>
                                 <button wire:click="goToPassengerDetails" wire:loading.attr="disabled"
                                     class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group">
-                                    <span class="flex items-center gap-2">
+                                    <span wire:loading.remove wire:target="goToPassengerDetails" class="flex items-center gap-2">
                                         Continue
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                 d="M9 5l7 7-7 7" />
                                         </svg>
                                     </span>
+                                    <svg wire:loading wire:target="goToPassengerDetails" class="animate-spin w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" aria-hidden="true">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4" />
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
