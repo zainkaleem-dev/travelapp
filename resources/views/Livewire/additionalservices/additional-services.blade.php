@@ -56,8 +56,8 @@ Walkthrough: Detailed Multi-Stop Flight Segments
             </div>
 
 
-            {{-- ── Main Body ── --}}
-            <div class=" flex flex-col lg:flex-row gap-6 rounded-xl mb-3 overflow-hidden">
+            {{-- ── Main Body (full-width row: details flex-grow + summary) ── --}}
+            <div class="flex w-full flex-col lg:flex-row gap-6 rounded-xl mb-3 overflow-hidden">
                 <style>
                     .tab {
                         position: relative;
@@ -86,7 +86,7 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                 </style>
 
                 {{-- ── LEFT: Flight Details & Fares ── --}}
-                <div class=" space-y-6">
+                <div class="min-w-0 flex-1 w-full space-y-6">
 
                     {{-- Flight Card styling --}}
                     <div class="bg-white rounded-xl border border-gray-200 shadow-md shadow-gray-200/50 relative hover:z-50"
@@ -114,10 +114,10 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                         </div>
 
                         {{-- Unified Flight Card --}}
-                        <div class="flex flex-col lg:flex-row">
+                        <div class="flex w-full flex-col lg:flex-row">
 
                             {{-- Left Content: Itinerary --}}
-                            <div class="lg:w-[83%] flex-1 border-r border-gray-100 p-4 sm:p-5">
+                            <div class="min-w-0 flex-1 border-r border-gray-100 p-4 sm:p-5 lg:min-w-0">
                                 {{-- Flight Details Column --}}
                                 <div class="flex-1 space-y-1">
                                     @foreach($selectedFlight['rawOffer']['itineraries'] ?? [] as $idx => $rawItin)

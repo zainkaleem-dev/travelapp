@@ -984,7 +984,7 @@ class FlightList extends Component
 
         // Find the flight in our current list
         $flight = collect($this->allFlights)->firstWhere("id", $id);
-        
+
         $cacheKey = 'flight_offer_' . session()->getId() . '_' . $id;
         $rawOffer = Cache::get($cacheKey);
 
