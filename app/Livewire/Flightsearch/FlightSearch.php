@@ -309,6 +309,212 @@ class FlightSearch extends Component
         $this->searching = false;
     }
 
+    private function getLocationsCacheFilePath(): string
+    {
+        return storage_path('app/flightsearch/locations.json');
+    }
+
+    /**
+     * @return array{generated_at:?string,countries:array<int, array{name:string,code:string}>,airports:array<int, array{code:string,city:string,country:string,airport:string}>}
+     */
+    private function loadLocationsCachePayload(): array
+    {
+        $path = $this->getLocationsCacheFilePath();
+        if (!is_file($path)) {
+            return [
+                'generated_at' => null,
+                'countries' => [],
+                'airports' => [],
+            ];
+        }
+
+        $raw = file_get_contents($path);
+        if ($raw === false) {
+            return [
+                'generated_at' => null,
+                'countries' => [],
+                'airports' => [],
+            ];
+        }
+
+        $decoded = json_decode($raw, true);
+        if (!is_array($decoded)) {
+            return [
+                'generated_at' => null,
+                'countries' => [],
+                'airports' => [],
+            ];
+        }
+
+        return [
+            'generated_at' => $decoded['generated_at'] ?? null,
+            'countries' => is_array($decoded['countries'] ?? null) ? $decoded['countries'] : [],
+            'airports' => is_array($decoded['airports'] ?? null) ? $decoded['airports'] : [],
+        ];
+    }
+
+    /**
+     * @param array{generated_at:?string,countries:array<int, array{name:string,code:string}>,airports:array<int, array{code:string,city:string,country:string,airport:string}>} $payload
+     */
+    private function writeLocationsCachePayload(array $payload): void
+    {
+        $path = $this->getLocationsCacheFilePath();
+        $dir = dirname($path);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $payload['generated_at'] = now()->toISOString();
+
+        $tmpPath = $path . '.tmp';
+        file_put_contents($tmpPath, json_encode($payload, JSON_UNESCAPED_UNICODE));
+        rename($tmpPath, $path);
+    }
+
+    /**
+     * @param array<string, mixed> $location
+     * @return array{airport:array{code:string,city:string,country:string,airport:string,display:string},country:?array{name:string,code:string}}
+     */
+    private function mapApiLocationToCacheEntry(array $location): array
+    {
+        $address = $location['address'] ?? [];
+        $cityName = $address['cityName'] ?? '';
+        $countryName = $address['countryName'] ?? '';
+        $countryCode = $address['countryCode'] ?? '';
+        $airportName = $location['name'] ?? '';
+        $iataCode = $location['iataCode'] ?? '';
+
+        $display = "{$cityName} ({$iataCode})";
+        if ($airportName && stripos($airportName, $cityName) === false) {
+            $display .= " - {$airportName}";
+        }
+        if ($countryName) {
+            $display .= ", {$countryName}";
+        }
+
+        return [
+            'airport' => [
+                'code' => $iataCode,
+                'city' => $cityName,
+                'country' => $countryName,
+                'airport' => $airportName,
+                'display' => $display,
+            ],
+            'country' => ($countryCode !== '' && $countryName !== '')
+                ? [
+                    'name' => $countryName,
+                    'code' => $countryCode,
+                ]
+                : null,
+        ];
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $locations
+     * @return array<int, array{code:string,city:string,country:string,airport:string,display:string}>
+     */
+    private function mergeApiLocationsIntoCache(array $locations): array
+    {
+        $payload = $this->loadLocationsCachePayload();
+
+        $airportsByCode = [];
+        foreach ($payload['airports'] as $airport) {
+            $code = $airport['code'] ?? '';
+            if ($code === '') {
+                continue;
+            }
+
+            $airportsByCode[$code] = [
+                'code' => $code,
+                'city' => $airport['city'] ?? '',
+                'country' => $airport['country'] ?? '',
+                'airport' => $airport['airport'] ?? '',
+            ];
+        }
+
+        $countriesByCode = [];
+        foreach ($payload['countries'] as $country) {
+            $code = $country['code'] ?? '';
+            $name = $country['name'] ?? '';
+            if ($code === '' || $name === '') {
+                continue;
+            }
+
+            $countriesByCode[$code] = [
+                'code' => $code,
+                'name' => $name,
+            ];
+        }
+
+        $results = [];
+        foreach ($locations as $location) {
+            $mapped = $this->mapApiLocationToCacheEntry($location);
+            $airport = $mapped['airport'];
+
+            if (($airport['code'] ?? '') !== '') {
+                $airportsByCode[$airport['code']] = [
+                    'code' => $airport['code'],
+                    'city' => $airport['city'],
+                    'country' => $airport['country'],
+                    'airport' => $airport['airport'],
+                ];
+                $results[] = $airport;
+            }
+
+            if ($mapped['country'] !== null) {
+                $countriesByCode[$mapped['country']['code']] = $mapped['country'];
+            }
+        }
+
+        ksort($countriesByCode);
+        ksort($airportsByCode);
+
+        $this->writeLocationsCachePayload([
+            'generated_at' => $payload['generated_at'],
+            'countries' => array_values($countriesByCode),
+            'airports' => array_values($airportsByCode),
+        ]);
+
+        return array_slice($results, 0, 8);
+    }
+
+    /**
+     * Filters cached airports by substring match across city/country/airport/code.
+     *
+     * @param array<int, array{code:string,city:string,country:string,airport:string}> $allAirports
+     * @return array<int, array{code:string,city:string,country:string,airport:string}>
+     */
+    private function filterCachedAirports(array $allAirports, string $query): array
+    {
+        $q = mb_strtolower($query);
+
+        $matches = [];
+        foreach ($allAirports as $a) {
+            $city = mb_strtolower($a['city'] ?? '');
+            $country = mb_strtolower($a['country'] ?? '');
+            $airport = mb_strtolower($a['airport'] ?? '');
+            $code = mb_strtolower($a['code'] ?? '');
+
+            if (
+                $q === '' ||
+                (str_contains($city, $q) || str_contains($country, $q) || str_contains($airport, $q) || str_contains($code, $q))
+            ) {
+                $matches[] = [
+                    'code' => $a['code'] ?? '',
+                    'city' => $a['city'] ?? '',
+                    'country' => $a['country'] ?? '',
+                    'airport' => $a['airport'] ?? '',
+                ];
+                if (count($matches) >= 8) {
+                    break;
+                }
+            }
+        }
+
+        return $matches;
+    }
+
     public function fetchAirports(string $query, string $type = ''): void
     {
         $this->searchType = $type;
@@ -319,34 +525,25 @@ class FlightSearch extends Component
             return;
         }
 
+        // Primary source is the local JSON cache built by the job.
+        // Only hit Amadeus when a location is missing, then merge that result
+        // back into the JSON so future searches stay local.
+        $payload = $this->loadLocationsCachePayload();
+        $cachedAirports = $payload['airports'];
+        if (!empty($cachedAirports)) {
+            $cachedResults = $this->filterCachedAirports($cachedAirports, $q);
+            if (!empty($cachedResults)) {
+                $this->airportSearchResults = $cachedResults;
+                return;
+            }
+        }
+
         try {
             $service = app(AmadeusService::class);
             $response = $service->searchLocations($q);
 
             if (isset($response['data']) && is_array($response['data'])) {
-                // Map Amadeus response to a simple array for the dropdown
-                $results = array_map(function ($location) {
-                    $cityName = $location['address']['cityName'] ?? '';
-                    $countryName = $location['address']['countryName'] ?? '';
-                    $airportName = $location['name'] ?? '';
-                    $iataCode = $location['iataCode'] ?? '';
-
-                    $display = "{$cityName} ({$iataCode})";
-                    if ($airportName && stripos($airportName, $cityName) === false) {
-                        $display .= " - {$airportName}";
-                    }
-                    if ($countryName) {
-                        $display .= ", {$countryName}";
-                    }
-
-                    return [
-                        'code' => $iataCode,
-                        'city' => $cityName,
-                        'country' => $countryName,
-                        'airport' => $airportName,
-                        'display' => $display,
-                    ];
-                }, array_slice($response['data'], 0, 8)); // Limit to top 8 results
+                $results = $this->mergeApiLocationsIntoCache($response['data']);
 
                 \Log::info("fetchAirports found " . count($results) . " results for '$q'");
                 if (count($results) > 0) {
