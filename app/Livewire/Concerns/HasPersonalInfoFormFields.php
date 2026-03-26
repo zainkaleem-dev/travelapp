@@ -5,6 +5,7 @@ namespace App\Livewire\Concerns;
 trait HasPersonalInfoFormFields
 {
     public ?string $first_name = null;
+    public ?string $middle_name = null;
     public ?string $last_name = null;
     public string $email = '';
     public ?string $phone = null;
@@ -26,6 +27,7 @@ trait HasPersonalInfoFormFields
     {
         return [
             'first_name' => 'nullable|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
             'last_name' => 'nullable|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:255',
@@ -50,6 +52,7 @@ trait HasPersonalInfoFormFields
     {
         return [
             'first_name' => $this->first_name,
+            'middle_name' => $this->middle_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,

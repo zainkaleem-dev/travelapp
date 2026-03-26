@@ -344,19 +344,21 @@ class FlightSearch extends Component
         }
 
         $users = User::query()
-            ->select(['id', 'name', 'email'])
+            ->select(['id', 'first_name', 'middle_name', 'last_name', 'email'])
             ->where(function ($builder) use ($q) {
-                $builder->where('name', 'like', '%' . $q . '%')
+                $builder->where('first_name', 'like', '%' . $q . '%')
+                    ->orWhere('middle_name', 'like', '%' . $q . '%')
+                    ->orWhere('last_name', 'like', '%' . $q . '%')
                     ->orWhere('email', 'like', '%' . $q . '%');
             })
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->limit(8)
             ->get();
 
         $this->returnUserSearchResults = $users->map(function (User $u) {
             return [
                 'id' => $u->id,
-                'name' => $u->name ?? '',
+                'name' => $u->display_name,
                 'email' => $u->email ?? '',
             ];
         })->all();
@@ -370,7 +372,7 @@ class FlightSearch extends Component
         }
 
         $this->returnSelectedUserId = $user->id;
-        $this->returnUserSearch = $user->name ?? '';
+        $this->returnUserSearch = $user->display_name;
         $this->returnUserSearchResults = [];
     }
 
@@ -406,19 +408,21 @@ class FlightSearch extends Component
         }
 
         $users = User::query()
-            ->select(['id', 'name', 'email'])
+            ->select(['id', 'first_name', 'middle_name', 'last_name', 'email'])
             ->where(function ($builder) use ($q) {
-                $builder->where('name', 'like', '%' . $q . '%')
+                $builder->where('first_name', 'like', '%' . $q . '%')
+                    ->orWhere('middle_name', 'like', '%' . $q . '%')
+                    ->orWhere('last_name', 'like', '%' . $q . '%')
                     ->orWhere('email', 'like', '%' . $q . '%');
             })
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->limit(8)
             ->get();
 
         $this->onewayUserSearchResults = $users->map(function (User $u) {
             return [
                 'id' => $u->id,
-                'name' => $u->name ?? '',
+                'name' => $u->display_name,
                 'email' => $u->email ?? '',
             ];
         })->all();
@@ -432,7 +436,7 @@ class FlightSearch extends Component
         }
 
         $this->onewaySelectedUserId = $user->id;
-        $this->onewayUserSearch = $user->name ?? '';
+        $this->onewayUserSearch = $user->display_name;
         $this->onewayUserSearchResults = [];
     }
 
@@ -468,19 +472,21 @@ class FlightSearch extends Component
         }
 
         $users = User::query()
-            ->select(['id', 'name', 'email'])
+            ->select(['id', 'first_name', 'middle_name', 'last_name', 'email'])
             ->where(function ($builder) use ($q) {
-                $builder->where('name', 'like', '%' . $q . '%')
+                $builder->where('first_name', 'like', '%' . $q . '%')
+                    ->orWhere('middle_name', 'like', '%' . $q . '%')
+                    ->orWhere('last_name', 'like', '%' . $q . '%')
                     ->orWhere('email', 'like', '%' . $q . '%');
             })
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->limit(8)
             ->get();
 
         $this->multiUserSearchResults = $users->map(function (User $u) {
             return [
                 'id' => $u->id,
-                'name' => $u->name ?? '',
+                'name' => $u->display_name,
                 'email' => $u->email ?? '',
             ];
         })->all();
@@ -494,7 +500,7 @@ class FlightSearch extends Component
         }
 
         $this->multiSelectedUserId = $user->id;
-        $this->multiUserSearch = $user->name ?? '';
+        $this->multiUserSearch = $user->display_name;
         $this->multiUserSearchResults = [];
     }
 

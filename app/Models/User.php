@@ -19,10 +19,21 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'middle_name',
+        'last_name',
         'email',
         'password',
     ];
+
+    public function getDisplayNameAttribute(): string
+    {
+        $first = trim((string) ($this->first_name ?? ''));
+        $middle = trim((string) ($this->middle_name ?? ''));
+        $last = trim((string) ($this->last_name ?? ''));
+
+        return trim(implode(' ', array_values(array_filter([$first, $middle, $last], fn ($v) => $v !== ''))));
+    }
 
     /**
      * The attributes that should be hidden for serialization.

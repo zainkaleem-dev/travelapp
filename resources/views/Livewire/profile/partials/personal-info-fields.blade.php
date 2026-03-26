@@ -10,6 +10,12 @@
                 placeholder="First name" wire:model.defer="first_name" />
         </div>
         <div>
+            <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Middle name</label>
+            <input type="text"
+                class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0]"
+                placeholder="Middle name" wire:model.defer="middle_name" />
+        </div>
+        <div>
             <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Last name</label>
             <input type="text"
                 class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0]"

@@ -37,10 +37,10 @@
                     {{-- ── Form ──────────────────────────────────── --}}
                     <form wire:submit="register" novalidate>
 
-                        {{-- Name --}}
+                        {{-- First name --}}
                         <div class="fu3">
-                            <label for="name" class="block text-gray-600 font-medium mb-1.5" style="font-size:11px">
-                                Name
+                            <label for="first_name" class="block text-gray-600 font-medium mb-1.5" style="font-size:11px">
+                                First name
                             </label>
                             <div class="relative">
                                 <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -49,11 +49,53 @@
                                         <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                                     </svg>
                                 </div>
-                                <input wire:model.live.debounce.400ms="name" id="name" type="text"
-                                    placeholder="Your full name" autocomplete="name"
-                                    class="input-field @error('name') border-red-400 bg-red-50 @enderror" />
+                                <input wire:model.live.debounce.400ms="first_name" id="first_name" type="text"
+                                    placeholder="First name" autocomplete="given-name"
+                                    class="input-field @error('first_name') border-red-400 bg-red-50 @enderror" />
                             </div>
-                            @error('name')
+                            @error('first_name')
+                                <p class="mt-1 text-red-500" style="font-size:10px">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Middle name (optional) --}}
+                        <div class="fu3 mt-4">
+                            <label for="middle_name" class="block text-gray-600 font-medium mb-1.5" style="font-size:11px">
+                                Middle name (optional)
+                            </label>
+                            <div class="relative">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="8" r="4" />
+                                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                                    </svg>
+                                </div>
+                                <input wire:model.live.debounce.400ms="middle_name" id="middle_name" type="text"
+                                    placeholder="Middle name" autocomplete="additional-name"
+                                    class="input-field @error('middle_name') border-red-400 bg-red-50 @enderror" />
+                            </div>
+                            @error('middle_name')
+                                <p class="mt-1 text-red-500" style="font-size:10px">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Last name --}}
+                        <div class="fu3 mt-4">
+                            <label for="last_name" class="block text-gray-600 font-medium mb-1.5" style="font-size:11px">
+                                Last name
+                            </label>
+                            <div class="relative">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="8" r="4" />
+                                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                                    </svg>
+                                </div>
+                                <input wire:model.live.debounce.400ms="last_name" id="last_name" type="text"
+                                    placeholder="Last name" autocomplete="family-name"
+                                    class="input-field @error('last_name') border-red-400 bg-red-50 @enderror" />
+                            </div>
+                            @error('last_name')
                                 <p class="mt-1 text-red-500" style="font-size:10px">{{ $message }}</p>
                             @enderror
                         </div>

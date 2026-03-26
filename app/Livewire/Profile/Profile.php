@@ -23,21 +23,13 @@ class Profile extends Component
             return;
         }
 
+        $this->first_name = $user->first_name ?? null;
+        $this->middle_name = $user->middle_name ?? null;
+        $this->last_name = $user->last_name ?? null;
         $this->email = $user->email ?? '';
-
-        // Split full name into first/last (best-effort).
-        $name = trim((string) ($user->name ?? ''));
-        if ($name !== '') {
-            $parts = preg_split('/\s+/', $name);
-            $this->first_name = $parts[0] ?? null;
-            $this->last_name = count($parts) > 1 ? implode(' ', array_slice($parts, 1)) : null;
-        }
 
         $pi = UserPersonalInfo::query()->where('user_id', $user->id)->first();
         if ($pi) {
-            $this->first_name = $pi->first_name ?? $this->first_name;
-            $this->last_name = $pi->last_name ?? $this->last_name;
-            $this->email = $pi->email ?? $this->email;
             $this->phone = $pi->phone;
             $this->dob = $pi->dob?->format('Y-m-d') ?? $this->dob;
             $this->gender = $pi->gender;
@@ -70,18 +62,16 @@ class Profile extends Component
             return;
         }
 
-        // Update users table (name/email) as requested.
-        $fullName = trim(sprintf('%s %s', (string) ($this->first_name ?? ''), (string) ($this->last_name ?? '')));
-        $user->name = $fullName !== '' ? $fullName : ($user->name ?? '');
+        // Update users table (first/middle/last/email).
+        $user->first_name = $this->first_name;
+        $user->middle_name = $this->middle_name;
+        $user->last_name = $this->last_name;
         $user->email = $this->email;
         $user->save();
 
         // Update personal info table.
         $pi = UserPersonalInfo::query()->firstOrNew(['user_id' => $user->id]);
         $attributes = $this->personalInfoFormToArray();
-        $pi->email = $attributes['email'];
-        $pi->first_name = $attributes['first_name'];
-        $pi->last_name = $attributes['last_name'];
         $pi->phone = $attributes['phone'];
         $pi->dob = $attributes['dob'];
         $pi->gender = $attributes['gender'];

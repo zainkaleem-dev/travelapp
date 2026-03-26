@@ -2,13 +2,20 @@
 
 namespace App\Livewire\Auth;
 
+use App\Models\UserPersonalInfo;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
 class SignUp extends Component
 {
-    #[Rule('required|string|min:2|max:100')]
-    public string $name = '';
+    #[Rule('required|string|min:2|max:60')]
+    public string $first_name = '';
+
+    #[Rule('nullable|string|min:1|max:60')]
+    public string $middle_name = '';
+
+    #[Rule('required|string|min:1|max:60')]
+    public string $last_name = '';
 
     #[Rule('required|email|unique:users,email')]
     public string $email = '';
@@ -44,9 +51,16 @@ class SignUp extends Component
         }
 
         $user = \App\Models\User::create([
-            'name' => $this->name,
+            'first_name' => $this->first_name,
+            'middle_name' => trim($this->middle_name) !== '' ? $this->middle_name : null,
+            'last_name' => $this->last_name,
             'email' => $this->email,
             'password' => bcrypt($this->password),
+        ]);
+
+        // Keep user_personal_infos in sync for newly created accounts.
+        UserPersonalInfo::query()->firstOrCreate([
+            'user_id' => $user->id,
         ]);
 
         $user->sendEmailVerificationNotification();
