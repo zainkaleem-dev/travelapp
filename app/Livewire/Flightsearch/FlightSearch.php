@@ -3,6 +3,7 @@
 namespace App\Livewire\Flightsearch;
 
 use App\Models\UserSetting;
+use App\Models\User;
 use App\Services\AmadeusService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -50,6 +51,9 @@ class FlightSearch extends Component
     // ── Return fields ──────────────────────────────────────────────────
     public string $returnDep = '';
     public string $returnArr = '';
+    public string $returnUserSearch = ''; // "Users" dropdown search (Return trip)
+    public ?int $returnSelectedUserId = null;
+    public array $returnUserSearchResults = [];
     public string $returnDepDate = '';
     public string $returnRetDate = '';
     public string $returnPax = '1 Adult';
@@ -62,6 +66,9 @@ class FlightSearch extends Component
     // ── One-way fields ─────────────────────────────────────────────────
     public string $onewayDep = '';
     public string $onewayArr = '';
+    public string $onewayUserSearch = ''; // "Users" dropdown search (One-way trip)
+    public ?int $onewaySelectedUserId = null;
+    public array $onewayUserSearchResults = [];
     public string $onewayDepDate = '';
     public string $onewayPax = '1 Adult';
     public string $onewayClass = 'Economy Class';
@@ -75,6 +82,9 @@ class FlightSearch extends Component
         ['dep' => '', 'arr' => '', 'date' => ''],
         ['dep' => '', 'arr' => '', 'date' => ''],
     ];
+    public string $multiUserSearch = ''; // "Users" dropdown search (Multi-city trip)
+    public ?int $multiSelectedUserId = null;
+    public array $multiUserSearchResults = [];
     public string $multiPax = '1 Adult';
     public string $multiClass = 'Economy Class';
     public bool $multiFlexible = false;
@@ -307,6 +317,192 @@ class FlightSearch extends Component
     public function doneSearching(): void
     {
         $this->searching = false;
+    }
+
+    public function updatedReturnUserSearch(): void
+    {
+        $q = trim($this->returnUserSearch);
+
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->returnUserSearchResults = [];
+            return;
+        }
+
+        $this->fetchUsers($q);
+    }
+
+    /**
+     * Search users by name/email for the Return "Users" dropdown.
+     */
+    public function fetchUsers(string $query): void
+    {
+        $q = trim($query);
+
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->returnUserSearchResults = [];
+            return;
+        }
+
+        $users = User::query()
+            ->select(['id', 'name', 'email'])
+            ->where(function ($builder) use ($q) {
+                $builder->where('name', 'like', '%' . $q . '%')
+                    ->orWhere('email', 'like', '%' . $q . '%');
+            })
+            ->orderBy('name')
+            ->limit(8)
+            ->get();
+
+        $this->returnUserSearchResults = $users->map(function (User $u) {
+            return [
+                'id' => $u->id,
+                'name' => $u->name ?? '',
+                'email' => $u->email ?? '',
+            ];
+        })->all();
+    }
+
+    public function selectReturnUser(int $userId): void
+    {
+        $user = User::query()->find($userId);
+        if (!$user) {
+            return;
+        }
+
+        $this->returnSelectedUserId = $user->id;
+        $this->returnUserSearch = $user->name ?? '';
+        $this->returnUserSearchResults = [];
+    }
+
+    public function clearReturnUser(): void
+    {
+        $this->returnSelectedUserId = null;
+        $this->returnUserSearch = '';
+        $this->returnUserSearchResults = [];
+    }
+
+    public function updatedOnewayUserSearch(): void
+    {
+        $q = trim($this->onewayUserSearch);
+
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->onewayUserSearchResults = [];
+            return;
+        }
+
+        $this->fetchOnewayUsers($q);
+    }
+
+    /**
+     * Search users by name/email for the One-way "Users" dropdown.
+     */
+    public function fetchOnewayUsers(string $query): void
+    {
+        $q = trim($query);
+
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->onewayUserSearchResults = [];
+            return;
+        }
+
+        $users = User::query()
+            ->select(['id', 'name', 'email'])
+            ->where(function ($builder) use ($q) {
+                $builder->where('name', 'like', '%' . $q . '%')
+                    ->orWhere('email', 'like', '%' . $q . '%');
+            })
+            ->orderBy('name')
+            ->limit(8)
+            ->get();
+
+        $this->onewayUserSearchResults = $users->map(function (User $u) {
+            return [
+                'id' => $u->id,
+                'name' => $u->name ?? '',
+                'email' => $u->email ?? '',
+            ];
+        })->all();
+    }
+
+    public function selectOnewayUser(int $userId): void
+    {
+        $user = User::query()->find($userId);
+        if (!$user) {
+            return;
+        }
+
+        $this->onewaySelectedUserId = $user->id;
+        $this->onewayUserSearch = $user->name ?? '';
+        $this->onewayUserSearchResults = [];
+    }
+
+    public function clearOnewayUser(): void
+    {
+        $this->onewaySelectedUserId = null;
+        $this->onewayUserSearch = '';
+        $this->onewayUserSearchResults = [];
+    }
+
+    public function updatedMultiUserSearch(): void
+    {
+        $q = trim($this->multiUserSearch);
+
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->multiUserSearchResults = [];
+            return;
+        }
+
+        $this->fetchMultiUsers($q);
+    }
+
+    /**
+     * Search users by name/email for the Multi-city "Users" dropdown.
+     */
+    public function fetchMultiUsers(string $query): void
+    {
+        $q = trim($query);
+
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->multiUserSearchResults = [];
+            return;
+        }
+
+        $users = User::query()
+            ->select(['id', 'name', 'email'])
+            ->where(function ($builder) use ($q) {
+                $builder->where('name', 'like', '%' . $q . '%')
+                    ->orWhere('email', 'like', '%' . $q . '%');
+            })
+            ->orderBy('name')
+            ->limit(8)
+            ->get();
+
+        $this->multiUserSearchResults = $users->map(function (User $u) {
+            return [
+                'id' => $u->id,
+                'name' => $u->name ?? '',
+                'email' => $u->email ?? '',
+            ];
+        })->all();
+    }
+
+    public function selectMultiUser(int $userId): void
+    {
+        $user = User::query()->find($userId);
+        if (!$user) {
+            return;
+        }
+
+        $this->multiSelectedUserId = $user->id;
+        $this->multiUserSearch = $user->name ?? '';
+        $this->multiUserSearchResults = [];
+    }
+
+    public function clearMultiUser(): void
+    {
+        $this->multiSelectedUserId = null;
+        $this->multiUserSearch = '';
+        $this->multiUserSearchResults = [];
     }
 
     private function getLocationsCacheFilePath(): string

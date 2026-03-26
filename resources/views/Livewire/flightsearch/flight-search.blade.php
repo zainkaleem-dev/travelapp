@@ -559,13 +559,14 @@
                                 {{-- New box (main flight search: right-most in row) --}}
                                 <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
                                     @click.outside="show = false">
-                                    <span class="field-label">New box</span>
+                                    <span class="field-label">Users</span>
                                     <input class="field-input" type="text"
-                                        wire:model.live.debounce.150ms="returnDep" wire:key="return-main-newdep-input"
-                                        @focus="show = true" placeholder="New functionality" autocomplete="off">
+                                        wire:model.live.debounce.150ms="returnUserSearch"
+                                        wire:key="return-main-usersearch-input"
+                                        @focus="show = true" placeholder="Search users" autocomplete="off">
 
-                                    @if($returnDep)
-                                        <button class="field-clear" wire:click.stop="$set('returnDep', '')"
+                                    @if($returnUserSearch)
+                                        <button class="field-clear" wire:click.stop="clearReturnUser()"
                                             title="Clear">×</button>
                                     @endif
 
@@ -587,29 +588,22 @@
                                         <div class="h-px bg-gray-100"></div>
                                         <div class="max-h-72 overflow-auto">
                                             @php
-                                                $items = $this->airportSearchResults;
+                                                $items = $this->returnUserSearchResults;
                                             @endphp
-                                            @if($searchType === 'returnDep')
-                                                @forelse($items as $a)
-                                                    @php
-                                                        $display = $a['city'] . ' (' . $a['code'] . ')';
-                                                    @endphp
-                                                    <button type="button"
-                                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                        wire:click.stop="selectReturnDepAirport('{{ $display }}')" @click="show = false">
-                                                        <div>
-                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                                {{ $a['country'] }}
-                                                            </div>
-                                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                                        </div>
-                                                        <span
-                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                                    </button>
-                                                @empty
-                                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                                @endforelse
-                                            @endif
+                                            @forelse($items as $u)
+                                                <button type="button"
+                                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                    wire:click.stop="selectReturnUser({{ $u['id'] }})" @click="show = false">
+                                                    <div>
+                                                        <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
+                                                        <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
+                                                    </div>
+                                                    <span
+                                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+                                                </button>
+                                            @empty
+                                                <div class="px-4 py-3 text-sm text-gray-500">No users</div>
+                                            @endforelse
                                         </div>
                                     </div>
                                 </div>
@@ -619,13 +613,14 @@
                                 {{-- New box (duplicate departure airport behaviour) --}}
                                 <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
                                     @click.outside="show = false">
-                                    <span class="field-label">New box</span>
+                                    <span class="field-label">Users</span>
                                     <input class="field-input" type="text"
-                                        wire:model.live.debounce.150ms="returnDep" wire:key="return-newdep-input"
-                                        @focus="show = true" placeholder="New functionality" autocomplete="off">
+                                        wire:model.live.debounce.150ms="returnUserSearch"
+                                        wire:key="return-usersearch-input"
+                                        @focus="show = true" placeholder="Search users" autocomplete="off">
 
-                                    @if($returnDep)
-                                        <button class="field-clear" wire:click.stop="$set('returnDep', '')"
+                                    @if($returnUserSearch)
+                                        <button class="field-clear" wire:click.stop="clearReturnUser()"
                                             title="Clear">×</button>
                                     @endif
 
@@ -647,29 +642,22 @@
                                         <div class="h-px bg-gray-100"></div>
                                         <div class="max-h-72 overflow-auto">
                                             @php
-                                                $items = $this->airportSearchResults;
+                                                $items = $this->returnUserSearchResults;
                                             @endphp
-                                            @if($searchType === 'returnDep')
-                                                @forelse($items as $a)
-                                                    @php
-                                                        $display = $a['city'] . ' (' . $a['code'] . ')';
-                                                    @endphp
-                                                    <button type="button"
-                                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                        wire:click.stop="selectReturnDepAirport('{{ $display }}')" @click="show = false">
-                                                        <div>
-                                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                                {{ $a['country'] }}
-                                                            </div>
-                                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                                        </div>
-                                                        <span
-                                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                                    </button>
-                                                @empty
-                                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                                @endforelse
-                                            @endif
+                                            @forelse($items as $u)
+                                                <button type="button"
+                                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                                    wire:click.stop="selectReturnUser({{ $u['id'] }})" @click="show = false">
+                                                    <div>
+                                                        <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
+                                                        <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
+                                                    </div>
+                                                    <span
+                                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+                                                </button>
+                                            @empty
+                                                <div class="px-4 py-3 text-sm text-gray-500">No users</div>
+                                            @endforelse
                                         </div>
                                     </div>
                                 </div>
@@ -1006,65 +994,6 @@ PANEL: ONE WAY
                 </div>
             </div>
 
-            @empty($quick)
-                {{-- New box (main one-way form: same behaviour as quick new box) --}}
-                <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
-                    @click.outside="show = false">
-                    <span class="field-label">New box</span>
-                    <input class="field-input" type="text"
-                        wire:model.live.debounce.150ms="onewayDep" wire:key="oneway-main-newdep-input"
-                        @focus="show = true" placeholder="New functionality" autocomplete="off">
-
-                    @if($onewayDep)
-                        <button class="field-clear" wire:click.stop="$set('onewayDep', '')"
-                            title="Clear">×</button>
-                    @endif
-
-                    <div x-cloak x-show="show"
-                        class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                        style="min-width: 280px;">
-                        <div class="px-4 py-3">
-                            <div class="flex items-center gap-2 text-xs text-gray-500">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                    <circle cx="12" cy="11" r="2" />
-                                </svg>
-                                <span>All locations</span>
-                            </div>
-                        </div>
-                        <div class="h-px bg-gray-100"></div>
-                        <div class="max-h-72 overflow-auto">
-                            @php
-                                $items = $this->airportSearchResults;
-                            @endphp
-                            @if($searchType === 'onewayDep')
-                                @forelse($items as $a)
-                                    @php
-                                        $display = $a['city'] . ' (' . $a['code'] . ')';
-                                    @endphp
-                                    <button type="button"
-                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                        wire:click.stop="selectOnewayDepAirport('{{ $display }}')" @click="show = false">
-                                        <div>
-                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                {{ $a['country'] }}
-                                            </div>
-                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                        </div>
-                                        <span
-                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                    </button>
-                                @empty
-                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                @endforelse
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @endempty
 
 	            <div class="field-wrap" style="position:relative;"
 	                x-data="{ open: false, selected: @entangle('onewayClass') }" @click.outside="open = false">
@@ -1113,61 +1042,165 @@ PANEL: ONE WAY
 	                </div>
 	            </div>
 
-	            <div class="field-wrap" style="position:relative;"
-	                x-data="{ open: false, selected: @entangle('currency') }" @click.outside="open = false">
-	                <span class="field-label">Currency</span>
+                @empty($quick)
+                    <div class="field-wrap" style="position:relative;"
+                        x-data="{ open: false, selected: @entangle('currency') }" @click.outside="open = false">
+                        <span class="field-label">Currency</span>
 
-	                <button type="button" class="field-select text-left w-full flex items-center justify-between"
-	                    @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
-	                    <span class="text-gray-900" x-text="selected"></span>
-	                    <span class="select-arrow static">
-	                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
-	                            stroke="currentColor" viewBox="0 0 24 24">
-	                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </span>
-                </button>
+                        <button type="button" class="field-select text-left w-full flex items-center justify-between"
+                            @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
+                            <span class="text-gray-900" x-text="selected"></span>
+                            <span class="select-arrow static">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </button>
 
-                <div x-cloak x-show="open" x-transition
-                    class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
-                    style="min-width: 210px;">
-                    <div class="px-4 py-3">
-                        <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
-                        <div class="h-px bg-gray-100 mt-2"></div>
+                        <div x-cloak x-show="open" x-transition
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            style="min-width: 210px;">
+                            <div class="px-4 py-3">
+                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
+                                <div class="h-px bg-gray-100 mt-2"></div>
+                            </div>
+
+                            <div class="py-2">
+                                @foreach($currencies as $code => $label)
+                                    <button type="button"
+                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+                                        @click.prevent="selected = '{{ $code }}'; open = false">
+                                        <span
+                                            :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
+                                            {{ $label }}
+                                        </span>
+                                        <svg x-cloak x-show="selected === '{{ $code }}'" class="w-4 h-4 text-[#2ab4c0]"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
+                @endempty
 
-	                    <div class="py-2">
-	                        @foreach($currencies as $code => $label)
-	                            <button type="button"
-	                                class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-	                                @click.prevent="selected = '{{ $code }}'; open = false">
-	                                <span
-	                                    :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
-	                                    {{ $label }}
-	                                </span>
-	                                <svg x-cloak x-show="selected === '{{ $code }}'" class="w-4 h-4 text-[#2ab4c0]"
-	                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-	                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-	                                        d="M5 13l4 4L19 7" />
-	                                </svg>
-	                            </button>
-	                        @endforeach
-	                    </div>
-	                </div>
-	            </div>
+                @empty($quick)
+                    {{-- New box (main one-way form: users dropdown) --}}
+                    <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
+                        @click.outside="show = false">
+                        <span class="field-label">Users</span>
+                        <input class="field-input" type="text"
+                            wire:model.live.debounce.150ms="onewayUserSearch"
+                            wire:key="oneway-main-usersearch-input"
+                            @focus="show = true" placeholder="Search users" autocomplete="off">
+
+                        @if($onewayUserSearch)
+                            <button class="field-clear" wire:click.stop="clearOnewayUser()"
+                                title="Clear">×</button>
+                        @endif
+
+                        <div x-cloak x-show="show"
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                            style="min-width: 280px;">
+                            <div class="px-4 py-3">
+                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
+                                        <circle cx="12" cy="11" r="2" />
+                                    </svg>
+                                    <span>All locations</span>
+                                </div>
+                            </div>
+                            <div class="h-px bg-gray-100"></div>
+                            <div class="max-h-72 overflow-auto">
+                                @php
+                                    $items = $this->onewayUserSearchResults;
+                                @endphp
+                                @forelse($items as $u)
+                                    <button type="button"
+                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                        wire:click.stop="selectOnewayUser({{ $u['id'] }})" @click="show = false">
+                                        <div>
+                                            <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
+                                            <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
+                                        </div>
+                                        <span
+                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+                                    </button>
+                                @empty
+                                    <div class="px-4 py-3 text-sm text-gray-500">No users</div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                @endempty
+
+                @if(!empty($quick))
+                    <div class="field-wrap" style="position:relative;"
+                        x-data="{ open: false, selected: @entangle('currency') }" @click.outside="open = false">
+                        <span class="field-label">Currency</span>
+
+                        <button type="button" class="field-select text-left w-full flex items-center justify-between"
+                            @click="open = !open" aria-haspopup="listbox" :aria-expanded="open">
+                            <span class="text-gray-900" x-text="selected"></span>
+                            <span class="select-arrow static">
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div x-cloak x-show="open" x-transition
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
+                            style="min-width: 210px;">
+                            <div class="px-4 py-3">
+                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
+                                <div class="h-px bg-gray-100 mt-2"></div>
+                            </div>
+
+                            <div class="py-2">
+                                @foreach($currencies as $code => $label)
+                                    <button type="button"
+                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+                                        @click.prevent="selected = '{{ $code }}'; open = false">
+                                        <span
+                                            :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
+                                            {{ $label }}
+                                        </span>
+                                        <svg x-cloak x-show="selected === '{{ $code }}'" class="w-4 h-4 text-[#2ab4c0]"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                     @if(!empty($quick))
                         {{-- New box (duplicate departure airport behaviour) --}}
                         <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
                             @click.outside="show = false">
-                            <span class="field-label">New box</span>
+                    <span class="field-label">Users</span>
                             <input class="field-input" type="text"
-                                wire:model.live.debounce.150ms="onewayDep" wire:key="oneway-newdep-input"
-                                @focus="show = true" placeholder="New functionality" autocomplete="off">
+                        wire:model.live.debounce.150ms="onewayUserSearch"
+                        wire:key="oneway-new-usersearch-input"
+                        @focus="show = true" placeholder="Search users" autocomplete="off">
 
-                            @if($onewayDep)
-                                <button class="field-clear" wire:click.stop="$set('onewayDep', '')"
-                                    title="Clear">×</button>
+                    @if($onewayUserSearch)
+                        <button class="field-clear" wire:click.stop="clearOnewayUser()"
+                            title="Clear">×</button>
                             @endif
 
                             <div x-cloak x-show="show"
@@ -1188,29 +1221,22 @@ PANEL: ONE WAY
                                 <div class="h-px bg-gray-100"></div>
                                 <div class="max-h-72 overflow-auto">
                                     @php
-                                        $items = $this->airportSearchResults;
+                                $items = $this->onewayUserSearchResults;
                                     @endphp
-                                    @if($searchType === 'onewayDep')
-                                        @forelse($items as $a)
-                                            @php
-                                                $display = $a['city'] . ' (' . $a['code'] . ')';
-                                            @endphp
-                                            <button type="button"
-                                                class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                wire:click.stop="selectOnewayDepAirport('{{ $display }}')" @click="show = false">
-                                                <div>
-                                                    <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
-                                                        {{ $a['country'] }}
-                                                    </div>
-                                                    <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                                </div>
-                                                <span
-                                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                            </button>
-                                        @empty
-                                            <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                        @endforelse
-                                    @endif
+                            @forelse($items as $u)
+                                <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                    wire:click.stop="selectOnewayUser({{ $u['id'] }})" @click="show = false">
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
+                                        <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
+                                    </div>
+                                    <span
+                                        class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+                                </button>
+                            @empty
+                                <div class="px-4 py-3 text-sm text-gray-500">No users</div>
+                            @endforelse
                                 </div>
                             </div>
                         </div>
@@ -1677,13 +1703,13 @@ PANEL: MULTI-CITY
                 {{-- New box (multi-city quick search) --}}
                 <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
                     @click.outside="show = false">
-                    <span class="field-label">New box</span>
+                    <span class="field-label">Users</span>
                     <input class="field-input" type="text"
-                        wire:model.live.debounce.150ms="multiFlights.0.dep" wire:key="multi-newbox-input"
-                        @focus="show = true" placeholder="New functionality" autocomplete="off">
+                        wire:model.live.debounce.150ms="multiUserSearch" wire:key="multi-newbox-usersearch-input"
+                        @focus="show = true" placeholder="Search users" autocomplete="off">
 
-                    @if($multiFlights[0]['dep'] ?? false)
-                        <button class="field-clear" wire:click.stop="$set('multiFlights.0.dep', '')"
+                    @if($multiUserSearch)
+                        <button class="field-clear" wire:click.stop="clearMultiUser()"
                             title="Clear">×</button>
                     @endif
 
@@ -1702,23 +1728,20 @@ PANEL: MULTI-CITY
                         </div>
                         <div class="h-px bg-gray-100"></div>
                         <div class="max-h-72 overflow-auto">
-                            @php $items = $this->airportSearchResults; @endphp
-                            @if($searchType === 'multi.0.dep')
-                                @forelse($items as $a)
-                                    @php $display = $a['city'] . ' (' . $a['code'] . ')'; @endphp
-                                    <button type="button"
-                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                        wire:click.stop="selectMultiDepAirport(0, '{{ $display }}')" @click="show = false">
-                                        <div>
-                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
-                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                        </div>
-                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                    </button>
-                                @empty
-                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                @endforelse
-                            @endif
+                            @php $items = $this->multiUserSearchResults; @endphp
+                            @forelse($items as $u)
+                                <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                    wire:click.stop="selectMultiUser({{ $u['id'] }})" @click="show = false">
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
+                                        <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
+                                    </div>
+                                    <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+                                </button>
+                            @empty
+                                <div class="px-4 py-3 text-sm text-gray-500">No users</div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -1728,13 +1751,13 @@ PANEL: MULTI-CITY
                 {{-- New box (main multi-city form) --}}
                 <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
                     @click.outside="show = false">
-                    <span class="field-label">New box</span>
+                    <span class="field-label">Users</span>
                     <input class="field-input" type="text"
-                        wire:model.live.debounce.150ms="multiFlights.0.dep" wire:key="multi-main-newbox-input"
-                        @focus="show = true" placeholder="New functionality" autocomplete="off">
+                        wire:model.live.debounce.150ms="multiUserSearch" wire:key="multi-main-usersearch-input"
+                        @focus="show = true" placeholder="Search users" autocomplete="off">
 
-                    @if($multiFlights[0]['dep'] ?? false)
-                        <button class="field-clear" wire:click.stop="$set('multiFlights.0.dep', '')"
+                    @if($multiUserSearch)
+                        <button class="field-clear" wire:click.stop="clearMultiUser()"
                             title="Clear">×</button>
                     @endif
 
@@ -1753,23 +1776,20 @@ PANEL: MULTI-CITY
                         </div>
                         <div class="h-px bg-gray-100"></div>
                         <div class="max-h-72 overflow-auto">
-                            @php $items = $this->airportSearchResults; @endphp
-                            @if($searchType === 'multi.0.dep')
-                                @forelse($items as $a)
-                                    @php $display = $a['city'] . ' (' . $a['code'] . ')'; @endphp
-                                    <button type="button"
-                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                        wire:click.stop="selectMultiDepAirport(0, '{{ $display }}')" @click="show = false">
-                                        <div>
-                                            <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }}, {{ $a['country'] }}</div>
-                                            <div class="text-xs text-gray-500">{{ $a['airport'] }}</div>
-                                        </div>
-                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $a['code'] }}</span>
-                                    </button>
-                                @empty
-                                    <div class="px-4 py-3 text-sm text-gray-500">No results</div>
-                                @endforelse
-                            @endif
+                            @php $items = $this->multiUserSearchResults; @endphp
+                            @forelse($items as $u)
+                                <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                                    wire:click.stop="selectMultiUser({{ $u['id'] }})" @click="show = false">
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
+                                        <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
+                                    </div>
+                                    <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+                                </button>
+                            @empty
+                                <div class="px-4 py-3 text-sm text-gray-500">No users</div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
