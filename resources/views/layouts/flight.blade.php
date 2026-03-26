@@ -452,23 +452,6 @@
             scrollbar-width: none;
             /* Firefox */
         }
-
-        @keyframes page-line-loading {
-            0% {
-                left: -30%;
-                width: 30%;
-            }
-
-            50% {
-                left: 40%;
-                width: 35%;
-            }
-
-            100% {
-                left: 100%;
-                width: 30%;
-            }
-        }
     </style>
 
 </head>

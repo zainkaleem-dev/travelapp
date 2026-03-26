@@ -91,20 +91,6 @@
 
             {{-- Sort tabs --}}
             <div class="flex items-center bg-white border-b border-gray-200 px-2 gap-1 overflow-x-auto overflow-y-hidden no-scrollbar relative">
-                {{-- Sorting Loading Indicator --}}
-                <div wire:loading wire:target="search,clearFilters" class="absolute inset-x-0 bottom-0 h-1 bg-[#2ab4c0]/20 overflow-hidden z-50">
-                    <div class="h-full bg-[#2ab4c0] sliding-loader" style="width: 35%; background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);"></div>
-                </div>
-
-                <style>
-                    .sliding-loader {
-                        animation: sliding-loading 1s infinite linear;
-                    }
-                    @keyframes sliding-loading {
-                        from { transform: translateX(-100%); }
-                        to { transform: translateX(300%); }
-                    }
-                </style>
 
                 @foreach([
                         'best' => 'Best Value',
