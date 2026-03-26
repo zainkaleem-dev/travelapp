@@ -446,13 +446,18 @@
             display: none;
         }
 
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            /* IE and Edge */
-            scrollbar-width: none;
-            /* Firefox */
-        }
-    </style>
+	        .no-scrollbar {
+	            -ms-overflow-style: none;
+	            /* IE and Edge */
+	            scrollbar-width: none;
+	            /* Firefox */
+	        }
+
+	        /* Hide Livewire navigate top progress bar (one-time toggle via html[data-hide-nprogress]) */
+	        html[data-hide-nprogress="1"] #nprogress {
+	            display: none !important;
+	        }
+	    </style>
 
 </head>
 
@@ -732,16 +737,24 @@
         {{ $slot }}
     </div>
 
-    <script>
-        // Close on ESC
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (document.body.__x && document.body.__x.$data && typeof document.body.__x.$data.searchOpen !== 'undefined') {
-                    document.body.__x.$data.searchOpen = false;
-                }
-            }
-        });
-    </script>
+	    <script>
+	        // Close on ESC
+	        window.addEventListener('keydown', (e) => {
+	            if (e.key === 'Escape') {
+	                if (document.body.__x && document.body.__x.$data && typeof document.body.__x.$data.searchOpen !== 'undefined') {
+	                    document.body.__x.$data.searchOpen = false;
+	                }
+	            }
+	        });
+
+	        // If we hid the progress bar for a single navigation, restore default for the next one.
+	        document.addEventListener('livewire:navigated', () => {
+	            document.documentElement.removeAttribute('data-hide-nprogress');
+	        });
+	        document.addEventListener('alpine:navigated', () => {
+	            document.documentElement.removeAttribute('data-hide-nprogress');
+	        });
+	    </script>
 
     @livewireScripts
 </body>

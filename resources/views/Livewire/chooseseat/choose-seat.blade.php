@@ -565,8 +565,8 @@
 
                             {{-- Primary Action Buttons (same line) --}}
                             <div class="flex flex-wrap gap-3 pt-2">
-                                <button wire:click="back" wire:loading.attr="disabled" wire:target="back"
-                                    class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
+	                                <button wire:click="back" wire:loading.attr="disabled" wire:target="back" onclick="document.documentElement.setAttribute('data-hide-nprogress','1')"
+	                                    class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
                                     <span wire:loading.remove wire:target="back" class="flex items-center gap-2">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -581,11 +581,11 @@
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                     </svg>
                                 </button>
-                                <button wire:click="goToPassengerDetails" wire:loading.attr="disabled"
-                                    class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group">
-                                    <span wire:loading.remove wire:target="goToPassengerDetails" class="flex items-center gap-2">
-                                        Continue
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	                                <button wire:click="goToPassengerDetails" wire:loading.attr="disabled" onclick="document.documentElement.setAttribute('data-hide-nprogress','1')"
+	                                    class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group">
+	                                    <span wire:loading.remove wire:target="goToPassengerDetails" class="flex items-center gap-2">
+	                                        Continue
+	                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                 d="M9 5l7 7-7 7" />
                                         </svg>
