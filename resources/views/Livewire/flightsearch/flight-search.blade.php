@@ -372,7 +372,7 @@
                         </div>
 
                         {{-- Row 2 --}}
-                        <div class="grid grid-cols-1 {{ !empty($quick) ? 'md:grid-cols-3 lg:grid-cols-5' : 'md:grid-cols-4' }} gap-3 items-stretch return-second-row">
+        <div class="grid grid-cols-1 {{ !empty($quick) ? 'md:grid-cols-3 lg:grid-cols-6' : 'md:grid-cols-5' }} gap-3 items-stretch return-second-row">
 
                             <div class="field-wrap" style="position:relative;"
                                 x-data="paxDropdown({ adults: @entangle('returnAdults'), children: @entangle('returnChildren'), infants: @entangle('returnInfants') })"
@@ -608,6 +608,59 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {{-- Airlines Dropdown (Standard) --}}
+                                <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
+                                    <span class="field-label">Airlines</span>
+                                    <input class="field-input" type="text"
+                                        wire:model.live.debounce.150ms="returnAirlineSearch"
+                                        wire:key="return-main-airlinesearch-input"
+                                        @focus="show = true" placeholder="Search airlines" autocomplete="off">
+
+                                    @if($returnAirlineSearch)
+                                        <button class="field-clear" wire:click.stop="clearReturnAirline()" title="Clear">×</button>
+                                    @endif
+
+                                    <div x-cloak x-show="show"
+                                        class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                        style="min-width: 280px;">
+                                        <div class="px-4 py-3">
+                                            <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                </svg>
+                                                <span>Select Airline</span>
+                                            </div>
+                                        </div>
+                                        <div class="h-px bg-gray-100"></div>
+                                        <div class="max-h-72 overflow-auto">
+                                            @forelse($this->returnAirlineSearchResults as $a)
+                                                <button type="button"
+                                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between group transition-colors"
+                                                    wire:click.stop="selectReturnAirline('{{ $a['code'] }}', '{{ $a['name'] }}')" @click="show = false">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 p-1 group-hover:bg-white transition-colors">
+                                                            <img src="https://www.gstatic.com/flights/airline_logos/70px/{{ $a['code'] }}.png"
+                                                                alt="{{ $a['name'] }}"
+                                                                onerror="this.src='https://pics.avs.io/128/128/{{ $a['code'] }}.png'"
+                                                                class="w-full h-full object-contain">
+                                                        </div>
+                                                        <div>
+                                                            <div class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">{{ $a['name'] }}</div>
+                                                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
+                                                </button>
+                                            @empty
+                                                <div class="px-4 py-8 text-center">
+                                                    <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
+                                                    <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
+                                                </div>
+                                            @endforelse
+                                        </div>
+                                    </div>
+                                </div>
                             @endempty
 
                             @if(!empty($quick))
@@ -659,6 +712,59 @@
                                                 </button>
                                             @empty
                                                 <div class="px-4 py-3 text-sm text-gray-500">No users</div>
+                                            @endforelse
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Airlines Dropdown (Quick) --}}
+                                <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
+                                    <span class="field-label">Airlines</span>
+                                    <input class="field-input" type="text"
+                                        wire:model.live.debounce.150ms="returnAirlineSearch"
+                                        wire:key="return-qs-airlinesearch-input"
+                                        @focus="show = true" placeholder="Search airlines" autocomplete="off">
+
+                                    @if($returnAirlineSearch)
+                                        <button class="field-clear" wire:click.stop="clearReturnAirline()" title="Clear">×</button>
+                                    @endif
+
+                                    <div x-cloak x-show="show"
+                                        class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                        style="min-width: 280px;">
+                                        <div class="px-4 py-3">
+                                            <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                </svg>
+                                                <span>Select Airline</span>
+                                            </div>
+                                        </div>
+                                        <div class="h-px bg-gray-100"></div>
+                                        <div class="max-h-72 overflow-auto">
+                                            @forelse($this->returnAirlineSearchResults as $a)
+                                                <button type="button"
+                                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between group transition-colors"
+                                                    wire:click.stop="selectReturnAirline('{{ $a['code'] }}', '{{ $a['name'] }}')" @click="show = false">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 p-1 group-hover:bg-white transition-colors">
+                                                            <img src="https://www.gstatic.com/flights/airline_logos/70px/{{ $a['code'] }}.png"
+                                                                alt="{{ $a['name'] }}"
+                                                                onerror="this.src='https://pics.avs.io/128/128/{{ $a['code'] }}.png'"
+                                                                class="w-full h-full object-contain">
+                                                        </div>
+                                                        <div>
+                                                            <div class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">{{ $a['name'] }}</div>
+                                                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
+                                                </button>
+                                            @empty
+                                                <div class="px-4 py-8 text-center">
+                                                    <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
+                                                    <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
+                                                </div>
                                             @endforelse
                                         </div>
                                     </div>
@@ -910,7 +1016,7 @@ PANEL: ONE WAY
 
         </div>
 
-        <div class="grid grid-cols-1 {{ !empty($quick) ? 'md:grid-cols-3' : 'md:grid-cols-4' }} gap-3 items-stretch oneway-second-row">
+        <div class="grid grid-cols-1 {{ !empty($quick) ? 'md:grid-cols-3 lg:grid-cols-6' : 'md:grid-cols-5' }} gap-3 items-stretch oneway-second-row">
 
             <div class="field-wrap qs-oneway-pax" style="position:relative;"
                 x-data="paxDropdown({ adults: @entangle('onewayAdults'), children: @entangle('onewayChildren'), infants: @entangle('onewayInfants') })"
@@ -1088,6 +1194,59 @@ PANEL: ONE WAY
                             </div>
                         </div>
                     </div>
+
+                    {{-- Airlines Dropdown (Standard) --}}
+                    <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
+                        <span class="field-label">Airlines</span>
+                        <input class="field-input" type="text"
+                            wire:model.live.debounce.150ms="onewayAirlineSearch"
+                            wire:key="oneway-main-airlinesearch-input"
+                            @focus="show = true" placeholder="Search airlines" autocomplete="off">
+
+                        @if($onewayAirlineSearch)
+                            <button class="field-clear" wire:click.stop="clearOnewayAirline()" title="Clear">×</button>
+                        @endif
+
+                        <div x-cloak x-show="show"
+                            class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                            style="min-width: 280px;">
+                            <div class="px-4 py-3">
+                                <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                    </svg>
+                                    <span>Select Airline</span>
+                                </div>
+                            </div>
+                            <div class="h-px bg-gray-100"></div>
+                            <div class="max-h-72 overflow-auto">
+                                @forelse($this->onewayAirlineSearchResults as $a)
+                                    <button type="button"
+                                        class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between group transition-colors"
+                                        wire:click.stop="selectOnewayAirline('{{ $a['code'] }}', '{{ $a['name'] }}')" @click="show = false">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 p-1 group-hover:bg-white transition-colors">
+                                                <img src="https://www.gstatic.com/flights/airline_logos/70px/{{ $a['code'] }}.png"
+                                                    alt="{{ $a['name'] }}"
+                                                    onerror="this.src='https://pics.avs.io/128/128/{{ $a['code'] }}.png'"
+                                                    class="w-full h-full object-contain">
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">{{ $a['name'] }}</div>
+                                                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
+                                    </button>
+                                @empty
+                                    <div class="px-4 py-8 text-center">
+                                        <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
+                                        <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
                 @endempty
 
                 @empty($quick)
@@ -1242,9 +1401,61 @@ PANEL: ONE WAY
                                 <div class="px-4 py-3 text-sm text-gray-500">No users</div>
                             @endforelse
                                 </div>
-                            </div>
                         </div>
                     @endif
+
+                        {{-- Airlines Dropdown (Quick) --}}
+                        <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
+                            <span class="field-label">Airlines</span>
+                            <input class="field-input" type="text"
+                                wire:model.live.debounce.150ms="onewayAirlineSearch"
+                                wire:key="oneway-qs-airlinesearch-input"
+                                @focus="show = true" placeholder="Search airlines" autocomplete="off">
+
+                            @if($onewayAirlineSearch)
+                                <button class="field-clear" wire:click.stop="clearOnewayAirline()" title="Clear">×</button>
+                            @endif
+
+                            <div x-cloak x-show="show"
+                                class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                                style="min-width: 280px;">
+                                <div class="px-4 py-3">
+                                    <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                        </svg>
+                                        <span>Select Airline</span>
+                                    </div>
+                                </div>
+                                <div class="h-px bg-gray-100"></div>
+                                <div class="max-h-72 overflow-auto">
+                                    @forelse($this->onewayAirlineSearchResults as $a)
+                                        <button type="button"
+                                            class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between group transition-colors"
+                                            wire:click.stop="selectOnewayAirline('{{ $a['code'] }}', '{{ $a['name'] }}')" @click="show = false">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 p-1 group-hover:bg-white transition-colors">
+                                                    <img src="https://www.gstatic.com/flights/airline_logos/70px/{{ $a['code'] }}.png"
+                                                        alt="{{ $a['name'] }}"
+                                                        onerror="this.src='https://pics.avs.io/128/128/{{ $a['code'] }}.png'"
+                                                        class="w-full h-full object-contain">
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">{{ $a['name'] }}</div>
+                                                    <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
+                                                </div>
+                                            </div>
+                                            <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
+                                        </button>
+                                    @empty
+                                        <div class="px-4 py-8 text-center">
+                                            <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
+                                            <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
 
         </div>
 
@@ -1527,7 +1738,7 @@ PANEL: MULTI-CITY
 
         {{-- Passengers / Class / Search --}}
         <div class="multi-bottom-wrapper {{ !empty($quick) ? 'qs-multi-bottom-wrapper' : '' }}">
-        <div class="grid grid-cols-1 md:grid-cols-3 {{ !empty($quick) ? 'lg:grid-cols-4' : 'md:grid-cols-4' }} gap-3 items-stretch multi-second-row">
+        <div class="grid grid-cols-1 md:grid-cols-3 {{ !empty($quick) ? 'lg:grid-cols-6' : 'md:grid-cols-5' }} gap-3 items-stretch multi-second-row">
 
 	            <div class="field-wrap" style="position:relative;"
 	                x-data="paxDropdown({ adults: @entangle('multiAdults'), children: @entangle('multiChildren'), infants: @entangle('multiInfants') })"
@@ -1751,6 +1962,60 @@ PANEL: MULTI-CITY
                 </div>
             @endif
 
+            @if(!empty($quick))
+                {{-- Airlines Dropdown (Quick) --}}
+                <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
+                    <span class="field-label">Airlines</span>
+                    <input class="field-input" type="text"
+                        wire:model.live.debounce.150ms="multiAirlineSearch" wire:key="multi-qs-airlinesearch-input"
+                        @focus="show = true" placeholder="Search airlines" autocomplete="off">
+
+                    @if($multiAirlineSearch)
+                        <button class="field-clear" wire:click.stop="clearMultiAirline()" title="Clear">×</button>
+                    @endif
+
+                    <div x-cloak x-show="show"
+                        class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                        style="min-width: 280px;">
+                        <div class="px-4 py-3">
+                            <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                                <span>Select Airline</span>
+                            </div>
+                        </div>
+                        <div class="h-px bg-gray-100"></div>
+                        <div class="max-h-72 overflow-auto">
+                            @forelse($this->multiAirlineSearchResults as $a)
+                                <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between group transition-colors"
+                                    wire:click.stop="selectMultiAirline('{{ $a['code'] }}', '{{ $a['name'] }}')" @click="show = false">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 p-1 group-hover:bg-white transition-colors">
+                                            <img src="https://www.gstatic.com/flights/airline_logos/70px/{{ $a['code'] }}.png"
+                                                alt="{{ $a['name'] }}"
+                                                onerror="this.src='https://pics.avs.io/128/128/{{ $a['code'] }}.png'"
+                                                class="w-full h-full object-contain">
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">{{ $a['name'] }}</div>
+                                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
+                                </button>
+                            @empty
+                                <div class="px-4 py-8 text-center">
+                                    <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
+                                    <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             @empty($quick)
                 {{-- New box (main multi-city form) --}}
                 <div class="field-wrap" style="position:relative;" x-data="{ show: false }"
@@ -1793,6 +2058,60 @@ PANEL: MULTI-CITY
                                 </button>
                             @empty
                                 <div class="px-4 py-3 text-sm text-gray-500">No users</div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            @endempty
+
+            @empty($quick)
+                {{-- Airlines Dropdown (Standard) --}}
+                <div class="field-wrap" style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
+                    <span class="field-label">Airlines</span>
+                    <input class="field-input" type="text"
+                        wire:model.live.debounce.150ms="multiAirlineSearch" wire:key="multi-main-airlinesearch-input"
+                        @focus="show = true" placeholder="Search airlines" autocomplete="off">
+
+                    @if($multiAirlineSearch)
+                        <button class="field-clear" wire:click.stop="clearMultiAirline()" title="Clear">×</button>
+                    @endif
+
+                    <div x-cloak x-show="show"
+                        class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
+                        style="min-width: 280px;">
+                        <div class="px-4 py-3">
+                            <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                                <span>Select Airline</span>
+                            </div>
+                        </div>
+                        <div class="h-px bg-gray-100"></div>
+                        <div class="max-h-72 overflow-auto">
+                            @forelse($this->multiAirlineSearchResults as $a)
+                                <button type="button"
+                                    class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between group transition-colors"
+                                    wire:click.stop="selectMultiAirline('{{ $a['code'] }}', '{{ $a['name'] }}')" @click="show = false">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 border border-gray-100 p-1 group-hover:bg-white transition-colors">
+                                            <img src="https://www.gstatic.com/flights/airline_logos/70px/{{ $a['code'] }}.png"
+                                                alt="{{ $a['name'] }}"
+                                                onerror="this.src='https://pics.avs.io/128/128/{{ $a['code'] }}.png'"
+                                                class="w-full h-full object-contain">
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">{{ $a['name'] }}</div>
+                                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
+                                </button>
+                            @empty
+                                <div class="px-4 py-8 text-center">
+                                    <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
+                                    <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
+                                </div>
                             @endforelse
                         </div>
                     </div>

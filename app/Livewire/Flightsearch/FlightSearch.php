@@ -54,6 +54,9 @@ class FlightSearch extends Component
     public string $returnUserSearch = ''; // "Users" dropdown search (Return trip)
     public ?int $returnSelectedUserId = null;
     public array $returnUserSearchResults = [];
+    public string $returnAirlineSearch = '';   // "Airlines" dropdown search (Return trip)
+    public ?string $returnSelectedAirlineCode = null;
+    public array $returnAirlineSearchResults = [];
     public string $returnDepDate = '';
     public string $returnRetDate = '';
     public string $returnPax = '1 Adult';
@@ -69,6 +72,10 @@ class FlightSearch extends Component
     public string $onewayUserSearch = ''; // "Users" dropdown search (One-way trip)
     public ?int $onewaySelectedUserId = null;
     public array $onewayUserSearchResults = [];
+    public string $onewayAirlineSearch = '';   // "Airlines" dropdown search (One-way trip)
+    public ?string $onewaySelectedAirlineCode = null;
+    public array $onewayUserSearchResults2 = []; // Renamed or just use a new array
+    public array $onewayAirlineSearchResults = [];
     public string $onewayDepDate = '';
     public string $onewayPax = '1 Adult';
     public string $onewayClass = 'Economy Class';
@@ -85,6 +92,9 @@ class FlightSearch extends Component
     public string $multiUserSearch = ''; // "Users" dropdown search (Multi-city trip)
     public ?int $multiSelectedUserId = null;
     public array $multiUserSearchResults = [];
+    public string $multiAirlineSearch = '';   // "Airlines" dropdown search (Multi-city trip)
+    public ?string $multiSelectedAirlineCode = null;
+    public array $multiAirlineSearchResults = [];
     public string $multiPax = '1 Adult';
     public string $multiClass = 'Economy Class';
     public bool $multiFlexible = false;
@@ -154,15 +164,6 @@ class FlightSearch extends Component
 
         array_splice($this->multiFlights, $index, 1);
         $this->multiFlights = array_values($this->multiFlights);
-
-        if (isset($this->showMultiDepAirports[$index])) {
-            array_splice($this->showMultiDepAirports, $index, 1);
-            $this->showMultiDepAirports = array_values($this->showMultiDepAirports);
-        }
-        if (isset($this->showMultiArrAirports[$index])) {
-            array_splice($this->showMultiArrAirports, $index, 1);
-            $this->showMultiArrAirports = array_values($this->showMultiArrAirports);
-        }
     }
 
     public function search(): void
@@ -317,6 +318,115 @@ class FlightSearch extends Component
     public function doneSearching(): void
     {
         $this->searching = false;
+    }
+
+    /**
+     * @return array<int, array{name:string,code:string}>
+     */
+    private function loadAirlinesCache(): array
+    {
+        $path = storage_path('app/flightsearch/airlines.json');
+        if (!is_file($path)) return [];
+        $raw = file_get_contents($path);
+        if ($raw === false) return [];
+        $decoded = json_decode($raw, true);
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    public function updatedReturnAirlineSearch(): void
+    {
+        $q = trim($this->returnAirlineSearch);
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->returnAirlineSearchResults = [];
+            return;
+        }
+
+        $all = $this->loadAirlinesCache();
+        $this->returnAirlineSearchResults = collect($all)
+            ->filter(function ($a) use ($q) {
+                return str_contains(strtolower($a['name']), strtolower($q)) ||
+                       str_contains(strtolower($a['code']), strtolower($q));
+            })
+            ->take(8)
+            ->all();
+    }
+
+    public function selectReturnAirline(string $code, string $name): void
+    {
+        $this->returnSelectedAirlineCode = $code;
+        $this->returnAirlineSearch = $name;
+        $this->returnAirlineSearchResults = [];
+    }
+
+    public function clearReturnAirline(): void
+    {
+        $this->returnSelectedAirlineCode = null;
+        $this->returnAirlineSearch = '';
+        $this->returnAirlineSearchResults = [];
+    }
+
+    public function updatedOnewayAirlineSearch(): void
+    {
+        $q = trim($this->onewayAirlineSearch);
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->onewayAirlineSearchResults = [];
+            return;
+        }
+
+        $all = $this->loadAirlinesCache();
+        $this->onewayAirlineSearchResults = collect($all)
+            ->filter(function ($a) use ($q) {
+                return str_contains(strtolower($a['name']), strtolower($q)) ||
+                       str_contains(strtolower($a['code']), strtolower($q));
+            })
+            ->take(8)
+            ->all();
+    }
+
+    public function selectOnewayAirline(string $code, string $name): void
+    {
+        $this->onewaySelectedAirlineCode = $code;
+        $this->onewayAirlineSearch = $name;
+        $this->onewayAirlineSearchResults = [];
+    }
+
+    public function clearOnewayAirline(): void
+    {
+        $this->onewaySelectedAirlineCode = null;
+        $this->onewayAirlineSearch = '';
+        $this->onewayAirlineSearchResults = [];
+    }
+
+    public function updatedMultiAirlineSearch(): void
+    {
+        $q = trim($this->multiAirlineSearch);
+        if ($q === '' || mb_strlen($q) < 2) {
+            $this->multiAirlineSearchResults = [];
+            return;
+        }
+
+        $all = $this->loadAirlinesCache();
+        $this->multiAirlineSearchResults = collect($all)
+            ->filter(function ($a) use ($q) {
+                return str_contains(strtolower($a['name']), strtolower($q)) ||
+                       str_contains(strtolower($a['code']), strtolower($q));
+            })
+            ->take(8)
+            ->all();
+    }
+
+    public function selectMultiAirline(string $code, string $name): void
+    {
+        $this->multiSelectedAirlineCode = $code;
+        $this->multiAirlineSearch = $name;
+        $this->multiAirlineSearchResults = [];
+    }
+
+    public function clearMultiAirline(): void
+    {
+        $this->multiSelectedAirlineCode = null;
+        $this->multiAirlineSearch = '';
+        $this->multiAirlineSearchResults = [];
     }
 
     public function updatedReturnUserSearch(): void
@@ -814,7 +924,6 @@ class FlightSearch extends Component
         if (str_contains($this->onewayDep, ' (')) {
             return;
         }
-        $this->showOnewayDepAirports = true;
         $this->fetchAirports($this->onewayDep, 'onewayDep');
     }
 
@@ -823,7 +932,6 @@ class FlightSearch extends Component
         if (str_contains($this->onewayArr, ' (')) {
             return;
         }
-        $this->showOnewayArrAirports = true;
         $this->fetchAirports($this->onewayArr, 'onewayArr');
     }
 
