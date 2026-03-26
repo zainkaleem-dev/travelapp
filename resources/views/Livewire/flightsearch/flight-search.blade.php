@@ -69,7 +69,7 @@
                                                     d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
                                                 <circle cx="12" cy="11" r="2" />
                                             </svg>
-                                            <span>All locations</span>
+                                            <span>Search locations</span>
                                         </div>
                                     </div>
                                     <div class="h-px bg-gray-100"></div>
@@ -123,7 +123,7 @@
                                                     d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
                                                 <circle cx="12" cy="11" r="2" />
                                             </svg>
-                                            <span>All locations</span>
+                                            <span>Search locations</span>
                                         </div>
                                     </div>
                                     <div class="h-px bg-gray-100"></div>
@@ -583,7 +583,7 @@
                                                     <circle cx="9" cy="7" r="4"
                                                         stroke-width="2" />
                                                 </svg>
-                                                <span>All users</span>
+                                                <span>Search users</span>
                                             </div>
                                         </div>
                                         <div class="h-px bg-gray-100"></div>
@@ -615,7 +615,7 @@
                                     <input class="field-input" type="text"
                                         wire:model.live.debounce.150ms="returnAirlineSearch"
                                         wire:key="return-main-airlinesearch-input"
-                                        @focus="show = true" placeholder="Search airlines" autocomplete="off">
+                                        @focus="show = true" placeholder="Search airline" autocomplete="off">
 
                                     @if($returnAirlineSearch)
                                         <button class="field-clear" wire:click.stop="clearReturnAirline()" title="Clear">×</button>
@@ -623,13 +623,14 @@
 
                                     <div x-cloak x-show="show"
                                         class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                        style="min-width: 280px;">
+                                        style="min-width: 0;">
                                         <div class="px-4 py-3">
-                                            <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                            <div class="flex items-center gap-2 text-xs text-gray-500">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z" />
                                                 </svg>
-                                                <span>Select Airline</span>
+                                                <span>Search airlines</span>
                                             </div>
                                         </div>
                                         <div class="h-px bg-gray-100"></div>
@@ -653,10 +654,7 @@
                                                     <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                                                 </button>
                                             @empty
-                                                <div class="px-4 py-8 text-center">
-                                                    <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
-                                                    <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
-                                                </div>
+                                                <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>
                                             @endforelse
                                         </div>
                                     </div>
@@ -691,7 +689,7 @@
                                                     <circle cx="9" cy="7" r="4"
                                                         stroke-width="2" />
                                                 </svg>
-                                                <span>All users</span>
+                                                <span>Search users</span>
                                             </div>
                                         </div>
                                         <div class="h-px bg-gray-100"></div>
@@ -723,7 +721,7 @@
                                     <input class="field-input" type="text"
                                         wire:model.live.debounce.150ms="returnAirlineSearch"
                                         wire:key="return-qs-airlinesearch-input"
-                                        @focus="show = true" placeholder="Search airlines" autocomplete="off">
+                                        @focus="show = true" placeholder="Search airline" autocomplete="off">
 
                                     @if($returnAirlineSearch)
                                         <button class="field-clear" wire:click.stop="clearReturnAirline()" title="Clear">×</button>
@@ -731,13 +729,14 @@
 
                                     <div x-cloak x-show="show"
                                         class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                        style="min-width: 280px;">
+                                        style="min-width: 0;">
                                         <div class="px-4 py-3">
-                                            <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                            <div class="flex items-center gap-2 text-xs text-gray-500">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z" />
                                                 </svg>
-                                                <span>Select Airline</span>
+                                                <span>Search airlines</span>
                                             </div>
                                         </div>
                                         <div class="h-px bg-gray-100"></div>
@@ -761,10 +760,7 @@
                                                     <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                                                 </button>
                                             @empty
-                                                <div class="px-4 py-8 text-center">
-                                                    <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
-                                                    <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
-                                                </div>
+                                                <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>
                                             @endforelse
                                         </div>
                                     </div>
@@ -831,7 +827,7 @@ PANEL: ONE WAY
                                     d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
                                 <circle cx="12" cy="11" r="2" />
                             </svg>
-                            <span>All locations</span>
+                            <span>Search locations</span>
                         </div>
                     </div>
                     <div class="h-px bg-gray-100"></div>
@@ -882,7 +878,7 @@ PANEL: ONE WAY
                                     d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
                                 <circle cx="12" cy="11" r="2" />
                             </svg>
-                            <span>All locations</span>
+                            <span>Search locations</span>
                         </div>
                     </div>
                     <div class="h-px bg-gray-100"></div>
@@ -1201,7 +1197,7 @@ PANEL: ONE WAY
                         <input class="field-input" type="text"
                             wire:model.live.debounce.150ms="onewayAirlineSearch"
                             wire:key="oneway-main-airlinesearch-input"
-                            @focus="show = true" placeholder="Search airlines" autocomplete="off">
+                            @focus="show = true" placeholder="Search airline" autocomplete="off">
 
                         @if($onewayAirlineSearch)
                             <button class="field-clear" wire:click.stop="clearOnewayAirline()" title="Clear">×</button>
@@ -1209,13 +1205,14 @@ PANEL: ONE WAY
 
                         <div x-cloak x-show="show"
                             class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                            style="min-width: 280px;">
+                            style="min-width: 0;">
                             <div class="px-4 py-3">
-                                <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                <div class="flex items-center gap-2 text-xs text-gray-500">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z" />
                                     </svg>
-                                    <span>Select Airline</span>
+                                    <span>Search airlines</span>
                                 </div>
                             </div>
                             <div class="h-px bg-gray-100"></div>
@@ -1239,10 +1236,7 @@ PANEL: ONE WAY
                                         <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                                     </button>
                                 @empty
-                                    <div class="px-4 py-8 text-center">
-                                        <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
-                                        <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
-                                    </div>
+                                    <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>
                                 @endforelse
                             </div>
                         </div>
@@ -1277,7 +1271,7 @@ PANEL: ONE WAY
                                         <circle cx="9" cy="7" r="4"
                                             stroke-width="2" />
                                     </svg>
-                                    <span>All users</span>
+                                    <span>Search users</span>
                                 </div>
                             </div>
                             <div class="h-px bg-gray-100"></div>
@@ -1378,7 +1372,7 @@ PANEL: ONE WAY
                                             <circle cx="9" cy="7" r="4"
                                                 stroke-width="2" />
                                         </svg>
-                                        <span>All users</span>
+                                        <span>Search users</span>
                                     </div>
                                 </div>
                                 <div class="h-px bg-gray-100"></div>
@@ -1410,7 +1404,7 @@ PANEL: ONE WAY
                             <input class="field-input" type="text"
                                 wire:model.live.debounce.150ms="onewayAirlineSearch"
                                 wire:key="oneway-qs-airlinesearch-input"
-                                @focus="show = true" placeholder="Search airlines" autocomplete="off">
+                                @focus="show = true" placeholder="Search airline" autocomplete="off">
 
                             @if($onewayAirlineSearch)
                                 <button class="field-clear" wire:click.stop="clearOnewayAirline()" title="Clear">×</button>
@@ -1418,13 +1412,14 @@ PANEL: ONE WAY
 
                             <div x-cloak x-show="show"
                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                style="min-width: 280px;">
+                                style="min-width: 0;">
                                 <div class="px-4 py-3">
-                                    <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                                    <div class="flex items-center gap-2 text-xs text-gray-500">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z" />
                                         </svg>
-                                        <span>Select Airline</span>
+                                        <span>Search airlines</span>
                                     </div>
                                 </div>
                                 <div class="h-px bg-gray-100"></div>
@@ -1448,10 +1443,7 @@ PANEL: ONE WAY
                                             <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                                         </button>
                                     @empty
-                                        <div class="px-4 py-8 text-center">
-                                            <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
-                                            <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
-                                        </div>
+                                        <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>
                                     @endforelse
                                 </div>
                             </div>
@@ -1524,7 +1516,7 @@ PANEL: MULTI-CITY
                                                 d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
                                             <circle cx="12" cy="11" r="2" />
                                         </svg>
-                                        <span>All locations</span>
+                                        <span>Search locations</span>
                                     </div>
                                 </div>
                                 <div class="h-px bg-gray-100"></div>
@@ -1580,7 +1572,7 @@ PANEL: MULTI-CITY
                                                 d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
                                             <circle cx="12" cy="11" r="2" />
                                         </svg>
-                                        <span>All locations</span>
+                                        <span>Search locations</span>
                                     </div>
                                 </div>
                                 <div class="h-px bg-gray-100"></div>
@@ -1938,7 +1930,7 @@ PANEL: MULTI-CITY
                                         d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
                                     <circle cx="9" cy="7" r="4" stroke-width="2" />
                                 </svg>
-                                <span>All users</span>
+                                <span>Search users</span>
                             </div>
                         </div>
                         <div class="h-px bg-gray-100"></div>
@@ -1968,7 +1960,7 @@ PANEL: MULTI-CITY
                     <span class="field-label">Airlines</span>
                     <input class="field-input" type="text"
                         wire:model.live.debounce.150ms="multiAirlineSearch" wire:key="multi-qs-airlinesearch-input"
-                        @focus="show = true" placeholder="Search airlines" autocomplete="off">
+                        @focus="show = true" placeholder="Search airline" autocomplete="off">
 
                     @if($multiAirlineSearch)
                         <button class="field-clear" wire:click.stop="clearMultiAirline()" title="Clear">×</button>
@@ -1976,13 +1968,14 @@ PANEL: MULTI-CITY
 
                     <div x-cloak x-show="show"
                         class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                        style="min-width: 280px;">
+                        style="min-width: 0;">
                         <div class="px-4 py-3">
-                            <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                            <div class="flex items-center gap-2 text-xs text-gray-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z" />
                                 </svg>
-                                <span>Select Airline</span>
+                                <span>Search airlines</span>
                             </div>
                         </div>
                         <div class="h-px bg-gray-100"></div>
@@ -2006,10 +1999,7 @@ PANEL: MULTI-CITY
                                     <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                                 </button>
                             @empty
-                                <div class="px-4 py-8 text-center">
-                                    <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
-                                    <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
-                                </div>
+                                <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>
                             @endforelse
                         </div>
                     </div>
@@ -2040,7 +2030,7 @@ PANEL: MULTI-CITY
                                         d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
                                     <circle cx="9" cy="7" r="4" stroke-width="2" />
                                 </svg>
-                                <span>All users</span>
+                                <span>Search users</span>
                             </div>
                         </div>
                         <div class="h-px bg-gray-100"></div>
@@ -2070,7 +2060,7 @@ PANEL: MULTI-CITY
                     <span class="field-label">Airlines</span>
                     <input class="field-input" type="text"
                         wire:model.live.debounce.150ms="multiAirlineSearch" wire:key="multi-main-airlinesearch-input"
-                        @focus="show = true" placeholder="Search airlines" autocomplete="off">
+                        @focus="show = true" placeholder="Search airline" autocomplete="off">
 
                     @if($multiAirlineSearch)
                         <button class="field-clear" wire:click.stop="clearMultiAirline()" title="Clear">×</button>
@@ -2078,13 +2068,14 @@ PANEL: MULTI-CITY
 
                     <div x-cloak x-show="show"
                         class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                        style="min-width: 280px;">
+                        style="min-width: 0;">
                         <div class="px-4 py-3">
-                            <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold uppercase tracking-wider">
+                            <div class="flex items-center gap-2 text-xs text-gray-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z" />
                                 </svg>
-                                <span>Select Airline</span>
+                                <span>Search airlines</span>
                             </div>
                         </div>
                         <div class="h-px bg-gray-100"></div>
@@ -2108,10 +2099,7 @@ PANEL: MULTI-CITY
                                     <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                                 </button>
                             @empty
-                                <div class="px-4 py-8 text-center">
-                                    <div class="text-gray-400 mb-1 font-medium italic">No airlines found</div>
-                                    <div class="text-[10px] text-gray-400 uppercase tracking-widest">Try searching by name or code</div>
-                                </div>
+                                <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>
                             @endforelse
                         </div>
                     </div>

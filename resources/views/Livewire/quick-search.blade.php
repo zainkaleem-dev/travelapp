@@ -39,7 +39,7 @@
                                             d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
                                         <circle cx="12" cy="11" r="2" />
                                     </svg>
-                                    <span>All locations</span>
+                                    <span>Search locations</span>
                                 </div>
                             </div>
                             <div class="h-px bg-gray-100"></div>
@@ -91,7 +91,7 @@
                                             d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
                                         <circle cx="12" cy="11" r="2" />
                                     </svg>
-                                    <span>All locations</span>
+                                    <span>Search locations</span>
                                 </div>
                             </div>
                             <div class="h-px bg-gray-100"></div>

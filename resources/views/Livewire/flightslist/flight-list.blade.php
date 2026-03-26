@@ -1,4 +1,21 @@
-<div>
+<div class="relative">
+
+    {{-- Full-screen loading backdrop (uses same spinner as buttons) --}}
+    <div
+        wire:loading.delay
+        wire:target="loadFlights,search,clearFilters,setSort,selectDate,shiftDate,fetchDateRailPrices,priceMin,priceMax,stops,airlines,departTimes,toggleItineraryLayout"
+        class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-[1px]"
+        aria-live="polite"
+        aria-busy="true"
+    >
+        <div class="flex items-center gap-3 rounded-2xl bg-white/95 px-6 py-4 shadow-2xl border border-white/60">
+            <svg class="animate-spin w-6 h-6 text-[#2ab4c0]" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
+            <span class="text-sm font-semibold text-gray-700">Loading…</span>
+        </div>
+    </div>
 
 {{-- ══════════════════════════════════════════════════════════
      MAIN CONTENT
@@ -371,18 +388,6 @@
                     @endif
                 @endforelse
 
-            </div>
-
-            {{-- Loading overlay --}}
-            <div wire:loading wire:target="loadFlights,search,priceMin,priceMax,stops,airlines,departTimes"
-                 class="flex items-center justify-center py-8">
-                <div class="flex items-center gap-2 text-[#2ab4c0] text-sm font-medium">
-                    <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-                    </svg>
-                    Updating flights…
-                </div>
             </div>
 
         </div>

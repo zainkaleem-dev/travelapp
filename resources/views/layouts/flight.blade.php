@@ -35,11 +35,7 @@
     @livewireStyles
 
     <style>
-        /* Livewire / NProgress spinner ko globally hide karo */
-        #nprogress .spinner,
-        #nprogress .spinner-icon {
-            display: none !important;
-        }
+        /* (NProgress removed) */
 
         [x-cloak] {
             display: none !important;
@@ -929,20 +925,7 @@
         {{ $slot }}
     </div>
 
-    {{-- NProgress Script and Livewire Integration --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
     <script>
-        // Spinner ko disable karo, sirf top progress bar dikhayega
-        NProgress.configure({ showSpinner: false });
-
-        document.addEventListener('livewire:initialized', () => {
-            Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
-                NProgress.start();
-                succeed(() => { NProgress.done(); });
-                fail(() => { NProgress.done(); });
-            });
-        });
-
         // Close on ESC
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
