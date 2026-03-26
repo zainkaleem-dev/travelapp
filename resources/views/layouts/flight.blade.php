@@ -719,7 +719,7 @@
 
     {{-- Inline quick search panel (under navigation) --}}
     <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms>
-        <div class="max-w-none mx-auto px-3 sm:px-4 py-4">
+        <div class="max-w-none mx-auto px-3 sm:px-4 lg:px-6 py-4">
             {{-- Directly render the search card without extra outer chrome --}}
             @livewire('quick-search')
         </div>

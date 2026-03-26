@@ -19,9 +19,9 @@
                 </span>
                 <span class="text-[10px] text-[#2ab4c0] font-bold mt-1 animate-pulse">
                     Please wait while we find your flights...
-                </span>
-            </div>
+            </span>
         </div>
+    </div>
     </div>
 
 {{-- ══════════════════════════════════════════════════════════

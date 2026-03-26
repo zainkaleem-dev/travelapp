@@ -12,7 +12,7 @@
     {{-- ════════════════════════════════════════
     SEARCH CARD
     ════════════════════════════════════════ --}}
-    <div class="search-card">
+    <div class="{{ empty($quick) ? 'search-card' : 'bg-white rounded-xl border border-gray-200 shadow-sm p-4 w-full max-w-none mb-4' }}">
 
         <div class="mb-3 flex items-start justify-between gap-3">
             {{-- Trip type tabs --}}
