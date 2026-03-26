@@ -1,26 +1,33 @@
-<div class="relative">
+<div class="relative" wire:init="$dispatch('loadFlights'); $dispatch('loadDateRailPrices')">
 
-    {{-- Full-screen loading backdrop (uses same spinner as buttons) --}}
+    {{-- Explicitly Styled Top-Center Loader for Debugging --}}
     <div
-        wire:loading.delay
-        wire:target="loadFlights,search,clearFilters,setSort,selectDate,shiftDate,fetchDateRailPrices,priceMin,priceMax,stops,airlines,departTimes,toggleItineraryLayout"
-        class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-[1px]"
+        wire:loading
+        style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1000000;"
+        class="flex items-center justify-center"
         aria-live="polite"
         aria-busy="true"
     >
-        <div class="flex items-center gap-3 rounded-2xl bg-white/95 px-6 py-4 shadow-2xl border border-white/60">
-            <svg class="animate-spin w-6 h-6 text-[#2ab4c0]" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+        <div class="flex items-center gap-3 rounded-full bg-white px-8 py-4 shadow-[0_10px_40px_rgba(0,0,0,0.2)] border-2 border-[#2ab4c0] ring-4 ring-[#2ab4c0]/20">
+            <svg class="animate-spin w-8 h-8 text-[#2ab4c0]" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-100" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span class="text-sm font-semibold text-gray-700">Loading…</span>
+            <div class="flex flex-col">
+                <span class="text-[16px] font-black text-gray-900 tracking-tight whitespace-nowrap uppercase leading-none">
+                    Searching for flights
+                </span>
+                <span class="text-[10px] text-[#2ab4c0] font-bold mt-1 animate-pulse">
+                    Please wait while we find your flights...
+                </span>
+            </div>
         </div>
     </div>
 
 {{-- ══════════════════════════════════════════════════════════
      MAIN CONTENT
 ══════════════════════════════════════════════════════════ --}}
-<div class="w-full py-4 flex flex-col lg:flex-row gap-6" wire:init="$dispatch('loadFlights'); $dispatch('loadDateRailPrices')">
+<div class="w-full py-4 flex flex-col lg:flex-row gap-6">
 
     {{-- ─── MAIN RESULTS ────────────────────────────────────── --}}
     <main class="flex-1 min-w-0">

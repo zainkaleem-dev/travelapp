@@ -54,6 +54,7 @@ class FlightList extends Component
     public string $currencyCode = "USD";
 
     public array $allFlights = [];
+    public ?string $selectedAirlineCode = null;
     public ?string $errorMessage = null;
     public array $fareDetails = [];
     public array $loadingFares = [];
@@ -485,6 +486,12 @@ class FlightList extends Component
         $this->travelClass = $params["travelClass"] ?? "Economy Class";
         $this->travelClassEnum = $params["travelClassEnum"] ?? "ECONOMY";
         $this->currencyCode = $params["currency"] ?? "USD";
+        $this->selectedAirlineCode = $params["airlineCode"] ?? null;
+        $airlineName = $params["airlineName"] ?? null;
+
+        if ($airlineName) {
+            $this->airlines = [strtolower($airlineName)];
+        }
 
         $this->syncPassengersTotal();
         $this->initDateRail();
@@ -530,6 +537,7 @@ class FlightList extends Component
     #[On("loadFlights")]
     public function loadFlights(): void
     {
+        sleep(3); // debug loader visibility
         $this->errorMessage = null;
         $this->isLoading = true;
 
@@ -595,8 +603,7 @@ class FlightList extends Component
             ];
         }
 
-        $request = new Request();
-        $request->merge([
+        $payload = [
             "originDestinations" => $originDestinations,
             "travelers" => $travelers,
             "sources" => ["GDS"],
@@ -615,7 +622,16 @@ class FlightList extends Component
                     ],
                 ],
             ],
-        ]);
+        ];
+
+        if ($this->selectedAirlineCode) {
+            $payload['searchCriteria']['flightFilters']['carrierRestrictions'] = [
+                'includedCarrierCodes' => [$this->selectedAirlineCode]
+            ];
+        }
+
+        $request = new Request();
+        $request->merge($payload);
 
         $response = $controller->searchFlightsPost($request);
 

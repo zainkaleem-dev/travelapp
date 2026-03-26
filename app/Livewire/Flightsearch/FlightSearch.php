@@ -227,6 +227,8 @@ class FlightSearch extends Component
                     'travelClass' => $this->returnClass,
                     'travelClassEnum' => $travelClassEnum,
                     'currency' => $this->currency,
+                    'airlineCode' => $this->returnSelectedAirlineCode,
+                    'airlineName' => $this->returnAirlineSearch,
                     'isMulti' => false,
                 ]
             ]);
@@ -263,6 +265,8 @@ class FlightSearch extends Component
                     'travelClass' => $this->onewayClass,
                     'travelClassEnum' => $travelClassEnum,
                     'currency' => $this->currency,
+                    'airlineCode' => $this->onewaySelectedAirlineCode,
+                    'airlineName' => $this->onewayAirlineSearch,
                     'isMulti' => false,
                 ]
             ]);
@@ -304,6 +308,8 @@ class FlightSearch extends Component
                     'travelClass' => $this->multiClass,
                     'travelClassEnum' => $travelClassEnum,
                     'currency' => $this->currency,
+                    'airlineCode' => $this->multiSelectedAirlineCode,
+                    'airlineName' => $this->multiAirlineSearch,
                 ]
             ]);
 
@@ -333,22 +339,70 @@ class FlightSearch extends Component
         return is_array($decoded) ? $decoded : [];
     }
 
-    public function updatedReturnAirlineSearch(): void
+    private function writeAirlinesCache(array $airlines): void
     {
-        $q = trim($this->returnAirlineSearch);
+        $path = storage_path('app/flightsearch/airlines.json');
+        $dir = dirname($path);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+        file_put_contents($path, json_encode(array_values($airlines), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    }
+
+    public function fetchAirlines(string $query, string $type): void
+    {
+        $q = trim($query);
         if ($q === '' || mb_strlen($q) < 2) {
-            $this->returnAirlineSearchResults = [];
+            $this->setAirlineResults($type, []);
             return;
         }
 
         $all = $this->loadAirlinesCache();
-        $this->returnAirlineSearchResults = collect($all)
+        $matches = collect($all)
             ->filter(function ($a) use ($q) {
-                return str_contains(strtolower($a['name']), strtolower($q)) ||
-                       str_contains(strtolower($a['code']), strtolower($q));
+                return str_contains(strtolower($a['name'] ?? ''), strtolower($q)) ||
+                       str_contains(strtolower($a['code'] ?? ''), strtolower($q));
             })
             ->take(8)
+            ->values()
             ->all();
+
+        if (empty($matches) && mb_strlen($q) === 2) {
+            // API Fallback for IATA code
+            try {
+                $service = app(AmadeusService::class);
+                $response = $service->getAirlines(['airlineCodes' => strtoupper($q)]);
+                
+                if (isset($response['data'][0])) {
+                    $newAirline = [
+                        'name' => $response['data'][0]['commonName'] ?? $response['data'][0]['businessName'] ?? 'Unknown Airline',
+                        'code' => strtoupper($q)
+                    ];
+                    
+                    // Add to cache
+                    $all[] = $newAirline;
+                    $this->writeAirlinesCache($all);
+                    
+                    $matches = [$newAirline];
+                }
+            } catch (\Exception $e) {
+                \Log::error("Airline API Search Error: " . $e->getMessage());
+            }
+        }
+
+        $this->setAirlineResults($type, $matches);
+    }
+
+    private function setAirlineResults(string $type, array $results): void
+    {
+        if ($type === 'return') $this->returnAirlineSearchResults = $results;
+        if ($type === 'oneway') $this->onewayAirlineSearchResults = $results;
+        if ($type === 'multi') $this->multiAirlineSearchResults = $results;
+    }
+
+    public function updatedReturnAirlineSearch(): void
+    {
+        $this->fetchAirlines($this->returnAirlineSearch, 'return');
     }
 
     public function selectReturnAirline(string $code, string $name): void
@@ -367,20 +421,7 @@ class FlightSearch extends Component
 
     public function updatedOnewayAirlineSearch(): void
     {
-        $q = trim($this->onewayAirlineSearch);
-        if ($q === '' || mb_strlen($q) < 2) {
-            $this->onewayAirlineSearchResults = [];
-            return;
-        }
-
-        $all = $this->loadAirlinesCache();
-        $this->onewayAirlineSearchResults = collect($all)
-            ->filter(function ($a) use ($q) {
-                return str_contains(strtolower($a['name']), strtolower($q)) ||
-                       str_contains(strtolower($a['code']), strtolower($q));
-            })
-            ->take(8)
-            ->all();
+        $this->fetchAirlines($this->onewayAirlineSearch, 'oneway');
     }
 
     public function selectOnewayAirline(string $code, string $name): void
@@ -399,20 +440,7 @@ class FlightSearch extends Component
 
     public function updatedMultiAirlineSearch(): void
     {
-        $q = trim($this->multiAirlineSearch);
-        if ($q === '' || mb_strlen($q) < 2) {
-            $this->multiAirlineSearchResults = [];
-            return;
-        }
-
-        $all = $this->loadAirlinesCache();
-        $this->multiAirlineSearchResults = collect($all)
-            ->filter(function ($a) use ($q) {
-                return str_contains(strtolower($a['name']), strtolower($q)) ||
-                       str_contains(strtolower($a['code']), strtolower($q));
-            })
-            ->take(8)
-            ->all();
+        $this->fetchAirlines($this->multiAirlineSearch, 'multi');
     }
 
     public function selectMultiAirline(string $code, string $name): void
