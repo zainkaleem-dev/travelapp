@@ -61,7 +61,7 @@
 
                                 <div x-cloak x-show="show"
                                     class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                    style="min-width: 280px;">
+                                    style="min-width: 0;">
                                     <div class="px-4 py-3">
                                         <div class="flex items-center gap-2 text-xs text-gray-500">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +115,7 @@
 
                                 <div x-cloak x-show="show"
                                     class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                    style="min-width: 280px;">
+                                    style="min-width: 0;">
                                     <div class="px-4 py-3">
                                         <div class="flex items-center gap-2 text-xs text-gray-500">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -393,7 +393,7 @@
 
                                 <div x-cloak x-show="open" x-transition
                                     class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
-                                    style="min-width: 280px;">
+                                    style="min-width: 0;">
                                     <div class="px-4 py-3">
                                         <p class="text-sm font-medium text-gray-700">Passengers</p>
                                         <div class="h-px bg-gray-100 mt-2"></div>
@@ -572,17 +572,18 @@
 
                                     <div x-cloak x-show="show"
                                         class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                        style="min-width: 280px;">
+                                        style="min-width: 0;">
                                         <div class="px-4 py-3">
                                             <div class="flex items-center gap-2 text-xs text-gray-500">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"
-                                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                                    <circle cx="12" cy="11" r="2" />
+                                                        d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                                    <circle cx="9" cy="7" r="4"
+                                                        stroke-width="2" />
                                                 </svg>
-                                                <span>All locations</span>
+                                                <span>All users</span>
                                             </div>
                                         </div>
                                         <div class="h-px bg-gray-100"></div>
@@ -626,17 +627,18 @@
 
                                     <div x-cloak x-show="show"
                                         class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                        style="min-width: 280px;">
+                                        style="min-width: 0;">
                                         <div class="px-4 py-3">
                                             <div class="flex items-center gap-2 text-xs text-gray-500">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"
-                                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                                    <circle cx="12" cy="11" r="2" />
+                                                        d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                                    <circle cx="9" cy="7" r="4"
+                                                        stroke-width="2" />
                                                 </svg>
-                                                <span>All locations</span>
+                                                <span>All users</span>
                                             </div>
                                         </div>
                                         <div class="h-px bg-gray-100"></div>
@@ -1105,17 +1107,18 @@ PANEL: ONE WAY
 
                         <div x-cloak x-show="show"
                             class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                            style="min-width: 280px;">
+                            style="min-width: 0;">
                             <div class="px-4 py-3">
                                 <div class="flex items-center gap-2 text-xs text-gray-500">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2"
-                                            d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                        <circle cx="12" cy="11" r="2" />
+                                            d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                        <circle cx="9" cy="7" r="4"
+                                            stroke-width="2" />
                                     </svg>
-                                    <span>All locations</span>
+                                    <span>All users</span>
                                 </div>
                             </div>
                             <div class="h-px bg-gray-100"></div>
@@ -1205,17 +1208,18 @@ PANEL: ONE WAY
 
                             <div x-cloak x-show="show"
                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                style="min-width: 280px;">
+                                style="min-width: 0;">
                                 <div class="px-4 py-3">
                                     <div class="flex items-center gap-2 text-xs text-gray-500">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 stroke-width="2"
-                                                d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                            <circle cx="12" cy="11" r="2" />
+                                                d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                            <circle cx="9" cy="7" r="4"
+                                                stroke-width="2" />
                                         </svg>
-                                        <span>All locations</span>
+                                        <span>All users</span>
                                     </div>
                                 </div>
                                 <div class="h-px bg-gray-100"></div>
@@ -1715,15 +1719,15 @@ PANEL: MULTI-CITY
 
                     <div x-cloak x-show="show"
                         class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                        style="min-width: 280px;">
+                        style="min-width: 0;">
                         <div class="px-4 py-3">
                             <div class="flex items-center gap-2 text-xs text-gray-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                    <circle cx="12" cy="11" r="2" />
+                                        d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" stroke-width="2" />
                                 </svg>
-                                <span>All locations</span>
+                                <span>All users</span>
                             </div>
                         </div>
                         <div class="h-px bg-gray-100"></div>
@@ -1763,15 +1767,15 @@ PANEL: MULTI-CITY
 
                     <div x-cloak x-show="show"
                         class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                        style="min-width: 280px;">
+                        style="min-width: 0;">
                         <div class="px-4 py-3">
                             <div class="flex items-center gap-2 text-xs text-gray-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 21s-6-4.35-6-10a6 6 0 0112 0c0 5.65-6 10-6 10z" />
-                                    <circle cx="12" cy="11" r="2" />
+                                        d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" stroke-width="2" />
                                 </svg>
-                                <span>All locations</span>
+                                <span>All users</span>
                             </div>
                         </div>
                         <div class="h-px bg-gray-100"></div>
