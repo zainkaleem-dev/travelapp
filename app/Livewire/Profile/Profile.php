@@ -88,6 +88,8 @@ class Profile extends Component
         $pi->save();
 
         $this->saveSuccess = 'Personal info saved successfully.';
+
+        $this->dispatch('profile-saved');
     }
 
     public function deleteFamilyMember(int $id): void

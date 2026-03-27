@@ -583,8 +583,7 @@
                                                     <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
                                                     <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
                                                 </div>
-                                                <span
-                                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+    
                                             </button>
                                         @empty
                                             <div class="px-4 py-3 text-sm text-gray-500">No users</div>
@@ -635,7 +634,6 @@
                                                         <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
                                                     </div>
                                                 </div>
-                                                <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                                             </button>
                                         @empty
                                             <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>
@@ -1086,8 +1084,7 @@ PANEL: ONE WAY
                                     <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
                                     <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
                                 </div>
-                                <span
-                                    class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+                            
                             </button>
                         @empty
                             <div class="px-4 py-3 text-sm text-gray-500">No users</div>
@@ -1138,7 +1135,6 @@ PANEL: ONE WAY
                                         <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
                                     </div>
                                 </div>
-                                <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                             </button>
                         @empty
                             <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>
@@ -1632,7 +1628,7 @@ PANEL: ONE WAY
                                             <div class="text-sm font-semibold text-gray-800">{{ $u['name'] }}</div>
                                             <div class="text-xs text-gray-500">{{ $u['email'] }}</div>
                                         </div>
-                                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-[#2ab4c0] text-white">{{ $u['id'] }}</span>
+
                                     </button>
                                 @empty
                                     <div class="px-4 py-3 text-sm text-gray-500">No users</div>
@@ -1682,7 +1678,6 @@ PANEL: ONE WAY
                                                 <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">{{ $a['code'] }}</div>
                                             </div>
                                         </div>
-                                        <span class="px-2 py-1 text-[10px] font-black rounded-lg bg-gray-100 text-gray-500 group-hover:bg-[#2ab4c0] group-hover:text-white transition-all uppercase tracking-tighter">Select</span>
                                     </button>
                                 @empty
                                     <div class="px-4 py-3 text-sm text-gray-500">No airlines</div>

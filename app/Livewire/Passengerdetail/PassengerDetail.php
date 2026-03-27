@@ -33,6 +33,7 @@ class PassengerDetail extends Component
             'phoneNumber' => 'required|string|min:7|max:20',
             'passengers' => 'required|array|min:1',
             'passengers.*.first_name' => 'required|string|min:2',
+            'passengers.*.middle_name' => 'nullable|string|min:1',
             'passengers.*.last_name' => 'required|string|min:2',
             'passengers.*.dob' => [
                 'required',
@@ -70,6 +71,7 @@ class PassengerDetail extends Component
             'phoneCode' => 'country code',
             'phoneNumber' => 'phone number',
             'passengers.*.first_name' => 'first name',
+            'passengers.*.middle_name' => 'middle name',
             'passengers.*.last_name' => 'last name',
             'passengers.*.dob' => 'date of birth',
             'passengers.*.nationality' => 'nationality',
@@ -97,6 +99,8 @@ class PassengerDetail extends Component
 
             'passengers.*.first_name.required' => 'First name is required.',
             'passengers.*.first_name.min' => 'First name must be at least :min characters.',
+
+            'passengers.*.middle_name.min' => 'Middle name must be at least :min characters.',
 
             'passengers.*.last_name.required' => 'Last name is required.',
             'passengers.*.last_name.min' => 'Last name must be at least :min characters.',
@@ -177,6 +181,7 @@ class PassengerDetail extends Component
     {
         return [
             'first_name' => '',
+            'middle_name' => '',
             'last_name' => '',
             'dob' => '',
             'nationality' => '',

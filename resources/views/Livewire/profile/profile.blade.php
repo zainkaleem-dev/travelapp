@@ -13,6 +13,12 @@
                 </div>
             @endif
 
+            @if ($saveSuccess)
+                <div class="mb-4 rounded-lg border border-[#2ab4c0]/30 bg-[#2ab4c0]/10 px-4 py-3 text-sm text-gray-800">
+                    {{ $saveSuccess }}
+                </div>
+            @endif
+
             @php
                 $profileTab = request()->query('tab') === 'family' ? 'family' : 'personal';
             @endphp
@@ -34,6 +40,7 @@
                     }
                 }"
                 @keydown.escape.window="showDeleteModal && closeDeleteModal()"
+                @profile-saved.window="window.scrollTo({top: 0, behavior: 'smooth'})"
                 class="w-full"
             >
                 {{-- Tabs --}}
@@ -157,12 +164,6 @@
 
                         {{-- Save Personal Info --}}
                         <div class="flex items-center gap-3 pt-1">
-                            @if ($saveSuccess)
-                                <div class="text-sm font-semibold text-[#239ea9]">
-                                    {{ $saveSuccess }}
-                                </div>
-                            @endif
-
                             <button type="button"
                                 wire:click="savePersonalInfo"
                                 class="ml-auto px-5 py-2 rounded-lg bg-[#2ab4c0] text-white hover:bg-[#239ea9] transition-colors text-sm font-semibold">

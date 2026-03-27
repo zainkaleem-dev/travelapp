@@ -182,7 +182,7 @@
                                 </span>
                                 @if($isCompleted && !empty($passenger['first_name']))
                                     <span class="text-[10px] font-medium text-[#2ab4c0] uppercase tracking-widest truncate max-w-[80px]">
-                                        {{ $passenger['first_name'] }}
+                                        {{ trim($passenger['first_name'] . ' ' . ($passenger['middle_name'] ?? '') . ' ' . $passenger['last_name']) }}
                                     </span>
                                 @else
                                     <span class="text-[10px] font-medium text-gray-400 uppercase tracking-widest">Details Info</span>
@@ -222,8 +222,8 @@
                             <p class="text-[#2399a3] text-[10px] font-medium">To avoid boarding difficulties, enter all first and last names exactly as they appear on your Passport/ID.</p>
                         </div>
 
-                        {{-- First / Last name --}}
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {{-- First / Middle / Last name --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">First Name</label>
                                 <input
@@ -233,6 +233,18 @@
                                     class="w-full px-3 py-2.5 border @error('passengers.'.$index.'.first_name') border-red-400 @else border-gray-200 @enderror rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
                                 />
                                 @error('passengers.'.$index.'.first_name')
+                                    <p class="mt-0.5 text-red-500 text-[10px] font-medium">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Middle Name <span class="text-gray-400 font-normal">(Optional)</span></label>
+                                <input
+                                    type="text"
+                                    wire:model.live.debounce.400ms="passengers.{{ $index }}.middle_name"
+                                    placeholder="Middle Name"
+                                    class="w-full px-3 py-2.5 border @error('passengers.'.$index.'.middle_name') border-red-400 @else border-gray-200 @enderror rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
+                                />
+                                @error('passengers.'.$index.'.middle_name')
                                     <p class="mt-0.5 text-red-500 text-[10px] font-medium">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -376,9 +388,22 @@
 
                     {{-- Primary Action Buttons (same line as choose-seat) --}}
                     <div class="flex flex-wrap gap-3 pt-2">
-                        <button wire:click="back" class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-                            Back
+                        <button 
+                            x-data="{ loading: false }"
+                            @click="loading = true; setTimeout(() => $wire.back(), 500)"
+                            :disabled="loading"
+                            :class="loading ? 'bg-neutral-400' : 'bg-white hover:bg-gray-50'"
+                            class="flex-1 min-w-0 py-2 border border-gray-200 text-gray-600 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-show="!loading" class="flex items-center gap-2">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                                Back
+                            </span>
+                            <svg x-show="loading" class="animate-spin w-4 h-4" fill="none"
+                                viewBox="0 0 24 24" aria-hidden="true">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4" />
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                            </svg>
                         </button>
                         <button wire:click="continue" wire:loading.attr="disabled"
                                 class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group">

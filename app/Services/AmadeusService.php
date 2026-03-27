@@ -559,12 +559,17 @@ class AmadeusService
 
             $type = $p['type'] ?? 'ADULT';
             
+            $firstName = strtoupper($p["first_name"]);
+            if (!empty($p["middle_name"])) {
+                $firstName .= ' ' . strtoupper($p["middle_name"]);
+            }
+            
             $traveler = [
                 "id" => (string) ($index + 1),
                 "travelerType" => $type,
                 "dateOfBirth" => $dob,
                 "name" => [
-                    "firstName" => strtoupper($p["first_name"]),
+                    "firstName" => $firstName,
                     "lastName" => strtoupper($p["last_name"]),
                 ],
                 "gender" => $gender,

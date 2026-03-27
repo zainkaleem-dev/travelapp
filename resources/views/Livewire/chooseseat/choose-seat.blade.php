@@ -566,16 +566,20 @@
 
                             {{-- Primary Action Buttons (same line) --}}
                             <div class="flex flex-wrap gap-3 pt-2">
-                                <button wire:click="back" wire:loading.attr="disabled" wire:target="back"
-                                    class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
-                                    <span wire:loading.remove wire:target="back" class="flex items-center gap-2">
+                                <button 
+                                    x-data="{ loading: false }"
+                                    @click="loading = true; setTimeout(() => $wire.back(), 500)"
+                                    :disabled="loading"
+                                    :class="loading ? 'bg-neutral-400' : 'bg-white hover:bg-gray-50'"
+                                    class="flex-1 min-w-0 py-2 border border-gray-200 text-gray-600 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <span x-show="!loading" class="flex items-center gap-2">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                 d="M15 19l-7-7 7-7" />
                                         </svg>
                                         Back
                                     </span>
-                                    <svg wire:loading wire:target="back" class="animate-spin w-4 h-4" fill="none"
+                                    <svg x-show="loading" class="animate-spin w-4 h-4" fill="none"
                                         viewBox="0 0 24 24" aria-hidden="true">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                             stroke-width="4" />

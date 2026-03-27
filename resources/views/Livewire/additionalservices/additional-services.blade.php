@@ -520,32 +520,35 @@ Walkthrough: Detailed Multi-Stop Flight Segments
 
                         {{-- Primary Action Buttons (same line) --}}
                         <div class="flex flex-wrap gap-3 pt-2">
-                            <button wire:click="back" wire:loading.attr="disabled"
-                                class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
-                                <span wire:loading.remove wire:target="back" class="flex items-center gap-2">
+                            <button x-data="{ loading: false }" @click="loading = true; setTimeout(() => $wire.back(), 100)" wire:loading.attr="disabled"
+                                class="flex-1 min-w-0 py-2 border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px] :class=\"loading ? 'bg-neutral-400' : 'bg-white'\"">
+                                <span x-show="!loading" class="flex items-center gap-2">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M15 19l-7-7 7-7" />
                                     </svg>
                                     Back
                                 </span>
-                                <svg wire:loading wire:target="back" class="animate-spin w-4 h-4" fill="none"
+                                <svg x-show="loading" class="animate-spin w-4 h-4" fill="none"
                                     viewBox="0 0 24 24" aria-hidden="true">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                         stroke-width="4" />
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                 </svg>
                             </button>
-                            <button wire:click="goToSeating" wire:loading.attr="disabled"
-                                class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group relative overflow-hidden">
-                                <span wire:loading.remove wire:target="goToSeating" class="flex items-center gap-2">
+                            <button 
+                                x-data="{ loading: false }"
+                                @click="loading = true; setTimeout(() => $wire.goToSeating(), 500)"
+                                :disabled="loading"
+                                class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span x-show="!loading" class="flex items-center gap-2">
                                     Continue
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M9 5l7 7-7 7" />
                                     </svg>
                                 </span>
-                                <svg wire:loading wire:target="goToSeating" class="animate-spin w-4 h-4" fill="none"
+                                <svg x-show="loading" class="animate-spin w-4 h-4" fill="none"
                                     viewBox="0 0 24 24" aria-hidden="true">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                         stroke-width="4" />
