@@ -118,8 +118,7 @@
                                     setTimeout(() => this.updateButtons(), 250);
                                 }
                             }" x-init="$nextTick(() => updateButtons())" @resize.window="updateButtons()"
-                                    class="relative"
-                                    wire:loading.class="opacity-70 pointer-events-none"
+                                    class="relative" wire:loading.class="opacity-70 pointer-events-none"
                                     wire:target="changeSegment">
                                     <button type="button" x-show="canScrollLeft" x-transition.opacity
                                         @click.prevent="scrollCards(-1)"
@@ -145,8 +144,8 @@
                                         class="absolute left-1/2 top-1/2 z-[60] -translate-x-1/2 -translate-y-1/2 bg-white/25 backdrop-blur-[1px] rounded-xl p-2 pointer-events-none">
                                         <svg class="animate-spin w-6 h-6 text-[#2ab4c0]" fill="none" viewBox="0 0 24 24"
                                             aria-hidden="true">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10"
-                                                stroke="currentColor" stroke-width="4" />
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                stroke-width="4" />
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                         </svg>
                                     </div>
@@ -281,14 +280,15 @@
                         }
                     }" x-init="$nextTick(() => updateButtons())" @resize.window="updateButtons()"
                         class="relative mt-4 group/passengers bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                        
+
                         {{-- Scroll Buttons --}}
                         <button type="button" x-show="canScrollLeft" x-transition.opacity
                             @click.prevent="scrollPassenger(-1)"
                             class="absolute left-2 top-1/2 z-50 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-[#2ab4c0] shadow-sm hover:bg-white hover:shadow-md transition-all backdrop-blur-sm"
                             aria-label="Scroll left">
                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
 
@@ -297,7 +297,8 @@
                             class="absolute right-2 top-1/2 z-50 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-[#2ab4c0] shadow-sm hover:bg-white hover:shadow-md transition-all backdrop-blur-sm"
                             aria-label="Scroll right">
                             <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 5l7 7-7 7" />
                             </svg>
                         </button>
 
@@ -565,14 +566,14 @@
 
                             {{-- Primary Action Buttons (same line) --}}
                             <div class="flex flex-wrap gap-3 pt-2">
-	                                <button wire:click="back" wire:loading.attr="disabled" wire:target="back" onclick="document.documentElement.setAttribute('data-hide-nprogress','1')"
-	                                    class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
+                                <button wire:click="back" wire:loading.attr="disabled" wire:target="back"
+                                    class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
                                     <span wire:loading.remove wire:target="back" class="flex items-center gap-2">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                            d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                    Back
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                        Back
                                     </span>
                                     <svg wire:loading wire:target="back" class="animate-spin w-4 h-4" fill="none"
                                         viewBox="0 0 24 24" aria-hidden="true">
@@ -581,17 +582,18 @@
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                     </svg>
                                 </button>
-	                                <button wire:click="goToPassengerDetails" wire:loading.attr="disabled" onclick="document.documentElement.setAttribute('data-hide-nprogress','1')"
-	                                    class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group">
-	                                    <span wire:loading.remove wire:target="goToPassengerDetails" class="flex items-center gap-2">
-	                                        Continue
-	                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <button wire:click="goToPassengerDetails" wire:loading.attr="disabled"
+                                    class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group">
+                                    <span wire:loading.remove wire:target="goToPassengerDetails"
+                                        class="flex items-center gap-2">
+                                        Continue
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                 d="M9 5l7 7-7 7" />
                                         </svg>
                                     </span>
-                                    <svg wire:loading wire:target="goToPassengerDetails" class="animate-spin w-4 h-4" fill="none"
-                                        viewBox="0 0 24 24" aria-hidden="true">
+                                    <svg wire:loading wire:target="goToPassengerDetails" class="animate-spin w-4 h-4"
+                                        fill="none" viewBox="0 0 24 24" aria-hidden="true">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                             stroke-width="4" />
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />

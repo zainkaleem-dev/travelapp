@@ -193,20 +193,31 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                                                         Non-stop</div>
                                                 </div>
                                                 {{-- Tools/Amenities --}}
-                                                <div class="w-full flex flex-col items-center justify-center gap-1.5 group relative">
+                                                <div
+                                                    class="w-full flex flex-col items-center justify-center gap-1.5 group relative">
                                                     <div class="flex gap-4 text-gray-400">
                                                         <div class="cursor-pointer relative">
-                                                            <div class="flex gap-1.5 group-hover:text-[#2ab4c0] transition-colors">
-                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                                            <div
+                                                                class="flex gap-1.5 group-hover:text-[#2ab4c0] transition-colors">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                                                                 </svg>
-                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                                                    </path>
                                                                 </svg>
                                                             </div>
 
-                                                            <div class="absolute top-full right-0 mt-3 hidden group-hover:block w-52 bg-white border border-gray-100 text-gray-600 shadow-2xl rounded-xl z-[100] overflow-hidden ring-1 ring-black/5">
-                                                                <div class="p-3 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-widest">
+                                                            <div
+                                                                class="absolute top-full right-0 mt-3 hidden group-hover:block w-52 bg-white border border-gray-100 text-gray-600 shadow-2xl rounded-xl z-[100] overflow-hidden ring-1 ring-black/5">
+                                                                <div
+                                                                    class="p-3 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase tracking-widest">
                                                                     Flight Amenities
                                                                 </div>
                                                                 <div class="p-3 space-y-2 text-left">
@@ -259,7 +270,9 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                                                                         Baggage: {{ $segmentBaggage }}
                                                                     </div>
                                                                 </div>
-                                                                <div class="absolute bottom-full right-4 -mb-1 border-4 border-transparent border-b-white"></div>
+                                                                <div
+                                                                    class="absolute bottom-full right-4 -mb-1 border-4 border-transparent border-b-white">
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -267,8 +280,11 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                                                     {{-- Seats Indicator --}}
                                                     @if(($selectedFlight['seats'] ?? 0) > 0)
                                                         <div class="flex items-center gap-1">
-                                                            <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
-                                                            <span class="text-[11px] font-black text-orange-500 uppercase tracking-tighter">{{ $selectedFlight['seats'] }} Seats Left</span>
+                                                            <span
+                                                                class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+                                                            <span
+                                                                class="text-[11px] font-black text-orange-500 uppercase tracking-tighter">{{ $selectedFlight['seats'] }}
+                                                                Seats Left</span>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -507,11 +523,11 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                             <button wire:click="back" wire:loading.attr="disabled"
                                 class="flex-1 min-w-0 py-2 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-[11px]">
                                 <span wire:loading.remove wire:target="back" class="flex items-center gap-2">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                        d="M15 19l-7-7 7-7" />
-                                </svg>
-                                Back
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                    Back
                                 </span>
                                 <svg wire:loading wire:target="back" class="animate-spin w-4 h-4" fill="none"
                                     viewBox="0 0 24 24" aria-hidden="true">
@@ -520,15 +536,15 @@ Walkthrough: Detailed Multi-Stop Flight Segments
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                 </svg>
                             </button>
-	                            <button wire:click="goToSeating" wire:loading.attr="disabled" onclick="document.documentElement.setAttribute('data-hide-nprogress','1')"
-	                                class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group relative overflow-hidden">
-	                                <span wire:loading.remove wire:target="goToSeating" class="flex items-center gap-2">
-	                                    Continue
-	                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-	                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-	                                            d="M9 5l7 7-7 7" />
-	                                    </svg>
-	                                </span>
+                            <button wire:click="goToSeating" wire:loading.attr="disabled"
+                                class="flex-1 min-w-0 py-2 bg-[#2ab4c0] text-white text-[11px] font-black rounded-xl hover:bg-[#2399a3] shadow-lg shadow-[#2ab4c0]/30 transition-all flex items-center justify-center gap-2 group relative overflow-hidden">
+                                <span wire:loading.remove wire:target="goToSeating" class="flex items-center gap-2">
+                                    Continue
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </span>
                                 <svg wire:loading wire:target="goToSeating" class="animate-spin w-4 h-4" fill="none"
                                     viewBox="0 0 24 24" aria-hidden="true">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"

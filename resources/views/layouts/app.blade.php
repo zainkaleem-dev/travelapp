@@ -202,6 +202,15 @@
         input[type="checkbox"] {
             accent-color: #6366f1;
         }
+
+        /* Remove NProgress busy cursor and hide the progress bar */
+        html.nprogress-busy {
+            cursor: default !important;
+        }
+
+        #nprogress {
+            display: none !important;
+        }
     </style>
 
     @livewireStyles

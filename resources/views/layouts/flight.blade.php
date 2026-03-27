@@ -35,7 +35,14 @@
     @livewireStyles
 
     <style>
-        /* (NProgress removed) */
+        /* Remove NProgress busy cursor and hide the progress bar */
+        html.nprogress-busy {
+            cursor: default !important;
+        }
+
+        #nprogress {
+            display: none !important;
+        }
 
         [x-cloak] {
             display: none !important;
