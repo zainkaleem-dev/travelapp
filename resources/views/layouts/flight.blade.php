@@ -1,6 +1,6 @@
 {{-- resources/views/components/layouts/app.blade.php --}}
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="UTF-8">
@@ -512,6 +512,31 @@
             </div>
 
             <div class="flex items-center gap-3">
+                <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
+                    <button type="button" @click="open = !open" :aria-expanded="open.toString()"
+                        class="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-0">
+                        <span class="text-xs font-semibold text-gray-700">
+                            {{ app()->getLocale() === 'ar' ? 'AR' : 'EN' }}
+                        </span>
+                        <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div x-cloak x-show="open" x-transition.origin.top.right
+                        class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-[9999] overflow-hidden">
+                        <a href="{{ route('lang.switch', 'en') }}"
+                            class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 {{ app()->getLocale() === 'en' ? 'font-semibold text-[#2ab4c0]' : '' }}">
+                            English
+                        </a>
+                        <a href="{{ route('lang.switch', 'ar') }}"
+                            class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 {{ app()->getLocale() === 'ar' ? 'font-semibold text-[#2ab4c0]' : '' }}">
+                            العربية
+                        </a>
+                    </div>
+                </div>
+
                 @auth
                     <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false"
                         @click.outside="open = false">
@@ -554,6 +579,15 @@
                                         d="M19.5 12a7.5 7.5 0 0 1-.2 1.7l2 1.6-2 3.4-2.4-1a7.6 7.6 0 0 1-2.9 1.7L13 22H11l-.8-2.6a7.6 7.6 0 0 1-2.9-1.7l-2.4 1-2-3.4 2-1.6A7.5 7.5 0 0 1 4.5 12c0-.6.07-1.15.2-1.7l-2-1.6 2-3.4 2.4 1a7.6 7.6 0 0 1 2.9-1.7L11 2h2l.8 2.6a7.6 7.6 0 0 1 2.9 1.7l2.4-1 2 3.4-2 1.6c.13.55.2 1.1.2 1.7z" />
                                 </svg>
                                 Settings
+                            </a>
+
+                            <a href="{{ route('corporate.settings') }}"
+                                class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
+                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 21h18M4 21V7a2 2 0 0 1 2-2h3v16M10 21V3h8a2 2 0 0 1 2 2v16" />
+                                </svg>
+                                Corporate Settings
                             </a>
 
                             <form method="POST" action="{{ route('logout') }}">

@@ -20,6 +20,17 @@ use App\Livewire\Car\Car;
 use App\Livewire\Concierge\Concierge;
 use App\Livewire\Profile\Family\FamilyCreate;
 use App\Livewire\Profile\Family\FamilyEdit;
+use App\Livewire\Corporate\CorporateSettings;
+
+Route::get('/lang/{locale}', function (Request $request, string $locale) {
+    $locale = strtolower($locale);
+
+    abort_unless(in_array($locale, ['en', 'ar'], true), 404);
+
+    $request->session()->put('locale', $locale);
+
+    return redirect()->back();
+})->name('lang.switch');
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -92,6 +103,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/family/{id}/edit', FamilyEdit::class)->name('family.edit');
 
     Route::get('/settings', Setting::class)->name('settings');
+
+    Route::get('/corporate-settings', CorporateSettings::class)->name('corporate.settings');
 
     Route::get('/hotels', Hotel::class)->name('hotels');
     Route::get('/cars', Car::class)->name('cars');
