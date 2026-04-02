@@ -120,6 +120,8 @@ class FlightSearch extends Component
 
     public function mount(): void
     {
+        $this->currency = (string) session('currency', config('currencies.default', $this->currency));
+        $this->currencies = (array) config('currencies.options', $this->currencies);
         $this->loadSavedTripPurposeFromSettings();
     }
 

@@ -21,6 +21,8 @@ use App\Livewire\Concierge\Concierge;
 use App\Livewire\Profile\Family\FamilyCreate;
 use App\Livewire\Profile\Family\FamilyEdit;
 use App\Livewire\Corporate\CorporateSettings;
+use App\Livewire\Tmc\TmcSettings;
+use App\Livewire\Admin\SuperAdminSettings;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
     $locale = strtolower($locale);
@@ -31,6 +33,16 @@ Route::get('/lang/{locale}', function (Request $request, string $locale) {
 
     return redirect()->back();
 })->name('lang.switch');
+
+Route::get('/currency/{code}', function (Request $request, string $code) {
+    $code = strtoupper($code);
+
+    abort_unless(preg_match('/^[A-Z]{3}$/', $code) === 1, 404);
+
+    $request->session()->put('currency', $code);
+
+    return redirect()->back();
+})->name('currency.switch');
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -105,6 +117,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', Setting::class)->name('settings');
 
     Route::get('/corporate-settings', CorporateSettings::class)->name('corporate.settings');
+    Route::get('/tmc-settings', TmcSettings::class)->name('tmc.settings');
+    Route::get('/super-admin-settings', SuperAdminSettings::class)->name('superadmin.settings');
 
     Route::get('/hotels', Hotel::class)->name('hotels');
     Route::get('/cars', Car::class)->name('cars');

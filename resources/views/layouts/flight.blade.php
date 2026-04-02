@@ -537,6 +537,44 @@
                     </div>
                 </div>
 
+                @php
+                    $navCurrency = session('currency', config('currencies.default', 'USD'));
+                    $navCurrencyOptions = (array) config('currencies.options', []);
+                @endphp
+                <div class="relative" x-data="{ open: false, q: '' }" @keydown.escape.window="open = false" @click.outside="open = false">
+                    <button type="button" @click="open = !open" :aria-expanded="open.toString()"
+                        class="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-0">
+                        <span class="text-xs font-semibold text-gray-700">{{ $navCurrency }}</span>
+                        <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div x-cloak x-show="open" x-transition.origin.top.right
+                        class="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-lg z-[9999] overflow-hidden">
+                        <div class="p-3 border-b border-gray-100">
+                            <input type="text" x-model="q" placeholder="Search currency..."
+                                class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
+                                @keydown.enter.prevent="
+                                    const code = (q || '').trim().toUpperCase();
+                                    if (/^[A-Z]{3}$/.test(code)) window.location.href = '{{ url('/currency') }}/' + encodeURIComponent(code);
+                                ">
+                            <p class="mt-1 text-[11px] text-gray-500">Type 3-letter code and press Enter.</p>
+                        </div>
+                        <div class="max-h-72 overflow-auto">
+                            @foreach($navCurrencyOptions as $code => $label)
+                                <a href="{{ url('/currency') }}/{{ $code }}"
+                                    x-show="q === '' || '{{ $code }} {{ $label }}'.toLowerCase().includes(q.toLowerCase())"
+                                    class="block px-4 py-2.5 text-sm hover:bg-gray-50 {{ $navCurrency === $code ? 'font-semibold text-[#2ab4c0]' : 'text-gray-700' }}">
+                                    <span class="font-semibold">{{ $code }}</span>
+                                    <span class="text-gray-500">— {{ $label }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
                 @auth
                     <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false"
                         @click.outside="open = false">
@@ -588,6 +626,24 @@
                                         d="M3 21h18M4 21V7a2 2 0 0 1 2-2h3v16M10 21V3h8a2 2 0 0 1 2 2v16" />
                                 </svg>
                                 Corporate Settings
+                            </a>
+
+                            <a href="{{ route('tmc.settings') }}"
+                                class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
+                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7h8M8 11h8M8 15h8M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                                TMC Settings
+                            </a>
+
+                            <a href="{{ route('superadmin.settings') }}"
+                                class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
+                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 3l7 4v6c0 5-3.5 9-7 10-3.5-1-7-5-7-10V7l7-4z" />
+                                </svg>
+                                Super Admin Settings
                             </a>
 
                             <form method="POST" action="{{ route('logout') }}">
