@@ -123,10 +123,40 @@
             padding: 0;
         }
 
-        .field-input::placeholder {
-            color: black;
-            font-weight: 400;
-        }
+	        .field-input::placeholder {
+	            color: black;
+	            font-weight: 400;
+	        }
+
+	        /* Right-side icons inside inputs (From/To) */
+	        .field-wrap.has-icon-right {
+	            padding-right: 46px;
+	        }
+
+	        .field-wrap.has-icon-right.has-clear {
+	            padding-right: 76px;
+	        }
+
+	        .field-icon {
+	            position: absolute;
+	            top: 50%;
+	            transform: translateY(-50%);
+	            display: flex;
+	            align-items: center;
+	            justify-content: center;
+	            width: 22px;
+	            height: 22px;
+	            pointer-events: none;
+	        }
+
+	        .field-icon.right {
+	            right: 12px;
+	        }
+
+	        .field-icon svg {
+	            width: 20px;
+	            height: 20px;
+	        }
 
         /* Date inputs – show placeholder colour until filled */
         .date-input:not(.has-val):not(:focus) {
@@ -149,43 +179,47 @@
         }
 
         /* clear × button */
-        .field-clear {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #d1d5db;
-            color: #6b7280;
-            font-size: 0;
-            cursor: pointer;
+	        .field-clear {
+	            position: absolute;
+	            right: 10px;
+	            top: 50%;
+	            transform: translateY(-50%);
+	            width: 22px;
+	            height: 22px;
+	            border-radius: 50%;
+	            background: #d1d5db;
+	            color: #6b7280;
+	            font-size: 0;
+	            cursor: pointer;
             border: none;
             transition: background .15s;
         }
 
-        .field-clear::before,
-        .field-clear::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 10px;
-            height: 2px;
-            background: currentColor;
-            border-radius: 999px;
-            transform: translate(-50%, -50%) rotate(45deg);
-        }
+	        .field-clear::before,
+	        .field-clear::after {
+	            content: '';
+	            position: absolute;
+	            top: 50%;
+	            left: 50%;
+	            width: 12px;
+	            height: 2px;
+	            background: currentColor;
+	            border-radius: 999px;
+	            transform: translate(-50%, -50%) rotate(45deg);
+	        }
 
         .field-clear::after {
             transform: translate(-50%, -50%) rotate(-45deg);
         }
 
-        .field-clear:hover {
-            background: #9ca3af;
-            color: #fff;
-        }
+	        .field-clear:hover {
+	            background: #9ca3af;
+	            color: #fff;
+	        }
+
+	        .field-wrap.has-icon-right.has-clear .field-clear {
+	            right: 44px;
+	        }
 
         /* select ▼ */
         .field-select {
@@ -744,24 +778,343 @@
         {{ $slot }}
     </div>
 
-	    <script>
-	        // Close on ESC
-	        window.addEventListener('keydown', (e) => {
-	            if (e.key === 'Escape') {
-	                if (document.body.__x && document.body.__x.$data && typeof document.body.__x.$data.searchOpen !== 'undefined') {
-	                    document.body.__x.$data.searchOpen = false;
-	                }
-	            }
-	        });
+		    <script>
+		        // Close on ESC
+		        window.addEventListener('keydown', (e) => {
+		            if (e.key === 'Escape') {
+		                if (document.body.__x && document.body.__x.$data && typeof document.body.__x.$data.searchOpen !== 'undefined') {
+		                    document.body.__x.$data.searchOpen = false;
+		                }
+		            }
+		        });
 
 	        // If we hid the progress bar for a single navigation, restore default for the next one.
 	        document.addEventListener('livewire:navigated', () => {
 	            document.documentElement.removeAttribute('data-hide-nprogress');
 	        });
-	        document.addEventListener('alpine:navigated', () => {
-	            document.documentElement.removeAttribute('data-hide-nprogress');
-	        });
-	    </script>
+		        document.addEventListener('alpine:navigated', () => {
+		            document.documentElement.removeAttribute('data-hide-nprogress');
+		        });
+
+		        // Shared helpers (used by FlightSearch + QuickSearch)
+		        (() => {
+		            if (!window.paxDropdown) {
+		                window.paxDropdown = function (opts) {
+		                    const toInt = (v) => {
+		                        const n = parseInt(v, 10);
+		                        return Number.isFinite(n) ? n : 0;
+		                    };
+
+		                    return {
+		                        open: false,
+		                        adults: opts?.adults ?? 1,
+		                        children: opts?.children ?? 0,
+		                        infants: opts?.infants ?? 0,
+
+		                        get total() {
+		                            return toInt(this.adults) + toInt(this.children) + toInt(this.infants);
+		                        },
+
+		                        get summary() {
+		                            const parts = [];
+		                            const a = toInt(this.adults);
+		                            const c = toInt(this.children);
+		                            const i = toInt(this.infants);
+
+		                            if (a > 0) parts.push(`${a} ${a === 1 ? 'Adult' : 'Adults'}`);
+		                            if (c > 0) parts.push(`${c} ${c === 1 ? 'Child' : 'Children'}`);
+		                            if (i > 0) parts.push(`${i} ${i === 1 ? 'Infant' : 'Infants'}`);
+
+		                            return parts.length ? parts.join(', ') : '0 Passengers';
+		                        },
+
+		                        inc(type) {
+		                            const a = toInt(this.adults);
+		                            const c = toInt(this.children);
+		                            const i = toInt(this.infants);
+		                            const total = a + c + i;
+
+		                            if (total >= 9) return;
+		                            if (type === 'adult') this.adults = a + 1;
+		                            if (type === 'child') this.children = c + 1;
+		                            if (type === 'infant' && i < a) this.infants = i + 1;
+		                        },
+
+		                        dec(type) {
+		                            const a = toInt(this.adults);
+		                            const c = toInt(this.children);
+		                            const i = toInt(this.infants);
+
+		                            if (type === 'adult') {
+		                                if (a <= 1) return;
+		                                const nextAdults = a - 1;
+		                                this.adults = nextAdults;
+		                                if (toInt(this.infants) > nextAdults) this.infants = nextAdults;
+		                                return;
+		                            }
+
+		                            if (type === 'child') {
+		                                if (c <= 0) return;
+		                                this.children = c - 1;
+		                                return;
+		                            }
+
+		                            if (type === 'infant') {
+		                                if (i <= 0) return;
+		                                this.infants = i - 1;
+		                            }
+		                        },
+		                    };
+		                };
+		            }
+
+		            if (!window.dateRangePicker) {
+		                window.dateRangePicker = function (opts) {
+		                    const pad = (n) => String(n).padStart(2, '0');
+		                    const toIso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+		                    const parseIso = (iso) => {
+		                        if (!iso) return null;
+		                        const [y, m, d] = iso.split('-').map(Number);
+		                        return new Date(y, (m || 1) - 1, d || 1);
+		                    };
+		                    const fmt = (iso) => {
+		                        const d = parseIso(iso);
+		                        if (!d) return '';
+		                        return `${pad(d.getMonth() + 1)}/${pad(d.getDate())}/${d.getFullYear()}`;
+		                    };
+		                    const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+		                    const wireDepKey = opts?.wireDepKey || 'returnDepDate';
+		                    const wireRetKey = opts?.wireRetKey || 'returnRetDate';
+
+		                    return {
+		                        open: false,
+		                        active: 'dep',
+		                        dep: opts?.dep ? fmt(opts.dep) : '',
+		                        ret: opts?.ret ? fmt(opts.ret) : '',
+		                        depIso: opts?.dep || '',
+		                        retIso: opts?.ret || '',
+		                        base: null,
+		                        months: [],
+		                        minIso: toIso(startOfDay(new Date())),
+
+		                        init() {
+		                            const baseIso = this.depIso || this.minIso;
+		                            const baseDate = parseIso(baseIso) || new Date();
+		                            this.base = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
+		                            this.months = [];
+		                            this.refreshMonths();
+		                        },
+
+		                        prevMonth() {
+		                            const today = new Date();
+		                            const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+		                            const prev = new Date(this.base.getFullYear(), this.base.getMonth() - 1, 1);
+		                            if (prev >= currentMonth) {
+		                                this.base = prev;
+		                                this.refreshMonths();
+		                            }
+		                        },
+
+		                        nextMonth() {
+		                            this.base = new Date(this.base.getFullYear(), this.base.getMonth() + 1, 1);
+		                            this.refreshMonths();
+		                        },
+
+		                        refreshMonths() {
+		                            const m1 = this.buildMonth(this.base.getFullYear(), this.base.getMonth());
+		                            const m2Date = new Date(this.base.getFullYear(), this.base.getMonth() + 1, 1);
+		                            const m2 = this.buildMonth(m2Date.getFullYear(), m2Date.getMonth());
+		                            this.months = [m1, m2];
+		                        },
+
+		                        buildMonth(year, monthIndex) {
+		                            const monthStart = new Date(year, monthIndex, 1);
+		                            const monthEnd = new Date(year, monthIndex + 1, 0);
+		                            const daysInMonth = monthEnd.getDate();
+		                            const jsDow = monthStart.getDay(); // 0=Sun
+		                            const offset = (jsDow + 6) % 7; // 0=Mon
+
+		                            const title = monthStart.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+		                            const cells = [];
+
+		                            for (let i = 0; i < offset; i++) {
+		                                cells.push({ key: `${year}-${monthIndex}-blank-${i}`, day: null, iso: null, disabled: true });
+		                            }
+
+		                            for (let day = 1; day <= daysInMonth; day++) {
+		                                const d = new Date(year, monthIndex, day);
+		                                const iso = toIso(d);
+		                                cells.push({
+		                                    key: iso,
+		                                    day,
+		                                    iso,
+		                                    disabled: iso < this.minIso,
+		                                });
+		                            }
+
+		                            while (cells.length < 42) {
+		                                cells.push({ key: `${year}-${monthIndex}-tail-${cells.length}`, day: null, iso: null, disabled: true });
+		                            }
+
+		                            return { key: `${year}-${monthIndex}`, title, cells };
+		                        },
+
+		                        pick(iso) {
+		                            if (!iso || iso < this.minIso) return;
+
+		                            if (this.active === 'dep' || (this.depIso && this.retIso)) {
+		                                this.depIso = iso;
+		                                this.retIso = '';
+		                                this.active = 'ret';
+		                            } else {
+		                                if (iso < this.depIso) {
+		                                    this.depIso = iso;
+		                                    this.retIso = '';
+		                                    this.active = 'ret';
+		                                } else {
+		                                    this.retIso = iso;
+		                                    this.active = 'dep';
+		                                }
+		                            }
+
+		                            this.dep = fmt(this.depIso);
+		                            this.ret = fmt(this.retIso);
+		                        },
+
+		                        apply() {
+		                            if (!this.$wire) return;
+		                            this.$wire.$set(wireDepKey, this.depIso);
+		                            this.$wire.$set(wireRetKey, this.retIso);
+		                        },
+
+		                        dayClass(cell) {
+		                            if (!cell.day) return 'text-transparent';
+		                            if (cell.disabled) return 'text-gray-300 cursor-not-allowed';
+
+		                            const iso = cell.iso;
+		                            const isDep = this.depIso && iso === this.depIso;
+		                            const isRet = this.retIso && iso === this.retIso;
+		                            const inRange = this.depIso && this.retIso && iso > this.depIso && iso < this.retIso;
+
+		                            if (isDep || isRet) return 'bg-[#2ab4c0] text-white';
+		                            if (inRange) return 'bg-blue-50 text-gray-900';
+		                            return 'text-gray-900 hover:bg-gray-100';
+		                        },
+		                    };
+		                };
+		            }
+
+		            if (!window.singleDatePicker) {
+		                window.singleDatePicker = function (opts) {
+		                    const pad = (n) => String(n).padStart(2, '0');
+		                    const toIso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+		                    const parseIso = (iso) => {
+		                        if (!iso) return null;
+		                        const [y, m, d] = iso.split('-').map(Number);
+		                        return new Date(y, (m || 1) - 1, d || 1);
+		                    };
+		                    const fmt = (iso) => {
+		                        const d = parseIso(iso);
+		                        if (!d) return '';
+		                        return `${pad(d.getMonth() + 1)}/${pad(d.getDate())}/${d.getFullYear()}`;
+		                    };
+		                    const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+		                    return {
+		                        open: false,
+		                        title: opts?.title || 'Select date',
+		                        display: opts?.value ? fmt(opts.value) : '',
+		                        iso: opts?.value || '',
+		                        wireValueKey: opts?.wireValueKey || '',
+		                        base: null,
+		                        months: [],
+		                        minIso: toIso(startOfDay(new Date())),
+
+		                        init() {
+		                            const baseIso = this.iso || this.minIso;
+		                            const baseDate = parseIso(baseIso) || new Date();
+		                            this.base = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
+		                            this.months = [];
+		                            this.refreshMonths();
+		                        },
+
+		                        prevMonth() {
+		                            const today = new Date();
+		                            const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+		                            const prev = new Date(this.base.getFullYear(), this.base.getMonth() - 1, 1);
+		                            if (prev >= currentMonth) {
+		                                this.base = prev;
+		                                this.refreshMonths();
+		                            }
+		                        },
+
+		                        nextMonth() {
+		                            this.base = new Date(this.base.getFullYear(), this.base.getMonth() + 1, 1);
+		                            this.refreshMonths();
+		                        },
+
+		                        refreshMonths() {
+		                            const m1 = this.buildMonth(this.base.getFullYear(), this.base.getMonth());
+		                            const m2Date = new Date(this.base.getFullYear(), this.base.getMonth() + 1, 1);
+		                            const m2 = this.buildMonth(m2Date.getFullYear(), m2Date.getMonth());
+		                            this.months = [m1, m2];
+		                        },
+
+		                        buildMonth(year, monthIndex) {
+		                            const monthStart = new Date(year, monthIndex, 1);
+		                            const monthEnd = new Date(year, monthIndex + 1, 0);
+		                            const daysInMonth = monthEnd.getDate();
+		                            const jsDow = monthStart.getDay(); // 0=Sun
+		                            const offset = (jsDow + 6) % 7; // 0=Mon
+
+		                            const title = monthStart.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+		                            const cells = [];
+
+		                            for (let i = 0; i < offset; i++) {
+		                                cells.push({ key: `${year}-${monthIndex}-blank-${i}`, day: null, iso: null, disabled: true });
+		                            }
+
+		                            for (let day = 1; day <= daysInMonth; day++) {
+		                                const d = new Date(year, monthIndex, day);
+		                                const iso = toIso(d);
+		                                cells.push({
+		                                    key: iso,
+		                                    day,
+		                                    iso,
+		                                    disabled: iso < this.minIso,
+		                                });
+		                            }
+
+		                            while (cells.length < 42) {
+		                                cells.push({ key: `${year}-${monthIndex}-tail-${cells.length}`, day: null, iso: null, disabled: true });
+		                            }
+
+		                            return { key: `${year}-${monthIndex}`, title, cells };
+		                        },
+
+		                        pick(iso) {
+		                            if (!iso || iso < this.minIso) return;
+		                            this.iso = iso;
+		                            this.display = fmt(this.iso);
+		                        },
+
+		                        apply() {
+		                            if (!this.$wire || !this.wireValueKey) return;
+		                            this.$wire.$set(this.wireValueKey, this.iso);
+		                        },
+
+		                        dayClass(cell) {
+		                            if (!cell.day) return 'text-transparent';
+		                            if (cell.disabled) return 'text-gray-300 cursor-not-allowed';
+		                            if (this.iso && cell.iso === this.iso) return 'bg-[#2ab4c0] text-white';
+		                            return 'text-gray-900 hover:bg-gray-100';
+		                        },
+		                    };
+		                };
+		            }
+		        })();
+		    </script>
 
     @livewireScripts
 </body>
