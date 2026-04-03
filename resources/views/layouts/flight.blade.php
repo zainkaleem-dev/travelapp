@@ -505,11 +505,11 @@
 <body x-data="{ searchOpen: false }">
 
     {{-- ── Navbar ── --}}
-    <nav class="relative z-50">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center justify-between h-12 min-h-[48px]">
-            <div class="flex items-center gap-5">
-
-            </div>
+    <nav class="relative z-50 bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between gap-4">
+            <a href="{{ route('flights.search') }}" class="text-sm font-semibold text-gray-800 whitespace-nowrap">
+                Corporate Company Logo
+            </a>
 
             <div class="flex items-center gap-3">
                 <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
@@ -667,11 +667,33 @@
                 @endauth
             </div>
         </div>
+
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 pb-3">
+            <div class="flex items-center gap-6 overflow-x-auto no-scrollbar text-sm font-semibold text-gray-700">
+                <a href="{{ route('flights.search') }}"
+                    class="whitespace-nowrap {{ request()->routeIs('flights.search') ? 'text-gray-900' : 'hover:text-gray-900' }}">
+                    Book Trip
+                </a>
+                <a href="{{ route('flights.list') }}"
+                    class="whitespace-nowrap {{ request()->routeIs('flights.list') ? 'text-gray-900' : 'hover:text-gray-900' }}">
+                    My Trip
+                </a>
+                <a href="{{ route('dashboard') }}"
+                    class="whitespace-nowrap {{ request()->routeIs('dashboard') ? 'text-gray-900' : 'hover:text-gray-900' }}">
+                    Dashboard
+                </a>
+                <a href="{{ route('travel.hub') }}"
+                    class="whitespace-nowrap {{ request()->routeIs('travel.hub') ? 'text-gray-900' : 'hover:text-gray-900' }}">
+                    Travel hub
+                </a>
+            </div>
+        </div>
     </nav>
 
     {{-- ── Step bar ── --}}
-    <div class="bg-white border-b border-gray-200 overflow-hidden sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4">
+    <div class="z-40 bg-transparent">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 mt-12 pt-4 pb-12 sm:pb-16">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden px-2 sm:px-3">
            {{--  <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
                 style="-webkit-overflow-scrolling: touch;">
                 <div
@@ -743,10 +765,10 @@
                     </svg>
                 </button>
             </div>
-        </div>
-    </div>
 
-    <div class="flex flex-col">
+            <div class="h-px bg-gray-100"></div>
+            <div class="p-3 sm:p-4">
+                <div class="flex flex-col">
 
     @if (in_array(request()->route()?->getName(), ['flights.list', 'additional.services', 'seating', 'passenger.details'], true))
     {{-- Form Wizard (frontend services) --}}
@@ -852,20 +874,16 @@
     </div>
     @endif
 
-    {{-- Inline quick search panel (under navigation) --}}
-    <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms>
-        <div class="max-w-none mx-auto px-3 sm:px-4 lg:px-6 py-4">
-            {{-- Directly render the search card without extra outer chrome --}}
-            @livewire('quick-search')
+                {{-- Inline quick search panel (under navigation) --}}
+                <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms class="mt-4">
+                    @livewire('quick-search')
+                </div>
+
+                {{ $slot }}
+            </div>
+        </div>
         </div>
     </div>
-
-    </div>
-
-
-    {{-- Page Content Slot --}}
-    <div class="px-3 sm:px-4 lg:px-6 pb-12 sm:pb-16 w-full max-w-none">
-        {{ $slot }}
     </div>
 
 		    <script>

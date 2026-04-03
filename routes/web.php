@@ -23,6 +23,7 @@ use App\Livewire\Profile\Family\FamilyEdit;
 use App\Livewire\Corporate\CorporateSettings;
 use App\Livewire\Tmc\TmcSettings;
 use App\Livewire\Admin\SuperAdminSettings;
+use App\Livewire\Travelhub\TravelHub;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
     $locale = strtolower($locale);
@@ -109,6 +110,7 @@ Route::get('/auth/facebook', fn() => 'Facebook OAuth redirect')->name('auth.face
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile');
 
     Route::get('/profile/family/create', FamilyCreate::class)->name('family.create');
@@ -123,6 +125,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/hotels', Hotel::class)->name('hotels');
     Route::get('/cars', Car::class)->name('cars');
     Route::get('/concierge', Concierge::class)->name('concierge');
+    Route::get('/travel-hub', TravelHub::class)->name('travel.hub');
 
     Route::get('/flights-search', FlightSearch::class)
         ->name('flights.search');
