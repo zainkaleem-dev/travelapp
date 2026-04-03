@@ -677,21 +677,21 @@
                     </svg>
                     Book Trip
                 </a>
-                <a href="{{ route('flights.list') }}"
+                <a href="#"
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.list') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875c-.621 0-1.125-.504-1.125-1.125v-4.25m16.5 0a2.25 2.25 0 00-2.25-2.25H18.75V8.25A2.25 2.25 0 0016.5 6H7.5A2.25 2.25 0 005.25 8.25V11.9h-1.5a2.25 2.25 0 00-2.25 2.25m16.5 0a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25m13.5-3.75V11.9m-9 0V8.25"/>
                     </svg>
                     My Trip
                 </a>
-                <a href="{{ route('dashboard') }}"
+                <a href="#"
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('dashboard') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-2.25v2.25m3-2.25v2.25m3-2.25v2.25m-9-4.5v2.25m3-2.25v2.25m3-2.25v2.25m3-2.25v2.25m-9-4.5v2.25m3-2.25v2.25m3-2.25v2.25m3-2.25v2.25M3.75 20.25h16.5A2.25 2.25 0 0022.5 18V6a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 6v12a2.25 2.25 0 002.25 2.25z"/>
                     </svg>
                     Dashboard
                 </a>
-                <a href="{{ route('travel.hub') }}"
+                <a href="#"
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('travel.hub') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6.75V15m-10.5 2.25l.75-12 4.5-2.25 4.5 2.25 4.5-2.25 .75 12-4.5 2.25-4.5-2.25-4.5 2.25z"/>
