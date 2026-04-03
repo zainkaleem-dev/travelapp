@@ -53,7 +53,7 @@
                         <div class="field-wrap has-icon-right {{ $returnDep ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">From</span>
-                            <span class="field-icon right" aria-hidden="true" style="color:#16a34a;">
+                            <span class="field-icon right" aria-hidden="true" style="color: {{ $returnDep ? '#2ab4c0' : '#9ca3af' }};">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
@@ -127,7 +127,7 @@
                         <div class="field-wrap has-icon-right {{ $returnArr ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">To</span>
-                            <span class="field-icon right" aria-hidden="true" style="color:#9ca3af;">
+                            <span class="field-icon right" aria-hidden="true" style="color: {{ $returnArr ? '#2ab4c0' : '#9ca3af' }};">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
@@ -279,7 +279,7 @@
                                                     <template x-for="cell in m.cells" :key="cell.key">
                                                         <button type="button"
                                                             class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition flex flex-col items-center justify-center leading-none"
-                                                            :disabled="cell.disabled || !cell.day"
+                                                            @mouseenter="hoveredIso = cell.iso" @mouseleave="hoveredIso = null"
                                                             @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
                                                             <span x-text="cell.day || ''"></span>
                                                             <span x-show="depIso && cell.iso === depIso" class="-mt-0.5"
@@ -854,7 +854,7 @@
                         <div class="field-wrap has-icon-right {{ $onewayDep ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">From</span>
-                            <span class="field-icon right" aria-hidden="true" style="color:#16a34a;">
+                            <span class="field-icon right" aria-hidden="true" style="color: {{ $onewayDep ? '#2ab4c0' : '#9ca3af' }};">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
@@ -927,7 +927,7 @@
                         <div class="field-wrap has-icon-right {{ $onewayArr ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">To</span>
-                            <span class="field-icon right" aria-hidden="true" style="color:#9ca3af;">
+                            <span class="field-icon right" aria-hidden="true" style="color: {{ $onewayArr ? '#2ab4c0' : '#9ca3af' }};">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
@@ -1056,6 +1056,7 @@
                                                             <button type="button"
                                                                 class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
                                                                 :disabled="cell.disabled || !cell.day"
+                                                                @mouseenter="hoveredIso = cell.iso" @mouseleave="hoveredIso = null"
                                                                 @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
                                                                 <span x-text="cell.day || ''"></span>
                                                             </button>
@@ -1403,7 +1404,7 @@
                                     <div class="field-wrap has-icon-right {{ ($flight['dep'] ?? '') ? 'has-clear' : '' }}"
                                         style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                                         <span class="field-label">From</span>
-                                        <span class="field-icon right" aria-hidden="true" style="color:#16a34a;">
+                                        <span class="field-icon right" aria-hidden="true" style="color: {{ ($flight['dep'] ?? '') ? '#2ab4c0' : '#9ca3af' }};">
                                             <svg viewBox="0 0 24 24" fill="currentColor">
                                                 <path
                                                     d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
@@ -1480,7 +1481,7 @@
                                     <div class="field-wrap has-icon-right {{ ($flight['arr'] ?? '') ? 'has-clear' : '' }}"
                                         style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                                         <span class="field-label">To</span>
-                                        <span class="field-icon right" aria-hidden="true" style="color:#9ca3af;">
+                                        <span class="field-icon right" aria-hidden="true" style="color: {{ ($flight['arr'] ?? '') ? '#2ab4c0' : '#9ca3af' }};">
                                             <svg viewBox="0 0 24 24" fill="currentColor">
                                                 <path
                                                     d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
@@ -1619,7 +1620,7 @@
                                                                     <template x-for="cell in m.cells" :key="cell.key">
                                                                         <button type="button"
                                                                             class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
-                                                                            :disabled="cell.disabled || !cell.day"
+                                                                            @mouseenter="hoveredIso = cell.iso" @mouseleave="hoveredIso = null"
                                                                             @click="cell.day && pick(cell.iso)"
                                                                             :class="dayClass(cell)">
                                                                             <span x-text="cell.day || ''"></span>

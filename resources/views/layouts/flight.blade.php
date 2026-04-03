@@ -1017,6 +1017,7 @@
 		                        base: null,
 		                        months: [],
 		                        minIso: toIso(startOfDay(new Date())),
+		                        hoveredIso: null,
 
 		                        init() {
 		                            const baseIso = this.depIso || this.minIso;
@@ -1116,10 +1117,12 @@
 		                            const isDep = this.depIso && iso === this.depIso;
 		                            const isRet = this.retIso && iso === this.retIso;
 		                            const inRange = this.depIso && this.retIso && iso > this.depIso && iso < this.retIso;
+		                            const isHoverRange = this.active === 'ret' && this.depIso && !this.retIso && this.hoveredIso && iso > this.depIso && iso <= this.hoveredIso;
 
 		                            if (isDep || isRet) return 'bg-[#2ab4c0] text-white';
-		                            if (inRange) return 'bg-blue-50 text-gray-900';
-		                            return 'text-gray-900 hover:bg-gray-100';
+		                            if (inRange || isHoverRange) return 'bg-[#2ab4c0]/10 text-gray-900';
+		                            if (this.hoveredIso === iso) return 'bg-gray-100 text-gray-900';
+		                            return 'text-gray-900';
 		                        },
 		                    };
 		                };
@@ -1150,6 +1153,7 @@
 		                        base: null,
 		                        months: [],
 		                        minIso: toIso(startOfDay(new Date())),
+		                        hoveredIso: null,
 
 		                        init() {
 		                            const baseIso = this.iso || this.minIso;
@@ -1228,7 +1232,8 @@
 		                            if (!cell.day) return 'text-transparent';
 		                            if (cell.disabled) return 'text-gray-300 cursor-not-allowed';
 		                            if (this.iso && cell.iso === this.iso) return 'bg-[#2ab4c0] text-white';
-		                            return 'text-gray-900 hover:bg-gray-100';
+		                            if (this.hoveredIso === cell.iso) return 'bg-gray-100 text-gray-900';
+		                            return 'text-gray-900';
 		                        },
 		                    };
 		                };
