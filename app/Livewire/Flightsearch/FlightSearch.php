@@ -151,6 +151,29 @@ class FlightSearch extends Component
         $this->tripType = $tab;
     }
 
+    public function swapReturnAirports(): void
+    {
+        $temp = $this->returnDep;
+        $this->returnDep = $this->returnArr;
+        $this->returnArr = $temp;
+    }
+
+    public function swapOnewayAirports(): void
+    {
+        $temp = $this->onewayDep;
+        $this->onewayDep = $this->onewayArr;
+        $this->onewayArr = $temp;
+    }
+
+    public function swapMultiAirports(int $index): void
+    {
+        if (isset($this->multiFlights[$index])) {
+            $temp = $this->multiFlights[$index]['dep'] ?? '';
+            $this->multiFlights[$index]['dep'] = $this->multiFlights[$index]['arr'] ?? '';
+            $this->multiFlights[$index]['arr'] = $temp;
+        }
+    }
+
     public function addFlight(): void
     {
         if (count($this->multiFlights) < self::MAX_FLIGHTS) {
@@ -334,9 +357,11 @@ class FlightSearch extends Component
     private function loadAirlinesCache(): array
     {
         $path = storage_path('app/flightsearch/airlines.json');
-        if (!is_file($path)) return [];
+        if (!is_file($path))
+            return [];
         $raw = file_get_contents($path);
-        if ($raw === false) return [];
+        if ($raw === false)
+            return [];
         $decoded = json_decode($raw, true);
         return is_array($decoded) ? $decoded : [];
     }
@@ -363,7 +388,7 @@ class FlightSearch extends Component
         $matches = collect($all)
             ->filter(function ($a) use ($q) {
                 return str_contains(strtolower($a['name'] ?? ''), strtolower($q)) ||
-                       str_contains(strtolower($a['code'] ?? ''), strtolower($q));
+                    str_contains(strtolower($a['code'] ?? ''), strtolower($q));
             })
             ->take(8)
             ->values()
@@ -374,17 +399,17 @@ class FlightSearch extends Component
             try {
                 $service = app(AmadeusService::class);
                 $response = $service->getAirlines(['airlineCodes' => strtoupper($q)]);
-                
+
                 if (isset($response['data'][0])) {
                     $newAirline = [
                         'name' => $response['data'][0]['commonName'] ?? $response['data'][0]['businessName'] ?? 'Unknown Airline',
                         'code' => strtoupper($q)
                     ];
-                    
+
                     // Add to cache
                     $all[] = $newAirline;
                     $this->writeAirlinesCache($all);
-                    
+
                     $matches = [$newAirline];
                 }
             } catch (\Exception $e) {
@@ -397,9 +422,12 @@ class FlightSearch extends Component
 
     private function setAirlineResults(string $type, array $results): void
     {
-        if ($type === 'return') $this->returnAirlineSearchResults = $results;
-        if ($type === 'oneway') $this->onewayAirlineSearchResults = $results;
-        if ($type === 'multi') $this->multiAirlineSearchResults = $results;
+        if ($type === 'return')
+            $this->returnAirlineSearchResults = $results;
+        if ($type === 'oneway')
+            $this->onewayAirlineSearchResults = $results;
+        if ($type === 'multi')
+            $this->multiAirlineSearchResults = $results;
     }
 
     public function updatedReturnAirlineSearch(): void
