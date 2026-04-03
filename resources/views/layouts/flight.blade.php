@@ -318,6 +318,12 @@
             align-items: center;
         }
 
+        @media (min-width: 768px) {
+            .mc-row {
+                column-gap: 48px;
+            }
+        }
+
         .mc-remove {
             width: 28px;
             height: 28px;
@@ -705,7 +711,7 @@
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 mt-12 pt-4 pb-12 sm:pb-16">
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden px-2 sm:px-3">
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
            {{--  <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
                 style="-webkit-overflow-scrolling: touch;">
                 <div

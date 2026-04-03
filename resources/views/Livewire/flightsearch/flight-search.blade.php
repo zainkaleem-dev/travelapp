@@ -46,7 +46,7 @@
         @if($tripType === 'return')
             <div wire:key="trip-panel-return" class="">
                 {{-- Row 1 --}}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-x-12 mb-3">
 
                     {{-- Departure --}}
                     <div>
@@ -110,7 +110,7 @@
 
                             {{-- Swap Button --}}
                             <button type="button" wire:click="swapReturnAirports"
-                                class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                                class="hidden md:flex absolute right-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
                                 title="Swap locations">
                                 <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -848,7 +848,7 @@
         ══════════════════════════════════════ --}}
         @if($tripType === 'oneway')
             <div wire:key="trip-panel-oneway" class="">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-x-12 mb-3">
 
                     <div>
                         <div class="field-wrap has-icon-right {{ $onewayDep ? 'has-clear' : '' }}"
@@ -911,7 +911,7 @@
 
                             {{-- Swap Button --}}
                             <button type="button" wire:click="swapOnewayAirports"
-                                class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                                class="hidden md:flex absolute right-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
                                 title="Swap locations">
                                 <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -1465,7 +1465,7 @@
 
                                         {{-- Swap Button --}}
                                         <button type="button" wire:click="swapMultiAirports({{ $index }})"
-                                            class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                                            class="hidden md:flex absolute right-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
                                             title="Swap locations">
                                             <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
