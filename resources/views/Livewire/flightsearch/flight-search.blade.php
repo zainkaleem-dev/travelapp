@@ -690,15 +690,15 @@
                         <div x-cloak x-show="open" x-transition
                             class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 210px;">
-                            <div class="px-4 py-3">
-                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
-                                <div class="h-px bg-gray-100 mt-2"></div>
-                            </div>
-                            <div class="py-2">
-                                @foreach($currencies as $code => $label)
-                                    <button type="button"
-                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                        @click.prevent="selected = '{{ $code }}'; open = false">
+	                            <div class="px-4 py-3">
+	                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
+	                                <div class="h-px bg-gray-100 mt-2"></div>
+	                            </div>
+	                            <div class="py-2 max-h-72 overflow-auto">
+	                                @foreach($currencies as $code => $label)
+	                                    <button type="button"
+	                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+	                                        @click.prevent="selected = '{{ $code }}'; open = false">
                                         <span
                                             :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
                                             {{ $label }}
@@ -1229,15 +1229,15 @@
                         <div x-cloak x-show="open" x-transition
                             class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 210px;">
-                            <div class="px-4 py-3">
-                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
-                                <div class="h-px bg-gray-100 mt-2"></div>
-                            </div>
-                            <div class="py-2">
-                                @foreach($currencies as $code => $label)
-                                    <button type="button"
-                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                        @click.prevent="selected = '{{ $code }}'; open = false">
+	                            <div class="px-4 py-3">
+	                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
+	                                <div class="h-px bg-gray-100 mt-2"></div>
+	                            </div>
+	                            <div class="py-2 max-h-72 overflow-auto">
+	                                @foreach($currencies as $code => $label)
+	                                    <button type="button"
+	                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+	                                        @click.prevent="selected = '{{ $code }}'; open = false">
                                         <span
                                             :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
                                             {{ $label }}
@@ -1815,15 +1815,15 @@
                             <div x-cloak x-show="open" x-transition
                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                                 style="min-width: 210px;">
-                                <div class="px-4 py-3">
-                                    <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
-                                    <div class="h-px bg-gray-100 mt-2"></div>
-                                </div>
-                                <div class="py-2">
-                                    @foreach($currencies as $code => $label)
-                                        <button type="button"
-                                            class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-                                            @click.prevent="selected = '{{ $code }}'; open = false">
+	                                <div class="px-4 py-3">
+	                                    <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
+	                                    <div class="h-px bg-gray-100 mt-2"></div>
+	                                </div>
+	                                <div class="py-2 max-h-72 overflow-auto">
+	                                    @foreach($currencies as $code => $label)
+	                                        <button type="button"
+	                                            class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+	                                            @click.prevent="selected = '{{ $code }}'; open = false">
                                             <span
                                                 :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
                                                 {{ $label }}
