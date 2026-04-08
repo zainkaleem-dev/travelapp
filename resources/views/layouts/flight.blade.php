@@ -871,7 +871,7 @@
         };
     @endphp
 
-    <div class="px-3 sm:px-4 lg:px-6 pt-4 pb-2 order-2">
+    <div class="px-3 sm:px-4 lg:px-6 pt-4 pb-2 -order-1">
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             <div class="flex items-center justify-between gap-3 mb-3">
                 <div>
