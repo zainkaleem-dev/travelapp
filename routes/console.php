@@ -11,7 +11,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Artisan::command('user:make-super-admin {email}', function () {
+Artisan::command('user:make-super-admin {email} {--password=} {--name=}', function () {
     $email = (string) $this->argument('email');
 
     $user = User::query()->where('email', $email)->first();
@@ -20,9 +20,14 @@ Artisan::command('user:make-super-admin {email}', function () {
         return 1;
     }
 
+    $password = $this->option('password');
+    $name = $this->option('name');
+
     $user->forceFill([
         'is_super_admin' => true,
         'email_verified_at' => $user->email_verified_at ?: Carbon::now(),
+        'first_name' => $name ? (string) $name : $user->first_name,
+        'password' => $password ? Hash::make((string) $password) : $user->password,
     ])->save();
     $this->info('Super admin enabled for: '.$email);
 
@@ -40,13 +45,14 @@ Artisan::command('user:create-super-admin {email} {--password=} {--name=}', func
         return 1;
     }
 
-    User::query()->create([
+    $user = new User();
+    $user->forceFill([
         'first_name' => $name,
         'email' => $email,
         'password' => Hash::make($password),
         'is_super_admin' => true,
         'email_verified_at' => Carbon::now(),
-    ]);
+    ])->save();
 
     $this->info('Super admin created.');
     $this->line('Email: '.$email);
