@@ -674,8 +674,15 @@
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-3 sm:px-4">
-            <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold">
+        @php
+            $hideMainNavForSuperAdmin = auth()->check()
+                && (bool) (auth()->user()->is_super_admin ?? false)
+                && request()->is('super-admin*');
+        @endphp
+
+        @unless ($hideMainNavForSuperAdmin)
+            <div class="max-w-7xl mx-auto px-3 sm:px-4">
+                <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold">
                 <a href="{{ route('flights.search') }}"
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.search') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -704,8 +711,9 @@
                     </svg>
                     Travel hub
                 </a>
+                </div>
             </div>
-        </div>
+        @endunless
     </nav>
 
     {{-- ── Step bar ── --}}
@@ -745,6 +753,49 @@
                 {{-- Frontend-only service step bar --}}
                 <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
                     style="-webkit-overflow-scrolling: touch;">
+                    @php
+                        $isSuperAdminArea = auth()->check()
+                            && (bool) (auth()->user()->is_super_admin ?? false)
+                            && request()->is('super-admin*');
+                    @endphp
+
+                    @if ($isSuperAdminArea)
+                        @php
+                            $companyForBranches = request()->route('company');
+                            $canLinkBranches = $companyForBranches !== null;
+                        @endphp
+                        <a href="{{ route('superadmin.companies.create') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.companies.create') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            Add Company
+                        </a>
+                        <a href="{{ route('superadmin.companies.index') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.companies.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
+                            </svg>
+                            Companies
+                        </a>
+                        @if ($canLinkBranches)
+                            <a href="{{ route('superadmin.companies.branches.index', $companyForBranches) }}"
+                                class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.companies.branches.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
+                                </svg>
+                                Branches
+                            </a>
+                        @else
+                            <div
+                                class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 text-gray-400 rounded-t text-xs whitespace-nowrap cursor-not-allowed select-none">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
+                                </svg>
+                                Branches
+                            </div>
+                        @endif
+                    @else
                     <a href="{{ route('flights.search') }}"
                         class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ (request()->is('flights-search') || request()->is('flights-list') || request()->is('additional-services') || request()->is('passenger-details')) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
                         <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -773,15 +824,24 @@
                         </svg>
                         Concierge
                     </a>
+                    @endif
 
-                {{-- Right-side search toggle --}}
-                <button type="button" @click="searchOpen = !searchOpen"
-                    class="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 shadow-sm flex-shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
-                    </svg>
-                </button>
+                @php
+                    $isSuperAdminArea = auth()->check()
+                        && (bool) (auth()->user()->is_super_admin ?? false)
+                        && request()->is('super-admin*');
+                @endphp
+
+                {{-- Right-side search toggle (frontend only) --}}
+                @unless ($isSuperAdminArea)
+                    <button type="button" @click="searchOpen = !searchOpen"
+                        class="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 shadow-sm flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
+                        </svg>
+                    </button>
+                @endunless
             </div>
 
             <div class="h-px bg-gray-100"></div>
@@ -892,10 +952,12 @@
     </div>
     @endif
 
-                {{-- Inline quick search panel (under navigation) --}}
-                <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms class="mt-4">
-                    @livewire('quick-search')
-                </div>
+                {{-- Inline quick search panel (frontend only) --}}
+                @unless ($isSuperAdminArea)
+                    <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms class="mt-4">
+                        @livewire('quick-search')
+                    </div>
+                @endunless
 
                 {{ $slot }}
             </div>

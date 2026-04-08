@@ -87,7 +87,7 @@ class Login extends Component
         request()->session()->regenerate();
 
         // Redirect after login
-        $this->redirect(route('flights.search'));
+        $this->redirect($user->is_super_admin ? route('superadmin.companies.create') : route('flights.search'));
     }
 
     // ─── Social auth placeholders ─────────────────────────────────

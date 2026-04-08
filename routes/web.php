@@ -23,6 +23,9 @@ use App\Livewire\Profile\Family\FamilyEdit;
 use App\Livewire\Corporate\CorporateSettings;
 use App\Livewire\Tmc\TmcSettings;
 use App\Livewire\Admin\SuperAdminSettings;
+use App\Livewire\Admin\Companies\CompanyCreate;
+use App\Livewire\Admin\Companies\CompanyIndex;
+use App\Livewire\Admin\Companies\Branches\BranchIndex;
 use App\Livewire\Travelhub\TravelHub;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
@@ -121,6 +124,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/corporate-settings', CorporateSettings::class)->name('corporate.settings');
     Route::get('/tmc-settings', TmcSettings::class)->name('tmc.settings');
     Route::get('/super-admin-settings', SuperAdminSettings::class)->name('superadmin.settings');
+
+    Route::middleware(['superadmin'])->prefix('super-admin')->group(function () {
+        Route::get('/companies', CompanyIndex::class)->name('superadmin.companies.index');
+        Route::get('/companies/create', CompanyCreate::class)->name('superadmin.companies.create');
+        Route::get('/companies/{company}/branches', BranchIndex::class)->name('superadmin.companies.branches.index');
+    });
 
     Route::get('/hotels', Hotel::class)->name('hotels');
     Route::get('/cars', Car::class)->name('cars');
