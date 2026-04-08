@@ -3,10 +3,10 @@
 namespace App\Livewire\Admin\Companies;
 
 use App\Models\Company;
+use App\Services\PaginationService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -14,13 +14,30 @@ use Illuminate\Support\Facades\Hash;
 #[Layout('layouts.flight')]
 class CompanyIndex extends Component
 {
-    use WithPagination;
     use WithFileUploads;
 
     public string $search = '';
+    public int $currentPage = 1;
+    public int $perPage = 10;
 
     public ?int $editingCompanyId = null;
     public bool $editModalOpen = false;
+
+    public function mount()
+    {
+        $this->currentPage = (int) request()->query('page', 1);
+    }
+
+    #[\Livewire\Attributes\On('paginationGoTo')]
+    public function goToPage($page): void
+    {
+        $this->currentPage = (int) $page;
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->currentPage = 1;
+    }
 
     public string $company_name = '';
     public string $company_type = '';
@@ -61,7 +78,7 @@ class CompanyIndex extends Component
 
     public function openEdit(int $companyId): void
     {
-        $company = Company::query()->with(['users' => fn ($q) => $q->orderBy('id')])->findOrFail($companyId);
+        $company = Company::query()->with(['users' => fn($q) => $q->orderBy('id')])->findOrFail($companyId);
         $adminUser = $company->users->first();
 
         $this->editingCompanyId = $company->id;
@@ -103,7 +120,7 @@ class CompanyIndex extends Component
             return;
         }
 
-        $company = Company::query()->with(['users' => fn ($q) => $q->orderBy('id')])->findOrFail($this->editingCompanyId);
+        $company = Company::query()->with(['users' => fn($q) => $q->orderBy('id')])->findOrFail($this->editingCompanyId);
         $adminUser = $company->users->first();
         if (!$adminUser) {
             $this->addError('admin_email', 'Admin user not found for this company.');
@@ -151,25 +168,29 @@ class CompanyIndex extends Component
         $company->forceFill(['is_active' => !(bool) $company->is_active])->save();
     }
 
-    public function render()
+    public function render(PaginationService $paginationService)
     {
         $search = trim($this->search);
 
+        $query = Company::query()
+            ->with(['users' => fn($q) => $q->orderBy('id')])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('type', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhere('country', 'like', "%{$search}%")
+                        ->orWhere('subscription_plan', 'like', "%{$search}%");
+                });
+            })
+            ->latest('id');
+
+        $companies = $paginationService->paginate($query, $this->perPage, $this->currentPage);
+
         return view('livewire.admin.companies.index', [
-            'companies' => Company::query()
-                ->with(['users' => fn ($q) => $q->orderBy('id')])
-                ->when($search !== '', function ($query) use ($search) {
-                    $query->where(function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%")
-                            ->orWhere('type', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%")
-                            ->orWhere('phone', 'like', "%{$search}%")
-                            ->orWhere('country', 'like', "%{$search}%")
-                            ->orWhere('subscription_plan', 'like', "%{$search}%");
-                    });
-                })
-                ->latest('id')
-                ->paginate(10),
+            'companies' => $companies,
+            'paginationMeta' => $paginationService->getPaginationMeta($companies),
         ]);
     }
 }
