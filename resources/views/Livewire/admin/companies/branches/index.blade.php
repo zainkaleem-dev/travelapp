@@ -26,72 +26,59 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-5">
-                @forelse ($branches as $branch)
-                    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition-shadow {{ $branch->is_active ? '' : 'opacity-60 grayscale' }}">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="min-w-0">
-                                <div class="text-base font-black text-gray-900 truncate">{{ $branch->name }}</div>
-                                <div class="mt-1 flex items-center gap-2">
-                                    @if ($branch->code)
-                                        <div class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-700">
-                                            {{ $branch->code }}
-                                        </div>
-                                    @endif
-                                    <div class="inline-flex items-center rounded-md {{ $branch->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2 py-0.5 text-[11px] font-black">
-                                        {{ $branch->is_active ? 'Active' : 'Inactive' }}
+            <div>
+                <table class="w-full table-fixed text-sm">
+                    <thead>
+                        <tr class="text-left text-xs font-black tracking-wide uppercase text-gray-600 border-b border-gray-200">
+                            <th class="py-3 pr-4 w-[32%]">Branch</th>
+                            <th class="py-3 pr-4 w-[10%]">Code</th>
+                            <th class="py-3 pr-4 w-[18%]">Email</th>
+                            <th class="py-3 pr-4 w-[16%]">Phone</th>
+                            <th class="py-3 pr-4 w-[10%]">Status</th>
+                            <th class="py-3 pr-0 w-[14%] text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @forelse ($branches as $branch)
+                            <tr class="{{ $branch->is_active ? '' : 'opacity-60 grayscale' }}">
+                                <td class="py-4 pr-4 align-top">
+                                    <div class="font-black text-gray-900">{{ $branch->name }}</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">{{ optional($branch->created_at)->format('Y-m-d') }}</div>
+                                    <div class="text-xs text-gray-600 mt-1 break-words">
+                                        {{ collect([$branch->address, $branch->city, $branch->country])->filter()->implode(', ') ?: '—' }}
                                     </div>
-                                </div>
-                            </div>
-                            <div class="text-xs text-gray-500 whitespace-nowrap pt-1">
-                                {{ optional($branch->created_at)->format('Y-m-d') }}
-                            </div>
-                        </div>
-
-                        <div class="mt-4 space-y-2 text-sm text-gray-700">
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-xs font-bold tracking-wide uppercase text-gray-500">Email</span>
-                                <span class="font-semibold text-gray-900 truncate">{{ $branch->email ?: '—' }}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-xs font-bold tracking-wide uppercase text-gray-500">Phone</span>
-                                <span class="font-semibold text-gray-900 truncate">{{ $branch->phone ?: '—' }}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-xs font-bold tracking-wide uppercase text-gray-500">Country</span>
-                                <span class="font-semibold text-gray-900 truncate">{{ $branch->country ?: '—' }}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-xs font-bold tracking-wide uppercase text-gray-500">City</span>
-                                <span class="font-semibold text-gray-900 truncate">{{ $branch->city ?: '—' }}</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="text-xs font-bold tracking-wide uppercase text-gray-500">Address</span>
-                                <span class="font-semibold text-gray-900 truncate">{{ $branch->address ?: '—' }}</span>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 flex items-center justify-between gap-3">
-                            <button type="button" wire:click="openEdit({{ $branch->id }})"
-                                class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                                Edit
-                            </button>
-
-                            <button type="button" wire:click="toggleActive({{ $branch->id }})"
-                                class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-black {{ $branch->is_active ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }}">
-                                {{ $branch->is_active ? 'Deactivate' : 'Activate' }}
-                            </button>
-                        </div>
-                    </div>
-                @empty
-                    <div class="sm:col-span-2 lg:col-span-3 py-10 text-center text-gray-500">
-                        No branches found.
-                    </div>
-                @endforelse
+                                </td>
+                                <td class="py-4 pr-4 align-top font-semibold text-gray-900 break-words">{{ $branch->code ?: '—' }}</td>
+                                <td class="py-4 pr-4 align-top font-semibold text-gray-900 break-all">{{ $branch->email ?: '—' }}</td>
+                                <td class="py-4 pr-4 align-top font-semibold text-gray-900 break-words">{{ $branch->phone ?: '—' }}</td>
+                                <td class="py-4 pr-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center rounded-md {{ $branch->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2 py-0.5 text-[11px] font-black">
+                                        {{ $branch->is_active ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </td>
+                                <td class="py-4 pr-0 whitespace-nowrap text-right">
+                                    <div class="inline-flex items-center gap-2">
+                                        <button type="button" wire:click="openEdit({{ $branch->id }})"
+                                            class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </button>
+                                        <button type="button" wire:click="toggleActive({{ $branch->id }})"
+                                            class="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-black {{ $branch->is_active ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }} min-w-[88px]">
+                                            {{ $branch->is_active ? 'Deactivate' : 'Activate' }}
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="py-10 text-center text-gray-500">No branches found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
 
             <div class="mt-4">
@@ -312,4 +299,3 @@
         </div>
     @endif
 </div>
-
