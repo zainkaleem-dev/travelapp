@@ -35,7 +35,7 @@
                             <th class="py-3 pr-4 w-[18%]">Email</th>
                             <th class="py-3 pr-4 w-[16%]">Phone</th>
                             <th class="py-3 pr-4 w-[10%]">Status</th>
-                            <th class="py-3 pr-0 w-[14%] text-right">Action</th>
+                            <th class="py-3 pr-0 w-[18%] text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -65,6 +65,13 @@
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </button>
+                                        <a href="{{ route('superadmin.subcompanies.index', ['company' => $company, 'branch' => $branch]) }}"
+                                            class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 6h16M4 12h16M4 18h10" />
+                                            </svg>
+                                        </a>
                                         <button type="button" wire:click="toggleActive({{ $branch->id }})"
                                             class="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-black {{ $branch->is_active ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }} min-w-[88px]">
                                             {{ $branch->is_active ? 'Deactivate' : 'Activate' }}

@@ -13,12 +13,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
+            \App\Http\Middleware\SetTenantContext::class,
             \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\SetCurrency::class,
         ]);
 
         $middleware->alias([
             'superadmin' => \App\Http\Middleware\EnsureSuperAdmin::class,
+            'superadmin.company' => \App\Http\Middleware\SetSuperAdminCompanyContext::class,
+            'superadmin.tenant' => \App\Http\Middleware\RequireSuperAdminCompanySelected::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

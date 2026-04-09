@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class CompanyBranch extends Model
+class SubCompany extends Model
 {
     use ScopedToSelectedCompany;
 
     protected $fillable = [
         'company_id',
+        'company_branch_id',
         'name',
         'code',
         'country',
@@ -20,6 +21,7 @@ class CompanyBranch extends Model
         'address',
         'phone',
         'email',
+        'logo_path',
         'is_active',
     ];
 
@@ -28,9 +30,14 @@ class CompanyBranch extends Model
         return $this->belongsTo(Company::class);
     }
 
-    /** @return HasMany<SubCompany, CompanyBranch> */
-    public function subCompanies(): HasMany
+    public function branch(): BelongsTo
     {
-        return $this->hasMany(SubCompany::class, 'company_branch_id');
+        return $this->belongsTo(CompanyBranch::class, 'company_branch_id');
+    }
+
+    /** @return HasMany<SubCompanyBranch, SubCompany> */
+    public function branches(): HasMany
+    {
+        return $this->hasMany(SubCompanyBranch::class);
     }
 }

@@ -760,10 +760,6 @@
                     @endphp
 
                     @if ($isSuperAdminArea)
-                        @php
-                            $companyForBranches = request()->route('company');
-                            $canLinkBranches = $companyForBranches !== null;
-                        @endphp
                         <a href="{{ route('superadmin.companies.create') }}"
                             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.companies.create') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
                             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -778,22 +774,18 @@
                             </svg>
                             Companies
                         </a>
-                        @if ($canLinkBranches)
-                            <a href="{{ route('superadmin.companies.branches.index', $companyForBranches) }}"
-                                class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.companies.branches.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
-                                </svg>
-                                Branches
-                            </a>
-                        @else
-                            <div
-                                class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 text-gray-400 rounded-t text-xs whitespace-nowrap cursor-not-allowed select-none">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
-                                </svg>
-                                Branches
-                            </div>
+                        <a href="{{ route('superadmin.branches') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ (request()->routeIs('superadmin.companies.branches.index') || request()->routeIs('superadmin.subcompanies.index') || request()->routeIs('superadmin.branches')) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
+                            </svg>
+                            Branches
+                        </a>
+
+                        @if (request()->routeIs('superadmin.companies.index')
+                            || request()->routeIs('superadmin.branches')
+                            || request()->routeIs('superadmin.companies.branches.index'))
+                            @livewire('admin.super-admin-company-switcher')
                         @endif
                     @else
                     <a href="{{ route('flights.search') }}"

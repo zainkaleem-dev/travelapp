@@ -89,7 +89,7 @@
                                             </svg>
                                         </button>
 
-                                        <a href="{{ route('superadmin.companies.branches.index', $company) }}"
+                                        <a href="{{ route('superadmin.branches', ['company' => $company->id]) }}"
                                             class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-xs font-semibold"
                                             title="Branches">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
