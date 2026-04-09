@@ -12,7 +12,7 @@
         <div class="min-w-[240px]">
             <select
                 class="w-full bg-transparent text-sm font-semibold text-gray-900 outline-none"
-                wire:change="switchCompany($event.target.value)">
+                wire:change="switchCompany($event.target.value, '{{ request()->route()?->getName() }}')">
                 <option value="0" @selected($companyId === 0)>Select company…</option>
                 @foreach ($companies as $company)
                     <option value="{{ $company->id }}" @selected($companyId === (int) $company->id)>{{ $company->name }}</option>
@@ -21,4 +21,3 @@
         </div>
     </div>
 </div>
-

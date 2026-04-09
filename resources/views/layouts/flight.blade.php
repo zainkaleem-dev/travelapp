@@ -781,10 +781,18 @@
                             </svg>
                             Branches
                         </a>
+                        <a href="{{ route('superadmin.users', ['company' => (int) session('super_admin_company_id', 0)]) }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.users') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 14a4 4 0 10-8 0m12 6a8 8 0 10-16 0" />
+                            </svg>
+                            Users
+                        </a>
 
                         @if (request()->routeIs('superadmin.companies.index')
                             || request()->routeIs('superadmin.branches')
-                            || request()->routeIs('superadmin.companies.branches.index'))
+                            || request()->routeIs('superadmin.companies.branches.index')
+                            || request()->routeIs('superadmin.users'))
                             @livewire('admin.super-admin-company-switcher')
                         @endif
                     @else

@@ -7,6 +7,10 @@
                     <p class="text-sm text-gray-600 mt-1 truncate">{{ $company->name }} · {{ $subCompany->name }}</p>
                 </div>
                 <div class="flex items-center gap-3">
+                    <a href="{{ route('superadmin.users', ['company' => $company->id]) }}"
+                        class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-black text-gray-700 hover:bg-gray-50">
+                        Users
+                    </a>
                     <a href="{{ route('superadmin.subcompanies.index', ['company' => $company, 'branch' => $branch]) }}"
                         class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-black text-gray-700 hover:bg-gray-50">
                         Back

@@ -14,7 +14,7 @@ class SuperAdminCompanySwitcher extends Component
         $this->companyId = (int) session('super_admin_company_id', 0);
     }
 
-    public function switchCompany($value): void
+    public function switchCompany($value, $sourceRoute = null): void
     {
         $companyId = (int) $value;
         $this->companyId = $companyId;
@@ -28,6 +28,13 @@ class SuperAdminCompanySwitcher extends Component
             session()->put('super_admin_company_id', $companyId);
         } else {
             session()->forget('super_admin_company_id');
+        }
+
+        $routeName = is_string($sourceRoute) && $sourceRoute !== '' ? $sourceRoute : request()->route()?->getName();
+
+        if ($routeName === 'superadmin.users') {
+            $this->redirect(route('superadmin.users', ['company' => $companyId]));
+            return;
         }
 
         $this->redirect(route('superadmin.branches'));

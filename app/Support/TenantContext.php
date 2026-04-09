@@ -33,7 +33,11 @@ class TenantContext
 
         $isSuperAdmin = (bool) ($user->is_super_admin ?? false);
 
-        if ($this->inSuperAdminArea($request)) {
+        $isLivewireRequest = $request->headers->has('X-Livewire')
+            || $request->is('livewire/*')
+            || $request->route()?->getName() === 'livewire.update';
+
+        if ($this->inSuperAdminArea($request) || ($isSuperAdmin && $isLivewireRequest)) {
             if (!$isSuperAdmin) {
                 return null;
             }
@@ -62,4 +66,3 @@ class TenantContext
         }
     }
 }
-
