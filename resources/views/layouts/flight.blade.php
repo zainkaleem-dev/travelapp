@@ -788,11 +788,19 @@
                             </svg>
                             Users
                         </a>
+                        <a href="{{ route('superadmin.roles') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.roles') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-7.5 4.5h9a2.25 2.25 0 0 0 2.25-2.25v-6A2.25 2.25 0 0 0 16.5 6h-9a2.25 2.25 0 0 0-2.25 2.25v6A2.25 2.25 0 0 0 7.5 16.5z" />
+                            </svg>
+                            Roles
+                        </a>
 
                         @if (request()->routeIs('superadmin.companies.index')
                             || request()->routeIs('superadmin.branches')
                             || request()->routeIs('superadmin.companies.branches.index')
-                            || request()->routeIs('superadmin.users'))
+                            || request()->routeIs('superadmin.users')
+                            || request()->routeIs('superadmin.roles'))
                             @livewire('admin.super-admin-company-switcher')
                         @endif
                     @else

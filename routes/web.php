@@ -30,6 +30,7 @@ use App\Livewire\Admin\Companies\Branches\SelectedBranchIndex;
 use App\Livewire\Admin\Companies\Branches\SubCompanies\SubCompanyIndex;
 use App\Livewire\Admin\Companies\Branches\SubCompanies\Branches\SubCompanyBranchIndex;
 use App\Livewire\Admin\Companies\Users\UserIndex;
+use App\Livewire\Admin\Companies\Roles\RoleIndex;
 use App\Livewire\Travelhub\TravelHub;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
@@ -135,6 +136,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users', UserIndex::class)
             ->middleware(['superadmin.company_query', 'superadmin.tenant'])
             ->name('superadmin.users');
+        Route::get('/roles', RoleIndex::class)->name('superadmin.roles');
         Route::get('/branches', SelectedBranchIndex::class)
             ->middleware('superadmin.tenant')
             ->name('superadmin.branches');
