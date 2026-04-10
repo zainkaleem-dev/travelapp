@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Companies\Branches;
+namespace App\Livewire\Admin\Branches;
 
 use App\Models\Company;
 use Livewire\Attributes\Layout;
@@ -19,16 +19,16 @@ class SelectedBranchIndex extends Component
         $companyId = (int) session('super_admin_company_id', 0);
 
         if ($companyId <= 0) {
-            return view('livewire.admin.companies.branches.no-company');
+            return view('livewire.admin.branches.no-company');
         }
 
         $company = Company::query()->find($companyId);
         if (!$company) {
             session()->forget('super_admin_company_id');
-            return view('livewire.admin.companies.branches.no-company');
+            return view('livewire.admin.branches.no-company');
         }
 
-        return view('livewire.admin.companies.branches.selected-redirect', [
+        return view('livewire.admin.branches.selected-redirect', [
             'company' => $company,
         ]);
     }

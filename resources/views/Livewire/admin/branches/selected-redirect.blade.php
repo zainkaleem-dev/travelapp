@@ -8,4 +8,3 @@
         window.location.href = @json(route('superadmin.companies.branches.index', $company));
     </script>
 </div>
-

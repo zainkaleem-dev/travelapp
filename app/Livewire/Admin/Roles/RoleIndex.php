@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Companies\Roles;
+namespace App\Livewire\Admin\Roles;
 
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -100,9 +100,8 @@ class RoleIndex extends Component
             ->latest('id')
             ->get();
 
-        return view('livewire.admin.companies.roles.index', [
+        return view('livewire.admin.roles.index', [
             'roles' => $roles,
         ]);
     }
 }
-

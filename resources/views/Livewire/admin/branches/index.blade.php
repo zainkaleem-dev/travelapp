@@ -122,7 +122,6 @@
                                     </div>
                                     @error('name') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Branch Code <span class="text-gray-400">(Optional)</span></label>
@@ -130,7 +129,6 @@
                                     </div>
                                     @error('code') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Status</label>
@@ -141,7 +139,6 @@
                                     </div>
                                     @error('is_active') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Country <span class="text-gray-400">(Optional)</span></label>
@@ -149,7 +146,6 @@
                                     </div>
                                     @error('country') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">City <span class="text-gray-400">(Optional)</span></label>
@@ -157,7 +153,6 @@
                                     </div>
                                     @error('city') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div class="md:col-span-2">
                                     <div class="field-wrap">
                                         <label class="field-label">Address <span class="text-gray-400">(Optional)</span></label>
@@ -165,7 +160,6 @@
                                     </div>
                                     @error('address') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Phone <span class="text-gray-400">(Optional)</span></label>
@@ -173,7 +167,6 @@
                                     </div>
                                     @error('phone') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Email <span class="text-gray-400">(Optional)</span></label>
@@ -183,7 +176,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="flex items-center justify-end gap-3">
                             <button type="button" wire:click="closeCreate"
                                 class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-black text-gray-700 hover:bg-gray-50">
@@ -228,7 +220,6 @@
                                     </div>
                                     @error('name') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Branch Code <span class="text-gray-400">(Optional)</span></label>
@@ -236,7 +227,6 @@
                                     </div>
                                     @error('code') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Status</label>
@@ -247,7 +237,6 @@
                                     </div>
                                     @error('is_active') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Country <span class="text-gray-400">(Optional)</span></label>
@@ -255,7 +244,6 @@
                                     </div>
                                     @error('country') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">City <span class="text-gray-400">(Optional)</span></label>
@@ -263,7 +251,6 @@
                                     </div>
                                     @error('city') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div class="md:col-span-2">
                                     <div class="field-wrap">
                                         <label class="field-label">Address <span class="text-gray-400">(Optional)</span></label>
@@ -271,7 +258,6 @@
                                     </div>
                                     @error('address') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Phone <span class="text-gray-400">(Optional)</span></label>
@@ -279,7 +265,6 @@
                                     </div>
                                     @error('phone') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
-
                                 <div>
                                     <div class="field-wrap">
                                         <label class="field-label">Email <span class="text-gray-400">(Optional)</span></label>

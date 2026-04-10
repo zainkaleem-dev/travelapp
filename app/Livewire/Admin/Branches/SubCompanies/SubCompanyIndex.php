@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Companies\Branches\SubCompanies;
+namespace App\Livewire\Admin\Branches\SubCompanies;
 
 use App\Models\Company;
 use App\Models\CompanyBranch;
@@ -202,7 +202,7 @@ class SubCompanyIndex extends Component
 
     public function render()
     {
-        return view('livewire.admin.companies.branches.subcompanies.index', [
+        return view('livewire.admin.branches.subcompanies.index', [
             'subCompanies' => SubCompany::query()
                 ->where('company_id', $this->company->id)
                 ->where('company_branch_id', $this->branch->id)
@@ -211,4 +211,3 @@ class SubCompanyIndex extends Component
         ]);
     }
 }
-

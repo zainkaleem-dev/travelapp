@@ -1,26 +1,20 @@
 <?php
 
-namespace App\Livewire\Admin\Companies\Branches\SubCompanies\Branches;
+namespace App\Livewire\Admin\Branches;
 
 use App\Models\Company;
 use App\Models\CompanyBranch;
-use App\Models\SubCompany;
-use App\Models\SubCompanyBranch;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.flight')]
-class SubCompanyBranchIndex extends Component
+class BranchIndex extends Component
 {
     use WithPagination;
 
-    protected string $paginationTheme = 'tailwind';
-
     public Company $company;
-    public CompanyBranch $branch;
-    public SubCompany $subCompany;
 
     public bool $createModalOpen = false;
     public bool $editModalOpen = false;
@@ -35,15 +29,9 @@ class SubCompanyBranchIndex extends Component
     public ?string $email = null;
     public bool $is_active = true;
 
-    public function mount(Company $company, CompanyBranch $branch, SubCompany $subCompany): void
+    public function mount(Company $company): void
     {
-        abort_unless($branch->company_id === $company->id, 404);
-        abort_unless($subCompany->company_id === $company->id, 404);
-        abort_unless((int) $subCompany->company_branch_id === (int) $branch->id, 404);
-
         $this->company = $company;
-        $this->branch = $branch;
-        $this->subCompany = $subCompany;
     }
 
     protected function rules(): array
@@ -60,23 +48,9 @@ class SubCompanyBranchIndex extends Component
         ];
     }
 
-    private function resetForm(): void
-    {
-        $this->editingBranchId = null;
-        $this->name = '';
-        $this->code = null;
-        $this->country = null;
-        $this->city = null;
-        $this->address = null;
-        $this->phone = null;
-        $this->email = null;
-        $this->is_active = true;
-    }
-
     public function openCreate(): void
     {
         $this->resetForm();
-        $this->resetErrorBag();
         $this->createModalOpen = true;
     }
 
@@ -90,10 +64,8 @@ class SubCompanyBranchIndex extends Component
     {
         $validated = $this->validate();
 
-        SubCompanyBranch::query()->create([
+        CompanyBranch::query()->create([
             'company_id' => $this->company->id,
-            'company_branch_id' => $this->branch->id,
-            'sub_company_id' => $this->subCompany->id,
             'name' => $validated['name'],
             'code' => $validated['code'] ?? null,
             'country' => $validated['country'] ?? null,
@@ -112,10 +84,8 @@ class SubCompanyBranchIndex extends Component
 
     public function openEdit(int $branchId): void
     {
-        $branch = SubCompanyBranch::query()
+        $branch = CompanyBranch::query()
             ->where('company_id', $this->company->id)
-            ->where('company_branch_id', $this->branch->id)
-            ->where('sub_company_id', $this->subCompany->id)
             ->findOrFail($branchId);
 
         $this->editingBranchId = $branch->id;
@@ -147,10 +117,8 @@ class SubCompanyBranchIndex extends Component
 
         $validated = $this->validate();
 
-        $branch = SubCompanyBranch::query()
+        $branch = CompanyBranch::query()
             ->where('company_id', $this->company->id)
-            ->where('company_branch_id', $this->branch->id)
-            ->where('sub_company_id', $this->subCompany->id)
             ->findOrFail($this->editingBranchId);
 
         $branch->forceFill([
@@ -170,25 +138,33 @@ class SubCompanyBranchIndex extends Component
 
     public function toggleActive(int $branchId): void
     {
-        $branch = SubCompanyBranch::query()
+        $branch = CompanyBranch::query()
             ->where('company_id', $this->company->id)
-            ->where('company_branch_id', $this->branch->id)
-            ->where('sub_company_id', $this->subCompany->id)
             ->findOrFail($branchId);
 
         $branch->forceFill(['is_active' => !(bool) $branch->is_active])->save();
     }
 
+    private function resetForm(): void
+    {
+        $this->editingBranchId = null;
+        $this->name = '';
+        $this->code = null;
+        $this->country = null;
+        $this->city = null;
+        $this->address = null;
+        $this->phone = null;
+        $this->email = null;
+        $this->is_active = true;
+    }
+
     public function render()
     {
-        return view('Livewire.admin.companies.branches.subcompanies.branches.index', [
-            'branches' => SubCompanyBranch::query()
+        return view('livewire.admin.branches.index', [
+            'branches' => CompanyBranch::query()
                 ->where('company_id', $this->company->id)
-                ->where('company_branch_id', $this->branch->id)
-                ->where('sub_company_id', $this->subCompany->id)
                 ->latest('id')
                 ->paginate(10),
         ]);
     }
 }
-

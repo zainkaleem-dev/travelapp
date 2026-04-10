@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Livewire\Admin\Companies;
+namespace App\Livewire\Admin;
 
 use App\Models\Company;
 use App\Services\PaginationService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 #[Layout('layouts.flight')]
 class CompanyIndex extends Component
@@ -78,7 +78,7 @@ class CompanyIndex extends Component
 
     public function openEdit(int $companyId): void
     {
-        $company = Company::query()->with(['users' => fn($q) => $q->orderBy('id')])->findOrFail($companyId);
+        $company = Company::query()->with(['users' => fn ($q) => $q->orderBy('id')])->findOrFail($companyId);
         $adminUser = $company->users->first();
 
         $this->editingCompanyId = $company->id;
@@ -120,7 +120,7 @@ class CompanyIndex extends Component
             return;
         }
 
-        $company = Company::query()->with(['users' => fn($q) => $q->orderBy('id')])->findOrFail($this->editingCompanyId);
+        $company = Company::query()->with(['users' => fn ($q) => $q->orderBy('id')])->findOrFail($this->editingCompanyId);
         $adminUser = $company->users->first();
         if (!$adminUser) {
             $this->addError('admin_email', 'Admin user not found for this company.');
@@ -173,7 +173,7 @@ class CompanyIndex extends Component
         $search = trim($this->search);
 
         $query = Company::query()
-            ->with(['users' => fn($q) => $q->orderBy('id')])
+            ->with(['users' => fn ($q) => $q->orderBy('id')])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -188,7 +188,7 @@ class CompanyIndex extends Component
 
         $companies = $paginationService->paginate($query, $this->perPage, $this->currentPage);
 
-        return view('livewire.admin.companies.index', [
+        return view('livewire.admin.index', [
             'companies' => $companies,
             'paginationMeta' => $paginationService->getPaginationMeta($companies),
         ]);

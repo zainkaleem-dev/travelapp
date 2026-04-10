@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Companies\Users;
+namespace App\Livewire\Admin\Users;
 
 use App\Models\User;
 use App\Services\PaginationService;
@@ -192,10 +192,9 @@ class UserIndex extends Component
 
         $users = $paginationService->paginate($query, $this->perPage, $this->currentPage);
 
-        return view('Livewire.admin.companies.users.index', [
+        return view('livewire.admin.users.index', [
             'users' => $users,
             'paginationMeta' => $paginationService->getPaginationMeta($users),
         ]);
     }
 }
-

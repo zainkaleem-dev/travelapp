@@ -23,14 +23,14 @@ use App\Livewire\Profile\Family\FamilyEdit;
 use App\Livewire\Corporate\CorporateSettings;
 use App\Livewire\Tmc\TmcSettings;
 use App\Livewire\Admin\SuperAdminSettings;
-use App\Livewire\Admin\Companies\CompanyCreate;
-use App\Livewire\Admin\Companies\CompanyIndex;
-use App\Livewire\Admin\Companies\Branches\BranchIndex;
-use App\Livewire\Admin\Companies\Branches\SelectedBranchIndex;
-use App\Livewire\Admin\Companies\Branches\SubCompanies\SubCompanyIndex;
-use App\Livewire\Admin\Companies\Branches\SubCompanies\Branches\SubCompanyBranchIndex;
-use App\Livewire\Admin\Companies\Users\UserIndex;
-use App\Livewire\Admin\Companies\Roles\RoleIndex;
+use App\Livewire\Admin\CompanyCreate;
+use App\Livewire\Admin\CompanyIndex;
+use App\Livewire\Admin\Branches\BranchIndex;
+use App\Livewire\Admin\Branches\SelectedBranchIndex;
+use App\Livewire\Admin\Branches\SubCompanies\SubCompanyIndex;
+use App\Livewire\Admin\Branches\SubCompanies\Branches\SubCompanyBranchIndex;
+use App\Livewire\Admin\Users\UserIndex;
+use App\Livewire\Admin\Roles\RoleIndex;
 use App\Livewire\Travelhub\TravelHub;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
