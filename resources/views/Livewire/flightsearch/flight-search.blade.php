@@ -59,7 +59,7 @@
                                         d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
                                 </svg>
                             </span>
-                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.150ms="returnDep"
+                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.350ms="returnDep"
                                 wire:key="return-dep-input" @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
                             @if($returnDep)
@@ -133,7 +133,7 @@
                                         d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
                                 </svg>
                             </span>
-                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.150ms="returnArr"
+                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.350ms="returnArr"
                                 wire:key="return-arr-input" @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
                             @if($returnArr)
@@ -860,7 +860,7 @@
                                         d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
                                 </svg>
                             </span>
-                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.150ms="onewayDep"
+                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.350ms="onewayDep"
                                 wire:key="oneway-dep-input" @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
                             @if($onewayDep)
@@ -933,7 +933,7 @@
                                         d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
                                 </svg>
                             </span>
-                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.150ms="onewayArr"
+                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.350ms="onewayArr"
                                 wire:key="oneway-arr-input" @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
                             @if($onewayArr)
@@ -1411,7 +1411,7 @@
                                             </svg>
                                         </span>
                                         <input class="field-input md:pr-10" type="text"
-                                            wire:model.live.debounce.150ms="multiFlights.{{ $index }}.dep"
+                                            wire:model.live.debounce.350ms="multiFlights.{{ $index }}.dep"
                                             wire:key="multi-dep-input-{{ $index }}" @focus="show = true"
                                             placeholder="City or airport" autocomplete="off">
                                         @if($flight['dep'] && $index === 0)
@@ -1488,7 +1488,7 @@
                                             </svg>
                                         </span>
                                         <input class="field-input md:pr-10" type="text"
-                                            wire:model.live.debounce.150ms="multiFlights.{{ $index }}.arr"
+                                            wire:model.live.debounce.350ms="multiFlights.{{ $index }}.arr"
                                             wire:key="multi-arr-input-{{ $index }}" @focus="show = true"
                                             placeholder="City or airport" autocomplete="off">
                                         @if($flight['arr'])

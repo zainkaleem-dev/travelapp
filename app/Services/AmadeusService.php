@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 
 class AmadeusService
 {
@@ -28,32 +29,26 @@ class AmadeusService
 
     public function getToken(): ?string
     {
-        try {
-            $response = $this->client->post(
-                $this->baseUrl . "/v1/security/oauth2/token",
-                [
-                    "form_params" => [
-                        "grant_type" => "client_credentials",
-                        "client_id" => $this->apiKey,
-                        "client_secret" => $this->apiSecret,
+        return Cache::remember('amadeus_api_token', 1780, function () {
+            try {
+                $response = $this->client->post(
+                    $this->baseUrl . "/v1/security/oauth2/token",
+                    [
+                        "form_params" => [
+                            "grant_type" => "client_credentials",
+                            "client_id" => $this->apiKey,
+                            "client_secret" => $this->apiSecret,
+                        ],
                     ],
-                ],
-            );
+                );
 
-            $data = json_decode($response->getBody(), true);
-            $token = $data["access_token"] ?? null;
-
-            if ($token) {
-                // Small delay after refreshing a token.
-                // A token refresh is an API call itself. If we immediately
-                // make another call (like search) we will hit the 1 QPS limit.
-                usleep(1100000); // 1.1s
+                $data = json_decode($response->getBody(), true);
+                return $data["access_token"] ?? null;
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error("Amadeus Token Fetch Error: " . $e->getMessage());
+                return null;
             }
-
-            return $token;
-        } catch (\Throwable $e) {
-            return null;
-        }
+        });
     }
 
     public function getClient(): Client
