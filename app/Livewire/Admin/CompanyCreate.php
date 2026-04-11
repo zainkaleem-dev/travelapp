@@ -4,12 +4,13 @@ namespace App\Livewire\Admin;
 
 use App\Models\Company;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\Hash; 
+use Illuminate\Validation\Rule; 
+use Livewire\Attributes\Layout; 
+use Livewire\Component; 
+use Livewire\WithFileUploads; 
+use Spatie\Permission\Models\Role;
 
 #[Layout('layouts.flight')]
 class CompanyCreate extends Component
@@ -63,26 +64,30 @@ class CompanyCreate extends Component
             $logoPath = $this->company_logo->storePublicly('company-logos', 'public');
         }
 
-        DB::transaction(function () use ($validated, $logoPath) {
-            $company = Company::query()->create([
-                'name' => $validated['company_name'],
-                'type' => $validated['company_type'],
-                'logo_path' => $logoPath,
+        DB::transaction(function () use ($validated, $logoPath) { 
+            $company = Company::query()->create([ 
+                'name' => $validated['company_name'], 
+                'type' => $validated['company_type'], 
+                'logo_path' => $logoPath, 
                 'is_active' => true,
                 'email' => $validated['company_email'] ?? null,
                 'phone' => $validated['phone'] ?? null,
                 'country' => $validated['country'] ?? null,
                 'subscription_plan' => $validated['subscription_plan'] ?? null,
-                'company_limit' => $validated['company_limit'] ?? null,
-            ]);
-
-            User::query()->create([
-                'company_id' => $company->id,
-                'first_name' => $validated['admin_name'] ?: null,
-                'email' => $validated['admin_email'],
-                'password' => Hash::make($validated['admin_password']),
-            ]);
-        });
+                'company_limit' => $validated['company_limit'] ?? null, 
+            ]); 
+ 
+            $adminUser = User::query()->create([ 
+                'company_id' => $company->id, 
+                'first_name' => $validated['admin_name'] ?: null, 
+                'email' => $validated['admin_email'], 
+                'password' => Hash::make($validated['admin_password']), 
+                'email_verified_at' => now(),
+            ]); 
+ 
+            $companyAdminRole = Role::findOrCreate('company_admin', 'web');
+            $adminUser->assignRole($companyAdminRole);
+        }); 
 
         session()->flash('status', 'Company and admin user created successfully.');
         $this->reset([

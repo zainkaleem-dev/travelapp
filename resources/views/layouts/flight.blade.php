@@ -614,19 +614,30 @@
                                 Profile
                             </a>
 
-                            <a href="{{ route('settings') }}"
-                                class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
+                            <a href="{{ route('settings') }}" 
+                                class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"> 
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19.5 12a7.5 7.5 0 0 1-.2 1.7l2 1.6-2 3.4-2.4-1a7.6 7.6 0 0 1-2.9 1.7L13 22H11l-.8-2.6a7.6 7.6 0 0 1-2.9-1.7l-2.4 1-2-3.4 2-1.6A7.5 7.5 0 0 1 4.5 12c0-.6.07-1.15.2-1.7l-2-1.6 2-3.4 2.4 1a7.6 7.6 0 0 1 2.9-1.7L11 2h2l.8 2.6a7.6 7.6 0 0 1 2.9 1.7l2.4-1 2 3.4-2 1.6c.13.55.2 1.1.2 1.7z" />
                                 </svg>
-                                Settings
-                            </a>
-
-                            <a href="{{ route('corporate.settings') }}"
-                                class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
+                                Settings 
+                            </a> 
+ 
+                            @if (auth()->check() && !(bool) (auth()->user()->is_super_admin ?? false) && (int) (auth()->user()->company_id ?? 0) > 0 && method_exists(auth()->user(), 'hasRole') && auth()->user()->hasRole('company_admin'))
+                                <a href="{{ route('company.companies.index') }}" 
+                                    class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"> 
+                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"> 
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                            d="M3 7h18M3 12h18M3 17h18" /> 
+                                    </svg> 
+                                    Companies 
+                                </a> 
+                            @endif
+ 
+                            <a href="{{ route('corporate.settings') }}" 
+                                class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"> 
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 21h18M4 21V7a2 2 0 0 1 2-2h3v16M10 21V3h8a2 2 0 0 1 2 2v16" />
@@ -674,17 +685,33 @@
             </div>
         </div>
 
-        @php
-            $hideMainNavForSuperAdmin = auth()->check()
-                && (bool) (auth()->user()->is_super_admin ?? false)
-                && request()->is('super-admin*');
-        @endphp
-
-        @unless ($hideMainNavForSuperAdmin)
-            <div class="max-w-7xl mx-auto px-3 sm:px-4">
-                <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold">
-                <a href="{{ route('flights.search') }}"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.search') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
+        @php 
+            $hideMainNavForSuperAdmin = auth()->check() 
+                && (bool) (auth()->user()->is_super_admin ?? false) 
+                && request()->is('super-admin*'); 
+ 
+            $hideMainNavForCompanyAdmin = auth()->check()
+                && !(bool) (auth()->user()->is_super_admin ?? false)
+                && request()->is('company*');
+ 
+            $hideMainNavForBranchAdmin = auth()->check()
+                && !(bool) (auth()->user()->is_super_admin ?? false)
+                && request()->is('branch*');
+ 
+            $hideMainNavForSubCompanyAdmin = auth()->check()
+                && !(bool) (auth()->user()->is_super_admin ?? false)
+                && (request()->is('subcompany') || request()->is('subcompany/*'));
+ 
+            $hideMainNavForSubCompanyBranchAdmin = auth()->check()
+                && !(bool) (auth()->user()->is_super_admin ?? false)
+                && request()->is('subcompany-branch*');
+        @endphp 
+ 
+        @unless ($hideMainNavForSuperAdmin || $hideMainNavForCompanyAdmin || $hideMainNavForBranchAdmin || $hideMainNavForSubCompanyAdmin || $hideMainNavForSubCompanyBranchAdmin) 
+            <div class="max-w-7xl mx-auto px-3 sm:px-4"> 
+                <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold"> 
+                <a href="{{ route('flights.search') }}" 
+                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.search') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap"> 
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/>
                     </svg>
@@ -753,15 +780,31 @@
                 {{-- Frontend-only service step bar --}}
                 <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
                     style="-webkit-overflow-scrolling: touch;">
-                    @php
-                        $isSuperAdminArea = auth()->check()
-                            && (bool) (auth()->user()->is_super_admin ?? false)
-                            && request()->is('super-admin*');
-                    @endphp
-
-                    @if ($isSuperAdminArea)
-                        <a href="{{ route('superadmin.companies.create') }}"
-                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.companies.create') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                    @php 
+                        $isSuperAdminArea = auth()->check() 
+                            && (bool) (auth()->user()->is_super_admin ?? false) 
+                            && request()->is('super-admin*'); 
+ 
+                        $isCompanyAdminArea = auth()->check()
+                            && !(bool) (auth()->user()->is_super_admin ?? false)
+                            && request()->is('company*');
+ 
+                        $isBranchAdminArea = auth()->check()
+                            && !(bool) (auth()->user()->is_super_admin ?? false)
+                            && request()->is('branch*');
+ 
+                        $isSubCompanyAdminArea = auth()->check()
+                            && !(bool) (auth()->user()->is_super_admin ?? false)
+                            && (request()->is('subcompany') || request()->is('subcompany/*'));
+ 
+                        $isSubCompanyBranchAdminArea = auth()->check()
+                            && !(bool) (auth()->user()->is_super_admin ?? false)
+                            && request()->is('subcompany-branch*');
+                    @endphp 
+ 
+                    @if ($isSuperAdminArea) 
+                        <a href="{{ route('superadmin.companies.create') }}" 
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.companies.create') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap"> 
                             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
@@ -796,16 +839,69 @@
                             Roles
                         </a>
 
-                        @if (request()->routeIs('superadmin.companies.index')
-                            || request()->routeIs('superadmin.branches')
-                            || request()->routeIs('superadmin.companies.branches.index')
-                            || request()->routeIs('superadmin.users')
-                            || request()->routeIs('superadmin.roles'))
-                            @livewire('admin.super-admin-company-switcher')
-                        @endif
-                    @else
-                    <a href="{{ route('flights.search') }}"
-                        class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ (request()->is('flights-search') || request()->is('flights-list') || request()->is('additional-services') || request()->is('passenger-details')) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                        @if (request()->routeIs('superadmin.companies.index') 
+                            || request()->routeIs('superadmin.branches') 
+                            || request()->routeIs('superadmin.companies.branches.index') 
+                            || request()->routeIs('superadmin.users') 
+                            || request()->routeIs('superadmin.roles')) 
+                            @livewire('admin.super-admin-company-switcher') 
+                        @endif 
+                    @elseif ($isCompanyAdminArea)
+                        <a href="{{ route('company.companies.index') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('company.companies.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
+                            </svg>
+                            Company
+                        </a>
+                        <a href="{{ route('company.branches.index') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('company.branches.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h10" />
+                            </svg>
+                            Branches
+                        </a>
+                    @elseif ($isBranchAdminArea)
+                        <a href="{{ route('branch.branches.index') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('branch.branches.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
+                            </svg>
+                            Branch
+                        </a>
+                        <a href="{{ route('branch.subcompanies.index') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('branch.subcompanies.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+                            </svg>
+                            Sub Companies
+                        </a>
+                    @elseif ($isSubCompanyAdminArea)
+                        <a href="{{ route('subcompany.index') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('subcompany.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h10" />
+                            </svg>
+                            Sub Company
+                        </a>
+                        <a href="{{ route('subcompany.branches.index') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('subcompany.branches.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h10" />
+                            </svg>
+                            Branches
+                        </a>
+                    @elseif ($isSubCompanyBranchAdminArea)
+                        <a href="{{ route('subcompany-branch.index') }}"
+                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('subcompany-branch.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
+                            </svg>
+                            Branch
+                        </a>
+                    @else 
+                    <a href="{{ route('flights.search') }}" 
+                        class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ (request()->is('flights-search') || request()->is('flights-list') || request()->is('additional-services') || request()->is('passenger-details')) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap"> 
                         <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
                         </svg>
@@ -832,7 +928,7 @@
                         </svg>
                         Concierge
                     </a>
-                    @endif
+                    @endif 
 
                 @php
                     $isSuperAdminArea = auth()->check()
@@ -841,15 +937,15 @@
                 @endphp
 
                 {{-- Right-side search toggle (frontend only) --}}
-                @unless ($isSuperAdminArea)
-                    <button type="button" @click="searchOpen = !searchOpen"
-                        class="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 shadow-sm flex-shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
-                        </svg>
-                    </button>
-                @endunless
+                @unless ($isSuperAdminArea || $isCompanyAdminArea || $isBranchAdminArea || $isSubCompanyAdminArea || $isSubCompanyBranchAdminArea)  
+                    <button type="button" @click="searchOpen = !searchOpen"  
+                        class="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 shadow-sm flex-shrink-0">  
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> 
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" /> 
+                        </svg> 
+                    </button> 
+                @endunless 
             </div>
 
             <div class="h-px bg-gray-100"></div>

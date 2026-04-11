@@ -30,8 +30,15 @@ use App\Livewire\Admin\Branches\SelectedBranchIndex;
 use App\Livewire\Admin\Branches\SubCompanies\SubCompanyIndex;
 use App\Livewire\Admin\Branches\SubCompanies\Branches\SubCompanyBranchIndex;
 use App\Livewire\Admin\Users\UserIndex;
-use App\Livewire\Admin\Roles\RoleIndex;
-use App\Livewire\Travelhub\TravelHub;
+use App\Livewire\Admin\Roles\RoleIndex; 
+use App\Livewire\Travelhub\TravelHub; 
+use App\Livewire\Company\Branches\BranchIndex as CompanyBranchIndex;
+use App\Livewire\Company\Companies\CompanyIndex as CompanyCompaniesIndex;
+use App\Livewire\Branch\SubCompanies\SubCompanyIndex as BranchAdminSubCompanyIndex;
+use App\Livewire\Branch\Branches\BranchIndex as BranchAdminBranchIndex;
+use App\Livewire\SubCompany\Branches\BranchIndex as SubCompanyAdminBranchIndex;
+use App\Livewire\SubCompany\SubCompanyIndex as SubCompanyAdminIndex;
+use App\Livewire\SubCompanyBranch\BranchIndex as SubCompanyBranchAdminIndex;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
     $locale = strtolower($locale);
@@ -117,8 +124,8 @@ Route::get('/auth/google', fn() => 'Google OAuth redirect')->name('auth.google')
 Route::get('/auth/facebook', fn() => 'Facebook OAuth redirect')->name('auth.facebook');
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
+Route::middleware(['auth'])->group(function () { 
+    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard'); 
     Route::get('/profile', Profile::class)->name('profile');
 
     Route::get('/profile/family/create', FamilyCreate::class)->name('family.create');
@@ -130,8 +137,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tmc-settings', TmcSettings::class)->name('tmc.settings');
     Route::get('/super-admin-settings', SuperAdminSettings::class)->name('superadmin.settings');
 
-    Route::middleware(['superadmin'])->prefix('super-admin')->group(function () {
-        Route::get('/companies', CompanyIndex::class)->name('superadmin.companies.index');
+    Route::middleware(['superadmin'])->prefix('super-admin')->group(function () { 
+        Route::get('/companies', CompanyIndex::class)->name('superadmin.companies.index'); 
         Route::get('/companies/create', CompanyCreate::class)->name('superadmin.companies.create');
         Route::get('/users', UserIndex::class)
             ->middleware(['superadmin.company_query', 'superadmin.tenant'])
@@ -146,12 +153,40 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/companies/{company}/branches/{branch}/subcompanies', SubCompanyIndex::class)
             ->middleware(['superadmin.company', 'superadmin.tenant'])
             ->name('superadmin.subcompanies.index');
-        Route::get('/companies/{company}/branches/{branch}/subcompanies/{subCompany}/branches', SubCompanyBranchIndex::class)
-            ->middleware(['superadmin.company', 'superadmin.tenant'])
-            ->name('superadmin.subcompany.branches.index');
-    });
+        Route::get('/companies/{company}/branches/{branch}/subcompanies/{subCompany}/branches', SubCompanyBranchIndex::class) 
+            ->middleware(['superadmin.company', 'superadmin.tenant']) 
+            ->name('superadmin.subcompany.branches.index'); 
+    }); 
+ 
+    Route::get('/company/branches', CompanyBranchIndex::class)
+        ->middleware(['company.tenant', 'company.admin'])
+        ->name('company.branches.index');
+ 
+    Route::get('/company/companies', CompanyCompaniesIndex::class)
+        ->middleware(['company.tenant', 'company.admin'])
+        ->name('company.companies.index');
+ 
+    Route::get('/branch/subcompanies', BranchAdminSubCompanyIndex::class)
+        ->middleware(['company.tenant', 'branch.admin'])
+        ->name('branch.subcompanies.index');
+ 
+    Route::get('/branch/branches', BranchAdminBranchIndex::class)
+        ->middleware(['company.tenant', 'branch.admin'])
+        ->name('branch.branches.index');
+ 
+    Route::get('/subcompany/branches', SubCompanyAdminBranchIndex::class)
+        ->middleware(['company.tenant', 'subcompany.admin'])
+        ->name('subcompany.branches.index');
+ 
+    Route::get('/subcompany', SubCompanyAdminIndex::class)
+        ->middleware(['company.tenant', 'subcompany.admin'])
+        ->name('subcompany.index');
+ 
+    Route::get('/subcompany-branch', SubCompanyBranchAdminIndex::class)
+        ->middleware(['company.tenant', 'subcompany.branch_admin'])
+        ->name('subcompany-branch.index');
 
-    Route::get('/hotels', Hotel::class)->name('hotels');
+    Route::get('/hotels', Hotel::class)->name('hotels'); 
     Route::get('/cars', Car::class)->name('cars');
     Route::get('/concierge', Concierge::class)->name('concierge');
     Route::get('/travel-hub', TravelHub::class)->name('travel.hub');

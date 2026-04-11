@@ -12,15 +12,17 @@ use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 #[Layout('layouts.flight')]
-class SubCompanyIndex extends Component
-{
+class SubCompanyIndex extends Component 
+{ 
     use WithPagination;
     use WithFileUploads;
 
     protected string $paginationTheme = 'tailwind';
 
-    public Company $company;
-    public CompanyBranch $branch;
+    public Company $company; 
+    public CompanyBranch $branch; 
+ 
+    public bool $canManageSubCompanies = false;
 
     public bool $createModalOpen = false;
     public bool $editModalOpen = false;
@@ -37,13 +39,14 @@ class SubCompanyIndex extends Component
     public ?string $existing_logo_path = null;
     public bool $is_active = true;
 
-    public function mount(Company $company, CompanyBranch $branch): void
-    {
-        abort_unless($branch->company_id === $company->id, 404);
-
-        $this->company = $company;
-        $this->branch = $branch;
-    }
+    public function mount(Company $company, CompanyBranch $branch): void 
+    { 
+        abort_unless($branch->company_id === $company->id, 404); 
+ 
+        $this->company = $company; 
+        $this->branch = $branch; 
+        $this->canManageSubCompanies = !((bool) (auth()->user()?->is_super_admin ?? false));
+    } 
 
     protected function rules(): array
     {
@@ -75,12 +78,13 @@ class SubCompanyIndex extends Component
         $this->is_active = true;
     }
 
-    public function openCreate(): void
-    {
-        $this->resetForm();
-        $this->resetErrorBag();
-        $this->createModalOpen = true;
-    }
+    public function openCreate(): void 
+    { 
+        abort_unless($this->canManageSubCompanies, 403);
+        $this->resetForm(); 
+        $this->resetErrorBag(); 
+        $this->createModalOpen = true; 
+    } 
 
     public function closeCreate(): void
     {
@@ -88,13 +92,14 @@ class SubCompanyIndex extends Component
         $this->resetErrorBag();
     }
 
-    public function createSubCompany(): void
-    {
-        $validated = $this->validate();
-
-        $logoPath = null;
-        if ($this->logo) {
-            $logoPath = $this->logo->storePublicly('subcompany-logos', 'public');
+    public function createSubCompany(): void 
+    { 
+        abort_unless($this->canManageSubCompanies, 403);
+        $validated = $this->validate(); 
+ 
+        $logoPath = null; 
+        if ($this->logo) { 
+            $logoPath = $this->logo->storePublicly('subcompany-logos', 'public'); 
         }
 
         SubCompany::query()->create([
@@ -117,12 +122,13 @@ class SubCompanyIndex extends Component
         $this->resetPage();
     }
 
-    public function openEdit(int $subCompanyId): void
-    {
-        $subCompany = SubCompany::query()
-            ->where('company_id', $this->company->id)
-            ->where('company_branch_id', $this->branch->id)
-            ->findOrFail($subCompanyId);
+    public function openEdit(int $subCompanyId): void 
+    { 
+        abort_unless($this->canManageSubCompanies, 403);
+        $subCompany = SubCompany::query() 
+            ->where('company_id', $this->company->id) 
+            ->where('company_branch_id', $this->branch->id) 
+            ->findOrFail($subCompanyId); 
 
         $this->editingSubCompanyId = $subCompany->id;
         $this->name = (string) $subCompany->name;
@@ -153,11 +159,12 @@ class SubCompanyIndex extends Component
         $this->existing_logo_path = null;
     }
 
-    public function updateSubCompany(): void
-    {
-        if (!$this->editingSubCompanyId) {
-            return;
-        }
+    public function updateSubCompany(): void 
+    { 
+        abort_unless($this->canManageSubCompanies, 403);
+        if (!$this->editingSubCompanyId) { 
+            return; 
+        } 
 
         $validated = $this->validate();
 
@@ -190,12 +197,13 @@ class SubCompanyIndex extends Component
         $this->closeEdit();
     }
 
-    public function toggleActive(int $subCompanyId): void
-    {
-        $subCompany = SubCompany::query()
-            ->where('company_id', $this->company->id)
-            ->where('company_branch_id', $this->branch->id)
-            ->findOrFail($subCompanyId);
+    public function toggleActive(int $subCompanyId): void 
+    { 
+        abort_unless($this->canManageSubCompanies, 403);
+        $subCompany = SubCompany::query() 
+            ->where('company_id', $this->company->id) 
+            ->where('company_branch_id', $this->branch->id) 
+            ->findOrFail($subCompanyId); 
 
         $subCompany->forceFill(['is_active' => !(bool) $subCompany->is_active])->save();
     }

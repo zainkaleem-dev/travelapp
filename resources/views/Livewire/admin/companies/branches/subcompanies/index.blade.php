@@ -6,18 +6,20 @@
                     <h1 class="text-2xl font-black text-gray-900 tracking-tight truncate">Sub Companies</h1>
                     <p class="text-sm text-gray-600 mt-1 truncate">{{ $company->name }} · {{ $branch->name }}</p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('superadmin.companies.branches.index', $company) }}"
-                        class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-black text-gray-700 hover:bg-gray-50">
-                        Back
-                    </a>
-                    <button type="button" wire:click="openCreate"
-                        class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-black text-white hover:bg-[#229aa4]">
-                        Add Sub Company
-                    </button>
-                </div>
-            </div>
-        </div>
+                <div class="flex items-center gap-3"> 
+                    <a href="{{ route('superadmin.companies.branches.index', $company) }}" 
+                        class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-black text-gray-700 hover:bg-gray-50"> 
+                        Back 
+                    </a> 
+                    @if ($canManageSubCompanies)
+                        <button type="button" wire:click="openCreate" 
+                            class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-black text-white hover:bg-[#229aa4]"> 
+                            Add Sub Company 
+                        </button> 
+                    @endif
+                </div> 
+            </div> 
+        </div> 
 
         <div class="p-6">
             @if (session('status'))
@@ -70,28 +72,34 @@
                                         {{ $sub->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>
-                                <td class="py-4 pr-0 whitespace-nowrap text-right">
-                                    <div class="inline-flex flex-nowrap items-center justify-end gap-2">
-                                        <button type="button" wire:click="openEdit({{ $sub->id }})"
-                                            class="inline-flex shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                        <a href="{{ route('superadmin.subcompany.branches.index', ['company' => $company, 'branch' => $branch, 'subCompany' => $sub]) }}"
-                                            class="inline-flex shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10" />
-                                            </svg>
-                                        </a>
-                                        <button type="button" wire:click="toggleActive({{ $sub->id }})"
-                                            class="inline-flex shrink-0 items-center justify-center rounded-lg px-3 py-2 text-xs font-black {{ $sub->is_active ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }}">
-                                            {{ $sub->is_active ? 'Deactivate' : 'Activate' }}
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                <td class="py-4 pr-0 whitespace-nowrap text-right"> 
+                                    <div class="inline-flex flex-nowrap items-center justify-end gap-2"> 
+                                        @if ($canManageSubCompanies)
+                                            <button type="button" wire:click="openEdit({{ $sub->id }})" 
+                                                class="inline-flex shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50"> 
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> 
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /> 
+                                                </svg> 
+                                            </button> 
+                                        @endif
+                                        @if (request()->is('super-admin*'))
+                                            <a href="{{ route('superadmin.subcompany.branches.index', ['company' => $company, 'branch' => $branch, 'subCompany' => $sub]) }}" 
+                                                class="inline-flex shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50"> 
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> 
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10" /> 
+                                                </svg> 
+                                            </a> 
+                                        @endif
+                                        @if ($canManageSubCompanies)
+                                            <button type="button" wire:click="toggleActive({{ $sub->id }})" 
+                                                class="inline-flex shrink-0 items-center justify-center rounded-lg px-3 py-2 text-xs font-black {{ $sub->is_active ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }}"> 
+                                                {{ $sub->is_active ? 'Deactivate' : 'Activate' }} 
+                                            </button> 
+                                        @endif
+                                    </div> 
+                                </td> 
+                            </tr> 
                         @empty
                             <tr>
                                 <td colspan="7" class="py-10 text-center text-gray-500">No sub companies found.</td>
@@ -108,8 +116,8 @@
     </div>
 
     {{-- Create Modal --}}
-    @if ($createModalOpen)
-        <div class="fixed inset-0 z-50">
+    @if ($createModalOpen && $canManageSubCompanies) 
+        <div class="fixed inset-0 z-50"> 
             <div class="absolute inset-0 bg-black/40" wire:click="closeCreate"></div>
             <div class="relative h-full w-full overflow-y-auto px-4 py-8">
                 <div class="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200">
@@ -126,13 +134,14 @@
                         </div>
                     </div>
 
-                    <form wire:submit.prevent="createSubCompany" class="p-6 space-y-6">
-                        @include('Livewire.admin.companies.branches.subcompanies.partials.form')
-                        <div class="flex items-center justify-end gap-3">
-                            <button type="button" wire:click="closeCreate"
-                                class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-black text-gray-700 hover:bg-gray-50">
-                                Cancel
-                            </button>
+                    <form wire:submit.prevent="createSubCompany" class="p-6 space-y-6"> 
+                        @include('Livewire.admin.companies.branches.subcompanies.partials.form') 
+                        @include('Livewire.admin.companies.branches.subcompanies.partials.admin_credentials')
+                        <div class="flex items-center justify-end gap-3"> 
+                            <button type="button" wire:click="closeCreate" 
+                                class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-black text-gray-700 hover:bg-gray-50"> 
+                                Cancel 
+                            </button> 
                             <button type="submit"
                                 class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-6 py-2.5 text-sm font-black text-white hover:bg-[#229aa4]">
                                 Save
@@ -145,8 +154,8 @@
     @endif
 
     {{-- Edit Modal --}}
-    @if ($editModalOpen)
-        <div class="fixed inset-0 z-50">
+    @if ($editModalOpen && $canManageSubCompanies) 
+        <div class="fixed inset-0 z-50"> 
             <div class="absolute inset-0 bg-black/40" wire:click="closeEdit"></div>
             <div class="relative h-full w-full overflow-y-auto px-4 py-8">
                 <div class="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200">
@@ -163,13 +172,18 @@
                         </div>
                     </div>
 
-                    <form wire:submit.prevent="updateSubCompany" class="p-6 space-y-6">
-                        @include('Livewire.admin.companies.branches.subcompanies.partials.form')
-                        <div class="flex items-center justify-end gap-3">
-                            <button type="button" wire:click="closeEdit"
-                                class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-black text-gray-700 hover:bg-gray-50">
-                                Cancel
-                            </button>
+                    <form wire:submit.prevent="updateSubCompany" class="p-6 space-y-6"> 
+                        @error('update')
+                            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                        @include('Livewire.admin.companies.branches.subcompanies.partials.form') 
+                        <div class="flex items-center justify-end gap-3"> 
+                            <button type="button" wire:click="closeEdit" 
+                                class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-black text-gray-700 hover:bg-gray-50"> 
+                                Cancel 
+                            </button> 
                             <button type="submit"
                                 class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-6 py-2.5 text-sm font-black text-white hover:bg-[#229aa4]">
                                 Update

@@ -6,18 +6,20 @@
                     <h1 class="text-2xl font-black text-gray-900 tracking-tight truncate">Branches</h1>
                     <p class="text-sm text-gray-600 mt-1 truncate">{{ $company->name }}</p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('superadmin.companies.index') }}"
-                        class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-black text-gray-700 hover:bg-gray-50">
-                        Back
-                    </a>
-                    <button type="button" wire:click="openCreate"
-                        class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-black text-white hover:bg-[#229aa4]">
-                        Add Branch
-                    </button>
-                </div>
-            </div>
-        </div>
+                <div class="flex items-center gap-3"> 
+                    <a href="{{ route('superadmin.companies.index') }}" 
+                        class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-black text-gray-700 hover:bg-gray-50"> 
+                        Back 
+                    </a> 
+                    @if ($canManageBranches)
+                        <button type="button" wire:click="openCreate" 
+                            class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-black text-white hover:bg-[#229aa4]"> 
+                            Add Branch 
+                        </button> 
+                    @endif
+                </div> 
+            </div> 
+        </div> 
 
         <div class="p-6">
             @if (session('status'))
@@ -55,30 +57,34 @@
                                     <span class="inline-flex items-center rounded-md {{ $branch->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2 py-0.5 text-[11px] font-black">
                                         {{ $branch->is_active ? 'Active' : 'Inactive' }}
                                     </span>
-                                </td>
-                                <td class="py-4 pr-0 whitespace-nowrap text-right">
-                                    <div class="inline-flex items-center gap-2">
-                                        <button type="button" wire:click="openEdit({{ $branch->id }})"
-                                            class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                        <a href="{{ route('superadmin.subcompanies.index', ['company' => $company, 'branch' => $branch]) }}"
-                                            class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 6h16M4 12h16M4 18h10" />
-                                            </svg>
-                                        </a>
-                                        <button type="button" wire:click="toggleActive({{ $branch->id }})"
-                                            class="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-black {{ $branch->is_active ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }} min-w-[88px]">
-                                            {{ $branch->is_active ? 'Deactivate' : 'Activate' }}
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                </td> 
+                                <td class="py-4 pr-0 whitespace-nowrap text-right"> 
+                                    <div class="inline-flex items-center gap-2"> 
+                                        @if ($canManageBranches)
+                                            <button type="button" wire:click="openEdit({{ $branch->id }})" 
+                                                class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50"> 
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> 
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /> 
+                                                </svg> 
+                                            </button> 
+                                        @endif
+                                        <a href="{{ route('superadmin.subcompanies.index', ['company' => $company, 'branch' => $branch]) }}" 
+                                            class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-black text-gray-700 hover:bg-gray-50"> 
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> 
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                    d="M4 6h16M4 12h16M4 18h10" /> 
+                                            </svg> 
+                                        </a> 
+                                        @if ($canManageBranches)
+                                            <button type="button" wire:click="toggleActive({{ $branch->id }})" 
+                                                class="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-black {{ $branch->is_active ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }} min-w-[88px]"> 
+                                                {{ $branch->is_active ? 'Deactivate' : 'Activate' }} 
+                                            </button> 
+                                        @endif
+                                    </div> 
+                                </td> 
+                            </tr> 
                         @empty
                             <tr>
                                 <td colspan="6" class="py-10 text-center text-gray-500">No branches found.</td>
@@ -94,11 +100,11 @@
         </div>
     </div>
 
-    @if ($createModalOpen)
-        <div class="fixed inset-0 z-50">
-            <div class="absolute inset-0 bg-black/40" wire:click="closeCreate"></div>
-            <div class="relative h-full w-full overflow-y-auto px-4 py-8">
-                <div class="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200">
+    @if ($createModalOpen && $canManageBranches) 
+        <div class="fixed inset-0 z-50"> 
+            <div class="absolute inset-0 bg-black/40" wire:click="closeCreate"></div> 
+            <div class="relative h-full w-full overflow-y-auto px-4 py-8"> 
+                <div class="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200"> 
                     <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-white to-[#f2feff]">
                         <div class="flex items-start justify-between gap-4">
                             <div>
@@ -192,11 +198,11 @@
         </div>
     @endif
 
-    @if ($editModalOpen)
-        <div class="fixed inset-0 z-50">
-            <div class="absolute inset-0 bg-black/40" wire:click="closeEdit"></div>
-            <div class="relative h-full w-full overflow-y-auto px-4 py-8">
-                <div class="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200">
+    @if ($editModalOpen && $canManageBranches) 
+        <div class="fixed inset-0 z-50"> 
+            <div class="absolute inset-0 bg-black/40" wire:click="closeEdit"></div> 
+            <div class="relative h-full w-full overflow-y-auto px-4 py-8"> 
+                <div class="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200"> 
                     <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-white to-[#f2feff]">
                         <div class="flex items-start justify-between gap-4">
                             <div>

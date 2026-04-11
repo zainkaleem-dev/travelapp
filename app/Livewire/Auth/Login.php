@@ -83,12 +83,37 @@ class Login extends Component
         // Clear rate limiter on success
         RateLimiter::clear($this->throttleKey());
 
-        Auth::login($user, $this->remember);
-        request()->session()->regenerate();
+        Auth::login($user, $this->remember); 
+        request()->session()->regenerate(); 
+ 
+        // Redirect after login 
+        if ((bool) ($user->is_super_admin ?? false)) {
+            $this->redirect(route('superadmin.companies.create'));
+            return;
+        }
 
-        // Redirect after login
-        $this->redirect($user->is_super_admin ? route('superadmin.companies.create') : route('flights.search'));
-    }
+        if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('branch_admin') && (int) ($user->company_branch_id ?? 0) > 0) {
+            $this->redirect(route('branch.branches.index'));
+            return;
+        }
+ 
+        if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('subcompany_admin') && (int) ($user->sub_company_id ?? 0) > 0) {
+            $this->redirect(route('subcompany.index'));
+            return;
+        }
+ 
+        if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('subcompany_branch_admin') && (int) ($user->sub_company_branch_id ?? 0) > 0) {
+            $this->redirect(route('subcompany-branch.index'));
+            return;
+        }
+
+        if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('company_admin')) {
+            $this->redirect(route('company.companies.index'));
+            return;
+        }
+
+        $this->redirect(route('flights.search'));
+    } 
 
     // ─── Social auth placeholders ─────────────────────────────────
     public function loginWithGoogle(): void

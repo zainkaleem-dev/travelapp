@@ -170,7 +170,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
+                <div class="flex items-center justify-end gap-3 pt-2">
                     <button type="submit"
                         class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-6 py-3 text-sm font-black text-white hover:bg-[#229aa4]">
                         Create Company

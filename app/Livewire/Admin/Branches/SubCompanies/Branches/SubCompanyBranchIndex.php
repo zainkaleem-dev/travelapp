@@ -12,15 +12,17 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.flight')]
-class SubCompanyBranchIndex extends Component
-{
-    use WithPagination;
-
-    protected string $paginationTheme = 'tailwind';
-
-    public Company $company;
-    public CompanyBranch $branch;
-    public SubCompany $subCompany;
+class SubCompanyBranchIndex extends Component 
+{ 
+    use WithPagination; 
+ 
+    protected string $paginationTheme = 'tailwind'; 
+ 
+    public Company $company; 
+    public CompanyBranch $branch; 
+    public SubCompany $subCompany; 
+ 
+    public bool $canManageSubCompanyBranches = true;
 
     public bool $createModalOpen = false;
     public bool $editModalOpen = false;
@@ -35,16 +37,16 @@ class SubCompanyBranchIndex extends Component
     public ?string $email = null;
     public bool $is_active = true;
 
-    public function mount(Company $company, CompanyBranch $branch, SubCompany $subCompany): void
-    {
+    public function mount(Company $company, CompanyBranch $branch, SubCompany $subCompany): void 
+    { 
         abort_unless($branch->company_id === $company->id, 404);
         abort_unless($subCompany->company_id === $company->id, 404);
         abort_unless((int) $subCompany->company_branch_id === (int) $branch->id, 404);
 
-        $this->company = $company;
-        $this->branch = $branch;
-        $this->subCompany = $subCompany;
-    }
+        $this->company = $company; 
+        $this->branch = $branch; 
+        $this->subCompany = $subCompany; 
+    } 
 
     protected function rules(): array
     {
@@ -73,12 +75,12 @@ class SubCompanyBranchIndex extends Component
         $this->is_active = true;
     }
 
-    public function openCreate(): void
-    {
-        $this->resetForm();
-        $this->resetErrorBag();
-        $this->createModalOpen = true;
-    }
+    public function openCreate(): void 
+    { 
+        $this->resetForm(); 
+        $this->resetErrorBag(); 
+        $this->createModalOpen = true; 
+    } 
 
     public function closeCreate(): void
     {
@@ -86,11 +88,11 @@ class SubCompanyBranchIndex extends Component
         $this->resetErrorBag();
     }
 
-    public function createBranch(): void
-    {
-        $validated = $this->validate();
-
-        SubCompanyBranch::query()->create([
+    public function createBranch(): void 
+    { 
+        $validated = $this->validate(); 
+ 
+        SubCompanyBranch::query()->create([ 
             'company_id' => $this->company->id,
             'company_branch_id' => $this->branch->id,
             'sub_company_id' => $this->subCompany->id,
@@ -110,12 +112,12 @@ class SubCompanyBranchIndex extends Component
         $this->resetPage();
     }
 
-    public function openEdit(int $branchId): void
-    {
-        $branch = SubCompanyBranch::query()
-            ->where('company_id', $this->company->id)
-            ->where('company_branch_id', $this->branch->id)
-            ->where('sub_company_id', $this->subCompany->id)
+    public function openEdit(int $branchId): void 
+    { 
+        $branch = SubCompanyBranch::query() 
+            ->where('company_id', $this->company->id) 
+            ->where('company_branch_id', $this->branch->id) 
+            ->where('sub_company_id', $this->subCompany->id) 
             ->findOrFail($branchId);
 
         $this->editingBranchId = $branch->id;
@@ -139,11 +141,11 @@ class SubCompanyBranchIndex extends Component
         $this->resetErrorBag();
     }
 
-    public function updateBranch(): void
-    {
-        if (!$this->editingBranchId) {
-            return;
-        }
+    public function updateBranch(): void 
+    { 
+        if (!$this->editingBranchId) { 
+            return; 
+        } 
 
         $validated = $this->validate();
 
@@ -168,12 +170,12 @@ class SubCompanyBranchIndex extends Component
         $this->closeEdit();
     }
 
-    public function toggleActive(int $branchId): void
-    {
-        $branch = SubCompanyBranch::query()
-            ->where('company_id', $this->company->id)
-            ->where('company_branch_id', $this->branch->id)
-            ->where('sub_company_id', $this->subCompany->id)
+    public function toggleActive(int $branchId): void 
+    { 
+        $branch = SubCompanyBranch::query() 
+            ->where('company_id', $this->company->id) 
+            ->where('company_branch_id', $this->branch->id) 
+            ->where('sub_company_id', $this->subCompany->id) 
             ->findOrFail($branchId);
 
         $branch->forceFill(['is_active' => !(bool) $branch->is_active])->save();
