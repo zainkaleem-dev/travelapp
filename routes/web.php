@@ -26,13 +26,16 @@ use App\Livewire\Admin\SuperAdminSettings;
 use App\Livewire\Company\CompanyCreate;
 use App\Livewire\Company\CompanyEdit;
 use App\Livewire\Admin\CompanyIndex;
-use App\Livewire\Admin\Users\UserIndex;
+use App\Livewire\User\UserListing;
+use App\Livewire\User\UserCreate;
+use App\Livewire\User\UserEdit;
 use App\Livewire\Admin\Roles\RoleIndex; 
 use App\Livewire\Travelhub\TravelHub; 
 use App\Livewire\Company\CompanyListing;
 use App\Livewire\SubCompany\SubCompanyIndex as SubCompanyAdminIndex;
-use App\Livewire\Branch\Branch;
+use App\Livewire\Branch\BranchListing;
 use App\Livewire\Branch\BranchCreate;
+use App\Livewire\Branch\BranchEdit;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
     $locale = strtolower($locale);
@@ -133,13 +136,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['superadmin'])->prefix('super-admin')->group(function () { 
         Route::get('/companies', CompanyIndex::class)->name('superadmin.companies.index'); 
-        Route::get('/branches', Branch::class)->name('superadmin.branches');
+        Route::get('/branches', BranchListing::class)->name('superadmin.branches');
         Route::get('/branches/create', BranchCreate::class)->name('superadmin.branches.create');
+        Route::get('/branches/{id}/edit', BranchEdit::class)->name('superadmin.branches.edit');
         Route::get('/companies/create', CompanyCreate::class)->name('superadmin.companies.create');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('superadmin.companies.edit');
-        Route::get('/users', UserIndex::class)
+        Route::get('/users', UserListing::class)
             ->middleware(['superadmin.company_query', 'superadmin.tenant'])
             ->name('superadmin.users');
+        Route::get('/users/create', UserCreate::class)->name('superadmin.users.create');
+        Route::get('/users/{id}/edit', UserEdit::class)->name('superadmin.users.edit');
         Route::get('/roles', RoleIndex::class)->name('superadmin.roles');
     }); 
  
