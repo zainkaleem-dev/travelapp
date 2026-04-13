@@ -694,12 +694,9 @@
                 && !(bool) (auth()->user()->is_super_admin ?? false)
                 && request()->is('company*');
  
-            $hideMainNavForSubCompanyAdmin = auth()->check()
-                && !(bool) (auth()->user()->is_super_admin ?? false)
-                && (request()->is('subcompany') || request()->is('subcompany/*'));
-        @endphp 
+          @endphp 
  
-        @unless ($hideMainNavForSuperAdmin || $hideMainNavForCompanyAdmin || $hideMainNavForSubCompanyAdmin) 
+        @unless ($hideMainNavForSuperAdmin || $hideMainNavForCompanyAdmin) 
             <div class="max-w-7xl mx-auto px-3 sm:px-4"> 
                 <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold"> 
                 <a href="{{ route('flights.search') }}" 
@@ -781,10 +778,7 @@
                             && !(bool) (auth()->user()->is_super_admin ?? false)
                             && request()->is('company*');
  
-                        $isSubCompanyAdminArea = auth()->check()
-                            && !(bool) (auth()->user()->is_super_admin ?? false)
-                            && (request()->is('subcompany') || request()->is('subcompany/*'));
-                    @endphp 
+                      @endphp 
  
                     @if ($isSuperAdminArea) 
 
@@ -874,7 +868,7 @@
                 @endphp
 
                 {{-- Right-side search toggle (frontend only) --}}
-                @unless ($isSuperAdminArea || $isCompanyAdminArea || $isSubCompanyAdminArea)  
+                @unless ($isSuperAdminArea || $isCompanyAdminArea)  
                     <button type="button" @click="searchOpen = !searchOpen"  
                         class="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 shadow-sm flex-shrink-0">  
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> 

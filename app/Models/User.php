@@ -3,9 +3,7 @@
 namespace App\Models; 
  
 use App\Models\CompanyBranch;
-use App\Models\SubCompany;
-use App\Models\SubCompanyBranch;
-use Illuminate\Contracts\Auth\MustVerifyEmail; 
+  use Illuminate\Contracts\Auth\MustVerifyEmail; 
 use Illuminate\Database\Eloquent\Factories\HasFactory; 
 use Illuminate\Foundation\Auth\User as Authenticatable; 
 use Illuminate\Notifications\Notifiable; 
@@ -26,9 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [ 
         'company_id', 
         'company_branch_id',
-        'sub_company_id',
-        'sub_company_branch_id',
-        'first_name', 
+          'first_name', 
         'middle_name', 
         'last_name', 
         'email', 
@@ -93,13 +89,4 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(CompanyBranch::class, 'company_branch_id');
     }
  
-    public function subCompany(): BelongsTo
-    {
-        return $this->belongsTo(SubCompany::class, 'sub_company_id');
-    }
- 
-    public function subCompanyBranch(): BelongsTo
-    {
-        return $this->belongsTo(SubCompanyBranch::class, 'sub_company_branch_id');
-    }
-}
+  }

@@ -47,9 +47,4 @@ class CompanyBranch extends Model
         return $this->belongsTo(Company::class);
     }
 
-    /** @return HasMany<SubCompany, CompanyBranch> */
-    public function subCompanies(): HasMany
-    {
-        return $this->hasMany(SubCompany::class, 'company_branch_id');
-    }
 }

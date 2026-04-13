@@ -32,8 +32,7 @@ use App\Livewire\User\UserEdit;
 use App\Livewire\Admin\Roles\RoleIndex; 
 use App\Livewire\Travelhub\TravelHub; 
 use App\Livewire\Company\CompanyListing;
-use App\Livewire\SubCompany\SubCompanyIndex as SubCompanyAdminIndex;
-use App\Livewire\Branch\BranchListing;
+  use App\Livewire\Branch\BranchListing;
 use App\Livewire\Branch\BranchCreate;
 use App\Livewire\Branch\BranchEdit;
 
@@ -151,10 +150,7 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['company.tenant', 'company.admin'])
         ->name('company.companies.index');
  
-    Route::get('/subcompany', SubCompanyAdminIndex::class)
-        ->middleware(['company.tenant', 'subcompany.admin'])
-        ->name('subcompany.index');
-
+  
     Route::get('/hotels', Hotel::class)->name('hotels'); 
     Route::get('/cars', Car::class)->name('cars');
     Route::get('/concierge', Concierge::class)->name('concierge');
