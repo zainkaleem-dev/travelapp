@@ -141,9 +141,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/branches/{id}/edit', BranchEdit::class)->name('superadmin.branches.edit');
         Route::get('/companies/create', CompanyCreate::class)->name('superadmin.companies.create');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('superadmin.companies.edit');
-        Route::get('/users', UserListing::class)
-            ->middleware(['superadmin.company_query', 'superadmin.tenant'])
-            ->name('superadmin.users');
+        Route::get('/users', UserListing::class)->name('superadmin.users');
         Route::get('/users/create', UserCreate::class)->name('superadmin.users.create');
         Route::get('/users/{id}/edit', UserEdit::class)->name('superadmin.users.edit');
         Route::get('/roles', RoleIndex::class)->name('superadmin.roles');
