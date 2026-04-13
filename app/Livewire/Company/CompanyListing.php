@@ -1,13 +1,13 @@
 <?php
  
-namespace App\Livewire\Company\Companies;
+namespace App\Livewire\Company;
  
 use App\Support\TenantContext;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
  
 #[Layout('layouts.flight')]
-class CompanyIndex extends Component
+class CompanyListing extends Component
 {
     public ?int $companyId = null;
     public ?string $companyName = null;
@@ -26,7 +26,6 @@ class CompanyIndex extends Component
  
     public function render()
     {
-        return view('livewire.company.companies.index');
+        return view('livewire.company.listing');
     }
 }
-

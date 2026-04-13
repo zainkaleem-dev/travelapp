@@ -5,18 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Company extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
-        'type',
-        'logo_path',
-        'is_active',
-        'email',
-        'phone',
-        'country',
-        'subscription_plan',
-        'company_limit',
+        'slug',
+        'legal_name',
+        'registration_number',
+        'tax_number',
+        'company_type',
+        'founded_year',
+        'description',
+        'status',
+        'settings',
+        'notes',
+    ];
+
+    protected $casts = [
+        'settings' => 'array',
+        'founded_year' => 'integer',
     ];
 
     /** @return HasMany<User, Company> */

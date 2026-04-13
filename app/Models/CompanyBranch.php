@@ -7,20 +7,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class CompanyBranch extends Model
 {
-    use ScopedToSelectedCompany;
+    use ScopedToSelectedCompany, SoftDeletes;
 
     protected $fillable = [
         'company_id',
         'name',
         'code',
-        'country',
-        'city',
-        'address',
-        'phone',
+        'slug',
+        'is_main',
+        'status',
         'email',
-        'is_active',
+        'phone',
+        'phone_secondary',
+        'fax',
+        'whatsapp',
+        'address_line_1',
+        'address_line_2',
+        'city',
+        'state',
+        'postal_code',
+        'country',
+        'latitude',
+        'longitude',
+        'settings',
+        'notes',
+    ];
+
+    protected $casts = [
+        'is_main' => 'boolean',
+        'settings' => 'array',
     ];
 
     public function company(): BelongsTo

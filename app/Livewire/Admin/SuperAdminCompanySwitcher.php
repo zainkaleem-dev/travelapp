@@ -32,12 +32,7 @@ class SuperAdminCompanySwitcher extends Component
 
         $routeName = is_string($sourceRoute) && $sourceRoute !== '' ? $sourceRoute : request()->route()?->getName();
 
-        if ($routeName === 'superadmin.users') {
-            $this->redirect(route('superadmin.users', ['company' => $companyId]));
-            return;
-        }
-
-        $this->redirect(route('superadmin.branches'));
+        $this->redirect(route('superadmin.companies.index'));
     }
 
     public function render()

@@ -10,14 +10,27 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+
+            // Core Identity
             $table->string('name');
-            $table->string('type');
-            $table->string('email')->nullable();
-            $table->string('phone', 50)->nullable();
-            $table->string('country', 2)->nullable();
-            $table->string('subscription_plan')->nullable();
-            $table->unsignedInteger('company_limit')->nullable();
+            $table->string('slug')->unique();
+            $table->string('legal_name')->nullable();
+            $table->string('registration_number')->nullable();
+            $table->string('tax_number')->nullable();
+            $table->enum('company_type', ['TMC', 'Corporate'])->nullable();
+
+            $table->year('founded_year')->nullable();
+            $table->text('description')->nullable();
+
+            // SaaS / Status
+            $table->enum('status', ['active', 'inactive'])->default('active');
+ 
+            // Extra
+            $table->json('settings')->nullable();
+            $table->text('notes')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
