@@ -3,7 +3,7 @@
 namespace App\Livewire\Branch;
  
 use App\Models\Company;
-use App\Models\CompanyBranch;
+use App\Models\Branch;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -12,7 +12,7 @@ use Livewire\Component;
 class BranchEdit extends Component
 {
     public int $branchId;
-    public CompanyBranch $branch;
+    public Branch $branch;
  
     // Identity
     public string $name = '';
@@ -45,7 +45,7 @@ class BranchEdit extends Component
     public function mount(int $id): void
     {
         $this->branchId = $id;
-        $this->branch = CompanyBranch::query()->findOrFail($id);
+        $this->branch = Branch::query()->findOrFail($id);
  
         $this->name = $this->branch->name;
         $this->code = $this->branch->code;
@@ -83,8 +83,8 @@ class BranchEdit extends Component
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['required', 'string', 'max:50', Rule::unique('company_branches', 'code')->ignore($this->branchId)],
-            'slug' => ['required', 'string', 'max:255', Rule::unique('company_branches', 'slug')->ignore($this->branchId)],
+            'code' => ['required', 'string', 'max:50', Rule::unique('branches', 'code')->ignore($this->branchId)],
+            'slug' => ['required', 'string', 'max:255', Rule::unique('branches', 'slug')->ignore($this->branchId)],
             'company_id' => ['required', 'exists:companies,id'],
             'is_main' => ['boolean'],
             'status' => ['required', 'in:active,inactive,Active,Inactive'],

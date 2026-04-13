@@ -2,7 +2,7 @@
  
 namespace App\Http\Middleware;
  
-use App\Models\CompanyBranch;
+use App\Models\Branch;
 use App\Support\TenantContext;
 use Closure;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class EnsureBranchAdmin
  
         abort_unless(method_exists($user, 'hasRole') && $user->hasRole('branch_admin'), 403);
  
-        $branchId = (int) ($user->company_branch_id ?? 0);
+        $branchId = (int) ($user->branch_id ?? 0);
         abort_unless($branchId > 0, 403);
  
         /** @var TenantContext $tenantContext */
@@ -30,7 +30,7 @@ class EnsureBranchAdmin
         $companyId = (int) ($tenantContext->companyId() ?? 0);
         abort_unless($companyId > 0, 403);
  
-        $branch = CompanyBranch::query()
+        $branch = Branch::query()
             ->where('company_id', $companyId)
             ->find($branchId);
         abort_unless((bool) $branch, 403);

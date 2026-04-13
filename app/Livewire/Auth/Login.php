@@ -92,21 +92,12 @@ class Login extends Component
             return;
         }
 
-        if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('branch_admin') && (int) ($user->company_branch_id ?? 0) > 0) {
+        if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('branch_admin') && (int) ($user->branch_id ?? 0) > 0) {
             $this->redirect(route('branch.branches.index'));
             return;
         }
  
-        if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('subcompany_admin') && (int) ($user->sub_company_id ?? 0) > 0) {
-            $this->redirect(route('subcompany.index'));
-            return;
-        }
- 
-        if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('subcompany_branch_admin') && (int) ($user->sub_company_branch_id ?? 0) > 0) {
-            $this->redirect(route('subcompany-branch.index'));
-            return;
-        }
-
+  
         if ((int) ($user->company_id ?? 0) > 0 && method_exists($user, 'hasRole') && $user->hasRole('company_admin')) {
             $this->redirect(route('company.companies.index'));
             return;

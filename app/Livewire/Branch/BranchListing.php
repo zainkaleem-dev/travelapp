@@ -2,7 +2,7 @@
  
 namespace App\Livewire\Branch;
  
-use App\Models\CompanyBranch;
+use App\Models\Branch;
 use App\Services\PaginationService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -32,7 +32,7 @@ class BranchListing extends Component
  
     public function toggleActive(int $branchId): void
     {
-        $branch = CompanyBranch::query()->findOrFail($branchId);
+        $branch = Branch::query()->findOrFail($branchId);
         $branch->forceFill(['status' => $branch->status === 'Active' ? 'Inactive' : 'Active'])->save();
         
         session()->flash('status', 'Branch status updated successfully.');
@@ -42,7 +42,7 @@ class BranchListing extends Component
     {
         $search = trim($this->search);
  
-        $query = CompanyBranch::query()
+        $query = Branch::query()
             ->with('company')
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {

@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CompanyBranch extends Model
+class Branch extends Model
 {
     use ScopedToSelectedCompany, SoftDeletes;
+ 
+    protected $table = 'branches';
 
     protected $fillable = [
         'company_id',

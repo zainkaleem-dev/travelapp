@@ -3,7 +3,7 @@
 namespace App\Livewire\Branch;
 
 use App\Models\Company;
-use App\Models\CompanyBranch;
+use App\Models\Branch;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -49,8 +49,8 @@ class BranchCreate extends Component
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['required', 'string', 'max:50', 'unique:company_branches,code'],
-            'slug' => ['required', 'string', 'max:255', 'unique:company_branches,slug'],
+            'code' => ['required', 'string', 'max:50', 'unique:branches,code'],
+            'slug' => ['required', 'string', 'max:255', 'unique:branches,slug'],
             'company_id' => ['required', 'exists:companies,id'],
             'is_main' => ['boolean'],
             'status' => ['required', 'in:active,inactive'],
@@ -78,7 +78,7 @@ class BranchCreate extends Component
     {
         $validated = $this->validate();
 
-        CompanyBranch::query()->create($validated);
+        Branch::query()->create($validated);
 
         session()->flash('status', 'Branch created successfully.');
         return redirect()->route('superadmin.branches');
@@ -86,7 +86,7 @@ class BranchCreate extends Component
 
     public function render()
     {
-        return view('livewire.branch.branch-create', [
+        return view('livewire.branch.create', [
             'companies' => Company::query()->orderBy('name')->get(),
         ]);
     }

@@ -36,9 +36,9 @@ class Company extends Model
         return $this->hasMany(User::class);
     }
 
-    /** @return HasMany<CompanyBranch, Company> */
+    /** @return HasMany<Branch, Company> */
     public function branches(): HasMany
     {
-        return $this->hasMany(CompanyBranch::class);
+        return $this->hasMany(Branch::class);
     }
 }
