@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
  
 #[Layout('layouts.flight')]
 class UserEdit extends Component
@@ -21,7 +20,6 @@ class UserEdit extends Component
     public string $last_name = '';
     public string $email = '';
     public string $password = '';
-    public string $role = '';
  
     public function mount(int $id, TenantContext $tenantContext): void
     {
@@ -39,7 +37,6 @@ class UserEdit extends Component
         $this->middle_name = (string) ($this->user->middle_name ?? '');
         $this->last_name = (string) ($this->user->last_name ?? '');
         $this->email = (string) $this->user->email;
-        $this->role = $this->user->roles->first()?->name ?? 'company_admin';
     }
  
     public function save(TenantContext $tenantContext)
@@ -52,7 +49,6 @@ class UserEdit extends Component
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->userId)],
             'password' => ['nullable', 'string', 'min:8'],
-            'role' => ['required', 'string', 'exists:roles,name'],
         ]);
  
         $this->user->update([
@@ -66,8 +62,6 @@ class UserEdit extends Component
             $this->user->update(['password' => Hash::make($validated['password'])]);
         }
  
-        // Sync roles (assuming one role for now)
-        $this->user->syncRoles([$validated['role']]);
  
         session()->flash('status', 'User updated successfully.');
         return redirect()->route('superadmin.users');
@@ -75,8 +69,6 @@ class UserEdit extends Component
  
     public function render()
     {
-        return view('livewire.user.edit', [
-            'roles' => Role::all(),
-        ]);
+        return view('livewire.user.edit');
     }
 }

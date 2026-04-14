@@ -56,15 +56,6 @@
                             @error('email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
  
-                        <div>
-                            <label class="field-label">System Role <span class="text-[#2ab4c0]">*</span></label>
-                            <select wire:model="role" class="field-input">
-                                @foreach($roles as $r)
-                                    <option value="{{ $r->name }}">{{ str_replace('_', ' ', $r->name) }}</option>
-                                @endforeach
-                            </select>
-                            @error('role') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
  
                         <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-4">
                             <label class="field-label">Change Password</label>

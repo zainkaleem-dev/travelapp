@@ -7,7 +7,6 @@ use App\Support\TenantContext;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
  
 #[Layout('layouts.flight')]
 class UserCreate extends Component
@@ -17,7 +16,6 @@ class UserCreate extends Component
     public string $last_name = '';
     public string $email = '';
     public string $password = '';
-    public string $role = 'company_admin';
  
     public function save(TenantContext $tenantContext)
     {
@@ -34,7 +32,6 @@ class UserCreate extends Component
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
-            'role' => ['required', 'string', 'exists:roles,name'],
         ]);
  
         $user = User::query()->create([
@@ -47,7 +44,6 @@ class UserCreate extends Component
             'email_verified_at' => now(),
         ]);
  
-        $user->assignRole($validated['role']);
  
         session()->flash('status', 'User created successfully.');
         return redirect()->route('superadmin.users');
@@ -55,8 +51,6 @@ class UserCreate extends Component
  
     public function render()
     {
-        return view('livewire.user.create', [
-            'roles' => Role::all(),
-        ]);
+        return view('livewire.user.create');
     }
 }

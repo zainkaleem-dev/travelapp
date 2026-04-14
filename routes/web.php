@@ -29,7 +29,6 @@ use App\Livewire\Admin\CompanyIndex;
 use App\Livewire\User\UserListing;
 use App\Livewire\User\UserCreate;
 use App\Livewire\User\UserEdit;
-use App\Livewire\Admin\Roles\RoleIndex; 
 use App\Livewire\Travelhub\TravelHub; 
 use App\Livewire\Company\CompanyListing;
   use App\Livewire\Branch\BranchListing;
@@ -143,7 +142,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users', UserListing::class)->name('superadmin.users');
         Route::get('/users/create', UserCreate::class)->name('superadmin.users.create');
         Route::get('/users/{id}/edit', UserEdit::class)->name('superadmin.users.edit');
-        Route::get('/roles', RoleIndex::class)->name('superadmin.roles');
     }); 
  
     Route::get('/company/companies', CompanyListing::class)

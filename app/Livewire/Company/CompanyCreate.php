@@ -10,7 +10,6 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout; 
 use Livewire\Component; 
 use Livewire\WithFileUploads; 
-use Spatie\Permission\Models\Role;
  
 #[Layout('layouts.flight')]
 class CompanyCreate extends Component
@@ -100,8 +99,6 @@ class CompanyCreate extends Component
                 'email_verified_at' => now(),
             ]);
  
-            $companyAdminRole = Role::findOrCreate('company_admin', 'web');
-            $adminUser->assignRole($companyAdminRole);
         });
  
         session()->flash('status', 'Company and admin user created successfully.');

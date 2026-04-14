@@ -50,7 +50,6 @@
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-gray-50">
                                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">User</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Role</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Email</th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Actions</th>
                             </tr>
@@ -70,13 +69,6 @@
                                             <div class="text-[10px] text-gray-400 uppercase tracking-tight">ID: #{{ $user->id }}</div>
                                         </div>
                                     </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    @foreach($user->roles as $role)
-                                    <span class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#1f8f98] uppercase tracking-tighter">
-                                        {{ str_replace('_', ' ', $role->name) }}
-                                    </span>
-                                    @endforeach
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-700">
                                     {{ $user->email }}
@@ -106,7 +98,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-10 text-center text-gray-500">
+                                <td colspan="3" class="px-6 py-10 text-center text-gray-500">
                                     No users found for this company.
                                 </td>
                             </tr>

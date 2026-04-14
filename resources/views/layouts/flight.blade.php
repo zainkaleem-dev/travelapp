@@ -625,16 +625,6 @@
                                 Settings 
                             </a> 
  
-                            @if (auth()->check() && !(bool) (auth()->user()->is_super_admin ?? false) && (int) (auth()->user()->company_id ?? 0) > 0 && method_exists(auth()->user(), 'hasRole') && auth()->user()->hasRole('company_admin'))
-                                <a href="{{ route('company.companies.index') }}" 
-                                    class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"> 
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"> 
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="M3 7h18M3 12h18M3 17h18" /> 
-                                    </svg> 
-                                    Companies 
-                                </a> 
-                            @endif
  
                             <a href="{{ route('corporate.settings') }}" 
                                 class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"> 
@@ -803,17 +793,9 @@
                             </svg>
                             Users
                         </a>
-                        <a href="{{ route('superadmin.roles') }}"
-                            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.roles') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
-                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                            </svg>
-                            Roles
-                        </a>
 
                         @if (request()->routeIs('superadmin.companies.index') 
-                            || request()->routeIs('superadmin.users') 
-                            || request()->routeIs('superadmin.roles')) 
+                            || request()->routeIs('superadmin.users')) 
                             @livewire('admin.super-admin-company-switcher') 
                         @endif 
                         <a href="{{ route('company.companies.index') }}"

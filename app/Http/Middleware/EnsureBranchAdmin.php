@@ -20,7 +20,6 @@ class EnsureBranchAdmin
             abort(403);
         }
  
-        abort_unless(method_exists($user, 'hasRole') && $user->hasRole('branch_admin'), 403);
  
         $branchId = (int) ($user->branch_id ?? 0);
         abort_unless($branchId > 0, 403);

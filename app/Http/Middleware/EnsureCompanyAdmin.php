@@ -18,7 +18,7 @@ class EnsureCompanyAdmin
             abort(403);
         }
  
-        abort_unless(method_exists($user, 'hasRole') && $user->hasRole('company_admin'), 403);
+        abort_unless((int) ($user->company_id ?? 0) > 0, 403);
  
         return $next($request);
     }
