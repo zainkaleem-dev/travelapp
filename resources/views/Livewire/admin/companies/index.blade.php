@@ -48,18 +48,18 @@
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
-                            <tr class="border-b-2 border-gray-200 bg-gray-50">
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Logo</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Company</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Type</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Status</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Actions</th>
+                            <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Logo</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Company</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Type</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Status</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($companies as $company)
-                            <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                <td class="px-6 py-4">
+                            <tr class="border-b border-gray-200 hover:bg-blue-50 transition-colors">
+                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <div class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
                                         @if ($company->settings['logo_path'] ?? null)
                                         <img src="{{ asset('storage/' . $company->settings['logo_path']) }}"
@@ -72,16 +72,16 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <div class="text-sm font-semibold text-gray-900">{{ $company->name }}</div>
                                     <div class="text-[10px] text-gray-400 uppercase tracking-tight">{{ $company->slug }}</div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <span class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2.5 py-0.5 text-xs font-bold text-[#1f8f98]">
                                         {{ $company->company_type }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <span class="inline-flex items-center rounded-md {{ $company->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
                                         {{ ucfirst($company->status) }}
                                     </span>
@@ -97,16 +97,17 @@
                                             </svg>
                                         </a>
 
-                                        <button type="button" wire:click="toggleActive({{ $company->id }})"
-                                            class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold {{ $company->status === 'active' ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }}"
+                                        <button type="button"
+                                            x-on:click="confirmCompanyStatusToggle($wire, {{ $company->id }}, @js($company->status), @js($company->name))"
+                                            class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold {{ $company->status === 'active' ? 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' : 'bg-[#2ab4c0]/70 text-white hover:bg-[#229aa4]/70' }}"
                                             title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                             @if ($company->status === 'active')
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                             @else
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14h4m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                             @endif
                                         </button>
@@ -167,3 +168,55 @@
         </div>
     </div>
 </div>
+
+@once
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.confirmCompanyStatusToggle = async function(wire, companyId, currentStatus, companyName) {
+            const isActive = currentStatus === 'active';
+            const actionLabel = isActive ? 'Deactivate' : 'Activate';
+            const actionVerb = isActive ? 'deactivate' : 'activate';
+
+            if (!window.Swal) {
+                if (window.confirm(`Are you sure you want to ${actionVerb} ${companyName}?`)) {
+                    await wire.toggleActive(companyId);
+                }
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true,
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'rounded-2xl border border-gray-100 shadow-2xl',
+                    title: 'text-gray-900 font-black',
+                    htmlContainer: 'text-gray-600',
+                    actions: 'gap-3',
+                    confirmButton: 'inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-bold text-white hover:bg-[#229aa4]',
+                    cancelButton: 'inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-50'
+                }
+            });
+
+            if (!result.isConfirmed) return;
+
+            await wire.toggleActive(companyId);
+
+            await Swal.fire({
+                title: 'Done',
+                icon: 'success',
+                timer: 1400,
+                showConfirmButton: false,
+                customClass: {
+                    popup: 'rounded-2xl border border-gray-100 shadow-xl',
+                    title: 'text-gray-900 font-black',
+                    htmlContainer: 'text-gray-600'
+                }
+            });
+        };
+    </script>
+@endonce

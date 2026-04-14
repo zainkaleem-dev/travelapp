@@ -33,9 +33,8 @@ class BranchListing extends Component
     public function toggleActive(int $branchId): void
     {
         $branch = Branch::query()->findOrFail($branchId);
-        $branch->forceFill(['status' => $branch->status === 'Active' ? 'Inactive' : 'Active'])->save();
-        
-        session()->flash('status', 'Branch status updated successfully.');
+        $newStatus = $branch->status === 'active' ? 'inactive' : 'active';
+        $branch->update(['status' => $newStatus]);
     }
  
     public function render(PaginationService $paginationService)

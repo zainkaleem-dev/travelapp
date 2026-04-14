@@ -51,20 +51,20 @@
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
-                            <tr class="border-b-2 border-gray-200 bg-gray-50">
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Branch</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Company</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">City</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Email</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Phone</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Status</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Actions</th>
+                            <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Branch</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Company</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">City</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Email</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Phone</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Status</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($branches as $branch)
-                            <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors {{ $branch->status === 'Active' ? '' : 'opacity-60 grayscale' }}">
-                                <td class="px-6 py-4">
+                            <tr class="border-b border-gray-200 hover:bg-blue-50 transition-colors">
+                                <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
                                             <span class="text-xs font-black text-gray-500">
@@ -77,21 +77,21 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <span class="text-sm font-medium text-gray-900">{{ $branch->company->name ?? '—' }}</span>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <span class="text-sm text-gray-900">{{ $branch->city ?: '—' }}</span>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <span class="text-sm text-gray-900">{{ $branch->email ?: '—' }}</span>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
                                     <span class="text-sm text-gray-900">{{ $branch->phone ?: '—' }}</span>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center rounded-md {{ $branch->status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
-                                        {{ $branch->status }}
+                                <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                                    <span class="inline-flex items-center rounded-md {{ $branch->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
+                                        {{ ucfirst($branch->status) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
@@ -105,16 +105,17 @@
                                             </svg>
                                         </a>
 
-                                        <button type="button" wire:click="toggleActive({{ $branch->id }})"
-                                            class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold {{ $branch->status === 'Active' ? 'bg-gray-900 text-white hover:bg-black' : 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' }}"
-                                            title="{{ $branch->status === 'Active' ? 'Deactivate' : 'Activate' }}">
-                                            @if ($branch->status === 'Active')
+                                        <button type="button"
+                                            x-on:click="confirmBranchStatusToggle($wire, {{ $branch->id }}, @js($branch->status), @js($branch->name))"
+                                            class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold {{ $branch->status === 'active' ? 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' : 'bg-[#2ab4c0]/70 text-white hover:bg-[#229aa4]/70' }}"
+                                            title="{{ $branch->status === 'active' ? 'Deactivate' : 'Activate' }}">
+                                            @if ($branch->status === 'active')
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                             @else
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14h4m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                             @endif
                                         </button>
@@ -189,3 +190,54 @@
         </div>
     </div>
 </div>
+
+@once
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.confirmBranchStatusToggle = async function(wire, branchId, currentStatus, branchName) {
+            const isActive = currentStatus === 'active';
+            const actionVerb = isActive ? 'deactivate' : 'activate';
+
+            if (!window.Swal) {
+                if (window.confirm(`Are you sure you want to ${actionVerb} ${branchName}?`)) {
+                    await wire.toggleActive(branchId);
+                }
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true,
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'rounded-2xl border border-gray-100 shadow-2xl',
+                    title: 'text-gray-900 font-black',
+                    htmlContainer: 'text-gray-600',
+                    actions: 'gap-3',
+                    confirmButton: 'inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-bold text-white hover:bg-[#229aa4]',
+                    cancelButton: 'inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-50'
+                }
+            });
+
+            if (!result.isConfirmed) return;
+
+            await wire.toggleActive(branchId);
+
+            await Swal.fire({
+                title: 'Done',
+                icon: 'success',
+                timer: 1400,
+                showConfirmButton: false,
+                customClass: {
+                    popup: 'rounded-2xl border border-gray-100 shadow-xl',
+                    title: 'text-gray-900 font-black',
+                    htmlContainer: 'text-gray-600'
+                }
+            });
+        };
+    </script>
+@endonce
