@@ -96,7 +96,19 @@
                             <input type="text" wire:model="phone" class="field-input" placeholder="+1234567890">
                             @error('phone') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
- 
+
+                        <div>
+                            <label class="field-label">Secondary Phone</label>
+                            <input type="text" wire:model="phone_secondary" class="field-input" placeholder="+1234567890">
+                            @error('phone_secondary') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Fax Number</label>
+                            <input type="text" wire:model="fax" class="field-input" placeholder="+1234567890">
+                            @error('fax') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
                         <div>
                             <label class="field-label">WhatsApp</label>
                             <input type="text" wire:model="whatsapp" class="field-input" placeholder="+1234567890">
@@ -137,6 +149,11 @@
                             <label class="field-label">Postal Code</label>
                             <input type="text" wire:model="postal_code" class="field-input" placeholder="e.g. 12345">
                             @error('postal_code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="field-label">Country</label>
+                            <input type="text" wire:model="country" class="field-input" placeholder="e.g. United Arab Emirates">
+                            @error('country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
  
                         <div>

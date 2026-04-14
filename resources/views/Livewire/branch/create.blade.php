@@ -93,11 +93,25 @@
                         <div>
                             <label class="field-label">Primary Phone</label>
                             <input type="text" wire:model="phone" class="field-input" placeholder="+1234567890">
+                            @error('phone') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Secondary Phone</label>
+                            <input type="text" wire:model="phone_secondary" class="field-input" placeholder="+1234567890">
+                            @error('phone_secondary') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Fax Number</label>
+                            <input type="text" wire:model="fax" class="field-input" placeholder="+1234567890">
+                            @error('fax') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">WhatsApp</label>
                             <input type="text" wire:model="whatsapp" class="field-input" placeholder="+1234567890">
+                            @error('whatsapp') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
@@ -112,32 +126,44 @@
                         <div class="md:col-span-2">
                             <label class="field-label">Address Line 1</label>
                             <input type="text" wire:model="address_line_1" class="field-input" placeholder="Street address, P.O. box">
+                            @error('address_line_1') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Address Line 2</label>
                             <input type="text" wire:model="address_line_2" class="field-input" placeholder="Apartment, suite, unit, building, floor">
+                            @error('address_line_2') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">City</label>
                             <input type="text" wire:model="city" class="field-input" placeholder="e.g. Dubai">
+                            @error('city') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="field-label">State / Province</label>
                             <input type="text" wire:model="state" class="field-input" placeholder="e.g. Dubai">
+                            @error('state') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Postal Code</label>
                             <input type="text" wire:model="postal_code" class="field-input" placeholder="e.g. 12345">
+                            @error('postal_code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="field-label">Country</label>
+                            <input type="text" wire:model="country" class="field-input" placeholder="e.g. United Arab Emirates">
+                            @error('country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Latitude</label>
                             <input type="text" wire:model="latitude" class="field-input font-mono text-xs" placeholder="e.g. 25.2048">
+                            @error('latitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Longitude</label>
                             <input type="text" wire:model="longitude" class="field-input font-mono text-xs" placeholder="e.g. 55.2708">
+                            @error('longitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                         
                         <div class="md:col-span-3">

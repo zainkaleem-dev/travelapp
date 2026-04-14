@@ -87,7 +87,7 @@ class BranchEdit extends Component
             'slug' => ['required', 'string', 'max:255', Rule::unique('branches', 'slug')->ignore($this->branchId)],
             'company_id' => ['required', 'exists:companies,id'],
             'is_main' => ['boolean'],
-            'status' => ['required', 'in:active,inactive,Active,Inactive'],
+            'status' => ['required', 'in:active,inactive'],
             
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
