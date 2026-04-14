@@ -117,14 +117,40 @@
             font-size: 13px;
             font-weight: 600;
             color: #111827;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            outline: none;
+            padding: 10px 12px;
+            transition: border-color .15s, box-shadow .15s, background-color .15s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .field-input:focus {
+            border-color: #2ab4c0;
+            box-shadow: 0 0 0 2px rgba(42, 180, 192, .12);
+            background: #fff;
+        }
+
+        select.field-input {
+            appearance: auto;
+            -webkit-appearance: auto;
+        }
+
+        /* Keep legacy wrapped fields visually unchanged (search widgets, etc.) */
+        .field-wrap .field-input {
             background: transparent;
             border: none;
-            outline: none;
+            border-radius: 0;
             padding: 0;
+            box-shadow: none;
+            appearance: auto;
+            -webkit-appearance: auto;
         }
 
 	        .field-input::placeholder {
-	            color: black;
+	            color: #6b7280;
 	            font-weight: 400;
 	        }
 
