@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 class TenantContext
 {
     private ?int $companyId = null;
+    private ?bool $isSuperAdmin = null;
 
     public function setCompanyId(?int $companyId): void
     {
@@ -31,7 +32,11 @@ class TenantContext
             return null;
         }
 
-        $isSuperAdmin = $user->hasRole('super_admin');
+        if ($this->isSuperAdmin === null) {
+            $this->isSuperAdmin = $user->hasRole('super_admin');
+        }
+
+        $isSuperAdmin = $this->isSuperAdmin;
 
         $isLivewireRequest = $request->headers->has('X-Livewire')
             || $request->is('livewire/*')
