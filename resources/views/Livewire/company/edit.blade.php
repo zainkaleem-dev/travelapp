@@ -130,33 +130,6 @@
                     </div>
                 </div>
 
-                <!-- Section 3: Admin User -->
-                <div class="rounded-xl border border-[#2ab4c0]/20 bg-[#2ab4c0]/5 p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-[#2ab4c0] uppercase">Administrator Account</h2>
-                        <svg class="w-4 h-4 text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label class="field-label">Full Name</label>
-                            <input type="text" wire:model="admin_name" class="field-input" placeholder="Name of primary admin">
-                            @error('admin_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
-                        <div>
-                            <label class="field-label">Email Address <span class="text-[#2ab4c0]">*</span></label>
-                            <input type="email" wire:model="admin_email" class="field-input" placeholder="admin@company.com">
-                            @error('admin_email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
-                        <div>
-                            <label class="field-label">Access Password <span class="text-gray-400 font-normal">(Leave blank to keep current)</span></label>
-                            <input type="password" wire:model="admin_password" class="field-input" placeholder="••••••••">
-                            @error('admin_password') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
-                    </div>
-                </div>
 
                 <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                     <button type="button" onclick="history.back()"

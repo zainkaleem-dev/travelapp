@@ -3,9 +3,7 @@
 namespace App\Livewire\Company;
  
 use App\Models\Company;
-use App\Models\User;
 use Illuminate\Support\Facades\DB; 
-use Illuminate\Support\Facades\Hash; 
 use Illuminate\Validation\Rule; 
 use Livewire\Attributes\Layout; 
 use Livewire\Component; 
@@ -18,7 +16,6 @@ class CompanyEdit extends Component
  
     public int $companyId;
     public Company $company;
-    public ?User $adminUser = null;
  
     // Core Identity
     public string $company_name = '';
@@ -36,16 +33,10 @@ class CompanyEdit extends Component
     public string $status = 'active';
     public ?string $notes = null;
  
-    // Admin Account
-    public string $admin_email = '';
-    public string $admin_password = '';
-    public ?string $admin_name = null;
- 
     public function mount(int $id): void
     {
         $this->companyId = $id;
-        $this->company = Company::query()->with(['users' => fn ($q) => $q->orderBy('id')])->findOrFail($id);
-        $this->adminUser = $this->company->users->first();
+        $this->company = Company::query()->findOrFail($id);
  
         $this->company_name = $this->company->name;
         $this->slug = $this->company->slug;
@@ -58,9 +49,6 @@ class CompanyEdit extends Component
         $this->description = $this->company->description;
         $this->status = $this->company->status;
         $this->notes = $this->company->notes;
- 
-        $this->admin_email = $this->adminUser?->email ?? '';
-        $this->admin_name = $this->adminUser?->first_name ?? '';
     }
  
     public function updatedCompanyName($value): void
@@ -91,10 +79,6 @@ class CompanyEdit extends Component
  
             'status' => ['required', Rule::in(['active', 'inactive'])],
             'notes' => ['nullable', 'string'],
- 
-            'admin_email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->adminUser?->id)],
-            'admin_password' => ['nullable', 'string', 'min:8'],
-            'admin_name' => ['nullable', 'string', 'max:255'],
         ];
     }
  
@@ -125,19 +109,6 @@ class CompanyEdit extends Component
                     'logo_path' => $logoPath,
                 ]),
             ]);
- 
-            if ($this->adminUser) {
-                $userData = [
-                    'first_name' => $validated['admin_name'],
-                    'email' => $validated['admin_email'],
-                ];
- 
-                if (!empty($validated['admin_password'])) {
-                    $userData['password'] = Hash::make($validated['admin_password']);
-                }
- 
-                $this->adminUser->update($userData);
-            }
         });
  
         session()->flash('status', 'Company updated successfully.');
