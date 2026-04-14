@@ -98,7 +98,13 @@
                                         </a>
 
                                         <button type="button"
-                                            x-on:click="confirmCompanyStatusToggle($wire, {{ $company->id }}, @js($company->status), @js($company->name))"
+                                            x-on:click="appSwalConfirmAction({
+                                                wire: $wire,
+                                                action: 'toggleActive',
+                                                args: [{{ $company->id }}],
+                                                confirmTitle: 'Change company status?',
+                                                doneTitle: 'Company status updated'
+                                            })"
                                             class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold {{ $company->status === 'active' ? 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' : 'bg-[#2ab4c0]/70 text-white hover:bg-[#229aa4]/70' }}"
                                             title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                             @if ($company->status === 'active')
@@ -169,54 +175,3 @@
     </div>
 </div>
 
-@once
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        window.confirmCompanyStatusToggle = async function(wire, companyId, currentStatus, companyName) {
-            const isActive = currentStatus === 'active';
-            const actionLabel = isActive ? 'Deactivate' : 'Activate';
-            const actionVerb = isActive ? 'deactivate' : 'activate';
-
-            if (!window.Swal) {
-                if (window.confirm(`Are you sure you want to ${actionVerb} ${companyName}?`)) {
-                    await wire.toggleActive(companyId);
-                }
-                return;
-            }
-
-            const result = await Swal.fire({
-                title: 'Are you sure?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-                reverseButtons: true,
-                buttonsStyling: false,
-                customClass: {
-                    popup: 'rounded-2xl border border-gray-100 shadow-2xl',
-                    title: 'text-gray-900 font-black',
-                    htmlContainer: 'text-gray-600',
-                    actions: 'gap-3',
-                    confirmButton: 'inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-bold text-white hover:bg-[#229aa4]',
-                    cancelButton: 'inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-50'
-                }
-            });
-
-            if (!result.isConfirmed) return;
-
-            await wire.toggleActive(companyId);
-
-            await Swal.fire({
-                title: 'Done',
-                icon: 'success',
-                timer: 1400,
-                showConfirmButton: false,
-                customClass: {
-                    popup: 'rounded-2xl border border-gray-100 shadow-xl',
-                    title: 'text-gray-900 font-black',
-                    htmlContainer: 'text-gray-600'
-                }
-            });
-        };
-    </script>
-@endonce

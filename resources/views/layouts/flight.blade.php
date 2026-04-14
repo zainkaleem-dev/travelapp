@@ -539,8 +539,9 @@
     {{-- ── Navbar ── --}}
     <nav class="relative z-50 bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between gap-4">
-            <a href="{{ route('flights.search') }}" class="text-sm font-semibold text-gray-800 whitespace-nowrap">
-                Corporate Company Logo
+            <a href="{{ route('flights.search') }}" class="whitespace-nowrap">
+                <img src="{{ asset('assets/images/travelapp_logo.png') }}" alt="TravelApp logo"
+                    class="h-9 w-auto object-contain" />
             </a>
 
             <div class="flex items-center gap-3">
@@ -1258,6 +1259,68 @@
 		            }
 		        })();
 		    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.appSwalConfirmAction = async function(options = {}) {
+            const {
+                wire,
+                action,
+                args = [],
+                confirmTitle = 'Are you sure?',
+                confirmText = '',
+                doneTitle = 'Done',
+                doneText = '',
+                confirmButtonText = 'Yes',
+                cancelButtonText = 'No',
+            } = options;
+
+            if (!wire || !action || typeof wire[action] !== 'function') return;
+
+            if (!window.Swal) {
+                if (window.confirm(confirmTitle)) {
+                    await wire[action](...args);
+                }
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: confirmTitle,
+                text: confirmText || undefined,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText,
+                cancelButtonText,
+                reverseButtons: true,
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'rounded-2xl border border-gray-100 shadow-2xl',
+                    title: 'text-gray-900 font-black',
+                    htmlContainer: 'text-gray-600',
+                    actions: 'gap-3',
+                    confirmButton: 'inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-bold text-white hover:bg-[#229aa4]',
+                    cancelButton: 'inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-50'
+                }
+            });
+
+            if (!result.isConfirmed) return;
+
+            await wire[action](...args);
+
+            await Swal.fire({
+                title: doneTitle,
+                text: doneText || undefined,
+                icon: 'success',
+                timer: 1400,
+                showConfirmButton: false,
+                customClass: {
+                    popup: 'rounded-2xl border border-gray-100 shadow-xl',
+                    title: 'text-gray-900 font-black',
+                    htmlContainer: 'text-gray-600'
+                }
+            });
+        };
+    </script>
 
     @livewireScripts
 </body>

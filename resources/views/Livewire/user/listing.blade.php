@@ -85,7 +85,13 @@
                                         </a>
 
                                         <button type="button"
-                                            x-on:click="confirmUserDelete($wire, {{ $user->id }})"
+                                            x-on:click="appSwalConfirmAction({
+                                                wire: $wire,
+                                                action: 'delete',
+                                                args: [{{ $user->id }}],
+                                                confirmTitle: 'Delete user?',
+                                                doneTitle: 'User deleted'
+                                            })"
                                             class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-red-600 hover:bg-red-50 text-xs font-semibold"
                                             title="Delete">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,50 +156,3 @@
     </div>
 </div>
 
-@once
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        window.confirmUserDelete = async function(wire, userId) {
-            if (!window.Swal) {
-                if (window.confirm('Are you sure?')) {
-                    await wire.delete(userId);
-                }
-                return;
-            }
-
-            const result = await Swal.fire({
-                title: 'Are you sure?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-                reverseButtons: true,
-                buttonsStyling: false,
-                customClass: {
-                    popup: 'rounded-2xl border border-gray-100 shadow-2xl',
-                    title: 'text-gray-900 font-black',
-                    htmlContainer: 'text-gray-600',
-                    actions: 'gap-3',
-                    confirmButton: 'inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-bold text-white hover:bg-[#229aa4]',
-                    cancelButton: 'inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-50'
-                }
-            });
-
-            if (!result.isConfirmed) return;
-
-            await wire.delete(userId);
-
-            await Swal.fire({
-                title: 'Done',
-                icon: 'success',
-                timer: 1400,
-                showConfirmButton: false,
-                customClass: {
-                    popup: 'rounded-2xl border border-gray-100 shadow-xl',
-                    title: 'text-gray-900 font-black',
-                    htmlContainer: 'text-gray-600'
-                }
-            });
-        };
-    </script>
-@endonce
