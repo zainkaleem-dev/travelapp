@@ -72,15 +72,19 @@ class UserEdit extends Component
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->userId)],
             'password' => ['nullable', 'string', 'min:8'],
+            'company_id' => [auth()->user()->hasRole('super_admin') ? 'required' : 'nullable', 'exists:companies,id'],
+            'branch_id' => ['required', 'exists:branches,id'],
         ]);
- 
+
         $this->user->update([
             'first_name' => $validated['first_name'],
             'middle_name' => $validated['middle_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
+            'company_id' => $this->company_id,
+            'branch_id' => $validated['branch_id'],
         ]);
- 
+
         if (!empty($validated['password'])) {
             $this->user->update(['password' => Hash::make($validated['password'])]);
         }

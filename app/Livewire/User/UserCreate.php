@@ -56,18 +56,21 @@ class UserCreate extends Component
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
+            'company_id' => [auth()->user()->hasRole('super_admin') ? 'required' : 'nullable', 'exists:companies,id'],
+            'branch_id' => ['required', 'exists:branches,id'],
         ]);
- 
+
         $user = User::query()->create([
             'first_name' => $validated['first_name'],
             'middle_name' => $validated['middle_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'company_id' => $this->company_id,
+            'branch_id' => $validated['branch_id'],
             'email_verified_at' => now(),
         ]);
- 
- 
+
         session()->flash('status', 'User created successfully.');
         return redirect()->route('superadmin.users');
     }

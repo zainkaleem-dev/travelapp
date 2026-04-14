@@ -3,7 +3,8 @@
 namespace App\Livewire\Roles;
 
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
+use App\Support\TenantContext;
 use Spatie\Permission\Models\Permission;
 use Livewire\Attributes\Layout;
 
@@ -27,7 +28,18 @@ class RolesPermissions extends Component
 
     public function refreshData()
     {
-        $this->roles = Role::orderBy('name')->get();
+        $tenantContext = app(TenantContext::class);
+        $companyId = $tenantContext->companyId();
+        $isSuperAdmin = auth()->user()->hasRole('super_admin');
+
+        $this->roles = Role::query()
+            ->when(!$isSuperAdmin, function($query) use ($companyId) {
+                // Regular admins only see roles for their own company
+                $query->where('company_id', $companyId);
+            })
+            ->orderBy('name')
+            ->get();
+
         $this->permissions = Permission::query()
             ->when($this->searchPermissions, function($query) {
                 $query->where('name', 'like', '%' . $this->searchPermissions . '%');
@@ -43,11 +55,28 @@ class RolesPermissions extends Component
 
     public function createRole()
     {
+        $tenantContext = app(TenantContext::class);
+        $companyId = $tenantContext->companyId();
+
         $this->validate([
-            'newRoleName' => 'required|string|unique:roles,name',
+            'newRoleName' => 'required|string',
         ]);
 
-        Role::create(['name' => $this->newRoleName]);
+        // Check uniqueness within the same company context
+        $exists = Role::where('name', $this->newRoleName)
+            ->where('company_id', $companyId)
+            ->exists();
+
+        if ($exists) {
+            $this->addError('newRoleName', 'This role already exists in this company.');
+            return;
+        }
+
+        Role::create([
+            'name' => $this->newRoleName,
+            'company_id' => $companyId,
+            'guard_name' => 'web'
+        ]);
         $this->newRoleName = '';
         $this->refreshData();
         session()->flash('status', 'Role created successfully.');

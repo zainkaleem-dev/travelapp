@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'company.tenant' => \App\Http\Middleware\EnsureCompanyTenant::class,
             'company.admin' => \App\Http\Middleware\EnsureCompanyAdmin::class,
             'branch.admin' => \App\Http\Middleware\EnsureBranchAdmin::class,
+            'anyadmin' => \App\Http\Middleware\EnsureAnyAdmin::class,
         ]); 
     }) 
     ->withExceptions(function (Exceptions $exceptions) {

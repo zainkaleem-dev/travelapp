@@ -146,8 +146,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users', UserListing::class)->name('superadmin.users');
         Route::get('/users/create', UserCreate::class)->name('superadmin.users.create');
         Route::get('/users/{id}/edit', UserEdit::class)->name('superadmin.users.edit');
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('superadmin.roles');
     }); 
+
+    Route::middleware(['anyadmin'])->prefix('admin')->group(function () {
+        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('roles.index');
+    });
  
     Route::get('/company/companies', CompanyListing::class)
         ->middleware(['company.tenant', 'company.admin'])

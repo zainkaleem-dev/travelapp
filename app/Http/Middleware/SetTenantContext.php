@@ -20,6 +20,9 @@ class SetTenantContext
         $companyId = $tenantContext->resolveCompanyId($request, $request->user());
         $tenantContext->setCompanyId($companyId);
 
+        // Set the team ID for Spatie permissions
+        app(\Spatie\Permission\PermissionRegistrar::class)->setPermissionsTeamId($companyId);
+
         return $next($request);
     }
 }
