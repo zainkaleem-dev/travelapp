@@ -31,7 +31,7 @@ class TenantContext
             return null;
         }
 
-        $isSuperAdmin = (bool) ($user->is_super_admin ?? false);
+        $isSuperAdmin = $user->hasRole('super_admin');
 
         $isLivewireRequest = $request->headers->has('X-Livewire')
             || $request->is('livewire/*')

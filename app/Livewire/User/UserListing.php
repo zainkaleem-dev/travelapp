@@ -37,9 +37,7 @@ class UserListing extends Component
  
         $user = User::query()
             ->where('company_id', $companyId)
-            ->where(function ($q) {
-                $q->whereNull('is_super_admin')->orWhere('is_super_admin', false);
-            })
+            ->withoutRole('super_admin')
             ->findOrFail($userId);
  
         $user->delete();
@@ -53,9 +51,7 @@ class UserListing extends Component
  
         $query = User::query()
             ->where('company_id', $companyId)
-            ->where(function ($q) {
-                $q->whereNull('is_super_admin')->orWhere('is_super_admin', false);
-            })
+            ->withoutRole('super_admin')
             ->when($search !== '', function ($q) use ($search) {
                 $q->where(function ($qq) use ($search) {
                     $qq->where('first_name', 'like', "%{$search}%")

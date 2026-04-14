@@ -28,9 +28,7 @@ class UserEdit extends Component
         $this->userId = $id;
         $this->user = User::query()
             ->where('company_id', $companyId)
-            ->where(function ($q) {
-                $q->whereNull('is_super_admin')->orWhere('is_super_admin', false);
-            })
+            ->withoutRole('super_admin')
             ->findOrFail($id);
  
         $this->first_name = (string) ($this->user->first_name ?? '');

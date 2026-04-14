@@ -86,6 +86,11 @@ class Login extends Component
         Auth::login($user, $this->remember); 
         request()->session()->regenerate(); 
 
+        if ($user->hasRole('super_admin')) {
+            $this->redirect(route('superadmin.companies.index'));
+            return;
+        }
+
         $this->redirect(route('flights.search'));
     } 
 

@@ -14,9 +14,11 @@ class EnsureCompanyAdmin
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if (!$user || (bool) ($user->is_super_admin ?? false)) {
-            abort(403);
+        if (!$user || $user->hasRole('super_admin')) {
+            return $next($request);
         }
+
+        abort_unless($user->hasRole('company_admin'), 403);
  
         abort_unless((int) ($user->company_id ?? 0) > 0, 403);
  

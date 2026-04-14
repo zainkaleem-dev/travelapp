@@ -23,7 +23,7 @@ class SuperAdminSelectedCompanyScope implements Scope
         }
 
         $user = auth()->user();
-        if (!$user || !(bool) ($user->is_super_admin ?? false)) {
+        if (!$user || !$user->hasRole('super_admin')) {
             return;
         }
 

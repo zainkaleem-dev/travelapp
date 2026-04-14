@@ -15,7 +15,7 @@ class EnsureSuperAdmin
     {
         $user = $request->user();
 
-        if (!$user || !(bool) ($user->is_super_admin ?? false)) {
+        if (!$user || !$user->hasRole('super_admin')) {
             abort(403);
         }
 

@@ -62,9 +62,13 @@ Route::get('/currency/{code}', function (Request $request, string $code) {
 
 // Root URL
 Route::get('/', function () {
-    return auth()->check()
-        ? redirect()->route('flights.search')
-        : redirect()->route('login');
+    if (auth()->check()) {
+        if (auth()->user()->hasRole('super_admin')) {
+            return redirect()->route('superadmin.companies.index');
+        }
+        return redirect()->route('flights.search');
+    }
+    return redirect()->route('login');
 })->name('root');
 
 
