@@ -35,7 +35,6 @@ class UserCreate extends Component
         ]);
  
         $user = User::query()->create([
-            'company_id' => $companyId,
             'first_name' => $validated['first_name'],
             'middle_name' => $validated['middle_name'],
             'last_name' => $validated['last_name'],

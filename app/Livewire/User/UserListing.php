@@ -36,7 +36,6 @@ class UserListing extends Component
         $companyId = (int) ($tenantContext->companyId() ?? 0);
  
         $user = User::query()
-            ->where('company_id', $companyId)
             ->withoutRole('super_admin')
             ->findOrFail($userId);
  
@@ -50,7 +49,6 @@ class UserListing extends Component
         $search = trim($this->search);
  
         $query = User::query()
-            ->where('company_id', $companyId)
             ->withoutRole('super_admin')
             ->when($search !== '', function ($q) use ($search) {
                 $q->where(function ($qq) use ($search) {

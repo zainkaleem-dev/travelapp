@@ -45,7 +45,6 @@ class CompanyIndex extends Component
         $search = trim($this->search);
  
         $query = Company::query()
-            ->with(['users' => fn ($q) => $q->orderBy('id')])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")

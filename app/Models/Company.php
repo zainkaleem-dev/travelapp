@@ -30,11 +30,6 @@ class Company extends Model
         'founded_year' => 'integer',
     ];
 
-    /** @return HasMany<User, Company> */
-    public function users(): HasMany
-    {
-        return $this->hasMany(User::class);
-    }
 
     /** @return HasMany<Branch, Company> */
     public function branches(): HasMany

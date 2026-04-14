@@ -27,7 +27,6 @@ class UserEdit extends Component
         
         $this->userId = $id;
         $this->user = User::query()
-            ->where('company_id', $companyId)
             ->withoutRole('super_admin')
             ->findOrFail($id);
  

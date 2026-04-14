@@ -23,7 +23,6 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [ 
-        'company_id', 
         'branch_id',
           'first_name', 
         'middle_name', 
@@ -79,11 +78,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserSetting::class, 'user_id');
     }
-
-    public function company(): BelongsTo 
-    { 
-        return $this->belongsTo(Company::class); 
-    } 
 
     public function branch(): BelongsTo
     {
