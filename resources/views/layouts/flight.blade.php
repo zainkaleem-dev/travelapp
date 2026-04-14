@@ -713,6 +713,12 @@
             $hideMainNavForCompanyAdmin = $user && !$user->hasRole('super_admin') && request()->is('company*');
  
           @endphp 
+
+        @if ($isSuperAdmin && request()->is('super-admin*'))
+            <div class="max-w-7xl mx-auto px-3 sm:px-4 border-t border-gray-100">
+                @include('partials.navigation-bar')
+            </div>
+        @endif
  
         @unless ($hideMainNavForSuperAdmin || $hideMainNavForCompanyAdmin) 
             <div class="max-w-7xl mx-auto px-3 sm:px-4"> 
@@ -784,7 +790,9 @@
                     <span class="sm:hidden">Passenger</span>
                 </div>
                 </div> --}}
-                @include('partials.navigation-bar')
+                @if (!($isSuperAdmin && request()->is('super-admin*')))
+                    @include('partials.navigation-bar')
+                @endif
             </div>
 
             <div class="h-px bg-gray-100"></div>
