@@ -1,1 +1,1 @@
-@include('Livewire.admin.companies.index')
+@include('livewire.admin.companies.index')

@@ -15,8 +15,8 @@ return new class extends Migration
             if (!Schema::hasColumn('roles', 'company_id')) {
                 $table->unsignedBigInteger('company_id')->nullable()->after('id');
             }
-            $table->string('name', 100)->change();
-            $table->string('guard_name', 100)->change();
+            $table->string('name', 90)->change();
+            $table->string('guard_name', 90)->change();
 
             // Handle the case where the unique index might have been dropped already but the new one failed
             $indexes = DB::getSchemaBuilder()->getIndexes('roles');
@@ -63,8 +63,8 @@ return new class extends Migration
         Schema::table('roles', function (Blueprint $table) {
             $table->dropUnique('roles_company_name_guard_unique');
             $table->dropColumn('company_id');
-            $table->string('name', 125)->change();
-            $table->string('guard_name', 125)->change();
+            $table->string('name', 90)->change();
+            $table->string('guard_name', 90)->change();
             $table->unique(['name', 'guard_name'], 'roles_name_guard_name_unique');
         });
     }
