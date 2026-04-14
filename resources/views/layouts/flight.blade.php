@@ -755,6 +755,9 @@
                 <div
                     class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('passenger-details') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
                     <span class="hidden sm:inline">Passenger Details</span>
+                    <span class="sm:hidden">Passenger</span>
+                </div>
+                </div> --}}
                 @include('partials.navigation-bar')
             </div>
 
