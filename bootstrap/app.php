@@ -20,9 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([ 
             'superadmin' => \App\Http\Middleware\EnsureSuperAdmin::class, 
-            'superadmin.company' => \App\Http\Middleware\SetSuperAdminCompanyContext::class, 
-            'superadmin.company_query' => \App\Http\Middleware\SetSuperAdminCompanyFromQuery::class, 
-            'superadmin.tenant' => \App\Http\Middleware\RequireSuperAdminCompanySelected::class, 
             'company.tenant' => \App\Http\Middleware\EnsureCompanyTenant::class,
             'company.admin' => \App\Http\Middleware\EnsureCompanyAdmin::class,
             'branch.admin' => \App\Http\Middleware\EnsureBranchAdmin::class,

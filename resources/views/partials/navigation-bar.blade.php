@@ -39,9 +39,6 @@
             Users
         </a>
 
-        @if (request()->routeIs('superadmin.companies.index') || request()->routeIs('superadmin.users')) 
-            @livewire('admin.super-admin-company-switcher') 
-        @endif 
 
     @elseif ($isCompanyAdminArea)
         {{-- Company Admin Navigation --}}

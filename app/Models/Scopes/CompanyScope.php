@@ -24,7 +24,7 @@ class CompanyScope implements Scope
         $companyId = $tenantContext->companyId();
 
         $user = auth()->user();
-        $isTenantUser = $user && !(bool) ($user->is_super_admin ?? false);
+        $isTenantUser = $user && !$user->hasRole('super_admin');
 
         if (!$companyId) {
             if ($isTenantUser) {

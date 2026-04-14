@@ -38,11 +38,7 @@ class TenantContext
             || $request->route()?->getName() === 'livewire.update';
 
         if ($this->inSuperAdminArea($request) || ($isSuperAdmin && $isLivewireRequest)) {
-            if (!$isSuperAdmin) {
-                return null;
-            }
-
-            return (int) $request->session()->get('super_admin_company_id', 0) ?: null;
+            return null;
         }
 
         if ($isSuperAdmin) {
