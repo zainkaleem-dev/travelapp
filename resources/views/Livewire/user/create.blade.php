@@ -18,10 +18,41 @@
                 <!-- Section 1: Identity -->
                 <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Identity & Name</h2>
+                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Identity & Organization</h2>
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#2ab4c0]/10 text-[#2ab4c0] uppercase tracking-tighter">Required</span>
                     </div>
- 
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        @role('super_admin')
+                        <div>
+                            <label class="field-label">Select Company <span class="text-[#2ab4c0]">*</span></label>
+                            <select wire:model.live="company_id" class="field-input">
+                                <option value="">-- Choose Company --</option>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+                        @endrole
+
+                        <div @unless(auth()->user()->hasRole('super_admin')) class="col-span-2" @endunless>
+                            <label class="field-label">Select Branch <span class="text-[#2ab4c0]">*</span></label>
+                            <select wire:model="branch_id" class="field-input" {{ empty($branches) ? 'disabled' : '' }}>
+                                <option value="">-- Choose Branch --</option>
+                                @foreach($branches as $branch)
+                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                @endforeach
+                            </select>
+                            @if(empty($branches) && $company_id)
+                                <p class="mt-1 text-[11px] font-bold text-orange-500 uppercase">This company has no branches yet.</p>
+                            @elseif(!$company_id && auth()->user()->hasRole('super_admin'))
+                                <p class="mt-1 text-[11px] font-bold text-gray-400 uppercase">Please select a company first.</p>
+                            @endif
+                            @error('branch_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="field-label">First Name <span class="text-[#2ab4c0]">*</span></label>

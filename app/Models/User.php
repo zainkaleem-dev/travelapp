@@ -3,19 +3,20 @@
 namespace App\Models; 
  
 use App\Models\Branch;
-  use Illuminate\Contracts\Auth\MustVerifyEmail; 
-use Illuminate\Database\Eloquent\Factories\HasFactory; 
-use Illuminate\Foundation\Auth\User as Authenticatable; 
-use Illuminate\Notifications\Notifiable; 
-use Illuminate\Database\Eloquent\Relations\HasMany; 
-use Illuminate\Database\Eloquent\Relations\HasOne; 
-use Illuminate\Database\Eloquent\Relations\BelongsTo; 
- 
+use App\Models\Concerns\ScopedToCompany;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail 
 { 
-    use HasFactory, Notifiable, HasRoles; 
+    use HasFactory, Notifiable, HasRoles, ScopedToCompany; 
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [ 
         'branch_id',
+        'company_id',
           'first_name', 
         'middle_name', 
         'last_name', 
@@ -82,6 +84,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id');
     }
  
   }

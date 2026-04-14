@@ -2,6 +2,8 @@
  
 namespace App\Livewire\User;
  
+use App\Models\Branch;
+use App\Models\Company;
 use App\Models\User;
 use App\Support\TenantContext;
 use Illuminate\Support\Facades\Hash;
@@ -16,16 +18,38 @@ class UserCreate extends Component
     public string $last_name = '';
     public string $email = '';
     public string $password = '';
+    
+    public ?int $company_id = null;
+    public ?int $branch_id = null;
+    
+    public $companies = [];
+    public $branches = [];
+ 
+    public function mount(TenantContext $tenantContext)
+    {
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole('super_admin');
+        
+        if ($isSuperAdmin) {
+            $this->companies = Company::orderBy('name')->get();
+        } else {
+            $this->company_id = $tenantContext->companyId();
+            $this->updatedCompanyId();
+        }
+    }
+ 
+    public function updatedCompanyId()
+    {
+        $this->branch_id = null;
+        if ($this->company_id) {
+            $this->branches = Branch::where('company_id', $this->company_id)->orderBy('name')->get();
+        } else {
+            $this->branches = [];
+        }
+    }
  
     public function save(TenantContext $tenantContext)
     {
-        $companyId = (int) ($tenantContext->companyId() ?? 0);
-        
-        if ($companyId <= 0) {
-            $this->addError('email', 'Please select a company from the switcher first.');
-            return;
-        }
- 
         $validated = $this->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
