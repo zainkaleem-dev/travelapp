@@ -41,6 +41,8 @@ class Branch extends Model
 
     protected $casts = [
         'is_main' => 'boolean',
+        'latitude' => 'decimal:9',
+        'longitude' => 'decimal:9',
         'settings' => 'array',
     ];
 
