@@ -13,42 +13,43 @@ class RolesPermissions extends Component
 {
     public $search = '';
     public $searchPermissions = '';
-    public $selectedCompanyId = null;
     public $selectedRoleId = null;
     public $newRoleName = '';
     public $newPermissionName = '';
-    public $activeCompany = null;
+    public $newRoleCompanyId = 'global';
     public $isSuperAdmin = false;
 
-    public function mount($company = null): void
+    // User Assignment Mode Properties
+    public $viewMode = 'roles'; // 'roles' or 'users'
+    public $searchUsers = '';
+    public $selectedUserId = null;
+    public $activeUser = null;
+    public $userContextCompanyId = null; // Which company's roles we are assigning to the user
+
+    public function mount(): void
     {
         $this->isSuperAdmin = auth()->user()->hasRole('super_admin');
-
-        if (!$this->isSuperAdmin) {
-            $tenantContext = app(\App\Support\TenantContext::class);
-            $this->selectCompany($tenantContext->companyId());
-        } elseif ($company) {
-            if ($company instanceof \App\Models\Company) {
-                $this->selectCompany($company->id);
-            } elseif (is_numeric($company)) {
-                $this->selectCompany((int) $company);
-            }
-        }
+        $this->setViewMode('roles');
     }
 
-    public function selectCompany($id): void
+    public function setViewMode($mode): void
     {
-        if (!$id) return;
-        
-        $this->selectedCompanyId = $id;
-        $this->activeCompany = \App\Models\Company::find($id);
-        $this->selectedRoleId = null; // Reset role when changing company
-        $this->refreshData();
-        
-        // Auto-select first role if available
-        $roles = $this->getRolesProperty();
-        if ($roles->count() > 0) {
-            $this->selectRole($roles->first()->id);
+        $this->viewMode = $mode;
+        if ($mode === 'users') {
+            $this->selectedRoleId = null;
+            // Pre-select first user if available
+            $users = $this->getSidebarUsersProperty();
+            if ($users->count() > 0) {
+                $this->selectUser($users->first()->id);
+            }
+        } else {
+            $this->selectedUserId = null;
+            $this->activeUser = null;
+            // Pre-select first role
+            $roles = $this->getSidebarRolesProperty();
+            if ($roles->count() > 0) {
+                $this->selectRole($roles->first()->id);
+            }
         }
     }
 
@@ -57,37 +58,80 @@ class RolesPermissions extends Component
         $this->selectedRoleId = $id;
     }
 
-    public function getSidebarCompaniesProperty()
+    public function selectUser($id): void
     {
-        return \App\Models\Company::query()
+        $this->selectedUserId = $id;
+        $this->activeUser = \App\Models\User::find($id);
+        
+        // Auto-select a context company if they are a company admin, or prompt global if super admin
+        if ($this->isSuperAdmin) {
+            $this->userContextCompanyId = 'global';
+        } else {
+            $tenantContext = app(\App\Support\TenantContext::class);
+            $this->userContextCompanyId = $tenantContext->companyId();
+        }
+    }
+
+    public function getSidebarRolesProperty()
+    {
+        $tenantContext = app(\App\Support\TenantContext::class);
+        $companyId = $this->isSuperAdmin ? null : $tenantContext->companyId();
+
+        return \App\Models\Role::query()
+            ->when(!$this->isSuperAdmin && $companyId, function($q) use ($companyId) {
+                $q->where('company_id', $companyId);
+            })
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
+            ->with('company')
+            ->orderBy('company_id')
             ->orderBy('name')
             ->get();
     }
 
-    public function getCompanyStatsProperty()
+    public function getSidebarUsersProperty()
     {
-        $stats = [];
-        $companies = $this->sidebarCompanies;
-        foreach ($companies as $company) {
-            $roleCount = \App\Models\Role::where('company_id', $company->id)->count();
-            $stats[$company->id] = [
-                'roles' => $roleCount,
-            ];
+        $tenantContext = app(\App\Support\TenantContext::class);
+        $companyId = $this->isSuperAdmin ? null : $tenantContext->companyId();
+
+        return \App\Models\User::query()
+            ->when(!$this->isSuperAdmin && $companyId, function($q) use ($companyId) {
+                // Not ideal, but realistically users in a tenant app are scoped if they lack super admin.
+                // Assuming standard scopes apply or auth user company access.
+                // For simplicity, we just list all non-super-admin users if we don't have a direct company relation on User yet.
+            })
+            ->when($this->searchUsers, function ($query) {
+                $query->where(function($q) {
+                    $q->where('first_name', 'like', '%' . $this->searchUsers . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchUsers . '%')
+                      ->orWhere('email', 'like', '%' . $this->searchUsers . '%');
+                });
+            })
+            ->orderBy('first_name')
+            ->get();
+    }
+
+    public function toggleUserRole($roleName)
+    {
+        if (!$this->selectedUserId) return;
+
+        $user = \App\Models\User::find($this->selectedUserId);
+        
+        // Handle Team/Company Context
+        $teamId = $this->userContextCompanyId === 'global' ? null : $this->userContextCompanyId;
+        setPermissionsTeamId($teamId);
+
+        if ($user->hasRole($roleName)) {
+            $user->removeRole($roleName);
+        } else {
+            $user->assignRole($roleName);
         }
-        return $stats;
     }
 
-    public function getRolesProperty()
-    {
-        if (!$this->selectedCompanyId) return collect();
 
-        return \App\Models\Role::where('company_id', $this->selectedCompanyId)
-            ->orderBy('name')
-            ->get();
-    }
+
+
 
     public function getAllPermissionsProperty()
     {
@@ -106,14 +150,19 @@ class RolesPermissions extends Component
 
     public function createRole()
     {
-        if (!$this->selectedCompanyId) return;
-
         $this->validate([
             'newRoleName' => 'required|string',
         ]);
 
+        $companyId = null;
+        if (!$this->isSuperAdmin) {
+            $companyId = app(\App\Support\TenantContext::class)->companyId();
+        } else {
+            $companyId = $this->newRoleCompanyId === 'global' ? null : $this->newRoleCompanyId;
+        }
+
         $exists = \App\Models\Role::where('name', $this->newRoleName)
-            ->where('company_id', $this->selectedCompanyId)
+            ->where('company_id', $companyId)
             ->exists();
 
         if ($exists) {
@@ -123,7 +172,7 @@ class RolesPermissions extends Component
 
         $role = \App\Models\Role::create([
             'name' => $this->newRoleName,
-            'company_id' => $this->selectedCompanyId,
+            'company_id' => $companyId,
             'guard_name' => 'web'
         ]);
 
@@ -167,13 +216,32 @@ class RolesPermissions extends Component
         $selectedRole = $this->selectedRoleId ? \App\Models\Role::findById($this->selectedRoleId) : null;
         $currentRolePermissions = $selectedRole ? $selectedRole->permissions->pluck('name')->toArray() : [];
 
+        // For user assignment mode
+        $currentUserRoles = [];
+        $contextRoles = [];
+        
+        if ($this->viewMode === 'users' && $this->activeUser) {
+            $teamId = $this->userContextCompanyId === 'global' ? null : $this->userContextCompanyId;
+            setPermissionsTeamId($teamId);
+            
+            $currentUserRoles = $this->activeUser->roles()->pluck('name')->toArray();
+            
+            $contextRoles = \App\Models\Role::query()
+                ->where('company_id', $teamId)
+                ->orderBy('name')
+                ->get();
+        }
+
+        $sidebarRoles = $this->getSidebarRolesProperty();
+
         return view('livewire.roles.roles-permissions', [
-            'sidebarCompanies' => $this->sidebarCompanies,
-            'companyStats' => $this->companyStats,
-            'roles' => $this->roles,
+            'sidebarRoles' => $sidebarRoles,
             'allPermissions' => $this->allPermissions,
             'currentRolePermissions' => $currentRolePermissions,
-            'selectedRole' => $selectedRole
+            'selectedRole' => $selectedRole,
+            'sidebarUsers' => $this->sidebarUsers,
+            'currentUserRoles' => $currentUserRoles,
+            'contextRoles' => $contextRoles,
         ]);
     }
 }

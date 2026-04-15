@@ -288,7 +288,7 @@
 
                 <!-- Pagination Controls -->
                 @if ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0)
-                <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="mt-8 pt-6">
                     <div class="flex items-center justify-between">
                         <div class="text-sm text-gray-600">
                             Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
@@ -301,12 +301,12 @@
                             @if ($paginationMeta['current_page'] > 1)
                             <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
                                 class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
-                                ← Previous
+                                Previous
                             </button>
                             @else
                             <button disabled
                                 class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-sm font-semibold opacity-50">
-                                ← Previous
+                                Previous
                             </button>
                             @endif
 
@@ -324,12 +324,12 @@
                                 @if ($paginationMeta['has_more'])
                                 <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
                                     class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
-                                    Next →
+                                    Next
                                 </button>
                                 @else
                                 <button disabled
                                     class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-sm font-semibold opacity-50">
-                                    Next →
+                                    Next
                                 </button>
                                 @endif
                         </div>
