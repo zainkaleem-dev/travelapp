@@ -137,6 +137,13 @@ class FeaturesListing extends Component
         session()->flash('status', "Feature status updated for {$company->name}.");
     }
 
+    public function updateQuantity(int $companyId, string $featureKey, int $value): void
+    {
+        $company = Company::findOrFail($companyId);
+        Feature::for($company)->activate($featureKey, max(0, $value));
+        session()->flash('status', "Quantity limit updated for {$company->name}.");
+    }
+
     public function getSelectedCompanyProperty()
     {
         return $this->selectedCompanyId ? Company::find($this->selectedCompanyId) : null;
@@ -152,39 +159,45 @@ class FeaturesListing extends Component
             ->orderBy('name')
             ->get();
 
-        // Calculate stats for all sidebar companies
+        // Calculate stats — only count toggle features for sidebar
+        $toggleKeys = array_keys(array_filter($this->definedFeatures, fn ($f) => ($f['type'] ?? 'toggle') === 'toggle'));
         $companyStats = [];
         foreach ($sidebarCompanies as $company) {
             $activeCount = 0;
-            foreach (array_keys($this->definedFeatures) as $f) {
+            foreach ($toggleKeys as $f) {
                 if (Feature::for($company)->active($f)) {
                     $activeCount++;
                 }
             }
             $companyStats[$company->id] = [
-                'active' => $activeCount,
-                'total' => count($this->definedFeatures),
-                'is_any_active' => $activeCount > 0
+                'active'       => $activeCount,
+                'total'        => count($toggleKeys),
+                'is_any_active'=> $activeCount > 0,
             ];
         }
 
         // Selected company details
-        $activeCompany = $this->selectedCompany;
-        $activeFeatures = [];
+        $activeCompany   = $this->selectedCompany;
+        $activeFeatures  = [];
         $activePercentage = 0;
-        $onCount = 0;
+        $onCount  = 0;
         $offCount = 0;
 
         if ($activeCompany) {
-            foreach (array_keys($this->definedFeatures) as $f) {
-                $status = Feature::for($activeCompany)->active($f);
-                $activeFeatures[$f] = $status;
-                if ($status)
-                    $onCount++;
-                else
-                    $offCount++;
+            foreach ($this->definedFeatures as $f => $def) {
+                if (($def['type'] ?? 'toggle') === 'quantity') {
+                    // Store the actual numeric value, not a boolean
+                    $activeFeatures[$f] = Feature::for($activeCompany)->value($f);
+                } else {
+                    $status = Feature::for($activeCompany)->active($f);
+                    $activeFeatures[$f] = $status;
+                    if ($status) $onCount++;
+                    else         $offCount++;
+                }
             }
-            $activePercentage = round(($onCount / count($this->definedFeatures)) * 100);
+            $activePercentage = count($toggleKeys) > 0
+                ? round(($onCount / count($toggleKeys)) * 100)
+                : 0;
         }
 
         return view('livewire.admin.features.features-listing', [

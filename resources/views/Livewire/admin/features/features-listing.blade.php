@@ -148,10 +148,10 @@
                                     @foreach($definedFeatures as $key => $feature)
                                         @if(($feature['type'] ?? 'toggle') === 'toggle' && in_array($key, ['companies-module','branches-module','users-module','roles-permissions-module','feature-management-module']))
                                             <div class="group relative bg-white border rounded-2xl p-4 hover:shadow-md transition-all duration-200
-                                                {{ $activeFeatures[$key] ? 'border-indigo-200 bg-indigo-50/20' : 'border-gray-200' }}">
+                                                {{ $activeFeatures[$key] ? 'border-[#2ab4c0]/30 bg-[#f2feff]/30' : 'border-gray-200' }}">
                                                 <div class="flex items-center gap-3">
                                                     <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                                                        {{ $activeFeatures[$key] ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-50 text-gray-400' }}">
+                                                        {{ $activeFeatures[$key] ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
                                                         @if($feature['icon'] === 'office-building')
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                                                         @elseif($feature['icon'] === 'branch')
@@ -166,7 +166,7 @@
                                                     </div>
                                                     <div class="flex-1 min-w-0">
                                                         <p class="text-sm font-bold text-gray-900">{{ $feature['label'] }}</p>
-                                                        <p class="text-[11px] text-{{ $activeFeatures[$key] ? 'indigo-600' : 'gray-400' }} font-semibold uppercase tracking-wide">
+                                                        <p class="text-[11px] text-{{ $activeFeatures[$key] ? '[#2ab4c0]' : 'gray-400' }} font-semibold uppercase tracking-wide">
                                                             {{ $activeFeatures[$key] ? 'Enabled' : 'Disabled' }}
                                                         </p>
                                                     </div>
@@ -175,7 +175,7 @@
                                                                wire:click="toggleFeature({{ $activeCompany->id }}, '{{ $key }}')"
                                                                {{ $activeFeatures[$key] ? 'checked' : '' }}
                                                                class="sr-only peer">
-                                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500 transition-colors duration-200"></div>
+                                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] transition-colors duration-200"></div>
                                                     </label>
                                                 </div>
                                             </div>
@@ -190,29 +190,39 @@
                                     <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Quantity Limits</span>
                                     <div class="flex-1 h-px bg-gray-100"></div>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     @foreach($definedFeatures as $key => $feature)
                                         @if(($feature['type'] ?? 'toggle') === 'quantity')
-                                            <div class="bg-white border border-amber-100 rounded-2xl p-5 hover:shadow-md transition-all duration-200">
-                                                <div class="flex items-start justify-between gap-3">
-                                                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center flex-shrink-0">
+                                            <div x-data="{ qty: {{ is_numeric($activeFeatures[$key]) ? (int)$activeFeatures[$key] : 0 }} }"
+                                                class="group relative bg-white border border-[#2ab4c0]/30 rounded-2xl p-4 hover:shadow-md transition-all duration-200">
+                                                <div class="flex items-center gap-3">
+                                                    {{-- Icon --}}
+                                                    <div class="w-10 h-10 rounded-xl bg-[#2ab4c0]/10 text-[#2ab4c0] flex items-center justify-center flex-shrink-0">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
                                                     </div>
-                                                    <div class="flex-1">
-                                                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">{{ $feature['label'] }}</p>
-                                                        <p class="text-xs text-gray-400 mt-0.5">{{ $feature['description'] }}</p>
+
+                                                    {{-- Label + current value --}}
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-bold text-gray-900">{{ $feature['label'] }}</p>
+                                                        <p class="text-[11px] text-[#2ab4c0] font-semibold uppercase tracking-wide">
+                                                            <span x-text="qty"></span> max
+                                                        </p>
                                                     </div>
-                                                </div>
-                                                <div class="mt-4 flex items-end gap-1">
-                                                    <span class="text-3xl font-black text-gray-800">
-                                                        {{ is_numeric($activeFeatures[$key]) ? $activeFeatures[$key] : '∞' }}
-                                                    </span>
-                                                    <span class="text-xs text-gray-400 font-semibold mb-1">max</span>
-                                                </div>
-                                                <div class="mt-1">
-                                                    <span class="inline-flex items-center text-[10px] font-black uppercase tracking-widest px-2 py-0.5 bg-amber-50 text-amber-600 rounded-full border border-amber-100">
-                                                        Limit
-                                                    </span>
+
+                                                    {{-- Stepper + Save --}}
+                                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                                        <button type="button" @click="qty = Math.max(0, qty - 1)"
+                                                            class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-[#2ab4c0]/10 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-bold transition-colors text-base leading-none">−</button>
+                                                        <input type="number" x-model.number="qty" min="0"
+                                                            class="w-14 text-center text-sm font-black text-gray-800 border border-gray-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/30 focus:border-[#2ab4c0] transition-all">
+                                                        <button type="button" @click="qty = qty + 1"
+                                                            class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-[#2ab4c0]/10 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-bold transition-colors text-base leading-none">+</button>
+                                                        <button type="button"
+                                                            @click="$wire.updateQuantity({{ $activeCompany->id }}, '{{ $key }}', qty)"
+                                                            class="ml-1 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-[#2ab4c0] bg-[#2ab4c0]/10 hover:bg-[#2ab4c0]/20 border border-[#2ab4c0]/30 rounded-lg transition-colors">
+                                                            Save
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         @endif
