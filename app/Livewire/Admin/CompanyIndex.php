@@ -16,6 +16,10 @@ class CompanyIndex extends Component
     public string $search = '';
     public int $currentPage = 1;
     public int $perPage = 10;
+    public string $sortBy = 'name';
+    public string $sortDirection = 'asc';
+    public string $typeFilter = '';
+    public string $statusFilter = '';
  
     public function mount()
     {
@@ -32,12 +36,46 @@ class CompanyIndex extends Component
     {
         $this->currentPage = 1;
     }
+
+    public function updatedPerPage(): void
+    {
+        $this->currentPage = 1;
+    }
+
+    public function updatedTypeFilter(): void
+    {
+        $this->currentPage = 1;
+    }
+
+    public function updatedStatusFilter(): void
+    {
+        $this->currentPage = 1;
+    }
+
+    public function sort(string $column): void
+    {
+        if ($this->sortBy === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $column;
+            $this->sortDirection = 'asc';
+        }
+        $this->currentPage = 1;
+    }
  
     public function toggleActive(int $companyId): void
     {
         $company = Company::query()->findOrFail($companyId);
         $newStatus = $company->status === 'active' ? 'inactive' : 'active';
         $company->update(['status' => $newStatus]);
+    }
+
+    public function deleteCompany(int $companyId): void
+    {
+        $company = Company::query()->findOrFail($companyId);
+        $company->delete();
+        
+        session()->flash('status', 'Company deleted successfully.');
     }
  
     public function render(PaginationService $paginationService)
@@ -53,7 +91,13 @@ class CompanyIndex extends Component
                         ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
-            ->latest('id');
+            ->when($this->typeFilter, function ($query) {
+                $query->where('company_type', $this->typeFilter);
+            })
+            ->when($this->statusFilter, function ($query) {
+                $query->where('status', $this->statusFilter);
+            })
+            ->orderBy($this->sortBy, $this->sortDirection);
  
         $companies = $paginationService->paginate($query, $this->perPage, $this->currentPage);
  

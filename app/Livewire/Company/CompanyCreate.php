@@ -53,7 +53,7 @@ class CompanyCreate extends Component
         ];
     }
  
-    public function save(): void
+    public function save()
     {
         $validated = $this->validate();
 
@@ -79,7 +79,7 @@ class CompanyCreate extends Component
         ]);
 
         session()->flash('status', 'Company created successfully.');
-        $this->reset();
+        return $this->redirect(route('superadmin.companies.index'));
     }
  
     public function render()

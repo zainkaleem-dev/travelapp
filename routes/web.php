@@ -29,12 +29,12 @@ use App\Livewire\Admin\CompanyIndex;
 use App\Livewire\User\UserListing;
 use App\Livewire\User\UserCreate;
 use App\Livewire\User\UserEdit;
-use App\Livewire\Travelhub\TravelHub; 
+use App\Livewire\Travelhub\TravelHub;
 use App\Livewire\Company\CompanyListing;
-  use App\Livewire\Branch\BranchListing;
+use App\Livewire\Branch\BranchListing;
 use App\Livewire\Branch\BranchCreate;
 use App\Livewire\Branch\BranchEdit;
-use App\Livewire\Features\CompanyFeatureManager;
+use App\Livewire\Admin\Features\FeaturesListing;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
     $locale = strtolower($locale);
@@ -124,8 +124,8 @@ Route::get('/auth/google', fn() => 'Google OAuth redirect')->name('auth.google')
 Route::get('/auth/facebook', fn() => 'Facebook OAuth redirect')->name('auth.facebook');
 
 
-Route::middleware(['auth'])->group(function () { 
-    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard'); 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile');
 
     Route::get('/profile/family/create', FamilyCreate::class)->name('family.create');
@@ -137,29 +137,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tmc-settings', TmcSettings::class)->name('tmc.settings');
     Route::get('/super-admin-settings', SuperAdminSettings::class)->name('superadmin.settings');
 
-    Route::middleware(['superadmin'])->prefix('super-admin')->group(function () { 
-        Route::get('/companies', CompanyIndex::class)->name('superadmin.companies.index'); 
+    Route::middleware(['superadmin'])->prefix('super-admin')->group(function () {
+        Route::get('/companies', CompanyIndex::class)->name('superadmin.companies.index');
         Route::get('/branches', BranchListing::class)->name('superadmin.branches');
         Route::get('/branches/create', BranchCreate::class)->name('superadmin.branches.create');
         Route::get('/branches/{id}/edit', BranchEdit::class)->name('superadmin.branches.edit');
         Route::get('/companies/create', CompanyCreate::class)->name('superadmin.companies.create');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('superadmin.companies.edit');
-        Route::get('/companies/{company}/features', CompanyFeatureManager::class)->name('superadmin.companies.features');
+        Route::get('/companies/{company}/features', FeaturesListing::class)->name('superadmin.companies.features');
+        Route::get('/features', FeaturesListing::class)->name('superadmin.features');
         Route::get('/users', UserListing::class)->name('superadmin.users');
         Route::get('/users/create', UserCreate::class)->name('superadmin.users.create');
         Route::get('/users/{id}/edit', UserEdit::class)->name('superadmin.users.edit');
-    }); 
-
-    Route::middleware(['anyadmin'])->prefix('admin')->group(function () {
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('roles.index');
+        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('superadmin.roles.index');
     });
- 
-    Route::get('/company/companies', CompanyListing::class)
-        ->middleware(['company.tenant', 'company.admin'])
-        ->name('company.companies.index');
- 
-  
-    Route::get('/hotels', Hotel::class)->name('hotels'); 
+
+    Route::middleware(['company.tenant', 'company.admin'])->prefix('company')->group(function () {
+        Route::get('/companies', CompanyListing::class)->name('company.companies.index');
+        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('company.roles.index');
+    });
+
+
+    Route::get('/hotels', Hotel::class)->name('hotels');
     Route::get('/cars', Car::class)->name('cars');
     Route::get('/concierge', Concierge::class)->name('concierge');
     Route::get('/travel-hub', TravelHub::class)->name('travel.hub');

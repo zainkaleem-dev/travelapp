@@ -14,6 +14,9 @@ class UserListing extends Component
     public string $search = '';
     public int $currentPage = 1;
     public int $perPage = 10;
+    public string $statusFilter = '';
+    public string $sortBy = 'first_name';
+    public string $sortDirection = 'asc';
  
     public function mount(): void
     {
@@ -30,7 +33,33 @@ class UserListing extends Component
     {
         $this->currentPage = 1;
     }
+
+    public function updatedStatusFilter(): void
+    {
+        $this->currentPage = 1;
+    }
+
+    public function sort(string $column): void
+    {
+        if ($this->sortBy === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $column;
+            $this->sortDirection = 'asc';
+        }
+        $this->currentPage = 1;
+    }
  
+    public function toggleActive(int $userId): void
+    {
+        $user = User::query()
+            ->withoutRole('super_admin')
+            ->findOrFail($userId);
+            
+        $newStatus = $user->status === 'active' ? 'inactive' : 'active';
+        $user->update(['status' => $newStatus]);
+    }
+
     public function delete(int $userId, TenantContext $tenantContext): void
     {
         $companyId = (int) ($tenantContext->companyId() ?? 0);
@@ -58,7 +87,10 @@ class UserListing extends Component
                         ->orWhere('email', 'like', "%{$search}%");
                 });
             })
-            ->latest('id');
+            ->when($this->statusFilter, function ($query) {
+                $query->where('status', $this->statusFilter);
+            })
+            ->orderBy($this->sortBy, $this->sortDirection);
  
         $users = $paginationService->paginate($query, $this->perPage, $this->currentPage);
  

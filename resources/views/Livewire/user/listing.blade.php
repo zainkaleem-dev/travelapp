@@ -28,10 +28,42 @@
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
                 class="px-6 py-4 bg-white border-b border-gray-200">
-                <div class="flex flex-wrap items-center gap-4">
-                    <div class="w-full sm:w-64">
-                        <div class="field-wrap !py-2 !px-3">
-                            <input type="text" class="field-input" wire:model.live.debounce.300ms="search" placeholder="Search users by name or email..." />
+                <div class="flex flex-col gap-4">
+                    <!-- Top Filter Row -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="w-full sm:w-44">
+                            <div class="field-wrap !py-2 !px-3">
+                                <select wire:model.live="statusFilter"
+                                    class="field-input !p-0 !border-0 !bg-transparent text-sm font-bold text-gray-900 focus:ring-0 cursor-pointer appearance-none">
+                                    <option value="">All Statuses</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="w-full sm:w-24 ml-auto">
+                            <div class="field-wrap !py-2 !px-3 flex items-center justify-center">
+                                <select wire:model.live="perPage"
+                                    class="field-input !p-0 !border-0 !bg-transparent text-sm font-bold text-gray-900 focus:ring-0 cursor-pointer appearance-none text-center">
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Row -->
+                    <div class="w-full">
+                        <div class="field-wrap !py-3 !px-4 flex items-center gap-3 bg-white border-gray-200 rounded-xl shadow-sm">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <input type="text" class="field-input text-base placeholder-gray-400" wire:model.live.debounce.300ms="search"
+                                placeholder="Search users by name or email..." />
                         </div>
                     </div>
                 </div>
@@ -49,8 +81,48 @@
                     <table class="w-full">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">User</th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Email</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                    wire:click="sort('first_name')">
+                                    <div class="flex items-center gap-2">
+                                        <span>User</span>
+                                        <div class="flex flex-col transition-opacity {{ $sortBy === 'first_name' ? 'opacity-100' : 'opacity-40' }}">
+                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'first_name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'first_name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                    wire:click="sort('email')">
+                                    <div class="flex items-center gap-2">
+                                        <span>Email</span>
+                                        <div class="flex flex-col transition-opacity {{ $sortBy === 'email' ? 'opacity-100' : 'opacity-40' }}">
+                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'email' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'email' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                    wire:click="sort('status')">
+                                    <div class="flex items-center gap-2">
+                                        <span>Status</span>
+                                        <div class="flex flex-col transition-opacity {{ $sortBy === 'status' ? 'opacity-100' : 'opacity-40' }}">
+                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'status' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'status' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Actions</th>
                             </tr>
                         </thead>
@@ -72,6 +144,16 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-700">
                                     {{ $user->email }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <button wire:click="toggleActive({{ $user->id }})" 
+                                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold capitalize transition-all duration-200
+                                        {{ $user->status === 'active' 
+                                            ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                                            : 'bg-red-100 text-red-700 hover:bg-red-200' }}">
+                                        <span class="w-1.5 h-1.5 rounded-full mr-1.5 {{ $user->status === 'active' ? 'bg-green-500' : 'bg-red-500' }}"></span>
+                                        {{ $user->status }}
+                                    </button>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-2">
@@ -132,7 +214,7 @@
 
                             @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                 <button wire:click="goToPage({{ $page }})"
-                                class="inline-flex items-center justify-center px-3 py-2 rounded-lg text-sm font-medium
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
                                         {{ $page === $paginationMeta['current_page'] 
                                             ? 'bg-[#2ab4c0] text-white' 
                                             : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">

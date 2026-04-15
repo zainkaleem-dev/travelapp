@@ -11,94 +11,132 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.flight')]
 class RolesPermissions extends Component
 {
-    public $roles;
-    public $permissions;
-    public $selectedRoleId;
-    public $newRoleName;
-    public $newPermissionName;
+    public $search = '';
     public $searchPermissions = '';
+    public $selectedCompanyId = null;
+    public $selectedRoleId = null;
+    public $newRoleName = '';
+    public $newPermissionName = '';
+    public $activeCompany = null;
+    public $isSuperAdmin = false;
 
-    public function mount()
+    public function mount($company = null): void
     {
-        $this->refreshData();
-        if ($this->roles->count() > 0) {
-            $this->selectRole($this->roles->first()->id);
+        $this->isSuperAdmin = auth()->user()->hasRole('super_admin');
+
+        if (!$this->isSuperAdmin) {
+            $tenantContext = app(\App\Support\TenantContext::class);
+            $this->selectCompany($tenantContext->companyId());
+        } elseif ($company) {
+            if ($company instanceof \App\Models\Company) {
+                $this->selectCompany($company->id);
+            } elseif (is_numeric($company)) {
+                $this->selectCompany((int) $company);
+            }
         }
     }
 
-    public function refreshData()
+    public function selectCompany($id): void
     {
-        $tenantContext = app(TenantContext::class);
-        $companyId = $tenantContext->companyId();
-        $isSuperAdmin = auth()->user()->hasRole('super_admin');
+        if (!$id) return;
+        
+        $this->selectedCompanyId = $id;
+        $this->activeCompany = \App\Models\Company::find($id);
+        $this->selectedRoleId = null; // Reset role when changing company
+        $this->refreshData();
+        
+        // Auto-select first role if available
+        $roles = $this->getRolesProperty();
+        if ($roles->count() > 0) {
+            $this->selectRole($roles->first()->id);
+        }
+    }
 
-        $this->roles = Role::query()
-            ->when(!$isSuperAdmin, function($query) use ($companyId) {
-                // Regular admins only see roles for their own company
-                $query->where('company_id', $companyId);
+    public function selectRole($id): void
+    {
+        $this->selectedRoleId = $id;
+    }
+
+    public function getSidebarCompaniesProperty()
+    {
+        return \App\Models\Company::query()
+            ->when($this->search, function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
             })
             ->orderBy('name')
             ->get();
+    }
 
-        $this->permissions = Permission::query()
-            ->when($this->searchPermissions, function($query) {
+    public function getCompanyStatsProperty()
+    {
+        $stats = [];
+        $companies = $this->sidebarCompanies;
+        foreach ($companies as $company) {
+            $roleCount = \App\Models\Role::where('company_id', $company->id)->count();
+            $stats[$company->id] = [
+                'roles' => $roleCount,
+            ];
+        }
+        return $stats;
+    }
+
+    public function getRolesProperty()
+    {
+        if (!$this->selectedCompanyId) return collect();
+
+        return \App\Models\Role::where('company_id', $this->selectedCompanyId)
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function getAllPermissionsProperty()
+    {
+        return Permission::query()
+            ->when($this->searchPermissions, function ($query) {
                 $query->where('name', 'like', '%' . $this->searchPermissions . '%');
             })
             ->orderBy('name')
             ->get();
     }
 
-    public function selectRole($id)
+    public function refreshData()
     {
-        $this->selectedRoleId = $id;
+        // This is now handled by computed properties (get...Property)
     }
 
     public function createRole()
     {
-        $tenantContext = app(TenantContext::class);
-        $companyId = $tenantContext->companyId();
+        if (!$this->selectedCompanyId) return;
 
         $this->validate([
             'newRoleName' => 'required|string',
         ]);
 
-        // Check uniqueness within the same company context
-        $exists = Role::where('name', $this->newRoleName)
-            ->where('company_id', $companyId)
+        $exists = \App\Models\Role::where('name', $this->newRoleName)
+            ->where('company_id', $this->selectedCompanyId)
             ->exists();
 
         if ($exists) {
-            $this->addError('newRoleName', 'This role already exists in this company.');
+            $this->addError('newRoleName', 'This role already exists.');
             return;
         }
 
-        Role::create([
+        $role = \App\Models\Role::create([
             'name' => $this->newRoleName,
-            'company_id' => $companyId,
+            'company_id' => $this->selectedCompanyId,
             'guard_name' => 'web'
         ]);
+
         $this->newRoleName = '';
-        $this->refreshData();
+        $this->selectRole($role->id);
         session()->flash('status', 'Role created successfully.');
-    }
-
-    public function createPermission()
-    {
-        $this->validate([
-            'newPermissionName' => 'required|string|unique:permissions,name',
-        ]);
-
-        Permission::create(['name' => $this->newPermissionName]);
-        $this->newPermissionName = '';
-        $this->refreshData();
-        session()->flash('status', 'Permission created successfully.');
     }
 
     public function togglePermission($permissionName)
     {
         if (!$this->selectedRoleId) return;
 
-        $role = Role::findById($this->selectedRoleId);
+        $role = \App\Models\Role::findById($this->selectedRoleId);
         
         if ($role->hasPermissionTo($permissionName)) {
             $role->revokePermissionTo($permissionName);
@@ -107,32 +145,33 @@ class RolesPermissions extends Component
         }
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-        $this->refreshData();
     }
 
     public function deleteRole($id)
     {
-        $role = Role::findById($id);
+        $role = \App\Models\Role::findById($id);
         if ($role->name === 'super_admin') {
-            session()->flash('error', 'The super_admin role cannot be deleted.');
+            session()->flash('error', 'Cannot delete super_admin.');
             return;
         }
 
         $role->delete();
-        $this->refreshData();
         if ($this->selectedRoleId == $id) {
-            $this->selectedRoleId = $this->roles->count() > 0 ? $this->roles->first()->id : null;
+            $this->selectedRoleId = null;
         }
         session()->flash('status', 'Role deleted successfully.');
     }
 
     public function render()
     {
-        $this->refreshData();
-        $selectedRole = $this->selectedRoleId ? Role::findById($this->selectedRoleId) : null;
+        $selectedRole = $this->selectedRoleId ? \App\Models\Role::findById($this->selectedRoleId) : null;
         $currentRolePermissions = $selectedRole ? $selectedRole->permissions->pluck('name')->toArray() : [];
 
         return view('livewire.roles.roles-permissions', [
+            'sidebarCompanies' => $this->sidebarCompanies,
+            'companyStats' => $this->companyStats,
+            'roles' => $this->roles,
+            'allPermissions' => $this->allPermissions,
             'currentRolePermissions' => $currentRolePermissions,
             'selectedRole' => $selectedRole
         ]);
