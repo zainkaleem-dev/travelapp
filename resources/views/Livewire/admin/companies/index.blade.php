@@ -178,7 +178,7 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-2">
                                         <a href="{{ route('superadmin.companies.edit', $company->id) }}"
-                                            class="inline-flex items-center justify-center p-1 rounded-lg border-0 bg-transparent text-gray-400 hover:text-gray-700 text-xs font-semibold transition-colors"
+                                            class="inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-gray-400 hover:text-gray-700 text-xs font-semibold transition-colors"
                                             title="Edit">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -187,7 +187,7 @@
                                         </a>
 
                                         <a href="{{ route('superadmin.companies.features', $company->id) }}"
-                                            class="inline-flex items-center justify-center p-1 rounded-lg border-0 bg-transparent text-gray-400 hover:text-[#2ab4c0] text-xs font-semibold transition-colors"
+                                            class="inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-gray-400 hover:text-[#2ab4c0] text-xs font-semibold transition-colors"
                                             title="Manage Features">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -204,7 +204,7 @@
                                                     confirmTitle: 'Change company status?',
                                                     doneTitle: 'Company status updated'
                                                 })"
-                                            class="inline-flex items-center justify-center p-1 rounded-lg text-xs font-semibold border-0 bg-transparent text-gray-400 hover:text-[#2ab4c0] transition-colors"
+                                            class="inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-gray-400 hover:text-[#2ab4c0] transition-colors text-xs font-semibold"
                                             title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                             @if ($company->status === 'active')
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@
                                                     doneTitle: 'Deleted!',
                                                     doneText: 'Company has been deleted.'
                                                 })"
-                                            class="inline-flex items-center justify-center p-1 rounded-lg text-xs font-semibold border-0 bg-transparent text-gray-400 hover:text-red-600 transition-colors"
+                                            class="inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-gray-400 hover:text-red-600 transition-colors text-xs font-semibold"
                                             title="Delete Company">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
