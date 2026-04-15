@@ -89,7 +89,7 @@
 
                 <!-- Datatable -->
                 <div class="overflow-x-auto">
-                    <table class="w-full">
+                    <table class="w-full border-separate border-spacing-0">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide rounded-tl-2xl">

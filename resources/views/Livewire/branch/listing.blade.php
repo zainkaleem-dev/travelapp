@@ -92,8 +92,8 @@
                 @endif
 
                 <!-- Datatable -->
-                <div class="overflow-x-auto">
-                    <table class="w-full">
+                <div class="overflow-x-auto rounded-t-2xl">
+                    <table class="w-full border-separate border-spacing-0">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group rounded-tl-2xl"
@@ -181,7 +181,8 @@
                                     </div>
                                 </th>
                                 <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide rounded-tr-2xl">
-                                    Actions</th>
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
