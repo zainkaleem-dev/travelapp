@@ -13,11 +13,11 @@
         </div>
 
         @if (session('status'))
-            <div class="px-6 py-4">
-                <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                    {{ session('status') }}
-                </div>
+        <div class="px-6 py-4">
+            <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                {{ session('status') }}
             </div>
+        </div>
         @endif
 
         <form wire:submit.prevent="save" class="p-6">
@@ -34,11 +34,11 @@
                             <div class="flex items-center gap-6 p-4 rounded-2xl border border-dashed border-gray-200 bg-white">
                                 <div class="w-16 h-16 rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0">
                                     @if ($company_logo)
-                                        <img src="{{ $company_logo->temporaryUrl() }}" class="w-full h-full object-cover">
+                                    <img src="{{ $company_logo->temporaryUrl() }}" class="w-full h-full object-cover">
                                     @else
-                                        <svg class="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
+                                    <svg class="w-8 h-8 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
                                     @endif
                                 </div>
                                 <div class="flex-1">
@@ -50,7 +50,7 @@
                                             <input type="file" wire:model="company_logo" class="hidden" accept="image/*">
                                         </label>
                                         @if ($company_logo)
-                                            <button type="button" wire:click="$set('company_logo', null)" class="text-xs font-bold text-red-500 hover:text-red-600">Remove</button>
+                                        <button type="button" wire:click="$set('company_logo', null)" class="text-xs font-bold text-red-500 hover:text-red-600">Remove</button>
                                         @endif
                                     </div>
                                     @error('company_logo') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
@@ -132,7 +132,7 @@
                     Cancel
                 </button>
                 <button type="submit"
-                    class="inline-flex items-center justify-center rounded-xl bg-[#2ab4c0] px-10 py-3 text-xs font-black text-white hover:bg-[#229aa4] shadow-lg shadow-[#2ab4c0]/20 transition-all uppercase tracking-widest active:scale-95">
+                    class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                     Create Company
                 </button>
             </div>
@@ -140,5 +140,5 @@
     </div>
 </div>
 
-    </div>
+</div>
 </div>

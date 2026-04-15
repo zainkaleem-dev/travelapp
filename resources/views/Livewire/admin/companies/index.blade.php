@@ -17,10 +17,7 @@
                             </svg>
                         </button>
                         <a href="{{ route('superadmin.companies.create') }}"
-                            class="inline-flex items-center justify-center gap-2 rounded-full bg-[#2ab4c0] px-6 py-2.5 text-base font-bold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
+                            class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                             Add Company
                         </a>
                     </div>
@@ -85,9 +82,9 @@
 
             <div class="p-6">
                 @if (session('status'))
-                    <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                        {{ session('status') }}
-                    </div>
+                <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    {{ session('status') }}
+                </div>
                 @endif
 
                 <!-- Datatable -->
@@ -147,82 +144,82 @@
                         </thead>
                         <tbody>
                             @forelse ($companies as $company)
-                                <tr class="border-b border-gray-200 hover:bg-blue-50 transition-colors">
-                                    <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <div
-                                            class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
-                                            @if ($company->settings['logo_path'] ?? null)
-                                                <img src="{{ asset('storage/' . $company->settings['logo_path']) }}"
-                                                    alt="{{ $company->name }} logo" class="w-full h-full object-contain p-1">
-                                            @else
-                                                <span class="text-xs font-black text-gray-500">
-                                                    {{ strtoupper(mb_substr((string) $company->name, 0, 2)) }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <div class="text-sm font-semibold text-gray-900">{{ $company->name }}</div>
-                                        <div class="text-[10px] text-gray-400 uppercase tracking-tight">{{ $company->slug }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <span
-                                            class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2.5 py-0.5 text-xs font-bold text-[#1f8f98]">
-                                            {{ $company->company_type }}
+                            <tr class="border-b border-gray-200 hover:bg-blue-50 transition-colors">
+                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                                    <div
+                                        class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                                        @if ($company->settings['logo_path'] ?? null)
+                                        <img src="{{ asset('storage/' . $company->settings['logo_path']) }}"
+                                            alt="{{ $company->name }} logo" class="w-full h-full object-contain p-1">
+                                        @else
+                                        <span class="text-xs font-black text-gray-500">
+                                            {{ strtoupper(mb_substr((string) $company->name, 0, 2)) }}
                                         </span>
-                                    </td>
-                                    <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <span
-                                            class="inline-flex items-center rounded-md {{ $company->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
-                                            {{ ucfirst($company->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <a href="{{ route('superadmin.companies.edit', $company->id) }}"
-                                                class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-xs font-semibold"
-                                                title="Edit">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                            </a>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                                    <div class="text-sm font-semibold text-gray-900">{{ $company->name }}</div>
+                                    <div class="text-[10px] text-gray-400 uppercase tracking-tight">{{ $company->slug }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                                    <span
+                                        class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2.5 py-0.5 text-xs font-bold text-[#1f8f98]">
+                                        {{ $company->company_type }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                                    <span
+                                        class="inline-flex items-center rounded-md {{ $company->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
+                                        {{ ucfirst($company->status) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <a href="{{ route('superadmin.companies.edit', $company->id) }}"
+                                            class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-xs font-semibold"
+                                            title="Edit">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </a>
 
-                                            <a href="{{ route('superadmin.companies.features', $company->id) }}"
-                                                class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-[#2ab4c0]/10 hover:text-[#2ab4c0] text-xs font-semibold"
-                                                title="Manage Features">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                </svg>
-                                            </a>
+                                        <a href="{{ route('superadmin.companies.features', $company->id) }}"
+                                            class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-[#2ab4c0]/10 hover:text-[#2ab4c0] text-xs font-semibold"
+                                            title="Manage Features">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </a>
 
-                                            <button type="button" x-on:click="appSwalConfirmAction({
+                                        <button type="button" x-on:click="appSwalConfirmAction({
                                                     wire: $wire,
                                                     action: 'toggleActive',
                                                     args: [{{ $company->id }}],
                                                     confirmTitle: 'Change company status?',
                                                     doneTitle: 'Company status updated'
                                                 })"
-                                                class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold {{ $company->status === 'active' ? 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' : 'bg-[#2ab4c0]/70 text-white hover:bg-[#229aa4]/70' }}"
-                                                title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
-                                                @if ($company->status === 'active')
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                @else
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M10 14h4m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                @endif
-                                            </button>
+                                            class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold {{ $company->status === 'active' ? 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' : 'bg-[#2ab4c0]/70 text-white hover:bg-[#229aa4]/70' }}"
+                                            title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
+                                            @if ($company->status === 'active')
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            @else
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10 14h4m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            @endif
+                                        </button>
 
-                                            <button type="button" x-on:click="appSwalConfirmAction({
+                                        <button type="button" x-on:click="appSwalConfirmAction({
                                                     wire: $wire,
                                                     action: 'deleteCompany',
                                                     args: [{{ $company->id }}],
@@ -232,22 +229,22 @@
                                                     doneTitle: 'Deleted!',
                                                     doneText: 'Company has been deleted.'
                                                 })"
-                                                class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"
-                                                title="Delete Company">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"
+                                            title="Delete Company">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                                        No companies found.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                                    No companies found.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -255,41 +252,41 @@
 
                 <!-- Pagination Controls -->
                 @if ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0)
-                    <div class="mt-8 pt-6 border-t border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-600">
-                                Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
-                                <span class="font-semibold">{{ $paginationMeta['to'] ?? 0 }}</span> of
-                                <span class="font-semibold">{{ $paginationMeta['total'] }}</span> companies
-                            </div>
-                            @if ($paginationMeta['last_page'] > 1)
-                                <div class="flex items-center gap-2">
-                                    @if ($paginationMeta['current_page'] > 1)
-                                        <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
-                                            ← Previous
-                                        </button>
-                                    @endif
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-600">
+                            Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
+                            <span class="font-semibold">{{ $paginationMeta['to'] ?? 0 }}</span> of
+                            <span class="font-semibold">{{ $paginationMeta['total'] }}</span> companies
+                        </div>
+                        @if ($paginationMeta['last_page'] > 1)
+                        <div class="flex items-center gap-2">
+                            @if ($paginationMeta['current_page'] > 1)
+                            <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
+                                class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
+                                ← Previous
+                            </button>
+                            @endif
 
-                                    @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
-                                                    <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
+                            @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
+                                <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
                                                                  {{ $page === $paginationMeta['current_page']
                                          ? 'bg-[#2ab4c0] text-white'
                                          : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
-                                                        {{ $page }}
-                                                    </button>
-                                    @endfor
+                                {{ $page }}
+                                </button>
+                                @endfor
 
-                                    @if ($paginationMeta['has_more'])
-                                        <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
-                                            Next →
-                                        </button>
-                                    @endif
-                                </div>
-                            @endif
+                                @if ($paginationMeta['has_more'])
+                                <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
+                                    class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
+                                    Next →
+                                </button>
+                                @endif
                         </div>
+                        @endif
                     </div>
+                </div>
                 @endif
             </div>
         </div>
