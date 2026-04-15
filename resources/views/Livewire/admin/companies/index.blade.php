@@ -17,7 +17,10 @@
                             </svg>
                         </button>
                         <a href="{{ route('superadmin.companies.create') }}"
-                            class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-black text-white hover:bg-[#229aa4]">
+                            class="inline-flex items-center justify-center gap-2 rounded-full bg-[#2ab4c0] px-6 py-2.5 text-base font-bold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
                             Add Company
                         </a>
                     </div>
