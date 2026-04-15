@@ -535,6 +535,19 @@
 </head>
 
 <body x-data="{ searchOpen: false }">
+    @if(session()->has('impersonated_by'))
+        <div class="bg-indigo-600 text-white py-2 px-4 flex items-center justify-between text-sm font-bold shadow-lg sticky top-0 z-[9999]">
+            <div class="flex items-center gap-3">
+                <svg class="w-5 h-5 animate-pulse text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>You are currently acting as <span class="underline decoration-indigo-300">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</span></span>
+            </div>
+            <a href="{{ route('impersonate.leave') }}" class="bg-white text-indigo-600 px-4 py-1 rounded-full hover:bg-indigo-50 transition-colors shadow-sm ring-1 ring-black/5">
+                Switch back to Admin
+            </a>
+        </div>
+    @endif
 
     {{-- ── Navbar ── --}}
     <nav class="relative z-50 bg-white border-b border-gray-200">

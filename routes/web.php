@@ -150,7 +150,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users/create', UserCreate::class)->name('superadmin.users.create');
         Route::get('/users/{id}/edit', UserEdit::class)->name('superadmin.users.edit');
         Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('superadmin.roles.index');
+
+        // Impersonation
+        Route::get('/impersonate/take/{user}', [\App\Http\Controllers\ImpersonateController::class, 'take'])->name('impersonate.take');
     });
+
+    Route::get('/impersonate/leave', [\App\Http\Controllers\ImpersonateController::class, 'leave'])->name('impersonate.leave');
 
     Route::middleware(['company.tenant', 'company.admin'])->prefix('company')->group(function () {
         Route::get('/companies', CompanyListing::class)->name('company.companies.index');

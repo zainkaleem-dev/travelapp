@@ -17,30 +17,88 @@ class FeaturesListing extends Component
 
     /** @var array<string, array{label: string, icon: string, description: string}> */
     public array $definedFeatures = [
+        // ── Travel Modules ───────────────────────────────────────────
         'flights-module' => [
-            'label' => 'Flights',
-            'icon' => 'plane',
-            'description' => 'Flight search, booking, and management capabilities.'
+            'label'       => 'Flights',
+            'icon'        => 'plane',
+            'description' => 'Flight search, booking, and management capabilities.',
+            'type'        => 'toggle',
         ],
         'hotels-module' => [
-            'label' => 'Hotels',
-            'icon' => 'building',
-            'description' => 'Hotel reservations and accommodation services.'
+            'label'       => 'Hotels',
+            'icon'        => 'building',
+            'description' => 'Hotel reservations and accommodation services.',
+            'type'        => 'toggle',
         ],
         'cars-module' => [
-            'label' => 'Cars',
-            'icon' => 'car',
-            'description' => 'Car rental management and transportation booking.'
+            'label'       => 'Cars',
+            'icon'        => 'car',
+            'description' => 'Car rental management and transportation booking.',
+            'type'        => 'toggle',
         ],
         'concierge-module' => [
-            'label' => 'Concierge',
-            'icon' => 'bell',
-            'description' => 'Premium concierge and VIP travel services.'
+            'label'       => 'Concierge',
+            'icon'        => 'bell',
+            'description' => 'Premium concierge and VIP travel services.',
+            'type'        => 'toggle',
         ],
         'travel-hub-module' => [
-            'label' => 'Travel Hub',
-            'icon' => 'hub',
-            'description' => 'Unified travel dashboard for document syncing.'
+            'label'       => 'Travel Hub',
+            'icon'        => 'hub',
+            'description' => 'Unified travel dashboard for document syncing.',
+            'type'        => 'toggle',
+        ],
+
+        // ── Admin Modules ────────────────────────────────────────────
+        'companies-module' => [
+            'label'       => 'Companies',
+            'icon'        => 'office-building',
+            'description' => 'Company creation and management access.',
+            'type'        => 'toggle',
+        ],
+        'branches-module' => [
+            'label'       => 'Branches',
+            'icon'        => 'branch',
+            'description' => 'Branch management within each company.',
+            'type'        => 'toggle',
+        ],
+        'users-module' => [
+            'label'       => 'Users',
+            'icon'        => 'users',
+            'description' => 'User creation, assignment, and management.',
+            'type'        => 'toggle',
+        ],
+        'roles-permissions-module' => [
+            'label'       => 'Roles & Permissions',
+            'icon'        => 'shield',
+            'description' => 'Role-based access control and permission assignment.',
+            'type'        => 'toggle',
+        ],
+        'feature-management-module' => [
+            'label'       => 'Feature Management',
+            'icon'        => 'cog',
+            'description' => 'Control which features are enabled per company.',
+            'type'        => 'toggle',
+        ],
+
+        // ── Quantity Limits ──────────────────────────────────────────
+        'companies-quantity' => [
+            'label'       => 'Max Companies',
+            'icon'        => 'hash',
+            'description' => 'Maximum number of companies allowed in the system.',
+            'type'        => 'quantity',
+        ],
+        'branches-quantity' => [
+            'label'       => 'Max Branches',
+            'icon'        => 'hash',
+            'description' => 'Maximum number of branches allowed per company.',
+            'type'        => 'quantity',
+        ],
+        'users-quantity' => [
+            'label'       => 'Max Users',
+            'icon'        => 'hash',
+            'description' => 'Maximum number of users allowed per company.',
+            'type'        => 'quantity',
         ],
     ];
 

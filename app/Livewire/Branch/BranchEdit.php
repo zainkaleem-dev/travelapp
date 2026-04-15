@@ -102,8 +102,8 @@ class BranchEdit extends Component
             'postal_code' => ['nullable', 'string', 'max:50'],
             'country' => ['nullable', 'string', 'max:255'],
  
-            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
-            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'latitude'  => ['required', 'numeric', 'between:-90,90'],
+            'longitude' => ['required', 'numeric', 'between:-180,180'],
             'notes' => ['nullable', 'string'],
         ];
     }

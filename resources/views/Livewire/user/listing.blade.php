@@ -157,6 +157,14 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-1">
+                                        <a href="{{ route('impersonate.take', $user->id) }}"
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                            title="Login as User">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                        </a>
+
                                         <a href="{{ route('superadmin.users.edit', $user->id) }}"
                                             class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                             title="Edit">
