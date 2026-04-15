@@ -774,43 +774,13 @@
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 mt-12 pt-4 pb-12 sm:pb-16">
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
-           {{--  <div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0"
-                style="-webkit-overflow-scrolling: touch;">
-                <div
-                    class="flex items-center gap-1 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('flights-search') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
-                    </svg>
-                    <span class="hidden sm:inline">Search Flight</span>
-                    <span class="sm:hidden">Search</span>
-                </div>
-                <div
-                    class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('flights-list') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
-                    Flights
-                </div>
-                <div
-                    class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('additional-services') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
-                    <span class="hidden sm:inline">Additional Services</span>
-                    <span class="sm:hidden">Services</span>
-                </div>
-                <div
-                    class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('seating') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
-                    Choice Seat
-                </div>
-                <div
-                    class="px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->is('passenger-details') ? 'bg-[#2ab4c0] text-white font-semibold rounded-t' : 'text-gray-600' }} text-xs whitespace-nowrap">
-                    <span class="hidden sm:inline">Passenger Details</span>
-                    <span class="sm:hidden">Passenger</span>
-                </div>
-                </div> --}}
-                @if (!($isSuperAdmin && request()->is('super-admin*')))
+            @if (!($isSuperAdmin && request()->is('super-admin*')))
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
                     @include('partials.navigation-bar')
-                @endif
-            </div>
-
-            <div class="h-px bg-gray-100"></div>
+                </div>
+                <div class="h-px bg-gray-100"></div>
+            @endif
+            
             <div class="p-3 sm:p-4">
                 <div class="flex flex-col">
 

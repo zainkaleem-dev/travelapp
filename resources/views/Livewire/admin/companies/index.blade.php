@@ -202,7 +202,10 @@
                                                     action: 'toggleActive',
                                                     args: [{{ $company->id }}],
                                                     confirmTitle: 'Change company status?',
-                                                    doneTitle: 'Company status updated'
+                                                    confirmText: 'Are you sure you want to change the active status of this company?',
+                                                    confirmButtonText: 'Yes, change it',
+                                                    doneTitle: 'Updated!',
+                                                    doneText: 'Company status has been updated.'
                                                 })"
                                             class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                             title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
