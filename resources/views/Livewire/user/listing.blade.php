@@ -81,7 +81,7 @@
                     <table class="w-full">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group rounded-tl-2xl"
                                     wire:click="sort('first_name')">
                                     <div class="flex items-center gap-2">
                                         <span>User</span>
@@ -123,7 +123,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide">Actions</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide rounded-tr-2xl">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
