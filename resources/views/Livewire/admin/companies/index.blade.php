@@ -144,8 +144,8 @@
                         </thead>
                         <tbody>
                             @forelse ($companies as $company)
-                            <tr class="border-b border-gray-200 hover:bg-blue-50 transition-colors">
-                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                            <tr class="border-b border-gray-200 transition-colors {{ $company->status === 'active' ? 'hover:bg-blue-50' : 'bg-gray-100' }}">
+                                <td class="px-6 py-4">
                                     <div
                                         class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
                                         @if ($company->settings['logo_path'] ?? null)
@@ -158,25 +158,25 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                                <td class="px-6 py-4">
                                     <div class="text-sm font-semibold text-gray-900">{{ $company->name }}</div>
                                     <div class="text-[10px] text-gray-400 uppercase tracking-tight">{{ $company->slug }}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                                <td class="px-6 py-4">
                                     <span
                                         class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2.5 py-0.5 text-xs font-bold text-[#1f8f98]">
                                         {{ $company->company_type }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 {{ $company->status === 'active' ? '' : 'opacity-60 grayscale' }}">
+                                <td class="px-6 py-4">
                                     <span
                                         class="inline-flex items-center rounded-md {{ $company->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
                                         {{ ucfirst($company->status) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-1">
                                         <a href="{{ route('superadmin.companies.edit', $company->id) }}"
                                             class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                             title="Edit">
@@ -204,7 +204,7 @@
                                                     confirmTitle: 'Change company status?',
                                                     doneTitle: 'Company status updated'
                                                 })"
-                                            class="inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-gray-400 hover:text-[#2ab4c0] transition-colors text-xs font-semibold"
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                             title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                             @if ($company->status === 'active')
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@
                                                     doneTitle: 'Deleted!',
                                                     doneText: 'Company has been deleted.'
                                                 })"
-                                            class="inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-gray-400 hover:text-red-600 transition-colors text-xs font-semibold"
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                             title="Delete Company">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
