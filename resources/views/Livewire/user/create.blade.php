@@ -12,7 +12,7 @@
                 </a>
             </div>
         </div>
- 
+
         <form wire:submit.prevent="save" class="p-6">
             <div class="space-y-8">
                 <!-- Section 1: Identity -->
@@ -29,7 +29,7 @@
                             <select wire:model.live="company_id" class="field-input">
                                 <option value="">-- Choose Company --</option>
                                 @foreach($companies as $company)
-                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                <option value="{{ $company->id }}">{{ $company->name }}</option>
                                 @endforeach
                             </select>
                             @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
@@ -41,13 +41,13 @@
                             <select wire:model="branch_id" class="field-input" {{ empty($branches) ? 'disabled' : '' }}>
                                 <option value="">-- Choose Branch --</option>
                                 @foreach($branches as $branch)
-                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                                 @endforeach
                             </select>
                             @if(empty($branches) && $company_id)
-                                <p class="mt-1 text-[11px] font-bold text-orange-500 uppercase">This company has no branches yet.</p>
+                            <p class="mt-1 text-[11px] font-bold text-orange-500 uppercase">This company has no branches yet.</p>
                             @elseif(!$company_id && auth()->user()->hasRole('super_admin'))
-                                <p class="mt-1 text-[11px] font-bold text-gray-400 uppercase">Please select a company first.</p>
+                            <p class="mt-1 text-[11px] font-bold text-gray-400 uppercase">Please select a company first.</p>
                             @endif
                             @error('branch_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
@@ -59,13 +59,13 @@
                             <input type="text" wire:model="first_name" class="field-input" placeholder="e.g. John">
                             @error('first_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
- 
+
                         <div>
                             <label class="field-label">Middle Name</label>
                             <input type="text" wire:model="middle_name" class="field-input" placeholder="e.g. Quincy">
                             @error('middle_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
- 
+
                         <div>
                             <label class="field-label">Last Name <span class="text-[#2ab4c0]">*</span></label>
                             <input type="text" wire:model="last_name" class="field-input" placeholder="e.g. Doe">
@@ -73,37 +73,37 @@
                         </div>
                     </div>
                 </div>
- 
+
                 <!-- Section 2: Account Security -->
                 <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Account & Security</h2>
                     </div>
- 
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="field-label">Email Address <span class="text-[#2ab4c0]">*</span></label>
                             <input type="email" wire:model="email" class="field-input" placeholder="john.doe@example.com">
                             @error('email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
- 
+
                         <div>
                             <label class="field-label">Password <span class="text-[#2ab4c0]">*</span></label>
                             <input type="password" wire:model="password" class="field-input" placeholder="••••••••">
                             @error('password') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
- 
+
                     </div>
                 </div>
             </div>
- 
+
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                 <button type="button" onclick="window.history.back()"
                     class="inline-flex items-center justify-center rounded-xl px-6 py-3 text-xs font-black text-gray-500 hover:text-gray-700 transition-colors uppercase tracking-widest">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="inline-flex items-center justify-center rounded-xl bg-[#2ab4c0] px-10 py-3 text-xs font-black text-white hover:bg-[#229aa4] shadow-lg shadow-[#2ab4c0]/20 transition-all uppercase tracking-widest active:scale-95">
+                    class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                     <span wire:loading.remove>Create User</span>
                     <span wire:loading>Creating...</span>
                 </button>

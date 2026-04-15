@@ -16,7 +16,7 @@
                             </svg>
                         </button>
                         <a href="{{ route('superadmin.users.create') }}"
-                            class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-black text-white hover:bg-[#229aa4]">
+                            class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                             Add User
                         </a>
                     </div>

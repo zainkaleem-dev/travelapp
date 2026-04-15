@@ -14,11 +14,11 @@
         </div>
 
         @if (session('status'))
-            <div class="px-6 py-4">
-                <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                    {{ session('status') }}
-                </div>
+        <div class="px-6 py-4">
+            <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                {{ session('status') }}
             </div>
+        </div>
         @endif
 
         <form wire:submit.prevent="save" class="p-6">
@@ -54,7 +54,7 @@
                             <select wire:model="company_id" class="field-input">
                                 <option value="">Select Company...</option>
                                 @foreach($companies as $company)
-                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                <option value="{{ $company->id }}">{{ $company->name }}</option>
                                 @endforeach
                             </select>
                             @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
@@ -165,7 +165,7 @@
                             <input type="text" wire:model="longitude" class="field-input font-mono text-xs" placeholder="e.g. 55.2708">
                             @error('longitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
-                        
+
                         <div class="md:col-span-3">
                             <label class="field-label">Internal Notes</label>
                             <textarea wire:model="notes" rows="3" class="field-input pt-2" placeholder="Private internal notes about this branch..."></textarea>
@@ -180,7 +180,7 @@
                     Cancel
                 </button>
                 <button type="submit"
-                    class="inline-flex items-center justify-center rounded-xl bg-[#2ab4c0] px-10 py-3 text-xs font-black text-white hover:bg-[#229aa4] shadow-lg shadow-[#2ab4c0]/20 transition-all uppercase tracking-widest active:scale-95">
+                    class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                     <span wire:loading.remove>Save Branch</span>
                     <span wire:loading>Saving...</span>
                 </button>
