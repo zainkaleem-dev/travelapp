@@ -40,7 +40,7 @@
                                     class="field-input !p-0 !border-0 !bg-transparent text-sm font-bold text-gray-900 focus:ring-0 cursor-pointer appearance-none">
                                     <option value="">All Companies</option>
                                     @foreach ($companies as $company)
-                                        <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -86,9 +86,9 @@
 
             <div class="p-6">
                 @if (session('status'))
-                    <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                        {{ session('status') }}
-                    </div>
+                <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    {{ session('status') }}
+                </div>
                 @endif
 
                 <!-- Datatable -->
@@ -186,75 +186,76 @@
                         </thead>
                         <tbody>
                             @forelse ($branches as $branch)
-                                <tr class="border-b border-gray-200 hover:bg-blue-50 transition-colors">
-                                    <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
-                                                <span class="text-xs font-black text-gray-500">
-                                                    {{ strtoupper(mb_substr((string) $branch->name, 0, 2)) }}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <div class="text-sm font-semibold text-gray-900">{{ $branch->name }}</div>
-                                                <div class="text-[10px] text-gray-500 font-mono tracking-tighter">
-                                                    {{ $branch->code }}</div>
+                            <tr class="border-b border-gray-200 transition-colors {{ $branch->status === 'active' ? 'hover:bg-blue-50' : 'bg-gray-100' }}">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                                            <span class="text-xs font-black text-gray-500">
+                                                {{ strtoupper(mb_substr((string) $branch->name, 0, 2)) }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-semibold text-gray-900">{{ $branch->name }}</div>
+                                            <div class="text-[10px] text-gray-500 font-mono tracking-tighter">
+                                                {{ $branch->code }}
                                             </div>
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <span
-                                            class="text-sm font-medium text-gray-900">{{ $branch->company->name ?? '—' }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <span class="text-sm text-gray-900">{{ $branch->city ?: '—' }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <span class="text-sm text-gray-900">{{ $branch->email ?: '—' }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <span class="text-sm text-gray-900">{{ $branch->phone ?: '—' }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 {{ $branch->status === 'active' ? '' : 'opacity-60 grayscale' }}">
-                                        <span
-                                            class="inline-flex items-center rounded-md {{ $branch->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
-                                            {{ ucfirst($branch->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-2">
-                                            <a href="{{ route('superadmin.branches.edit', $branch->id) }}"
-                                                class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-xs font-semibold"
-                                                title="Edit">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                            </a>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="text-sm font-medium text-gray-900">{{ $branch->company->name ?? '—' }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-gray-900">{{ $branch->city ?: '—' }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-gray-900">{{ $branch->email ?: '—' }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-sm text-gray-900">{{ $branch->phone ?: '—' }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="inline-flex items-center rounded-md {{ $branch->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
+                                        {{ ucfirst($branch->status) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-1">
+                                        <a href="{{ route('superadmin.branches.edit', $branch->id) }}"
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                            title="Edit">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </a>
 
-                                            <button type="button" x-on:click="appSwalConfirmAction({
+                                        <button type="button" x-on:click="appSwalConfirmAction({
                                                     wire: $wire,
                                                     action: 'toggleActive',
                                                     args: [{{ $branch->id }}],
                                                     confirmTitle: 'Change branch status?',
                                                     doneTitle: 'Branch status updated'
                                                 })"
-                                                class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold {{ $branch->status === 'active' ? 'bg-[#2ab4c0] text-white hover:bg-[#229aa4]' : 'bg-[#2ab4c0]/70 text-white hover:bg-[#229aa4]/70' }}"
-                                                title="{{ $branch->status === 'active' ? 'Deactivate' : 'Activate' }}">
-                                                @if ($branch->status === 'active')
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                @else
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M10 14h4m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                @endif
-                                            </button>
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                            title="{{ $branch->status === 'active' ? 'Deactivate' : 'Activate' }}">
+                                            @if ($branch->status === 'active')
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            @else
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10 14h4m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            @endif
+                                        </button>
 
-                                            <button type="button" x-on:click="appSwalConfirmAction({
+                                        <button type="button" x-on:click="appSwalConfirmAction({
                                                     wire: $wire,
                                                     action: 'deleteBranch',
                                                     args: [{{ $branch->id }}],
@@ -264,22 +265,22 @@
                                                     doneTitle: 'Deleted!',
                                                     doneText: 'Branch has been deleted.'
                                                 })"
-                                                class="inline-flex items-center justify-center p-2 rounded-lg text-xs font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"
-                                                title="Delete Branch">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                            title="Delete Branch">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="7" class="px-6 py-10 text-center text-gray-500">
-                                        No branches found.
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="7" class="px-6 py-10 text-center text-gray-500">
+                                    No branches found.
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -287,54 +288,54 @@
 
                 <!-- Pagination Controls -->
                 @if ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0)
-                    <div class="mt-8 pt-6 border-t border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-600">
-                                Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
-                                <span class="font-semibold">{{ $paginationMeta['to'] ?? 0 }}</span> of
-                                <span class="font-semibold">{{ $paginationMeta['total'] }}</span> branches
-                            </div>
-                            @if ($paginationMeta['last_page'] > 1)
-                                <div class="flex items-center gap-2">
-                                    {{-- Previous Button --}}
-                                    @if ($paginationMeta['current_page'] > 1)
-                                        <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
-                                            ← Previous
-                                        </button>
-                                    @else
-                                        <button disabled
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-sm font-semibold opacity-50">
-                                            ← Previous
-                                        </button>
-                                    @endif
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-600">
+                            Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
+                            <span class="font-semibold">{{ $paginationMeta['to'] ?? 0 }}</span> of
+                            <span class="font-semibold">{{ $paginationMeta['total'] }}</span> branches
+                        </div>
+                        @if ($paginationMeta['last_page'] > 1)
+                        <div class="flex items-center gap-2">
+                            {{-- Previous Button --}}
+                            @if ($paginationMeta['current_page'] > 1)
+                            <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
+                                class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
+                                ← Previous
+                            </button>
+                            @else
+                            <button disabled
+                                class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-sm font-semibold opacity-50">
+                                ← Previous
+                            </button>
+                            @endif
 
-                                    {{-- Page Numbers --}}
-                                    @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
-                                                    <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
+                            {{-- Page Numbers --}}
+                            @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
+                                <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
                                                                 {{ $page === $paginationMeta['current_page']
                                         ? 'bg-[#2ab4c0] text-white'
                                         : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
-                                                        {{ $page }}
-                                                    </button>
-                                    @endfor
+                                {{ $page }}
+                                </button>
+                                @endfor
 
-                                    {{-- Next Button --}}
-                                    @if ($paginationMeta['has_more'])
-                                        <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
-                                            Next →
-                                        </button>
-                                    @else
-                                        <button disabled
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-sm font-semibold opacity-50">
-                                            Next →
-                                        </button>
-                                    @endif
-                                </div>
-                            @endif
+                                {{-- Next Button --}}
+                                @if ($paginationMeta['has_more'])
+                                <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
+                                    class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
+                                    Next →
+                                </button>
+                                @else
+                                <button disabled
+                                    class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-sm font-semibold opacity-50">
+                                    Next →
+                                </button>
+                                @endif
                         </div>
+                        @endif
                     </div>
+                </div>
                 @endif
             </div>
         </div>
