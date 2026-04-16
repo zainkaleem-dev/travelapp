@@ -43,7 +43,10 @@ class BranchScope implements Scope
                 $column = $model instanceof \App\Models\Branch ? $model->getKeyName() : 'branch_id';
                 $builder->where($model->getTable() . '.' . $column, $branchId);
             } else {
-                // If no branch_id is found for a non-admin, restrict access
+                // If it's a guest or Super/Company Admin, they should have been bypassed above.
+                // If we reached here, it's a restricted user without a branch context.
+                if (!auth()->check()) return;
+                
                 $builder->whereRaw('1 = 0');
             }
         } finally {

@@ -63,7 +63,7 @@ class Login extends Component
 
         $this->isLoading = true;
 
-        $user = User::where('email', $this->email)->first();
+        $user = User::withoutGlobalScopes()->where('email', $this->email)->first();
 
         if (!$user || !Hash::check($this->password, $user->password)) {
             RateLimiter::hit($this->throttleKey());

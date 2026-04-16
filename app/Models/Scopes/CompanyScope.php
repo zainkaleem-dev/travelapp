@@ -40,7 +40,9 @@ class CompanyScope implements Scope
                 return;
             }
 
-            if (!$companyId) {
+            if ($companyId === null) {
+                // If the user is authenticated but no company is resolved, 
+                // and they aren't a super admin, we should restrict unless we are in a truly global context.
                 $builder->whereRaw('1 = 0');
                 return;
             }
