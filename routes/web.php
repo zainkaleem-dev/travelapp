@@ -67,6 +67,9 @@ Route::get('/', function () {
         if (auth()->user()->hasRole('super_admin')) {
             return redirect()->route('superadmin.companies.index');
         }
+        if (auth()->user()->hasRole('company_admin')) {
+            return redirect()->route('company.companies.index');
+        }
         return redirect()->route('flights.search');
     }
     return redirect()->route('login');

@@ -3,6 +3,7 @@
 namespace App\Models; 
  
 use App\Models\Branch;
+use App\Models\Concerns\ScopedToBranch;
 use App\Models\Concerns\ScopedToCompany;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,31 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail 
 { 
-    use HasFactory, Notifiable, HasRoles, ScopedToCompany; 
+    use HasFactory, Notifiable, HasRoles, ScopedToCompany, ScopedToBranch {
+        hasRole as protected traitHasRole;
+    }
+
+    /**
+     * Override Spatie's hasRole to support global Super Admin bypass in a multi-tenant environment.
+     */
+    public function hasRole($roles, string $guard = null): bool
+    {
+        // First check standard role assignment in current context
+        if ($this->traitHasRole($roles, $guard)) {
+            return true;
+        }
+
+        // Check if the user possesses super_admin globally
+        $currentTeamId = getPermissionsTeamId();
+        
+        try {
+            setPermissionsTeamId(null);
+            $isGlobalAdmin = $this->traitHasRole('super_admin', $guard);
+            return $isGlobalAdmin;
+        } finally {
+            setPermissionsTeamId($currentTeamId);
+        }
+    }
 
     /**
      * The attributes that are mass assignable.

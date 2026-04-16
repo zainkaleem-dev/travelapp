@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class CompanyScope implements Scope
+class BranchScope implements Scope
 {
     protected static bool $isResolving = false;
 
@@ -28,24 +28,24 @@ class CompanyScope implements Scope
         static::$isResolving = true;
 
         try {
-            /** @var TenantContext $tenantContext */
-            $tenantContext = app(TenantContext::class);
-            $companyId = $tenantContext->companyId();
-
             $user = auth()->user();
-            $isSuperAdmin = $user && $user->hasRole('super_admin');
             
-            // Global bypass for Super Admin or Unauthenticated users (allows login)
-            if ($isSuperAdmin || !auth()->check()) {
+            // Bypass for Super Admin, Company Admin, or Unauthenticated users (allows login)
+            if (!auth()->check() || ($user && ($user->hasRole('super_admin') || $user->hasRole('company_admin')))) {
                 return;
             }
 
-            if (!$companyId) {
+            // Only enforce for Branch Admins or other restricted users
+            // We assume branch_id is stored on the user object
+            $branchId = $user ? (int) ($user->branch_id ?? 0) : 0;
+
+            if ($branchId > 0) {
+                $column = $model instanceof \App\Models\Branch ? $model->getKeyName() : 'branch_id';
+                $builder->where($model->getTable() . '.' . $column, $branchId);
+            } else {
+                // If no branch_id is found for a non-admin, restrict access
                 $builder->whereRaw('1 = 0');
-                return;
             }
-
-            $builder->where($model->getTable() . '.company_id', $companyId);
         } finally {
             static::$isResolving = false;
         }

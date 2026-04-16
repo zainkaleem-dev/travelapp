@@ -12,10 +12,22 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Reset cached roles and permissions
+        // 1. Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Standard Permissions
+        // 2. FORCE Global Context (Team ID = NULL)
+        // This prevents collisions if the seeder is run while a company context is active.
+        setPermissionsTeamId(null);
+
+        // 3. Clean Start (Optional but recommended for this specific seeder setup)
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+        \Illuminate\Support\Facades\DB::table('role_has_permissions')->truncate();
+        \Illuminate\Support\Facades\DB::table('model_has_roles')->truncate();
+        \Illuminate\Support\Facades\DB::table('roles')->truncate();
+        \Illuminate\Support\Facades\DB::table('permissions')->truncate();
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+
+        // 4. Standard Permissions
         $permissions = [
             'view-dashboard',
             'manage-companies',
@@ -31,15 +43,14 @@ class PermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            \Spatie\Permission\Models\Permission::findOrCreate($permission, 'web');
+            \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
-        // Global Roles (No company_id)
-        $superAdmin = \App\Models\Role::findOrCreate('super_admin', 'web');
-        $superAdmin->syncPermissions($permissions); // Super Admin gets everything
+        // 5. Global Roles (Explicitly NULL company_id)
+        $superAdmin = \App\Models\Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web', 'company_id' => null]);
+        $superAdmin->syncPermissions($permissions);
 
-        // Sample System Roles
-        $companyAdmin = \App\Models\Role::findOrCreate('company_admin', 'web');
+        $companyAdmin = \App\Models\Role::firstOrCreate(['name' => 'company_admin', 'guard_name' => 'web', 'company_id' => null]);
         $companyAdmin->syncPermissions([
             'view-dashboard',
             'manage-branches',
@@ -49,7 +60,7 @@ class PermissionSeeder extends Seeder
             'edit-leads',
         ]);
 
-        $branchAdmin = \App\Models\Role::findOrCreate('branch_admin', 'web');
+        $branchAdmin = \App\Models\Role::firstOrCreate(['name' => 'branch_admin', 'guard_name' => 'web', 'company_id' => null]);
         $branchAdmin->syncPermissions([
             'view-dashboard',
             'view-leads',
@@ -57,10 +68,27 @@ class PermissionSeeder extends Seeder
             'edit-leads',
         ]);
 
-        $agent = \App\Models\Role::findOrCreate('agent', 'web');
+        $agent = \App\Models\Role::firstOrCreate(['name' => 'agent', 'guard_name' => 'web', 'company_id' => null]);
         $agent->syncPermissions([
             'view-leads',
             'create-leads',
         ]);
+
+        $user = \App\Models\Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web', 'company_id' => null]);
+
+        // 6. Ensure Base Admin User exists and has role
+        $admin = \App\Models\User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'first_name' => 'Super',
+                'last_name' => 'Admin',
+                'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Assign super_admin role globally
+        setPermissionsTeamId(null);
+        $admin->assignRole($superAdmin);
     }
 }

@@ -119,7 +119,7 @@ class RolesPermissions extends Component
         $user = \App\Models\User::find($this->selectedUserId);
         
         // Handle Team/Company Context
-        $teamId = $this->userContextCompanyId === 'global' ? null : $this->userContextCompanyId;
+        $teamId = $this->userContextCompanyId === 'global' ? null : (int) $this->userContextCompanyId;
         setPermissionsTeamId($teamId);
 
         if ($user->hasRole($roleName)) {
@@ -170,6 +170,10 @@ class RolesPermissions extends Component
             return;
         }
 
+        // Switch to the target context BEFORE creating the role
+        // This ensures Spatie's internal validation respects the chosen company
+        setPermissionsTeamId($companyId);
+
         $role = \App\Models\Role::create([
             'name' => $this->newRoleName,
             'company_id' => $companyId,
@@ -185,7 +189,12 @@ class RolesPermissions extends Component
     {
         if (!$this->selectedRoleId) return;
 
-        $role = \App\Models\Role::findById($this->selectedRoleId);
+        // Use standard Eloquent to bypass Spatie's strict findById
+        $role = \App\Models\Role::find($this->selectedRoleId);
+        if (!$role) return;
+
+        // Set context to match the role's company
+        setPermissionsTeamId($role->company_id);
         
         if ($role->hasPermissionTo($permissionName)) {
             $role->revokePermissionTo($permissionName);
@@ -198,7 +207,9 @@ class RolesPermissions extends Component
 
     public function deleteRole($id)
     {
-        $role = \App\Models\Role::findById($id);
+        $role = \App\Models\Role::find($id);
+        if (!$role) return;
+
         if ($role->name === 'super_admin') {
             session()->flash('error', 'Cannot delete super_admin.');
             return;
@@ -213,8 +224,15 @@ class RolesPermissions extends Component
 
     public function render()
     {
-        $selectedRole = $this->selectedRoleId ? \App\Models\Role::findById($this->selectedRoleId) : null;
-        $currentRolePermissions = $selectedRole ? $selectedRole->permissions->pluck('name')->toArray() : [];
+        // Resolve selected role safely
+        $selectedRole = $this->selectedRoleId ? \App\Models\Role::find($this->selectedRoleId) : null;
+        
+        $currentRolePermissions = [];
+        if ($selectedRole) {
+            // Set context to the role's company to fetch its permissions correctly
+            setPermissionsTeamId($selectedRole->company_id);
+            $currentRolePermissions = $selectedRole->permissions->pluck('name')->toArray();
+        }
 
         // For user assignment mode
         $currentUserRoles = [];

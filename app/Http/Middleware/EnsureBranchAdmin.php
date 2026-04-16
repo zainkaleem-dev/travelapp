@@ -16,7 +16,7 @@ class EnsureBranchAdmin
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if (!$user || $user->hasRole('super_admin')) {
+        if (!$user || $user->hasRole('super_admin') || $user->hasRole('company_admin')) {
             return $next($request);
         }
 

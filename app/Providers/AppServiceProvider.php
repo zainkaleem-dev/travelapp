@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        // Implicitly grant "super_admin" role all permissions
+        // Implicitly grant "super_admin" role all permissions globally
         Gate::before(function ($user, $ability) {
             return $user->hasRole('super_admin') ? true : null;
         });

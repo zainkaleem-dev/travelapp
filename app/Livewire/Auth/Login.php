@@ -91,6 +91,11 @@ class Login extends Component
             return;
         }
 
+        if ($user->hasRole('company_admin')) {
+            $this->redirect(route('company.companies.index'));
+            return;
+        }
+
         $this->redirect(route('flights.search'));
     } 
 
