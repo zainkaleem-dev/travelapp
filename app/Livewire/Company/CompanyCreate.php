@@ -1,58 +1,76 @@
 <?php
- 
+
 namespace App\Livewire\Company;
- 
+
 use App\Models\Company;
-use Illuminate\Validation\Rule; 
-use Livewire\Attributes\Layout; 
-use Livewire\Component; 
-use Livewire\WithFileUploads; 
- 
+use Illuminate\Validation\Rule;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+
 #[Layout('layouts.flight')]
 class CompanyCreate extends Component
 {
     use WithFileUploads;
- 
+
     // Core Identity
     public string $company_name = '';
     public string $slug = '';
-    public string $company_type = '';
+    public ?string $company_type = null;
     public ?string $legal_name = null;
     public ?string $registration_number = null;
     public ?string $tax_number = null;
     public $company_logo = null;
     public ?int $founded_year = null;
     public ?string $description = null;
- 
+
     // SaaS / Status
     public string $status = 'active';
     public ?string $notes = null;
- 
+
     public function updatedCompanyName($value): void
     {
         if (empty($this->slug)) {
             $this->slug = str($value)->slug()->toString();
         }
     }
- 
+
     protected function rules(): array
     {
         return [
-            'company_name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:companies,slug'],
-            'company_type' => ['nullable', Rule::in(['TMC', 'Corporate'])],
-            'legal_name' => ['nullable', 'string', 'max:255'],
-            'registration_number' => ['nullable', 'string', 'max:255'],
-            'tax_number' => ['nullable', 'string', 'max:255'],
-            'company_logo' => ['nullable', 'file', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
-            'founded_year' => ['nullable', 'integer', 'min:1900', 'max:' . date('Y')],
-            'description' => ['nullable', 'string'],
- 
+            'company_name' => ['required', 'string', 'max:255', 'min:3'],
+            'company_logo' => ['required', 'image', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
+            'slug' => ['required', 'string', 'max:255', 'unique:companies,slug', 'alpha_dash'],
+            'company_type' => ['required', Rule::in(['TMC', 'Corporate'])],
+            'registration_number' => ['required', 'string', 'max:50'],
+            'founded_year' => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
             'status' => ['required', Rule::in(['active', 'inactive'])],
-            'notes' => ['nullable', 'string'],
+
+            // Other fields
+            'legal_name' => ['nullable', 'string', 'max:255'],
+            'tax_number' => ['nullable', 'string', 'max:50'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
- 
+
+    public function messages(): array
+    {
+        return [
+            'company_name.required' => 'Please provide a valid name for your company.',
+            'company_name.min' => 'Company name must be at least 3 characters.',
+            'slug.required' => 'A unique ID/Slug is required for the system.',
+            'slug.unique' => 'This ID is already taken. Try a different one.',
+            'slug.alpha_dash' => 'The ID can only contain letters, numbers, dashes and underscores.',
+            'company_logo.required' => 'A company logo is required.',
+            'company_logo.image'    => 'The logo must be an image file.',
+            'company_logo.max' => 'The logo size must not exceed 2MB.',
+            'founded_year.integer' => 'Please enter a valid year (e.g., 2024).',
+            'founded_year.max' => 'The founded year cannot be in the future.',
+            'status.required' => 'You must select a status for the company.',
+        ];
+    }
+
     public function save()
     {
         $validated = $this->validate();
@@ -81,7 +99,7 @@ class CompanyCreate extends Component
         session()->flash('status', 'Company created successfully.');
         return $this->redirect(route('superadmin.companies.index'));
     }
- 
+
     public function render()
     {
         return view('livewire.company.create');

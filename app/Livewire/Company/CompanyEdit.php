@@ -20,7 +20,7 @@ class CompanyEdit extends Component
     // Core Identity
     public string $company_name = '';
     public string $slug = '';
-    public string $company_type = '';
+    public ?string $company_type = null;
     public ?string $legal_name = null;
     public ?string $registration_number = null;
     public ?string $tax_number = null;
@@ -40,7 +40,7 @@ class CompanyEdit extends Component
  
         $this->company_name = $this->company->name;
         $this->slug = $this->company->slug;
-        $this->company_type = $this->company->company_type ?? '';
+        $this->company_type = $this->company->company_type;
         $this->legal_name = $this->company->legal_name;
         $this->registration_number = $this->company->registration_number;
         $this->tax_number = $this->company->tax_number;
@@ -67,18 +67,36 @@ class CompanyEdit extends Component
     protected function rules(): array
     {
         return [
-            'company_name' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', Rule::unique('companies', 'slug')->ignore($this->companyId)],
-            'company_type' => ['nullable', Rule::in(['TMC', 'Corporate'])],
-            'legal_name' => ['nullable', 'string', 'max:255'],
-            'registration_number' => ['nullable', 'string', 'max:255'],
-            'tax_number' => ['nullable', 'string', 'max:255'],
-            'company_logo' => ['nullable', 'file', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
-            'founded_year' => ['nullable', 'integer', 'min:1900', 'max:' . date('Y')],
-            'description' => ['nullable', 'string'],
- 
-            'status' => ['required', Rule::in(['active', 'inactive'])],
-            'notes' => ['nullable', 'string'],
+            'company_name'        => ['required', 'string', 'max:255', 'min:3'],
+            'company_logo'        => [($this->existing_logo_path ? 'nullable' : 'required'), 'image', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
+            'slug'                => ['required', 'string', 'max:255', Rule::unique('companies', 'slug')->ignore($this->companyId), 'alpha_dash'],
+            'company_type'        => ['required', Rule::in(['TMC', 'Corporate'])],
+            'registration_number' => ['required', 'string', 'max:50'],
+            'founded_year'        => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
+            'status'              => ['required', Rule::in(['active', 'inactive'])],
+
+            // Other fields
+            'legal_name'          => ['nullable', 'string', 'max:255'],
+            'tax_number'          => ['nullable', 'string', 'max:50'],
+            'description'         => ['nullable', 'string', 'max:1000'],
+            'notes'               => ['nullable', 'string', 'max:1000'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'company_name.required' => 'Please provide a valid name for your company.',
+            'company_name.min'      => 'Company name must be at least 3 characters.',
+            'slug.required'         => 'A unique ID/Slug is required for the system.',
+            'slug.unique'           => 'This ID is already taken by another company.',
+            'slug.alpha_dash'       => 'The ID can only contain letters, numbers, dashes and underscores.',
+            'company_logo.required' => 'A company logo is required.',
+            'company_logo.image'     => 'The logo must be an image file.',
+            'company_logo.max'       => 'The logo size must not exceed 2MB.',
+            'founded_year.integer'  => 'Please enter a valid year (e.g., 2024).',
+            'founded_year.max'      => 'The founded year cannot be in the future.',
+            'status.required'       => 'You must select a status for the company.',
         ];
     }
  

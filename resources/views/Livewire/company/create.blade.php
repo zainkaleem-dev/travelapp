@@ -26,7 +26,6 @@
                 <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Core Identity</h2>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#2ab4c0]/10 text-[#2ab4c0] uppercase tracking-tighter">Required</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -42,7 +41,7 @@
                                     @endif
                                 </div>
                                 <div class="flex-1">
-                                    <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">Company logo</label>
+                                    <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">Company logo <span class="text-red-500">*</span></label>
                                     <p class="text-[11px] text-gray-500 mb-2">JPG, PNG or SVG. Max 2MB.</p>
                                     <div class="flex items-center gap-3">
                                         <label class="cursor-pointer px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-700 hover:bg-gray-50">
@@ -59,19 +58,19 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="field-label">Company Name <span class="text-[#2ab4c0]">*</span></label>
+                            <label class="field-label">Company Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.debounce.500ms="company_name" class="field-input" placeholder="e.g. Acme Travel Services">
                             @error('company_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label class="field-label">Slug / ID <span class="text-[#2ab4c0]">*</span></label>
+                            <label class="field-label">Slug / ID <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="slug" class="field-input bg-gray-50 font-mono text-xs" placeholder="acme-travel">
                             @error('slug') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label class="field-label">Company Type</label>
+                            <label class="field-label">Company Type <span class="text-red-500">*</span></label>
                             <select wire:model="company_type" class="field-input">
                                 <option value="">Select type...</option>
                                 <option value="TMC">TMC (Travel Management)</option>
@@ -81,7 +80,7 @@
                         </div>
 
                         <div>
-                            <label class="field-label">Registration No.</label>
+                            <label class="field-label">Registration No. <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="registration_number" class="field-input" placeholder="e.g. 12345-678">
                             @error('registration_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
@@ -93,7 +92,7 @@
                         </div>
 
                         <div>
-                            <label class="field-label">Founded Year</label>
+                            <label class="field-label">Founded Year <span class="text-red-500">*</span></label>
                             <input type="number" wire:model="founded_year" class="field-input" placeholder="e.g. 2010" min="1900" max="{{ date('Y') }}">
                             @error('founded_year') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
@@ -110,7 +109,7 @@
                 <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="field-label">Status</label>
+                            <label class="field-label">Status <span class="text-red-500">*</span></label>
                             <select wire:model="status" class="field-input">
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>

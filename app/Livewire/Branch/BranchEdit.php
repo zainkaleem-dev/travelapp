@@ -82,29 +82,43 @@ class BranchEdit extends Component
     protected function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'min:3'],
             'code' => ['required', 'string', 'max:50', Rule::unique('branches', 'code')->ignore($this->branchId)],
-            'slug' => ['required', 'string', 'max:255', Rule::unique('branches', 'slug')->ignore($this->branchId)],
+            'slug' => ['required', 'string', 'max:255', Rule::unique('branches', 'slug')->ignore($this->branchId), 'alpha_dash'],
             'company_id' => ['required', 'exists:companies,id'],
             'is_main' => ['boolean'],
             'status' => ['required', 'in:active,inactive'],
             
-            'email' => ['nullable', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:50'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['required', 'string', 'max:50'],
             'phone_secondary' => ['nullable', 'string', 'max:50'],
             'fax' => ['nullable', 'string', 'max:50'],
             'whatsapp' => ['nullable', 'string', 'max:50'],
- 
-            'address_line_1' => ['nullable', 'string', 'max:255'],
+
+            'address_line_1' => ['required', 'string', 'max:255'],
             'address_line_2' => ['nullable', 'string', 'max:255'],
-            'city' => ['nullable', 'string', 'max:255'],
-            'state' => ['nullable', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:255'],
             'postal_code' => ['nullable', 'string', 'max:50'],
-            'country' => ['nullable', 'string', 'max:255'],
- 
+            'country' => ['required', 'string', 'max:255'],
+
             'latitude'  => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
             'notes' => ['nullable', 'string'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'We need a branch email address.',
+            'phone.required' => 'A primary contact number is required.',
+            'address_line_1.required' => 'Please provide the physical address.',
+            'city.required' => 'City is required.',
+            'state.required' => 'State/Province is required.',
+            'country.required' => 'Country is required.',
+            'latitude.required' => 'GPS Latitude is necessary for mapping.',
+            'longitude.required' => 'GPS Longitude is necessary for mapping.',
         ];
     }
  

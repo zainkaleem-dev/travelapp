@@ -33,6 +33,7 @@
         rel="stylesheet">
 
     @livewireStyles
+    @stack('styles')
 
     <style>
         /* Remove NProgress busy cursor and hide the progress bar */
@@ -1319,6 +1320,7 @@
         };
     </script>
 
+    @stack('scripts')
     @livewireScripts
 </body>
 

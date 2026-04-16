@@ -29,17 +29,17 @@ class PermissionSeeder extends Seeder
 
         // 4. Standard Permissions
         $permissions = [
-            'view-dashboard',
-            'manage-companies',
-            'manage-branches',
-            'manage-users',
-            'manage-roles',
-            'view-leads',
-            'create-leads',
-            'edit-leads',
-            'delete-leads',
-            'view-bookings',
-            'manage-settings',
+            'View Dashboard',
+            'Manage Companies',
+            'Manage Branches',
+            'Manage Users',
+            'Manage Roles',
+            'View Leads',
+            'Create Leads',
+            'Edit Leads',
+            'Delete Leads',
+            'View Bookings',
+            'Manage Settings',
         ];
 
         foreach ($permissions as $permission) {
@@ -52,26 +52,26 @@ class PermissionSeeder extends Seeder
 
         $companyAdmin = \App\Models\Role::firstOrCreate(['name' => 'Company Admin', 'guard_name' => 'web', 'company_id' => null]);
         $companyAdmin->syncPermissions([
-            'view-dashboard',
-            'manage-branches',
-            'manage-users',
-            'view-leads',
-            'create-leads',
-            'edit-leads',
+            'View Dashboard',
+            'Manage Branches',
+            'Manage Users',
+            'View Leads',
+            'Create Leads',
+            'Edit Leads',
         ]);
 
         $branchAdmin = \App\Models\Role::firstOrCreate(['name' => 'Branch Admin', 'guard_name' => 'web', 'company_id' => null]);
         $branchAdmin->syncPermissions([
-            'view-dashboard',
-            'view-leads',
-            'create-leads',
-            'edit-leads',
+            'View Dashboard',
+            'View Leads',
+            'Create Leads',
+            'Edit Leads',
         ]);
 
         $agent = \App\Models\Role::firstOrCreate(['name' => 'Agent', 'guard_name' => 'web', 'company_id' => null]);
         $agent->syncPermissions([
-            'view-leads',
-            'create-leads',
+            'View Leads',
+            'Create Leads',
         ]);
 
         $user = \App\Models\Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web', 'company_id' => null]);

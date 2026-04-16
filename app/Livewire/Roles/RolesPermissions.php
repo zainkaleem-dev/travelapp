@@ -18,6 +18,8 @@ class RolesPermissions extends Component
     public $newPermissionName = '';
     public $newRoleCompanyId = 'global';
     public $isSuperAdmin = false;
+    public $contextCompanyId = null; // Filter roles by this company
+    public $companies = [];          // List of companies for the selector
 
     // User Assignment Mode Properties
     public $viewMode = 'roles'; // 'roles' or 'users'
@@ -29,6 +31,11 @@ class RolesPermissions extends Component
     public function mount(): void
     {
         $this->isSuperAdmin = auth()->user()->hasRole('Super Admin');
+        
+        if ($this->isSuperAdmin) {
+            $this->companies = \App\Models\Company::orderBy('name')->get();
+        }
+
         $this->setViewMode('roles');
     }
 
@@ -75,12 +82,13 @@ class RolesPermissions extends Component
     public function getSidebarRolesProperty()
     {
         $tenantContext = app(\App\Support\TenantContext::class);
-        $companyId = $this->isSuperAdmin ? null : $tenantContext->companyId();
+        $companyId = $this->isSuperAdmin ? $this->contextCompanyId : $tenantContext->companyId();
+
+        // Ensure Spatie context is aligned with our filter
+        setPermissionsTeamId($companyId);
 
         return \App\Models\Role::query()
-            ->when(!$this->isSuperAdmin && $companyId, function($q) use ($companyId) {
-                $q->where('company_id', $companyId);
-            })
+            ->where('company_id', $companyId)
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
@@ -158,7 +166,7 @@ class RolesPermissions extends Component
         if (!$this->isSuperAdmin) {
             $companyId = app(\App\Support\TenantContext::class)->companyId();
         } else {
-            $companyId = $this->newRoleCompanyId === 'global' ? null : $this->newRoleCompanyId;
+            $companyId = $this->contextCompanyId ?: null;
         }
 
         $exists = \App\Models\Role::where('name', $this->newRoleName)

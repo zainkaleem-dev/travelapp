@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Company;
+use App\Observers\CompanyObserver;
 use App\Support\TenantContext;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -51,5 +53,8 @@ class AppServiceProvider extends ServiceProvider
         Feature::define('companies-quantity', fn () => 10);
         Feature::define('branches-quantity', fn () => 20);
         Feature::define('users-quantity', fn () => 100);
+
+        // ── Observers ────────────────
+        Company::observe(CompanyObserver::class);
     }
 }
