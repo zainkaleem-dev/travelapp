@@ -1,5 +1,5 @@
 <div>
-    <div class="max-w-7xl mx-auto px-1 sm:px-4 lg:px-6">
+    <div class="px-1 py-1 w-full">
         <div class="flex flex-col lg:flex-row gap-6 bg-transparent min-h-[calc(100vh-200px)]">
 
             {{-- ── Sidebar: Company List ─────────────────────────────── --}}

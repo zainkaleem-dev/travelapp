@@ -726,14 +726,10 @@
             $hideMainNavForSuperAdmin = $user && $user->hasRole('Super Admin') && request()->is('super-admin*'); 
  
             $hideMainNavForCompanyAdmin = $user && !$user->hasRole('Super Admin') && request()->is('company*');
- 
+
+            $isSuperAdminArea = $isSuperAdmin && (request()->is('super-admin*') || request()->routeIs('superadmin.*'));
           @endphp 
 
-        @if ($isSuperAdmin && request()->is('super-admin*'))
-            <div class="max-w-[960px] mx-auto px-3 sm:px-4 border-t border-gray-100">
-                @include('partials.navigation-bar')
-            </div>
-        @endif
  
         @unless ($hideMainNavForSuperAdmin || $hideMainNavForCompanyAdmin) 
             <div class="max-w-7xl mx-auto px-3 sm:px-4"> 
@@ -787,8 +783,8 @@
 
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 mt-12 pt-4 pb-12 sm:pb-16">
-            @if (!($isSuperAdmin && request()->is('super-admin*')))
+        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 mt-8 pt-4 pb-12 sm:pb-16">
+            @if (!$isSuperAdminArea)
                 <div class="max-w-[960px] mx-auto bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
                     @include('partials.navigation-bar')
                 </div>
@@ -908,7 +904,24 @@
                     </div>
                 @endunless
 
-                {{ $slot }}
+                @if ($isSuperAdminArea)
+                    <div class="flex flex-col md:flex-row gap-6 mt-4">
+                        {{-- Sidebar --}}
+                        <div class="w-full md:w-64 flex-shrink-0">
+                            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sticky top-24">
+                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 px-4">Management</div>
+                                @include('partials.navigation-bar', ['vertical' => true])
+                            </div>
+                        </div>
+
+                        {{-- Main Content --}}
+                        <div class="flex-1 min-w-0">
+                            {{ $slot }}
+                        </div>
+                    </div>
+                @else
+                    {{ $slot }}
+                @endif
             </div>
         </div>
         </div>

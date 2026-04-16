@@ -12,13 +12,16 @@
 
     // Navigation View Logic
     $isAdminView = $isSuperAdminArea || $isCompanyAdminArea;
+
+    // Orientation
+    $isVertical = $vertical ?? false;
 @endphp
 
-<div class="max-w-[960px] mx-auto flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0" style="-webkit-overflow-scrolling: touch;">
+<div class="{{ $isVertical ? 'flex flex-col gap-1 w-full' : 'max-w-[960px] mx-auto flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0' }}" style="{{ $isVertical ? '' : '-webkit-overflow-scrolling: touch;' }}">
     @if ($isSuperAdminArea)
         {{-- Super Admin Navigation --}}
         <a href="{{ route('superadmin.companies.index') }}"
-            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.companies.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+            class="inline-flex items-center gap-1.5 {{ $isVertical ? 'px-4 py-2.5 w-full rounded-lg' : 'px-3 py-2 sm:px-4 flex-shrink-0' }} {{ request()->routeIs('superadmin.companies.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} {{ $isVertical ? '' : 'rounded-t' }} text-xs whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -27,7 +30,7 @@
             Companies
         </a>
         <a href="{{ route('superadmin.branches') }}"
-            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.branches*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+            class="inline-flex items-center gap-1.5 {{ $isVertical ? 'px-4 py-2.5 w-full rounded-lg' : 'px-3 py-2 sm:px-4 flex-shrink-0' }} {{ request()->routeIs('superadmin.branches*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} {{ $isVertical ? '' : 'rounded-t' }} text-xs whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -36,7 +39,7 @@
             Branches
         </a>
         <a href="{{ route('superadmin.users') }}"
-            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.users*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+            class="inline-flex items-center gap-1.5 {{ $isVertical ? 'px-4 py-2.5 w-full rounded-lg' : 'px-3 py-2 sm:px-4 flex-shrink-0' }} {{ request()->routeIs('superadmin.users*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} {{ $isVertical ? '' : 'rounded-t' }} text-xs whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -45,7 +48,7 @@
             Users
         </a>
         <a href="{{ route('superadmin.roles.index') }}"
-            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.roles.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+            class="inline-flex items-center gap-1.5 {{ $isVertical ? 'px-4 py-2.5 w-full rounded-lg' : 'px-3 py-2 sm:px-4 flex-shrink-0' }} {{ request()->routeIs('superadmin.roles.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} {{ $isVertical ? '' : 'rounded-t' }} text-xs whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -54,7 +57,7 @@
             Roles & Permissions
         </a>
         <a href="{{ route('superadmin.features') }}"
-            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('superadmin.features') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600' }} rounded-t text-xs whitespace-nowrap">
+            class="inline-flex items-center gap-1.5 {{ $isVertical ? 'px-4 py-2.5 w-full rounded-lg' : 'px-3 py-2 sm:px-4 flex-shrink-0' }} {{ request()->routeIs('superadmin.features') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} {{ $isVertical ? '' : 'rounded-t' }} text-xs whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round"
