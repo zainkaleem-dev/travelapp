@@ -124,9 +124,8 @@ class RolesPermissions extends Component
 
         return \App\Models\User::query()
             ->when($companyId, function ($q) use ($companyId) {
-                // If we have a specific company context, we might want to filter users here
-                // For now, listing all users is fine if they are managed globally by Super Admin
-                // but let's keep the logic consistent.
+                // Filter users by the selected company context
+                $q->where('company_id', $companyId);
             })
             ->when($this->searchUsers, function ($query) {
                 $query->where(function ($q) {
@@ -264,7 +263,8 @@ class RolesPermissions extends Component
             return;
 
         $user = \App\Models\User::find($this->selectedUserId);
-        $teamId = $this->getNormalizedCompanyId();
+        // Context follows the user's company
+        $teamId = $user->company_id;
         setPermissionsTeamId($teamId);
 
         if ($user->hasRole($roleName)) {
@@ -295,7 +295,8 @@ class RolesPermissions extends Component
         // 2. Sync User Assignment to match the new status
         if ($this->selectedUserId) {
             $user = \App\Models\User::find($this->selectedUserId);
-            $teamId = $this->getNormalizedCompanyId();
+            // Context follows the user's company
+            $teamId = $user->company_id;
             setPermissionsTeamId($teamId);
 
             if ($role->status) {
@@ -345,7 +346,8 @@ class RolesPermissions extends Component
         $contextRoles = [];
 
         if ($this->viewMode === 'users' && $this->activeUser) {
-            $teamId = $this->getNormalizedCompanyId();
+            // Context follows the selected user's own company
+            $teamId = $this->activeUser->company_id; 
             setPermissionsTeamId($teamId);
 
             $currentUserRoles = $this->activeUser->roles()->pluck('name')->toArray();
