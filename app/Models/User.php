@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Models; 
- 
+namespace App\Models;
+
 use App\Models\Branch;
 use App\Models\Concerns\ScopedToBranch;
 use App\Models\Concerns\ScopedToCompany;
@@ -15,32 +15,46 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail 
-{ 
+class User extends Authenticatable implements MustVerifyEmail
+{
     use HasFactory, Notifiable, HasRoles, ScopedToCompany, ScopedToBranch {
         hasRole as protected traitHasRole;
     }
 
     /**
-     * Override Spatie's hasRole to support global Super Admin bypass in a multi-tenant environment.
+     * Override Spatie's hasRole to strictly enforce role status (Active/Inactive).
      */
     public function hasRole($roles, string $guard = null): bool
     {
-        // First check standard role assignment in current context
-        if ($this->traitHasRole($roles, $guard)) {
+        // 1. Get all roles currently assigned to the user that are ACTIVE (status = 1)
+        // We check both the current team context and the global context (null)
+        $currentTeamId = getPermissionsTeamId();
+        
+        $hasActiveRole = function($roleNames, $teamId) use ($guard) {
+            setPermissionsTeamId($teamId);
+            return $this->roles()
+                ->where('roles.status', 1)
+                ->where(function($query) use ($roleNames) {
+                    if (is_array($roleNames)) {
+                        $query->whereIn('roles.name', $roleNames);
+                    } else {
+                        $query->where('roles.name', $roleNames);
+                    }
+                })
+                ->exists();
+        };
+
+        // Check in current context
+        if ($hasActiveRole($roles, $currentTeamId)) {
             return true;
         }
 
-        // Check if the user possesses super_admin globally
-        $currentTeamId = getPermissionsTeamId();
-        
-        try {
-            setPermissionsTeamId(null);
-            $isGlobalAdmin = $this->traitHasRole('Super Admin', $guard);
-            return $isGlobalAdmin;
-        } finally {
-            setPermissionsTeamId($currentTeamId);
+        // Check in global context (for Super Admin bypass)
+        if ($currentTeamId !== null && $hasActiveRole($roles, null)) {
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -48,14 +62,14 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array<int, string>
      */
-    protected $fillable = [ 
+    protected $fillable = [
         'branch_id',
         'company_id',
-          'first_name', 
-        'middle_name', 
-        'last_name', 
-        'email', 
-        'password', 
+        'first_name',
+        'middle_name',
+        'last_name',
+        'email',
+        'password',
         'status',
     ];
 
@@ -65,7 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $middle = trim((string) ($this->middle_name ?? ''));
         $last = trim((string) ($this->last_name ?? ''));
 
-        return trim(implode(' ', array_values(array_filter([$first, $middle, $last], fn ($v) => $v !== ''))));
+        return trim(implode(' ', array_values(array_filter([$first, $middle, $last], fn($v) => $v !== ''))));
     }
 
     /**
@@ -116,5 +130,5 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
- 
-  }
+
+}

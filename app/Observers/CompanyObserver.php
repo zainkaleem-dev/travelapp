@@ -35,28 +35,32 @@ class CompanyObserver
         $companyAdmin = Role::firstOrCreate([
             'name' => 'Company Admin',
             'guard_name' => 'web',
-            'company_id' => $company->id
+            'company_id' => $company->id,
+            'status' => 1
         ]);
         $companyAdmin->syncPermissions($allPermissions);
 
         $branchAdmin = Role::firstOrCreate([
             'name' => 'Branch Admin',
             'guard_name' => 'web',
-            'company_id' => $company->id
+            'company_id' => $company->id,
+            'status' => 1
         ]);
         $branchAdmin->syncPermissions($allPermissions);
 
         $agent = Role::firstOrCreate([
             'name' => 'Agent',
             'guard_name' => 'web',
-            'company_id' => $company->id
+            'company_id' => $company->id,
+            'status' => 1
         ]);
         $agent->syncPermissions($allPermissions);
 
         $userRole = Role::firstOrCreate([
             'name' => 'User',
             'guard_name' => 'web',
-            'company_id' => $company->id
+            'company_id' => $company->id,
+            'status' => 1
         ]);
         $userRole->syncPermissions($allPermissions);
 

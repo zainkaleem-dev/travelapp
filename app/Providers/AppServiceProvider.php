@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(TenantContext::class, fn () => new TenantContext());
+        $this->app->singleton(TenantContext::class, fn() => new TenantContext());
     }
 
     /**
@@ -33,26 +33,26 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Resolve Pennant scope to the current company
-        Feature::resolveScopeUsing(fn () => app(TenantContext::class)->currentCompany(request()));
+        Feature::resolveScopeUsing(fn() => app(TenantContext::class)->currentCompany(request()));
 
         // ── Travel Module Features ───
-        Feature::define('flights-module', fn () => true);
-        Feature::define('hotels-module', fn () => true);
-        Feature::define('cars-module', fn () => true);
-        Feature::define('concierge-module', fn () => true);
-        Feature::define('travel-hub-module', fn () => true);
+        Feature::define('flights-module', fn() => true);
+        Feature::define('hotels-module', fn() => true);
+        Feature::define('cars-module', fn() => true);
+        Feature::define('concierge-module', fn() => true);
+        Feature::define('travel-hub-module', fn() => true);
 
         // ── Admin Module Features ────
-        Feature::define('companies-module', fn () => true);
-        Feature::define('branches-module', fn () => true);
-        Feature::define('users-module', fn () => true);
-        Feature::define('roles-permissions-module', fn () => true);
-        Feature::define('feature-management-module', fn () => true);
+        Feature::define('companies-module', fn() => true);
+        Feature::define('branches-module', fn() => true);
+        Feature::define('users-module', fn() => true);
+        Feature::define('roles-permissions-module', fn() => true);
+        Feature::define('feature-management-module', fn() => true);
 
         // ── Quantity Limits ──────────
-        Feature::define('companies-quantity', fn () => 10);
-        Feature::define('branches-quantity', fn () => 20);
-        Feature::define('users-quantity', fn () => 100);
+        Feature::define('companies-quantity', fn() => 10);
+        Feature::define('branches-quantity', fn() => 20);
+        Feature::define('users-quantity', fn() => 100);
 
         // ── Observers ────────────────
         Company::observe(CompanyObserver::class);

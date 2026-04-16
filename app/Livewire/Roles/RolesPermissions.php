@@ -201,7 +201,7 @@ class RolesPermissions extends Component
 
         // Use standard Eloquent to bypass Spatie's strict findById
         $role = \App\Models\Role::find($this->selectedRoleId);
-        if (!$role || $role->name === 'Super Admin')
+        if (!$role || $role->company_id === null)
             return;
 
         // Set context to match the role's company
@@ -214,6 +214,81 @@ class RolesPermissions extends Component
         }
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+    }
+
+    public function toggleGlobalStatus($roleId = null)
+    {
+        $id = $roleId ?: $this->selectedRoleId;
+        if (!$id)
+            return;
+
+        $role = \App\Models\Role::find($id);
+        if (!$role)
+            return;
+
+        // Global context roles (Super Admin, etc.) are currently read-only for safety
+        if ($role->company_id === null) {
+            session()->flash('error', 'Global context roles are read-only for safety.');
+            return;
+        }
+
+        $role->status = !$role->status;
+        $role->save();
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        session()->flash('status', "Role '{$role->name}' status updated to " . ($role->status ? 'Active' : 'Inactive'));
+    }
+
+    public function toggleUserAssignment($roleName)
+    {
+        if (!$this->selectedUserId)
+            return;
+
+        $user = \App\Models\User::find($this->selectedUserId);
+        $teamId = $this->userContextCompanyId === 'global' ? null : (int) $this->userContextCompanyId;
+        setPermissionsTeamId($teamId);
+
+        if ($user->hasRole($roleName)) {
+            $user->removeRole($roleName);
+            session()->flash('status', "Role '{$roleName}' removed from user.");
+        } else {
+            // Check if role is active before assigning
+            $role = \App\Models\Role::where('name', $roleName)->where('company_id', $teamId)->first();
+            if ($role && !$role->status) {
+                session()->flash('error', "Cannot assign inactive role '{$roleName}'. Please activate it first.");
+                return;
+            }
+            $user->assignRole($roleName);
+            session()->flash('status', "Role '{$roleName}' assigned to user.");
+        }
+    }
+
+    public function toggleDoubleSync($roleName, $roleId)
+    {
+        // 1. Toggle Global Status
+        $role = \App\Models\Role::find($roleId);
+        if (!$role || $role->company_id === null)
+            return;
+
+        $role->status = !$role->status;
+        $role->save();
+
+        // 2. Sync User Assignment to match the new status
+        if ($this->selectedUserId) {
+            $user = \App\Models\User::find($this->selectedUserId);
+            $teamId = $this->userContextCompanyId === 'global' ? null : (int) $this->userContextCompanyId;
+            setPermissionsTeamId($teamId);
+
+            if ($role->status) {
+                $user->assignRole($roleName);
+            } else {
+                $user->removeRole($roleName);
+            }
+        }
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        $statusText = $role->status ? 'Active and Assigned' : 'Inactive and Removed';
+        session()->flash('status', "Role '{$roleName}' is now {$statusText}.");
     }
 
     public function deleteRole($id)

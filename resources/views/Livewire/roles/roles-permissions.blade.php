@@ -149,13 +149,6 @@
                                     <div class="px-4 py-2 bg-gray-50 text-[10px] font-black text-gray-400 uppercase tracking-widest rounded-lg">
                                         {{ $contextCompanyId ? 'Company context' : 'Global context' }}
                                     </div>
-                                    {{-- <input type="text" wire:model.defer="newRoleName"
-                                        class="pl-4 pr-3 py-2.5 bg-transparent text-sm focus:outline-none w-40"
-                                        placeholder="New role name">
-                                    <button wire:click="createRole" class="p-2 ml-1 text-white bg-[#2ab4c0] hover:bg-opacity-90 rounded-lg transition-all font-bold text-xs flex items-center gap-1 shadow-sm">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                                        Add
-                                    </button> --}}
                                 </div>
                             </div>
                         </div>
@@ -197,13 +190,13 @@
                                                 </div>
                                             </div>
 
-                                            <label class="relative inline-flex items-center {{ $selectedRole->name === 'Super Admin' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}">
+                                            <label class="relative inline-flex items-center {{ $selectedRole->company_id === null ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}">
                                                 <input type="checkbox" 
-                                                    @if($selectedRole->name !== 'Super Admin')
+                                                    @if($selectedRole->company_id !== null)
                                                         wire:click="togglePermission('{{ $permission->name }}')"
                                                     @endif
                                                     {{ in_array($permission->name, $currentRolePermissions) ? 'checked' : '' }}
-                                                    {{ $selectedRole->name === 'Super Admin' ? 'disabled' : '' }}
+                                                    {{ $selectedRole->company_id === null ? 'disabled' : '' }}
                                                     class="sr-only peer">
                                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors"></div>
                                             </label>
@@ -258,25 +251,38 @@
                                 @if(count($contextRoles) > 0)
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         @foreach($contextRoles as $role)
-                                            <div wire:key="user-role-{{ $role->id }}" class="group bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between hover:border-[#2ab4c0]/30 hover:shadow-sm transition-all duration-300">
+                                            <div wire:key="user-role-{{ $role->id }}" 
+                                                class="group bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between transition-all duration-300
+                                                {{ $role->status ? '' : 'bg-gray-50/50' }}">
                                                 <div class="flex items-center gap-4">
-                                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
-                                                        {{ in_array($role->name, $currentUserRoles) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-300' }}">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                    {{-- Static Letter Icon (No button, No checkmark) --}}
+                                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black bg-gray-100 text-gray-400">
+                                                        {{ strtoupper(substr($role->name, 0, 1)) }}
                                                     </div>
+
                                                     <div>
-                                                        <h4 class="text-sm font-bold text-gray-800 leading-tight">{{ $role->name }}</h4>
-                                                        <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-0.5">Role Assignment</p>
+                                                        <div class="flex items-center gap-2">
+                                                            <h4 class="text-sm font-bold {{ $role->status ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
+                                                        </div>
+                                                        <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mt-0.5">
+                                                            {{ in_array($role->name, $currentUserRoles) ? 'Assigned to User' : 'Not Assigned' }}
+                                                        </p>
                                                     </div>
                                                 </div>
 
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" 
-                                                        wire:click="toggleUserRole('{{ $role->name }}')"
-                                                        {{ in_array($role->name, $currentUserRoles) ? 'checked' : '' }}
-                                                        class="sr-only peer">
-                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors"></div>
-                                                </label>
+                                                <div class="flex items-center gap-3">
+                                                    <label class="relative inline-flex items-center {{ $role->company_id === null ? 'cursor-not-allowed' : 'cursor-pointer' }}">
+                                                        <input type="checkbox" 
+                                                            @if($role->company_id !== null)
+                                                                wire:click="toggleDoubleSync('{{ $role->name }}', {{ $role->id }})"
+                                                            @endif
+                                                            {{ $role->status ? 'checked' : '' }}
+                                                            {{ $role->company_id === null ? 'disabled' : '' }}
+                                                            class="sr-only peer">
+                                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors
+                                                            {{ $role->company_id === null ? 'opacity-30' : '' }}"></div>
+                                                    </label>
+                                                </div>
                                             </div>
                                         @endforeach
                                     </div>

@@ -11,6 +11,11 @@ class Role extends SpatieRole
         'name',
         'guard_name',
         'company_id',
+        'status',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
     ];
 
     public function company(): BelongsTo
