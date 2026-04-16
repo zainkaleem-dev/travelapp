@@ -3,7 +3,7 @@
         <div class="flex flex-col lg:flex-row gap-6 bg-transparent min-h-[calc(100vh-200px)]">
 
             {{-- ── Sidebar: Company List ─────────────────────────────── --}}
-            <div class="w-full lg:w-80 flex-shrink-0">
+            <div class="w-full lg:w-60 flex-shrink-0">
                 <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
                     <div class="p-6 border-b border-gray-100 bg-[#f9faf6]">
                         <div class="flex items-center gap-2 mb-4">
@@ -25,23 +25,23 @@
                     <div class="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar" style="max-height: 600px;">
                         @forelse($sidebarCompanies as $company)
                             <button wire:click="selectCompany({{ $company->id }})"
-                                class="w-full text-left p-4 rounded-2xl border transition-all duration-200 group
+                                class="w-full text-left p-2 rounded-xl border transition-all duration-200 group
                                     {{ $selectedCompanyId === $company->id
                                         ? 'bg-white border-[#2ab4c0] shadow-md ring-1 ring-[#2ab4c0]/10'
                                         : 'bg-transparent border-transparent hover:bg-gray-50 hover:border-gray-200' }}">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black transition-transform group-hover:scale-110
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black transition-transform group-hover:scale-110
                                         {{ $selectedCompanyId === $company->id ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-100 text-gray-400' }}">
                                         {{ substr($company->name, 0, 1) }}
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between gap-2">
-                                            <h3 class="text-sm font-bold text-gray-900 truncate">{{ $company->name }}</h3>
+                                            <h3 class="text-[10px] font-bold text-gray-900 truncate">{{ $company->name }}</h3>
                                             @if($companyStats[$company->id]['is_any_active'])
-                                                <div class="w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0"></div>
+                                                <div class="w-1 h-1 rounded-full bg-green-500 flex-shrink-0"></div>
                                             @endif
                                         </div>
-                                        <p class="text-[11px] text-gray-400 font-medium mt-0.5">
+                                        <p class="text-[8px] text-gray-400 font-medium tracking-tight">
                                             {{ $companyStats[$company->id]['active'] }}/{{ $companyStats[$company->id]['total'] }} modules active
                                         </p>
                                     </div>

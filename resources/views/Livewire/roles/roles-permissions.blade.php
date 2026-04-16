@@ -4,7 +4,7 @@
             
             {{-- Sidebar: Company Selection (Super Admin Only) --}}
             @if($isSuperAdmin)
-            <div class="w-full lg:w-96 flex-shrink-0">
+            <div class="w-full lg:w-60 flex-shrink-0">
                 <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
                     <div class="p-6 bg-[#f9faf6] border-b border-gray-100">
                         <div class="flex items-center gap-2 mb-4">
@@ -57,23 +57,23 @@
                         @if($viewMode === 'roles')
                             @forelse($sidebarRoles as $role)
                                 <button wire:click="selectRole({{ $role->id }})"
-                                    class="w-full text-left p-4 rounded-2xl border transition-all duration-200 group
+                                    class="w-full text-left p-2 rounded-xl border transition-all duration-200 group
                                         {{ $selectedRoleId === $role->id 
                                             ? 'bg-white border-[#2ab4c0] shadow-md ring-1 ring-[#2ab4c0]/10' 
                                             : 'bg-transparent border-transparent hover:bg-gray-50 hover:border-gray-200' }}">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black transition-transform group-hover:scale-110
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black transition-transform group-hover:scale-110
                                             {{ $selectedRoleId === $role->id ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-100 text-gray-400' }}">
                                             {{ strtoupper(substr($role->name, 0, 1)) }}
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center justify-between gap-2">
-                                                <h3 class="text-sm font-bold text-gray-900 truncate">{{ $role->name }}</h3>
+                                                <h3 class="text-[10px] font-bold text-gray-900 truncate">{{ $role->name }}</h3>
                                                 @if($selectedRoleId === $role->id)
-                                                    <div class="w-1.5 h-1.5 rounded-full bg-[#2ab4c0]"></div>
+                                                    <div class="w-1 h-1 rounded-full bg-[#2ab4c0]"></div>
                                                 @endif
                                             </div>
-                                            <p class="text-[11px] text-gray-500 font-medium tracking-tighter">
+                                            <p class="text-[8px] text-gray-500 font-medium tracking-tight">
                                                 {{ $role->company ? $role->company->name : 'Global System' }}
                                             </p>
                                         </div>
@@ -87,23 +87,23 @@
                         @else
                             @forelse($sidebarUsers as $user)
                                 <button wire:click="selectUser({{ $user->id }})"
-                                    class="w-full text-left p-4 rounded-2xl border transition-all duration-200 group
+                                    class="w-full text-left p-2 rounded-xl border transition-all duration-200 group
                                         {{ $selectedUserId === $user->id 
                                             ? 'bg-white border-[#2ab4c0] shadow-md ring-1 ring-[#2ab4c0]/10' 
                                             : 'bg-transparent border-transparent hover:bg-gray-50 hover:border-gray-200' }}">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black transition-transform group-hover:scale-110
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-transform group-hover:scale-110
                                             {{ $selectedUserId === $user->id ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-100 text-gray-400' }}">
                                             {{ strtoupper(substr($user->first_name ?? $user->email, 0, 1)) }}
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center justify-between gap-2">
-                                                <h3 class="text-sm font-bold text-gray-900 truncate">{{ $user->display_name ?? $user->first_name }}</h3>
+                                                <h3 class="text-[10px] font-bold text-gray-900 truncate">{{ $user->display_name ?? $user->first_name }}</h3>
                                                 @if($selectedUserId === $user->id)
-                                                    <div class="w-1.5 h-1.5 rounded-full bg-[#2ab4c0]"></div>
+                                                    <div class="w-1 h-1 rounded-full bg-[#2ab4c0]"></div>
                                                 @endif
                                             </div>
-                                            <p class="text-[11px] text-gray-500 font-medium truncate">
+                                            <p class="text-[8px] text-gray-500 font-medium truncate">
                                                 {{ $user->email }}
                                             </p>
                                         </div>
@@ -121,9 +121,9 @@
             @endif
 
             {{-- Main Content: Roles & Permissions --}}
-            <div class="flex-1">
+            <div class="flex-1 min-h-0">
                 @if($viewMode === 'roles')
-                    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-visible h-full flex flex-col">
+                    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
                         {{-- Header / Create Role --}}
                         <div class="p-8 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-white to-[#fafbfc] rounded-t-3xl">
                             <div class="flex items-center gap-5">
@@ -161,7 +161,7 @@
                         </div>
 
                         {{-- Permissions Matrix --}}
-                        <div class="flex-1 p-8 overflow-y-auto no-scrollbar" style="max-height: 500px;">
+                        <div class="flex-1 min-h-0 overflow-y-auto p-8 no-scrollbar">
                             @if($selectedRole)
                                 <div class="flex items-center justify-between mb-8">
                                     <div>
@@ -218,18 +218,11 @@
                             @endif
                         </div>
 
-                        <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 rounded-b-3xl flex items-center justify-between">
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Policy Engine v2.0</p>
-                            <div class="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest">
-                                <span class="text-green-600">Secure</span>
-                                <span class="text-blue-600">Audited</span>
-                            </div>
-                        </div>
                     </div>
                 @else
                     {{-- Users Mode --}}
                     @if($activeUser)
-                        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-visible h-full flex flex-col">
+                        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
                             <div class="p-8 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-white to-[#fafbfc]">
                                 <div class="flex items-center gap-5">
                                     <div class="w-16 h-16 rounded-3xl bg-[#f2feff] border border-[#2ab4c0]/20 flex items-center justify-center text-2xl font-black text-[#2ab4c0] shadow-sm">
@@ -254,7 +247,7 @@
                                 @endif
                             </div>
 
-                            <div class="flex-1 p-8 overflow-y-auto no-scrollbar" style="max-height: 500px;">
+                            <div class="flex-1 min-h-0 overflow-y-auto p-8 no-scrollbar">
                                 <div class="flex items-center justify-between mb-8">
                                     <div>
                                         <h3 class="text-xl font-black text-gray-900">User Roles</h3>
