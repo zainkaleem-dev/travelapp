@@ -730,7 +730,7 @@
           @endphp 
 
         @if ($isSuperAdmin && request()->is('super-admin*'))
-            <div class="max-w-7xl mx-auto px-3 sm:px-4 border-t border-gray-100">
+            <div class="max-w-[960px] mx-auto px-3 sm:px-4 border-t border-gray-100">
                 @include('partials.navigation-bar')
             </div>
         @endif
@@ -789,10 +789,10 @@
     <div class="z-40 bg-transparent">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 mt-12 pt-4 pb-12 sm:pb-16">
             @if (!($isSuperAdmin && request()->is('super-admin*')))
-                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
+                <div class="max-w-[960px] mx-auto bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
                     @include('partials.navigation-bar')
                 </div>
-                <div class="h-px bg-gray-100"></div>
+                <div class="max-w-[960px] mx-auto h-px bg-gray-100"></div>
             @endif
             
             <div class="p-3 sm:p-4">

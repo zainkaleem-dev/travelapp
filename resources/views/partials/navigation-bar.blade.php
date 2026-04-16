@@ -14,7 +14,7 @@
     $isAdminView = $isSuperAdminArea || $isCompanyAdminArea;
 @endphp
 
-<div class="flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0" style="-webkit-overflow-scrolling: touch;">
+<div class="max-w-[960px] mx-auto flex items-center overflow-x-auto no-scrollbar gap-0 min-w-0" style="-webkit-overflow-scrolling: touch;">
     @if ($isSuperAdminArea)
         {{-- Super Admin Navigation --}}
         <a href="{{ route('superadmin.companies.index') }}"
