@@ -19,66 +19,46 @@ class CompanyObserver
         // 2. Define Default Permissions Sets (match PermissionSeeder logic)
         $allPermissions = [
             'View Dashboard',
-            'Manage Companies',
-            'Manage Branches',
-            'Manage Users',
-            'Manage Roles',
-            'View Leads',
-            'Create Leads',
-            'Edit Leads',
-            'Delete Leads',
-            'View Bookings',
-            'Manage Settings',
+            'View Company',
+            'Create Company',
+            'Edit Company',
+            'View Branch',
+            'Create Branch',
+            'Edit Branch',
+            'View User',
+            'Create User',
+            'Edit User',
+            'Manage Roles and Permissions',
+            'Manage Features',
         ];
 
-        $companyAdminPerms = [
-            'View Dashboard',
-            'Manage Branches',
-            'Manage Users',
-            'View Leads',
-            'Create Leads',
-            'Edit Leads',
-        ];
-
-        $branchAdminPerms = [
-            'View Dashboard',
-            'View Leads',
-            'Create Leads',
-            'Edit Leads',
-        ];
-
-        $agentPerms = [
-            'View Leads',
-            'Create Leads',
-        ];
-
-        // 3. Create Default Roles for the Company
         $companyAdmin = Role::firstOrCreate([
             'name' => 'Company Admin',
             'guard_name' => 'web',
             'company_id' => $company->id
         ]);
-        $companyAdmin->syncPermissions($companyAdminPerms);
+        $companyAdmin->syncPermissions($allPermissions);
 
         $branchAdmin = Role::firstOrCreate([
             'name' => 'Branch Admin',
             'guard_name' => 'web',
             'company_id' => $company->id
         ]);
-        $branchAdmin->syncPermissions($branchAdminPerms);
+        $branchAdmin->syncPermissions($allPermissions);
 
         $agent = Role::firstOrCreate([
             'name' => 'Agent',
             'guard_name' => 'web',
             'company_id' => $company->id
         ]);
-        $agent->syncPermissions($agentPerms);
+        $agent->syncPermissions($allPermissions);
 
         $userRole = Role::firstOrCreate([
             'name' => 'User',
             'guard_name' => 'web',
             'company_id' => $company->id
         ]);
+        $userRole->syncPermissions($allPermissions);
 
         // 4. Reset context to null (Safety)
         setPermissionsTeamId(null);

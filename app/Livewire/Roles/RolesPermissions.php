@@ -31,7 +31,7 @@ class RolesPermissions extends Component
     public function mount(): void
     {
         $this->isSuperAdmin = auth()->user()->hasRole('Super Admin');
-        
+
         if ($this->isSuperAdmin) {
             $this->companies = \App\Models\Company::orderBy('name')->get();
         }
@@ -69,7 +69,7 @@ class RolesPermissions extends Component
     {
         $this->selectedUserId = $id;
         $this->activeUser = \App\Models\User::find($id);
-        
+
         // Auto-select a context company if they are a company admin, or prompt global if super admin
         if ($this->isSuperAdmin) {
             $this->userContextCompanyId = 'global';
@@ -104,16 +104,16 @@ class RolesPermissions extends Component
         $companyId = $this->isSuperAdmin ? null : $tenantContext->companyId();
 
         return \App\Models\User::query()
-            ->when(!$this->isSuperAdmin && $companyId, function($q) use ($companyId) {
+            ->when(!$this->isSuperAdmin && $companyId, function ($q) use ($companyId) {
                 // Not ideal, but realistically users in a tenant app are scoped if they lack super admin.
                 // Assuming standard scopes apply or auth user company access.
                 // For simplicity, we just list all non-super-admin users if we don't have a direct company relation on User yet.
             })
             ->when($this->searchUsers, function ($query) {
-                $query->where(function($q) {
+                $query->where(function ($q) {
                     $q->where('first_name', 'like', '%' . $this->searchUsers . '%')
-                      ->orWhere('last_name', 'like', '%' . $this->searchUsers . '%')
-                      ->orWhere('email', 'like', '%' . $this->searchUsers . '%');
+                        ->orWhere('last_name', 'like', '%' . $this->searchUsers . '%')
+                        ->orWhere('email', 'like', '%' . $this->searchUsers . '%');
                 });
             })
             ->orderBy('first_name')
@@ -122,10 +122,11 @@ class RolesPermissions extends Component
 
     public function toggleUserRole($roleName)
     {
-        if (!$this->selectedUserId) return;
+        if (!$this->selectedUserId)
+            return;
 
         $user = \App\Models\User::find($this->selectedUserId);
-        
+
         // Handle Team/Company Context
         $teamId = $this->userContextCompanyId === 'global' ? null : (int) $this->userContextCompanyId;
         setPermissionsTeamId($teamId);
@@ -195,15 +196,17 @@ class RolesPermissions extends Component
 
     public function togglePermission($permissionName)
     {
-        if (!$this->selectedRoleId) return;
+        if (!$this->selectedRoleId)
+            return;
 
         // Use standard Eloquent to bypass Spatie's strict findById
         $role = \App\Models\Role::find($this->selectedRoleId);
-        if (!$role) return;
+        if (!$role || $role->name === 'Super Admin')
+            return;
 
         // Set context to match the role's company
         setPermissionsTeamId($role->company_id);
-        
+
         if ($role->hasPermissionTo($permissionName)) {
             $role->revokePermissionTo($permissionName);
         } else {
@@ -216,7 +219,8 @@ class RolesPermissions extends Component
     public function deleteRole($id)
     {
         $role = \App\Models\Role::find($id);
-        if (!$role) return;
+        if (!$role)
+            return;
 
         if ($role->name === 'Super Admin') {
             session()->flash('error', 'Cannot delete Super Admin.');
@@ -234,7 +238,7 @@ class RolesPermissions extends Component
     {
         // Resolve selected role safely
         $selectedRole = $this->selectedRoleId ? \App\Models\Role::find($this->selectedRoleId) : null;
-        
+
         $currentRolePermissions = [];
         if ($selectedRole) {
             // Set context to the role's company to fetch its permissions correctly
@@ -245,13 +249,13 @@ class RolesPermissions extends Component
         // For user assignment mode
         $currentUserRoles = [];
         $contextRoles = [];
-        
+
         if ($this->viewMode === 'users' && $this->activeUser) {
             $teamId = $this->userContextCompanyId === 'global' ? null : $this->userContextCompanyId;
             setPermissionsTeamId($teamId);
-            
+
             $currentUserRoles = $this->activeUser->roles()->pluck('name')->toArray();
-            
+
             $contextRoles = \App\Models\Role::query()
                 ->where('company_id', $teamId)
                 ->orderBy('name')

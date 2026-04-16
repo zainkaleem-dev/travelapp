@@ -30,16 +30,17 @@ class PermissionSeeder extends Seeder
         // 4. Standard Permissions
         $permissions = [
             'View Dashboard',
-            'Manage Companies',
-            'Manage Branches',
-            'Manage Users',
-            'Manage Roles',
-            'View Leads',
-            'Create Leads',
-            'Edit Leads',
-            'Delete Leads',
-            'View Bookings',
-            'Manage Settings',
+            'View Company',
+            'Create Company',
+            'Edit Company',
+            'View Branch',
+            'Create Branch',
+            'Edit Branch',
+            'View User',
+            'Create User',
+            'Edit User',
+            'Manage Roles and Permissions',
+            'Manage Features',
         ];
 
         foreach ($permissions as $permission) {
@@ -51,30 +52,16 @@ class PermissionSeeder extends Seeder
         $superAdmin->syncPermissions($permissions);
 
         $companyAdmin = \App\Models\Role::firstOrCreate(['name' => 'Company Admin', 'guard_name' => 'web', 'company_id' => null]);
-        $companyAdmin->syncPermissions([
-            'View Dashboard',
-            'Manage Branches',
-            'Manage Users',
-            'View Leads',
-            'Create Leads',
-            'Edit Leads',
-        ]);
+        $companyAdmin->syncPermissions($permissions);
 
         $branchAdmin = \App\Models\Role::firstOrCreate(['name' => 'Branch Admin', 'guard_name' => 'web', 'company_id' => null]);
-        $branchAdmin->syncPermissions([
-            'View Dashboard',
-            'View Leads',
-            'Create Leads',
-            'Edit Leads',
-        ]);
+        $branchAdmin->syncPermissions($permissions);
 
         $agent = \App\Models\Role::firstOrCreate(['name' => 'Agent', 'guard_name' => 'web', 'company_id' => null]);
-        $agent->syncPermissions([
-            'View Leads',
-            'Create Leads',
-        ]);
+        $agent->syncPermissions($permissions);
 
         $user = \App\Models\Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web', 'company_id' => null]);
+        $user->syncPermissions($permissions);
 
         // 6. Ensure Base Admin User exists and has role
         $admin = \App\Models\User::firstOrCreate(

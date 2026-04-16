@@ -146,16 +146,16 @@
 
                             <div class="flex items-center gap-3">
                                 <div class="flex items-center bg-white p-1 rounded-xl border border-gray-200 shadow-sm">
-                                    <div class="px-4 py-2 bg-gray-50 border-r border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest rounded-l-lg">
+                                    <div class="px-4 py-2 bg-gray-50 text-[10px] font-black text-gray-400 uppercase tracking-widest rounded-lg">
                                         {{ $contextCompanyId ? 'Company context' : 'Global context' }}
                                     </div>
-                                    <input type="text" wire:model.defer="newRoleName"
+                                    {{-- <input type="text" wire:model.defer="newRoleName"
                                         class="pl-4 pr-3 py-2.5 bg-transparent text-sm focus:outline-none w-40"
                                         placeholder="New role name">
                                     <button wire:click="createRole" class="p-2 ml-1 text-white bg-[#2ab4c0] hover:bg-opacity-90 rounded-lg transition-all font-bold text-xs flex items-center gap-1 shadow-sm">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                                         Add
-                                    </button>
+                                    </button> --}}
                                 </div>
                             </div>
                         </div>
@@ -197,10 +197,13 @@
                                                 </div>
                                             </div>
 
-                                            <label class="relative inline-flex items-center cursor-pointer">
+                                            <label class="relative inline-flex items-center {{ $selectedRole->name === 'Super Admin' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}">
                                                 <input type="checkbox" 
-                                                    wire:click="togglePermission('{{ $permission->name }}')"
+                                                    @if($selectedRole->name !== 'Super Admin')
+                                                        wire:click="togglePermission('{{ $permission->name }}')"
+                                                    @endif
                                                     {{ in_array($permission->name, $currentRolePermissions) ? 'checked' : '' }}
+                                                    {{ $selectedRole->name === 'Super Admin' ? 'disabled' : '' }}
                                                     class="sr-only peer">
                                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors"></div>
                                             </label>

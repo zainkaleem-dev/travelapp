@@ -47,10 +47,10 @@ class UserCreate extends Component
             $this->branches = [];
         }
     }
- 
-    public function save(TenantContext $tenantContext)
+
+    protected function rules(): array
     {
-        $validated = $this->validate([
+        return [
             'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
@@ -58,8 +58,28 @@ class UserCreate extends Component
             'password' => ['required', 'string', 'min:8'],
             'company_id' => [auth()->user()->hasRole('Super Admin') ? 'required' : 'nullable', 'exists:companies,id'],
             'branch_id' => ['required', 'exists:branches,id'],
-        ]);
+        ];
+    }
 
+    protected function messages(): array
+    {
+        return [
+            'first_name.required' => 'Please enter the user\'s first name.',
+            'last_name.required' => 'Please enter the user\'s last name.',
+            'email.required' => 'An email address is required for login.',
+            'email.email' => 'Please provide a valid email format.',
+            'email.unique' => 'This email is already registered in our system.',
+            'password.required' => 'Set a strong password for the new account.',
+            'password.min' => 'For security, passwords must be at least 8 characters long.',
+            'company_id.required' => 'You must assign this user to a company.',
+            'branch_id.required' => 'Please select a specific branch for this user.',
+        ];
+    }
+ 
+    public function save(TenantContext $tenantContext)
+    {
+        $validated = $this->validate();
+ 
         $user = User::query()->create([
             'first_name' => $validated['first_name'],
             'middle_name' => $validated['middle_name'],
@@ -70,7 +90,7 @@ class UserCreate extends Component
             'branch_id' => $validated['branch_id'],
             'email_verified_at' => now(),
         ]);
-
+ 
         session()->flash('status', 'User created successfully.');
         return redirect()->route('superadmin.users');
     }

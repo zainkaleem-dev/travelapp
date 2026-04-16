@@ -19,13 +19,12 @@
                 <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Identity & Organization</h2>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#2ab4c0]/10 text-[#2ab4c0] uppercase tracking-tighter">Required</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         @role('Super Admin')
                         <div>
-                            <label class="field-label">Select Company <span class="text-[#2ab4c0]">*</span></label>
+                            <label class="field-label">Select Company <span class="text-red-500">*</span></label>
                             <select wire:model.live="company_id" class="field-input">
                                 <option value="">-- Choose Company --</option>
                                 @foreach($companies as $company)
@@ -37,7 +36,7 @@
                         @endrole
 
                         <div @unless(auth()->user()->hasRole('Super Admin')) class="col-span-2" @endunless>
-                            <label class="field-label">Select Branch <span class="text-[#2ab4c0]">*</span></label>
+                            <label class="field-label">Select Branch <span class="text-red-500">*</span></label>
                             <select wire:model="branch_id" class="field-input" {{ empty($branches) ? 'disabled' : '' }}>
                                 <option value="">-- Choose Branch --</option>
                                 @foreach($branches as $branch)
@@ -55,7 +54,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <label class="field-label">First Name <span class="text-[#2ab4c0]">*</span></label>
+                            <label class="field-label">First Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="first_name" class="field-input" placeholder="e.g. John">
                             @error('first_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
@@ -67,7 +66,7 @@
                         </div>
 
                         <div>
-                            <label class="field-label">Last Name <span class="text-[#2ab4c0]">*</span></label>
+                            <label class="field-label">Last Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="last_name" class="field-input" placeholder="e.g. Doe">
                             @error('last_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
@@ -82,13 +81,13 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="field-label">Email Address <span class="text-[#2ab4c0]">*</span></label>
+                            <label class="field-label">Email Address <span class="text-red-500">*</span></label>
                             <input type="email" wire:model="email" class="field-input" placeholder="john.doe@example.com">
                             @error('email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label class="field-label">Password <span class="text-[#2ab4c0]">*</span></label>
+                            <label class="field-label">Password <span class="text-red-500">*</span></label>
                             <input type="password" wire:model="password" class="field-input" placeholder="••••••••">
                             @error('password') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>

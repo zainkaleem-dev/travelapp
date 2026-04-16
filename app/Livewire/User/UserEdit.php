@@ -63,10 +63,10 @@ class UserEdit extends Component
             $this->branches = [];
         }
     }
- 
-    public function save(TenantContext $tenantContext)
+
+    protected function rules(): array
     {
-        $validated = $this->validate([
+        return [
             'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
@@ -74,8 +74,27 @@ class UserEdit extends Component
             'password' => ['nullable', 'string', 'min:8'],
             'company_id' => [auth()->user()->hasRole('Super Admin') ? 'required' : 'nullable', 'exists:companies,id'],
             'branch_id' => ['required', 'exists:branches,id'],
-        ]);
+        ];
+    }
 
+    protected function messages(): array
+    {
+        return [
+            'first_name.required' => 'First name is mandatory.',
+            'last_name.required' => 'Last name is mandatory.',
+            'email.required' => 'An email address is required.',
+            'email.email' => 'Please provide a valid email.',
+            'email.unique' => 'This email is already in use by another account.',
+            'password.min' => 'If changing password, it must be at least 8 characters.',
+            'company_id.required' => 'Please select a company.',
+            'branch_id.required' => 'Please select a branch.',
+        ];
+    }
+ 
+    public function save(TenantContext $tenantContext)
+    {
+        $validated = $this->validate();
+ 
         $this->user->update([
             'first_name' => $validated['first_name'],
             'middle_name' => $validated['middle_name'],
@@ -84,11 +103,10 @@ class UserEdit extends Component
             'company_id' => $this->company_id,
             'branch_id' => $validated['branch_id'],
         ]);
-
+ 
         if (!empty($validated['password'])) {
             $this->user->update(['password' => Hash::make($validated['password'])]);
         }
- 
  
         session()->flash('status', 'User updated successfully.');
         return redirect()->route('superadmin.users');
