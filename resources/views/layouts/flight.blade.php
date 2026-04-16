@@ -784,7 +784,7 @@
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
         <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 mt-8 pt-4 pb-12 sm:pb-16">
-            @if (!$isSuperAdminArea)
+            @if (!$isSuperAdminArea && !request()->routeIs('flights.list'))
                 <div class="max-w-[960px] mx-auto bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
                     @include('partials.navigation-bar')
                 </div>
@@ -817,7 +817,7 @@
         };
     @endphp
 
-    <div class="px-3 sm:px-4 lg:px-6 pt-4 pb-2 -order-1">
+    <div class="pt-4 pb-2 -order-1">
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
             <div class="flex items-center justify-between gap-3 mb-3">
                 <div>
