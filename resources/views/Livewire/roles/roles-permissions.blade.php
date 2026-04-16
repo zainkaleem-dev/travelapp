@@ -22,6 +22,19 @@
                             </button>
                         </div>
 
+                        {{-- Context Selector (Super Admin Only) --}}
+                        @if($isSuperAdmin)
+                        <div class="mb-4">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Company Context</label>
+                            <select wire:model.live="contextCompanyId" class="w-full py-2.5 pl-3 pr-8 bg-white border border-gray-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all text-gray-700 shadow-sm">
+                                <option value="">Global System</option>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-4 w-4 text-gray-400 group-focus-within:text-[#2ab4c0] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,14 +146,9 @@
 
                             <div class="flex items-center gap-3">
                                 <div class="flex items-center bg-white p-1 rounded-xl border border-gray-200 shadow-sm">
-                                    @if($isSuperAdmin)
-                                        <select wire:model.defer="newRoleCompanyId" class="py-2.5 pl-3 pr-8 bg-transparent text-sm font-bold border-r border-gray-100 focus:outline-none text-gray-600 w-32">
-                                            <option value="global">Global</option>
-                                            @foreach(\App\Models\Company::all() as $co)
-                                                <option value="{{ $co->id }}">{{ substr($co->name, 0, 15) }}</option>
-                                            @endforeach
-                                        </select>
-                                    @endif
+                                    <div class="px-4 py-2 bg-gray-50 border-r border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest rounded-l-lg">
+                                        {{ $contextCompanyId ? 'Company context' : 'Global context' }}
+                                    </div>
                                     <input type="text" wire:model.defer="newRoleName"
                                         class="pl-4 pr-3 py-2.5 bg-transparent text-sm focus:outline-none w-40"
                                         placeholder="New role name">
