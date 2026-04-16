@@ -684,7 +684,7 @@
                                 TMC Settings
                             </a>
 
-                            @role('super_admin')
+                            @role('Super Admin')
                             <a href="{{ route('superadmin.settings') }}"
                                 class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -719,12 +719,12 @@
 
         @php 
             $user = auth()->user();
-            $isSuperAdmin = $user && $user->hasRole('super_admin');
-            $isCompanyAdmin = $user && $user->hasRole('company_admin');
+            $isSuperAdmin = $user && $user->hasRole('Super Admin');
+            $isCompanyAdmin = $user && $user->hasRole('Company Admin');
 
-            $hideMainNavForSuperAdmin = $user && $user->hasRole('super_admin') && request()->is('super-admin*'); 
+            $hideMainNavForSuperAdmin = $user && $user->hasRole('Super Admin') && request()->is('super-admin*'); 
  
-            $hideMainNavForCompanyAdmin = $user && !$user->hasRole('super_admin') && request()->is('company*');
+            $hideMainNavForCompanyAdmin = $user && !$user->hasRole('Super Admin') && request()->is('company*');
  
           @endphp 
 

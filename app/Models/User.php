@@ -36,7 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         
         try {
             setPermissionsTeamId(null);
-            $isGlobalAdmin = $this->traitHasRole('super_admin', $guard);
+            $isGlobalAdmin = $this->traitHasRole('Super Admin', $guard);
             return $isGlobalAdmin;
         } finally {
             setPermissionsTeamId($currentTeamId);

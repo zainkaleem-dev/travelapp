@@ -25,9 +25,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        // Implicitly grant "super_admin" role all permissions globally
+        // Implicitly grant "Super Admin" role all permissions globally
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('super_admin') ? true : null;
+            return $user->hasRole('Super Admin') ? true : null;
         });
 
         // Resolve Pennant scope to the current company

@@ -53,7 +53,7 @@ class UserListing extends Component
     public function toggleActive(int $userId): void
     {
         $user = User::query()
-            ->withoutRole('super_admin')
+            ->withoutRole('Super Admin')
             ->findOrFail($userId);
             
         $newStatus = $user->status === 'active' ? 'inactive' : 'active';
@@ -65,7 +65,7 @@ class UserListing extends Component
         $companyId = (int) ($tenantContext->companyId() ?? 0);
  
         $user = User::query()
-            ->withoutRole('super_admin')
+            ->withoutRole('Super Admin')
             ->findOrFail($userId);
  
         $user->delete();
@@ -78,7 +78,7 @@ class UserListing extends Component
         $search = trim($this->search);
  
         $query = User::query()
-            ->withoutRole('super_admin')
+            ->withoutRole('Super Admin')
             ->when($search !== '', function ($q) use ($search) {
                 $q->where(function ($qq) use ($search) {
                     $qq->where('first_name', 'like', "%{$search}%")

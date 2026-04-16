@@ -15,7 +15,7 @@ class EnsureCompanyTenant
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if (!$user || $user->hasRole('super_admin')) {
+        if (!$user || $user->hasRole('Super Admin')) {
             abort(403);
         }
  

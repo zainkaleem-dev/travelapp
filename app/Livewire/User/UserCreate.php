@@ -28,7 +28,7 @@ class UserCreate extends Component
     public function mount(TenantContext $tenantContext)
     {
         $user = auth()->user();
-        $isSuperAdmin = $user->hasRole('super_admin');
+        $isSuperAdmin = $user->hasRole('Super Admin');
         
         if ($isSuperAdmin) {
             $this->companies = Company::orderBy('name')->get();
@@ -56,7 +56,7 @@ class UserCreate extends Component
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
-            'company_id' => [auth()->user()->hasRole('super_admin') ? 'required' : 'nullable', 'exists:companies,id'],
+            'company_id' => [auth()->user()->hasRole('Super Admin') ? 'required' : 'nullable', 'exists:companies,id'],
             'branch_id' => ['required', 'exists:branches,id'],
         ]);
 

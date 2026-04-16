@@ -33,7 +33,7 @@ class UserEdit extends Component
     {
         $this->userId = $id;
         $this->user = User::query()
-            ->withoutRole('super_admin')
+            ->withoutRole('Super Admin')
             ->findOrFail($id);
  
         $this->first_name = (string) ($this->user->first_name ?? '');
@@ -42,7 +42,7 @@ class UserEdit extends Component
         $this->email = (string) $this->user->email;
         
         $currentUser = auth()->user();
-        $isSuperAdmin = $currentUser->hasRole('super_admin');
+        $isSuperAdmin = $currentUser->hasRole('Super Admin');
  
         if ($isSuperAdmin) {
             $this->companies = Company::orderBy('name')->get();
@@ -72,7 +72,7 @@ class UserEdit extends Component
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->userId)],
             'password' => ['nullable', 'string', 'min:8'],
-            'company_id' => [auth()->user()->hasRole('super_admin') ? 'required' : 'nullable', 'exists:companies,id'],
+            'company_id' => [auth()->user()->hasRole('Super Admin') ? 'required' : 'nullable', 'exists:companies,id'],
             'branch_id' => ['required', 'exists:branches,id'],
         ]);
 

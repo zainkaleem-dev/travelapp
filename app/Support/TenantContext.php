@@ -33,7 +33,7 @@ class TenantContext
         }
 
         if ($this->isSuperAdmin === null) {
-            $this->isSuperAdmin = $user->hasRole('super_admin');
+            $this->isSuperAdmin = $user->hasRole('Super Admin');
         }
 
         $isSuperAdmin = $this->isSuperAdmin;

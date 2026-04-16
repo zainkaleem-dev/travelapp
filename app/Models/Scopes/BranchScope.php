@@ -31,7 +31,7 @@ class BranchScope implements Scope
             $user = auth()->user();
             
             // Bypass for Super Admin, Company Admin, or Unauthenticated users (allows login)
-            if (!auth()->check() || ($user && ($user->hasRole('super_admin') || $user->hasRole('company_admin')))) {
+            if (!auth()->check() || ($user && ($user->hasRole('Super Admin') || $user->hasRole('Company Admin')))) {
                 return;
             }
 

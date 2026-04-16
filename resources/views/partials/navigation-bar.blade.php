@@ -3,8 +3,8 @@
         $user = auth()->user();
 
     // Authorization Flags
-    $isSuperAdmin = $user && $user->hasRole('super_admin');
-    $isCompanyAdmin = $user && $user->hasRole('company_admin');
+    $isSuperAdmin = $user && $user->hasRole('Super Admin');
+    $isCompanyAdmin = $user && $user->hasRole('Company Admin');
 
     // Area Flags
     $isSuperAdminArea = $isSuperAdmin && request()->is('super-admin*');

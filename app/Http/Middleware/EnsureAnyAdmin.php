@@ -21,7 +21,7 @@ class EnsureAnyAdmin
             return redirect()->route('login');
         }
 
-        if ($user->hasRole('super_admin') || $user->hasRole('company_admin') || $user->hasRole('branch_admin')) {
+        if ($user->hasRole('Super Admin') || $user->hasRole('Company Admin') || $user->hasRole('Branch Admin')) {
             return $next($request);
         }
 

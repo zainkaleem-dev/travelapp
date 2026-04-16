@@ -27,6 +27,6 @@ class AdminSeeder extends Seeder
 
         // Ensure we are in a global context (no company) before assigning super admin
         setPermissionsTeamId(null);
-        $admin->assignRole('super_admin');
+        $admin->assignRole('Super Admin');
     }
 }

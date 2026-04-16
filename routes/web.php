@@ -64,10 +64,10 @@ Route::get('/currency/{code}', function (Request $request, string $code) {
 // Root URL
 Route::get('/', function () {
     if (auth()->check()) {
-        if (auth()->user()->hasRole('super_admin')) {
+        if (auth()->user()->hasRole('Super Admin')) {
             return redirect()->route('superadmin.companies.index');
         }
-        if (auth()->user()->hasRole('company_admin')) {
+        if (auth()->user()->hasRole('Company Admin')) {
             return redirect()->route('company.companies.index');
         }
         return redirect()->route('flights.search');

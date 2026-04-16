@@ -13,12 +13,12 @@ class ImpersonateController extends Controller
         $user = User::withoutGlobalScopes()->findOrFail($userId);
 
         // Security check: Only Super Admins can initiate impersonation
-        if (!auth()->user()->hasRole('super_admin')) {
+        if (!auth()->user()->hasRole('Super Admin')) {
             abort(403, 'Unauthorized action.');
         }
 
         // Security check: Don't allow impersonating other super admins (optional but safer)
-        if ($user->hasRole('super_admin')) {
+        if ($user->hasRole('Super Admin')) {
             abort(403, 'Cannot impersonate a super admin.');
         }
 

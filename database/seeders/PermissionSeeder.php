@@ -47,10 +47,10 @@ class PermissionSeeder extends Seeder
         }
 
         // 5. Global Roles (Explicitly NULL company_id)
-        $superAdmin = \App\Models\Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web', 'company_id' => null]);
+        $superAdmin = \App\Models\Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web', 'company_id' => null]);
         $superAdmin->syncPermissions($permissions);
 
-        $companyAdmin = \App\Models\Role::firstOrCreate(['name' => 'company_admin', 'guard_name' => 'web', 'company_id' => null]);
+        $companyAdmin = \App\Models\Role::firstOrCreate(['name' => 'Company Admin', 'guard_name' => 'web', 'company_id' => null]);
         $companyAdmin->syncPermissions([
             'view-dashboard',
             'manage-branches',
@@ -60,7 +60,7 @@ class PermissionSeeder extends Seeder
             'edit-leads',
         ]);
 
-        $branchAdmin = \App\Models\Role::firstOrCreate(['name' => 'branch_admin', 'guard_name' => 'web', 'company_id' => null]);
+        $branchAdmin = \App\Models\Role::firstOrCreate(['name' => 'Branch Admin', 'guard_name' => 'web', 'company_id' => null]);
         $branchAdmin->syncPermissions([
             'view-dashboard',
             'view-leads',
@@ -68,13 +68,13 @@ class PermissionSeeder extends Seeder
             'edit-leads',
         ]);
 
-        $agent = \App\Models\Role::firstOrCreate(['name' => 'agent', 'guard_name' => 'web', 'company_id' => null]);
+        $agent = \App\Models\Role::firstOrCreate(['name' => 'Agent', 'guard_name' => 'web', 'company_id' => null]);
         $agent->syncPermissions([
             'view-leads',
             'create-leads',
         ]);
 
-        $user = \App\Models\Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web', 'company_id' => null]);
+        $user = \App\Models\Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web', 'company_id' => null]);
 
         // 6. Ensure Base Admin User exists and has role
         $admin = \App\Models\User::firstOrCreate(

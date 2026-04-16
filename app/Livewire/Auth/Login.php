@@ -86,12 +86,12 @@ class Login extends Component
         Auth::login($user, $this->remember); 
         request()->session()->regenerate(); 
 
-        if ($user->hasRole('super_admin')) {
+        if ($user->hasRole('Super Admin')) {
             $this->redirect(route('superadmin.companies.index'));
             return;
         }
 
-        if ($user->hasRole('company_admin')) {
+        if ($user->hasRole('Company Admin')) {
             $this->redirect(route('company.companies.index'));
             return;
         }

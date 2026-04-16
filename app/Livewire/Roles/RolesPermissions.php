@@ -28,7 +28,7 @@ class RolesPermissions extends Component
 
     public function mount(): void
     {
-        $this->isSuperAdmin = auth()->user()->hasRole('super_admin');
+        $this->isSuperAdmin = auth()->user()->hasRole('Super Admin');
         $this->setViewMode('roles');
     }
 
@@ -210,8 +210,8 @@ class RolesPermissions extends Component
         $role = \App\Models\Role::find($id);
         if (!$role) return;
 
-        if ($role->name === 'super_admin') {
-            session()->flash('error', 'Cannot delete super_admin.');
+        if ($role->name === 'Super Admin') {
+            session()->flash('error', 'Cannot delete Super Admin.');
             return;
         }
 

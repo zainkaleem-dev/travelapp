@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        @role('super_admin')
+                        @role('Super Admin')
                         <div>
                             <label class="field-label">Select Company <span class="text-[#2ab4c0]">*</span></label>
                             <select wire:model.live="company_id" class="field-input">
@@ -36,7 +36,7 @@
                         </div>
                         @endrole
 
-                        <div @unless(auth()->user()->hasRole('super_admin')) class="col-span-2" @endunless>
+                        <div @unless(auth()->user()->hasRole('Super Admin')) class="col-span-2" @endunless>
                             <label class="field-label">Select Branch <span class="text-[#2ab4c0]">*</span></label>
                             <select wire:model="branch_id" class="field-input" {{ empty($branches) ? 'disabled' : '' }}>
                                 <option value="">-- Choose Branch --</option>
@@ -46,7 +46,7 @@
                             </select>
                             @if(empty($branches) && $company_id)
                             <p class="mt-1 text-[11px] font-bold text-orange-500 uppercase">This company has no branches yet.</p>
-                            @elseif(!$company_id && auth()->user()->hasRole('super_admin'))
+                            @elseif(!$company_id && auth()->user()->hasRole('Super Admin'))
                             <p class="mt-1 text-[11px] font-bold text-gray-400 uppercase">Please select a company first.</p>
                             @endif
                             @error('branch_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
