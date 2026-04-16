@@ -26,7 +26,6 @@ class RolesPermissions extends Component
     public $searchUsers = '';
     public $selectedUserId = null;
     public $activeUser = null;
-    public $userContextCompanyId = null; // Which company's roles we are assigning to the user
 
     public function mount(): void
     {
@@ -37,6 +36,34 @@ class RolesPermissions extends Component
         }
 
         $this->setViewMode('roles');
+    }
+
+    /**
+     * Helper to ensure contextCompanyId is either an integer or null.
+     * Maps empty strings and "global" string to null.
+     */
+    private function getNormalizedCompanyId(): ?int
+    {
+        if (!$this->contextCompanyId || $this->contextCompanyId === 'global') {
+            return null;
+        }
+        return (int) $this->contextCompanyId;
+    }
+
+    /**
+     * Reset selection when context changes to prevent cross-context data leaks
+     * or looking up IDs that don't exist in the new context.
+     */
+    public function updatedContextCompanyId(): void
+    {
+        $this->selectedRoleId = null;
+        $this->selectedUserId = null;
+        $this->activeUser = null;
+        $this->search = '';
+        $this->searchUsers = '';
+        
+        // Auto-select first item in new context if available
+        $this->setViewMode($this->viewMode);
     }
 
     public function setViewMode($mode): void
@@ -69,20 +96,12 @@ class RolesPermissions extends Component
     {
         $this->selectedUserId = $id;
         $this->activeUser = \App\Models\User::find($id);
-
-        // Auto-select a context company if they are a company admin, or prompt global if super admin
-        if ($this->isSuperAdmin) {
-            $this->userContextCompanyId = 'global';
-        } else {
-            $tenantContext = app(\App\Support\TenantContext::class);
-            $this->userContextCompanyId = $tenantContext->companyId();
-        }
     }
 
     public function getSidebarRolesProperty()
     {
         $tenantContext = app(\App\Support\TenantContext::class);
-        $companyId = $this->isSuperAdmin ? $this->contextCompanyId : $tenantContext->companyId();
+        $companyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : $tenantContext->companyId();
 
         // Ensure Spatie context is aligned with our filter
         setPermissionsTeamId($companyId);
@@ -101,13 +120,13 @@ class RolesPermissions extends Component
     public function getSidebarUsersProperty()
     {
         $tenantContext = app(\App\Support\TenantContext::class);
-        $companyId = $this->isSuperAdmin ? null : $tenantContext->companyId();
+        $companyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : $tenantContext->companyId();
 
         return \App\Models\User::query()
-            ->when(!$this->isSuperAdmin && $companyId, function ($q) use ($companyId) {
-                // Not ideal, but realistically users in a tenant app are scoped if they lack super admin.
-                // Assuming standard scopes apply or auth user company access.
-                // For simplicity, we just list all non-super-admin users if we don't have a direct company relation on User yet.
+            ->when($companyId, function ($q) use ($companyId) {
+                // If we have a specific company context, we might want to filter users here
+                // For now, listing all users is fine if they are managed globally by Super Admin
+                // but let's keep the logic consistent.
             })
             ->when($this->searchUsers, function ($query) {
                 $query->where(function ($q) {
@@ -128,7 +147,7 @@ class RolesPermissions extends Component
         $user = \App\Models\User::find($this->selectedUserId);
 
         // Handle Team/Company Context
-        $teamId = $this->userContextCompanyId === 'global' ? null : (int) $this->userContextCompanyId;
+        $teamId = $this->getNormalizedCompanyId();
         setPermissionsTeamId($teamId);
 
         if ($user->hasRole($roleName)) {
@@ -167,7 +186,7 @@ class RolesPermissions extends Component
         if (!$this->isSuperAdmin) {
             $companyId = app(\App\Support\TenantContext::class)->companyId();
         } else {
-            $companyId = $this->contextCompanyId ?: null;
+            $companyId = $this->getNormalizedCompanyId();
         }
 
         $exists = \App\Models\Role::where('name', $this->newRoleName)
@@ -245,7 +264,7 @@ class RolesPermissions extends Component
             return;
 
         $user = \App\Models\User::find($this->selectedUserId);
-        $teamId = $this->userContextCompanyId === 'global' ? null : (int) $this->userContextCompanyId;
+        $teamId = $this->getNormalizedCompanyId();
         setPermissionsTeamId($teamId);
 
         if ($user->hasRole($roleName)) {
@@ -276,7 +295,7 @@ class RolesPermissions extends Component
         // 2. Sync User Assignment to match the new status
         if ($this->selectedUserId) {
             $user = \App\Models\User::find($this->selectedUserId);
-            $teamId = $this->userContextCompanyId === 'global' ? null : (int) $this->userContextCompanyId;
+            $teamId = $this->getNormalizedCompanyId();
             setPermissionsTeamId($teamId);
 
             if ($role->status) {
@@ -326,7 +345,7 @@ class RolesPermissions extends Component
         $contextRoles = [];
 
         if ($this->viewMode === 'users' && $this->activeUser) {
-            $teamId = $this->userContextCompanyId === 'global' ? null : $this->userContextCompanyId;
+            $teamId = $this->getNormalizedCompanyId();
             setPermissionsTeamId($teamId);
 
             $currentUserRoles = $this->activeUser->roles()->pluck('name')->toArray();

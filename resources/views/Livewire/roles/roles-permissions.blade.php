@@ -145,10 +145,8 @@
                             </div>
 
                             <div class="flex items-center gap-3">
-                                <div class="flex items-center bg-white p-1 rounded-xl border border-gray-200 shadow-sm">
-                                    <div class="px-4 py-2 bg-gray-50 text-[10px] font-black text-gray-400 uppercase tracking-widest rounded-lg">
-                                        {{ $contextCompanyId ? 'Company context' : 'Global context' }}
-                                    </div>
+                                <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-2xl text-[10px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
+                                    {{ empty($contextCompanyId) || $contextCompanyId === 'global' ? 'Global Context' : (($selectedRole->company->name ?? 'Company') . ' Context') }}
                                 </div>
                             </div>
                         </div>
@@ -229,13 +227,9 @@
 
                                 @if($isSuperAdmin)
                                     <div class="flex items-center gap-3">
-                                        <p class="text-xs font-bold text-gray-400">Context:</p>
-                                        <select wire:model.live="userContextCompanyId" class="py-2.5 pl-4 pr-10 bg-white border border-gray-200 rounded-xl text-sm font-bold focus:outline-none focus:border-[#2ab4c0] focus:ring-1 focus:ring-[#2ab4c0]">
-                                            <option value="global">Global System</option>
-                                            @foreach(\App\Models\Company::all() as $company)
-                                                <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-2xl text-[10px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
+                                            {{ empty($contextCompanyId) || $contextCompanyId === 'global' ? 'Global Context' : (($companies->find($contextCompanyId)->name ?? 'Company') . ' Context') }}
+                                        </div>
                                     </div>
                                 @endif
                             </div>
