@@ -13,7 +13,7 @@
     SEARCH CARD
     ════════════════════════════════════════ --}}
     <div
-        class="{{ empty($quick) ? 'search-card' : 'bg-white rounded-xl border border-gray-200 shadow-sm p-4 w-full max-w-[960px] mx-auto mb-4' }}">
+        class="{{ empty($quick) ? 'search-card' : 'bg-white rounded-xl border border-gray-200 shadow-sm p-4 w-full mb-4' }}">
 
         <div class="mb-3 flex items-start justify-between gap-3">
             {{-- Trip type tabs --}}
@@ -26,16 +26,6 @@
                 <button class="trip-tab {{ $tripType === 'multi' ? 'active' : '' }}"
                     wire:click="switchTab('multi')">Multi-city</button>
             </div>
-
-            @auth
-                @if (!empty($savedTripPurposeLabel))
-                    <div
-                        class="inline-flex max-w-full items-center gap-2 rounded-xl border border-[#2ab4c0]/45 bg-[#eaf9fb] px-3 py-1.5 shadow-[0_2px_10px_rgba(42,180,192,0.18)] ring-1 ring-[#2ab4c0]/15">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-[#4b5563]">Trip purpose</span>
-                        <span class="text-xs font-semibold text-[#1f9aa6]">{{ $savedTripPurposeLabel }}</span>
-                    </div>
-                @endif
-            @endauth
         </div>
 
 
@@ -110,7 +100,7 @@
 
                             {{-- Swap Button --}}
                             <button type="button" wire:click="swapReturnAirports"
-                                class="hidden md:flex absolute right-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                                class="hidden md:flex absolute right-[-24px] rtl:right-auto rtl:left-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 rtl:-translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
                                 title="Swap locations">
                                 <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -911,7 +901,7 @@
 
                             {{-- Swap Button --}}
                             <button type="button" wire:click="swapOnewayAirports"
-                                class="hidden md:flex absolute right-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                                class="hidden md:flex absolute right-[-24px] rtl:right-auto rtl:left-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 rtl:-translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
                                 title="Swap locations">
                                 <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -1465,7 +1455,7 @@
 
                                         {{-- Swap Button --}}
                                         <button type="button" wire:click="swapMultiAirports({{ $index }})"
-                                            class="hidden md:flex absolute right-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                                            class="hidden md:flex absolute right-[-24px] rtl:right-auto rtl:left-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 rtl:-translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
                                             title="Swap locations">
                                             <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">

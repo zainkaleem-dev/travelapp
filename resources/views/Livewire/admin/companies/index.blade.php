@@ -53,7 +53,7 @@
                             </div>
                         </div>
 
-                        <div class="w-full sm:w-24 ml-auto">
+                        <div class="w-full sm:w-24 ms-auto">
                             <div class="field-wrap !py-2 !px-3 flex items-center justify-center">
                                 <select wire:model.live="perPage"
                                     class="field-input !p-0 !border-0 !bg-transparent text-sm font-bold text-gray-900 focus:ring-0 cursor-pointer appearance-none text-center">
@@ -92,10 +92,10 @@
                     <table class="w-full border-separate border-spacing-0">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide rounded-tl-2xl">
+                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide rounded-ss-2xl">
                                     Logo
                                 </th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('name')">
                                     <div class="flex items-center gap-2">
                                         <span>Company</span>
@@ -109,7 +109,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('company_type')">
                                     <div class="flex items-center gap-2">
                                         <span>Type</span>
@@ -123,7 +123,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('status')">
                                     <div class="flex items-center gap-2">
                                         <span>Status</span>
@@ -137,7 +137,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wide rounded-tr-2xl">
+                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide rounded-se-2xl">
                                     Actions
                                 </th>
                             </tr>

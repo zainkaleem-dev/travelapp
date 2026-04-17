@@ -685,7 +685,7 @@
                                 TMC Settings
                             </a>
 
-                            @can('Manage Global System')
+                            {{-- @can('Manage Global System')
                             <a href="{{ route('superadmin.settings') }}"
                                 class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -694,7 +694,7 @@
                                 </svg>
                                 Super Admin Settings
                             </a>
-                            @endcan
+                            @endcan --}}
 
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -728,12 +728,13 @@
             $hideMainNavForCompanyAdmin = $user && !$user->hasRole('Super Admin') && request()->is('company*');
 
             $isSuperAdminArea = $isSuperAdmin && (request()->is('super-admin*') || request()->routeIs('superadmin.*'));
+            $isManagementArea = request()->routeIs(['profile', 'settings', 'corporate.settings', 'tmc.settings', 'flights.list']);
           @endphp 
 
  
         @unless ($hideMainNavForSuperAdmin || $hideMainNavForCompanyAdmin) 
-            <div class="max-w-7xl mx-auto px-3 sm:px-4"> 
-                <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold"> 
+            <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center justify-between"> 
+                <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold w-full"> 
                 @featureOrAdmin('flights-module')
                 <a href="{{ route('flights.search') }}" 
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.search') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap"> 
@@ -806,22 +807,65 @@
                 @endfeatureOrAdmin
                 @endcan
                 </div>
+
+                @if(request()->routeIs('flights.list'))
+                    <div class="ms-auto ps-4 border-s border-gray-200 flex-shrink-0">
+                        <button type="button" @click="searchOpen = !searchOpen"
+                            class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 hover:bg-[#2ab4c0]/5 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/40 -translate-y-[1.5px]"
+                            title="Modify Search">
+                            <svg class="w-3.5 h-3.5 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
+                            </svg>
+                        </button>
+                    </div>
+                @endif
             </div>
         @endunless
     </nav>
 
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
-        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 {{ $isSuperAdminArea ? 'mt-2 pt-0' : 'mt-8 pt-4' }} pb-12 sm:pb-16">
-            @if (!$isSuperAdminArea && !request()->routeIs('flights.list'))
-                <div class="max-w-[960px] mx-auto bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
+        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 {{ ($isSuperAdminArea || $isManagementArea) ? 'mt-2 pt-0' : 'mt-8 pt-4' }} pb-12 sm:pb-16">
+            @if (!$isSuperAdminArea && !request()->routeIs(['flights.list', 'profile', 'settings', 'corporate.settings', 'tmc.settings']))
+                {{-- ── Trip Type Bar (flight search only, read-only) ── --}}
+                @if (request()->routeIs('flights.search'))
+                    @php
+                        $currentTripType = auth()->check()
+                            ? optional(\App\Models\UserSetting::where('user_id', auth()->id())->first())->trip_type
+                            : null;
+                        $tripTypeLabels = [
+                            'business_trip' => 'Business Trip',
+                            'personal_trip' => 'Personal Trip',
+                            'annual_trip'   => 'Annual Trip',
+                            'guest'         => 'Guest',
+                        ];
+                    @endphp
+                    @if ($currentTripType && isset($tripTypeLabels[$currentTripType]))
+                        <div class="max-w-[960px] mx-auto">
+                            <div class="flex items-center gap-3 bg-white border border-b border-gray-200 rounded-t-xl px-4 py-2.5">
+                                <div class="inline-flex max-w-full items-center gap-2 rounded-xl border border-[#2ab4c0]/45 bg-[#eaf9fb] px-3 py-1.5 shadow-[0_2px_10px_rgba(42,180,192,0.18)] ring-1 ring-[#2ab4c0]/15">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#4b5563]">Trip purpose</span>
+                                    <span class="text-xs font-semibold text-[#1f9aa6]">{{ $tripTypeLabels[$currentTripType] }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+
+                <div class="max-w-[960px] mx-auto bg-white {{ (request()->routeIs('flights.search') && $currentTripType && isset($tripTypeLabels[$currentTripType])) ? 'rounded-b-xl rounded-t-none border-t-0' : 'rounded-xl' }} border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
                     @include('partials.navigation-bar')
                 </div>
                 <div class="max-w-[960px] mx-auto h-px bg-gray-100"></div>
             @endif
             
+            @unless ($isSuperAdmin && request()->is('super-admin*'))
+                <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms class="{{ request()->routeIs('flights.list') ? 'w-full mt-4 mb-4 px-3 sm:px-4' : 'max-w-[960px] mx-auto mt-4 mb-4' }}">
+                    @livewire('quick-search')
+                </div>
+            @endunless
+
             <div class="p-3 sm:p-4">
-                <div class="flex flex-col">
+                <div class="flex flex-col relative">
 
     @if (in_array(request()->route()?->getName(), ['flights.list', 'additional.services', 'seating', 'passenger.details'], true))
     {{-- Form Wizard (frontend services) --}}
@@ -927,11 +971,7 @@
     </div>
     @endif
 
-                @unless ($isSuperAdmin && request()->is('super-admin*'))
-                    <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms class="mt-4">
-                        @livewire('quick-search')
-                    </div>
-                @endunless
+
 
                 @if ($isSuperAdminArea)
                     <div class="flex flex-col md:flex-row gap-6 mt-0">

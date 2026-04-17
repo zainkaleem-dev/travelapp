@@ -1,7 +1,6 @@
 <div class="w-full">
     <div class="w-full py-6 px-3 sm:px-4 lg:px-6">
-        <div class="w-full max-w-2xl mx-auto">
-            <div class="w-full rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <div class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6">
                 {{-- Header --}}
                 <div class="mb-6 rounded-xl bg-gradient-to-r from-[#2ab4c0] to-[#239ea9] px-5 py-4">
                     <h1 class="text-lg font-bold text-white">Settings</h1>
@@ -39,7 +38,6 @@
                         </button>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 

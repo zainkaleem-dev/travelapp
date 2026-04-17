@@ -55,6 +55,16 @@ Route::get('/currency/{code}', function (Request $request, string $code) {
 
     return redirect()->back();
 })->name('currency.switch');
+
+Route::get('/trip-type/{type}', function (Request $request, string $type) {
+    $allowed = ['business_trip', 'personal_trip', 'annual_trip', 'guest'];
+
+    abort_unless(in_array($type, $allowed, true), 404);
+
+    $request->session()->put('trip_type', $type);
+
+    return redirect()->back();
+})->name('trip.type.switch');
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
