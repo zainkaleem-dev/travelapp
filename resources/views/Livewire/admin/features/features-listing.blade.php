@@ -98,33 +98,35 @@
                                     <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Travel Modules</span>
                                     <div class="flex-1 h-px bg-gray-100"></div>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     @foreach($definedFeatures as $key => $feature)
                                         @if(($feature['type'] ?? 'toggle') === 'toggle' && str_ends_with($key, '-module') && !in_array($key, ['companies-module','branches-module','users-module','roles-permissions-module','feature-management-module']))
-                                            <div class="group relative bg-white border rounded-2xl p-4 hover:shadow-md transition-all duration-200
+                                            <div class="group relative bg-white border rounded-2xl p-4 hover:shadow-md transition-all duration-200 flex flex-col justify-between
                                                 {{ $activeFeatures[$key] ? 'border-[#2ab4c0]/30 bg-[#f2feff]/30' : 'border-gray-200' }}">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                                                        {{ $activeFeatures[$key] ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
-                                                        @if($feature['icon'] === 'plane')
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-                                                        @elseif($feature['icon'] === 'building')
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                                        @elseif($feature['icon'] === 'car')
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zm-4-7H5l2-5h10l2 5z"/></svg>
-                                                        @elseif($feature['icon'] === 'bell')
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                                                        @else
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                        @endif
+                                                <div class="flex items-center justify-between gap-3">
+                                                    <div class="flex items-center gap-3 min-w-0">
+                                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
+                                                            {{ $activeFeatures[$key] ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
+                                                            @if($feature['icon'] === 'plane')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                                                            @elseif($feature['icon'] === 'building')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                                            @elseif($feature['icon'] === 'car')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zm-4-7H5l2-5h10l2 5z"/></svg>
+                                                            @elseif($feature['icon'] === 'bell')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                                            @else
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                            @endif
+                                                        </div>
+                                                        <div class="min-w-0">
+                                                            <p class="text-sm font-bold text-gray-900 truncate">{{ $feature['label'] }}</p>
+                                                            <p class="text-[11px] text-{{ $activeFeatures[$key] ? 'green-600' : 'gray-400' }} font-bold uppercase tracking-wide">
+                                                                {{ $activeFeatures[$key] ? 'Active' : 'Inactive' }}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-bold text-gray-900">{{ $feature['label'] }}</p>
-                                                        <p class="text-[11px] text-{{ $activeFeatures[$key] ? 'green-600' : 'gray-400' }} font-semibold uppercase tracking-wide">
-                                                            {{ $activeFeatures[$key] ? 'Active' : 'Inactive' }}
-                                                        </p>
-                                                    </div>
-                                                    <label class="relative inline-flex items-center cursor-pointer">
+                                                    <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                                         <input type="checkbox"
                                                                wire:click="toggleFeature({{ $activeCompany->id }}, '{{ $key }}')"
                                                                {{ $activeFeatures[$key] ? 'checked' : '' }}
@@ -144,33 +146,35 @@
                                     <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Admin Modules</span>
                                     <div class="flex-1 h-px bg-gray-100"></div>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     @foreach($definedFeatures as $key => $feature)
                                         @if(($feature['type'] ?? 'toggle') === 'toggle' && in_array($key, ['companies-module','branches-module','users-module','roles-permissions-module','feature-management-module']))
-                                            <div class="group relative bg-white border rounded-2xl p-4 hover:shadow-md transition-all duration-200
+                                            <div class="group relative bg-white border rounded-2xl p-4 hover:shadow-md transition-all duration-200 flex flex-col justify-between
                                                 {{ $activeFeatures[$key] ? 'border-[#2ab4c0]/30 bg-[#f2feff]/30' : 'border-gray-200' }}">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                                                        {{ $activeFeatures[$key] ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
-                                                        @if($feature['icon'] === 'office-building')
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                                        @elseif($feature['icon'] === 'branch')
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h5l2 4h6l2-4h3M3 7l2 8h14l2-8M3 7h18"/></svg>
-                                                        @elseif($feature['icon'] === 'users')
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                                        @elseif($feature['icon'] === 'shield')
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                                                        @else
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                                        @endif
+                                                <div class="flex items-center justify-between gap-3">
+                                                    <div class="flex items-center gap-3 min-w-0">
+                                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
+                                                            {{ $activeFeatures[$key] ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
+                                                            @if($feature['icon'] === 'office-building')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                                            @elseif($feature['icon'] === 'branch')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h5l2 4h6l2-4h3M3 7l2 8h14l2-8M3 7h18"/></svg>
+                                                            @elseif($feature['icon'] === 'users')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                            @elseif($feature['icon'] === 'shield')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+                                                            @else
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                            @endif
+                                                        </div>
+                                                        <div class="min-w-0">
+                                                            <p class="text-sm font-bold text-gray-900 truncate">{{ $feature['label'] }}</p>
+                                                            <p class="text-[11px] text-[#2ab4c0] font-bold uppercase tracking-wide">
+                                                                {{ $activeFeatures[$key] ? 'Enabled' : 'Disabled' }}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-bold text-gray-900">{{ $feature['label'] }}</p>
-                                                        <p class="text-[11px] text-{{ $activeFeatures[$key] ? '[#2ab4c0]' : 'gray-400' }} font-semibold uppercase tracking-wide">
-                                                            {{ $activeFeatures[$key] ? 'Enabled' : 'Disabled' }}
-                                                        </p>
-                                                    </div>
-                                                    <label class="relative inline-flex items-center cursor-pointer">
+                                                    <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                                         <input type="checkbox"
                                                                wire:click="toggleFeature({{ $activeCompany->id }}, '{{ $key }}')"
                                                                {{ $activeFeatures[$key] ? 'checked' : '' }}
@@ -190,12 +194,12 @@
                                     <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Quantity Limits</span>
                                     <div class="flex-1 h-px bg-gray-100"></div>
                                 </div>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     @foreach($definedFeatures as $key => $feature)
                                         @if(($feature['type'] ?? 'toggle') === 'quantity')
                                             <div x-data="{ qty: {{ is_numeric($activeFeatures[$key]) ? (int)$activeFeatures[$key] : 0 }} }"
-                                                class="group relative bg-white border border-[#2ab4c0]/30 rounded-2xl p-4 hover:shadow-md transition-all duration-200">
-                                                <div class="flex items-center gap-3">
+                                                class="group relative bg-[#f2feff]/30 border border-[#2ab4c0]/30 rounded-2xl p-4 hover:shadow-md transition-all duration-200 flex flex-col justify-between h-full">
+                                                <div class="flex items-start gap-3 mb-4">
                                                     {{-- Icon --}}
                                                     <div class="w-10 h-10 rounded-xl bg-[#2ab4c0]/10 text-[#2ab4c0] flex items-center justify-center flex-shrink-0">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
@@ -203,26 +207,29 @@
 
                                                     {{-- Label + current value --}}
                                                     <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-bold text-gray-900">{{ $feature['label'] }}</p>
-                                                        <p class="text-[11px] text-[#2ab4c0] font-semibold uppercase tracking-wide">
-                                                            <span x-text="qty"></span> max
+                                                        <p class="text-sm font-bold text-gray-900 leading-tight">{{ $feature['label'] }}</p>
+                                                        <p class="text-[11px] text-[#2ab4c0] font-black uppercase tracking-wider mt-1">
+                                                            Limit: <span x-text="qty"></span>
                                                         </p>
                                                     </div>
+                                                </div>
 
-                                                    {{-- Stepper + Save --}}
-                                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                                <div class="flex items-center justify-between gap-2 pt-3 border-t border-gray-50 flex-wrap">
+                                                    {{-- Stepper --}}
+                                                    <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100">
                                                         <button type="button" @click="qty = Math.max(0, qty - 1)"
-                                                            class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-[#2ab4c0]/10 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-bold transition-colors text-base leading-none">−</button>
+                                                            class="w-6 h-6 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-sm">−</button>
                                                         <input type="number" x-model.number="qty" min="0"
-                                                            class="w-14 text-center text-sm font-black text-gray-800 border border-gray-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/30 focus:border-[#2ab4c0] transition-all">
+                                                            class="w-10 text-center text-[13px] font-black text-gray-800 bg-transparent border-0 p-0 focus:ring-0">
                                                         <button type="button" @click="qty = qty + 1"
-                                                            class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-[#2ab4c0]/10 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-bold transition-colors text-base leading-none">+</button>
-                                                        <button type="button"
-                                                            @click="$wire.updateQuantity({{ $activeCompany->id }}, '{{ $key }}', qty)"
-                                                            class="ml-1 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-[#2ab4c0] bg-[#2ab4c0]/10 hover:bg-[#2ab4c0]/20 border border-[#2ab4c0]/30 rounded-lg transition-colors">
-                                                            Save
-                                                        </button>
+                                                            class="w-6 h-6 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-sm">+</button>
                                                     </div>
+
+                                                    <button type="button"
+                                                        @click="$wire.updateQuantity({{ $activeCompany->id }}, '{{ $key }}', qty)"
+                                                        class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#2ab4c0] bg-white hover:bg-[#2ab4c0] hover:text-white border border-[#2ab4c0]/40 rounded-lg transition-all shadow-sm active:scale-95">
+                                                        Update
+                                                    </button>
                                                 </div>
                                             </div>
                                         @endif

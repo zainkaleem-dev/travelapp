@@ -176,15 +176,17 @@
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     @foreach($allPermissions as $permission)
-                                        <div wire:key="perm-{{ $permission->id }}" class="group bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between hover:border-[#2ab4c0]/30 hover:shadow-sm transition-all duration-300">
+                                        <div wire:key="perm-{{ $permission->id }}" 
+                                            class="group border rounded-2xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300
+                                            {{ in_array($permission->name, $currentRolePermissions) ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
                                             <div class="flex items-center gap-4">
                                                 <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
                                                     {{ in_array($permission->name, $currentRolePermissions) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-300' }}">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                                 </div>
                                                 <div>
-                                                    <h4 class="text-sm font-bold text-gray-800 leading-tight">{{ ucwords(str_replace('.', ' ', $permission->name)) }}</h4>
-                                                    <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-0.5">{{ $permission->name }}</p>
+                                                    <h4 class="text-sm font-bold {{ in_array($permission->name, $currentRolePermissions) ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ ucwords(str_replace('.', ' ', $permission->name)) }}</h4>
+                                                    <p class="text-[10px] {{ in_array($permission->name, $currentRolePermissions) ? 'text-[#2ab4c0]' : 'text-gray-400' }} uppercase font-black tracking-widest mt-0.5 transition-colors">{{ $permission->name }}</p>
                                                 </div>
                                             </div>
 
@@ -246,11 +248,12 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         @foreach($contextRoles as $role)
                                             <div wire:key="user-role-{{ $role->id }}" 
-                                                class="group bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between transition-all duration-300
-                                                {{ $role->status ? '' : 'bg-gray-50/50' }}">
+                                                class="group border rounded-2xl p-4 flex items-center justify-between transition-all duration-300 shadow-sm hover:shadow-md
+                                                {{ $role->status ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
                                                 <div class="flex items-center gap-4">
-                                                    {{-- Static Letter Icon (No button, No checkmark) --}}
-                                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black bg-gray-100 text-gray-400">
+                                                    {{-- Static Letter Icon --}}
+                                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black transition-all
+                                                        {{ $role->status ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-100 text-gray-400' }}">
                                                         {{ strtoupper(substr($role->name, 0, 1)) }}
                                                     </div>
 

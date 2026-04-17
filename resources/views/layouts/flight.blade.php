@@ -812,7 +812,7 @@
 
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
-        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 mt-8 pt-4 pb-12 sm:pb-16">
+        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 {{ $isSuperAdminArea ? 'mt-2 pt-0' : 'mt-8 pt-4' }} pb-12 sm:pb-16">
             @if (!$isSuperAdminArea && !request()->routeIs('flights.list'))
                 <div class="max-w-[960px] mx-auto bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
                     @include('partials.navigation-bar')
@@ -934,7 +934,7 @@
                 @endunless
 
                 @if ($isSuperAdminArea)
-                    <div class="flex flex-col md:flex-row gap-6 mt-4">
+                    <div class="flex flex-col md:flex-row gap-6 mt-0">
                         {{-- Sidebar --}}
                         <div class="w-full md:w-64 flex-shrink-0">
                             <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sticky top-24">
