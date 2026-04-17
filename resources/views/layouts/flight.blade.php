@@ -685,7 +685,7 @@
                                 TMC Settings
                             </a>
 
-                            @role('Super Admin')
+                            @can('Manage Global System')
                             <a href="{{ route('superadmin.settings') }}"
                                 class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -694,7 +694,7 @@
                                 </svg>
                                 Super Admin Settings
                             </a>
-                            @endrole
+                            @endcan
 
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -734,6 +734,7 @@
         @unless ($hideMainNavForSuperAdmin || $hideMainNavForCompanyAdmin) 
             <div class="max-w-7xl mx-auto px-3 sm:px-4"> 
                 <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold"> 
+                @featureOrAdmin('flights-module')
                 <a href="{{ route('flights.search') }}" 
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.search') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap"> 
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -748,6 +749,8 @@
                     </svg>
                     My Trip
                 </a>
+                @endfeatureOrAdmin
+                @can('View Dashboard')
                 <a href="#"
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('dashboard') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -755,6 +758,8 @@
                     </svg>
                     Dashboard
                 </a>
+                @endcan
+                @featureOrAdmin('travel-hub-module')
                 <a href="{{ route('travel.hub') }}"
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('travel.hub') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -762,12 +767,35 @@
                     </svg>
                     Travel hub
                 </a>
+                @endfeatureOrAdmin
 
-                @if($isSuperAdmin || $isCompanyAdmin)
+                @can('Manage Roles and Permissions')
                 @php
-                    $rolesRoute = $isSuperAdmin ? route('superadmin.roles.index') : route('company.roles.index');
-                    $rolesRouteIs = $isSuperAdmin ? 'superadmin.roles.index' : 'company.roles.index';
+                    $user = auth()->user();
+                    $isSuper = $user->can('Manage Global System');
+                    $isCompany = $user->can('View Company');
+                    $isBranch = $user->can('View Branch');
+                    $isAgent = $user->hasRole('Agent');
+                    $isUser = $user->hasRole('User');
+
+                    if ($isSuper) {
+                        $rolesRoute = route('superadmin.roles.index');
+                        $rolesRouteIs = 'superadmin.roles.index';
+                    } elseif ($isCompany) {
+                        $rolesRoute = route('company.roles.index');
+                        $rolesRouteIs = 'company.roles.index';
+                    } elseif ($isBranch) {
+                        $rolesRoute = route('branch.roles.index');
+                        $rolesRouteIs = 'branch.roles.index';
+                    } elseif ($isAgent) {
+                        $rolesRoute = route('agent.roles.index');
+                        $rolesRouteIs = 'agent.roles.index';
+                    } else {
+                        $rolesRoute = route('user.roles.index');
+                        $rolesRouteIs = 'user.roles.index';
+                    }
                 @endphp
+                @featureOrAdmin('roles-permissions-module')
                 <a href="{{ $rolesRoute }}"
                     class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs($rolesRouteIs) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -775,7 +803,8 @@
                     </svg>
                     Roles & Permissions
                 </a>
-                @endif
+                @endfeatureOrAdmin
+                @endcan
                 </div>
             </div>
         @endunless
