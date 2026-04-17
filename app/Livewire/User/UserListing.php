@@ -1,13 +1,13 @@
 <?php
- 
+
 namespace App\Livewire\User;
- 
+
 use App\Models\User;
 use App\Services\PaginationService;
 use App\Support\TenantContext;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
- 
+
 #[Layout('layouts.flight')]
 class UserListing extends Component
 {
@@ -17,19 +17,19 @@ class UserListing extends Component
     public string $statusFilter = '';
     public string $sortBy = 'first_name';
     public string $sortDirection = 'asc';
- 
+
     public function mount(): void
     {
         $this->authorize('View User');
         $this->currentPage = (int) request()->query('page', 1);
     }
- 
+
     #[\Livewire\Attributes\On('paginationGoTo')]
     public function goToPage($page): void
     {
         $this->currentPage = (int) $page;
     }
- 
+
     public function updatedSearch(): void
     {
         $this->currentPage = 1;
@@ -50,14 +50,14 @@ class UserListing extends Component
         }
         $this->currentPage = 1;
     }
- 
+
     public function toggleActive(int $userId): void
     {
         $this->authorize('Edit User');
         $user = User::query()
             ->withoutRole('Super Admin')
             ->findOrFail($userId);
-            
+
         $newStatus = $user->status === 'active' ? 'inactive' : 'active';
         $user->update(['status' => $newStatus]);
     }
@@ -77,20 +77,20 @@ class UserListing extends Component
     {
         $this->authorize('Delete User');
         $companyId = (int) ($tenantContext->companyId() ?? 0);
- 
+
         $user = User::query()
             ->withoutRole('Super Admin')
             ->findOrFail($userId);
- 
+
         $user->delete();
         session()->flash('status', 'User deleted successfully.');
     }
- 
+
     public function render(PaginationService $paginationService, TenantContext $tenantContext)
     {
         $companyId = (int) ($tenantContext->companyId() ?? 0);
         $search = trim($this->search);
- 
+
         $query = User::query()
             ->withoutRole('Super Admin')
             ->when($search !== '', function ($q) use ($search) {
@@ -105,9 +105,9 @@ class UserListing extends Component
                 $query->where('status', $this->statusFilter);
             })
             ->orderBy($this->sortBy, $this->sortDirection);
- 
+
         $users = $paginationService->paginate($query, $this->perPage, $this->currentPage);
- 
+
         return view('livewire.user.listing', [
             'users' => $users,
             'paginationMeta' => $paginationService->getPaginationMeta($users),

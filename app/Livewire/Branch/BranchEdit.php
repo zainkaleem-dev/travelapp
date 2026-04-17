@@ -1,19 +1,19 @@
 <?php
- 
+
 namespace App\Livewire\Branch;
- 
+
 use App\Models\Company;
 use App\Models\Branch;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
- 
+
 #[Layout('layouts.flight')]
 class BranchEdit extends Component
 {
     public int $branchId;
     public Branch $branch;
- 
+
     // Identity
     public string $name = '';
     public string $code = '';
@@ -21,14 +21,14 @@ class BranchEdit extends Component
     public ?int $company_id = null;
     public bool $is_main = false;
     public string $status = 'active';
- 
+
     // Contact
     public ?string $email = null;
     public ?string $phone = null;
     public ?string $phone_secondary = null;
     public ?string $fax = null;
     public ?string $whatsapp = null;
- 
+
     // Address
     public ?string $address_line_1 = null;
     public ?string $address_line_2 = null;
@@ -36,49 +36,49 @@ class BranchEdit extends Component
     public ?string $state = null;
     public ?string $postal_code = null;
     public ?string $country = null;
- 
+
     // GPS & Others
     public ?string $latitude = null;
     public ?string $longitude = null;
     public ?string $notes = null;
- 
+
     public function mount(int $id): void
     {
         $this->branchId = $id;
         $this->branch = Branch::query()->findOrFail($id);
- 
+
         $this->name = $this->branch->name;
         $this->code = $this->branch->code;
         $this->slug = $this->branch->slug;
         $this->company_id = $this->branch->company_id;
         $this->is_main = (bool) $this->branch->is_main;
         $this->status = strtolower($this->branch->status ?: 'active');
- 
+
         $this->email = $this->branch->email;
         $this->phone = $this->branch->phone;
         $this->phone_secondary = $this->branch->phone_secondary;
         $this->fax = $this->branch->fax;
         $this->whatsapp = $this->branch->whatsapp;
- 
+
         $this->address_line_1 = $this->branch->address_line_1;
         $this->address_line_2 = $this->branch->address_line_2;
         $this->city = $this->branch->city;
         $this->state = $this->branch->state;
         $this->postal_code = $this->branch->postal_code;
         $this->country = $this->branch->country;
- 
+
         $this->latitude = $this->branch->latitude;
         $this->longitude = $this->branch->longitude;
         $this->notes = $this->branch->notes;
     }
- 
+
     public function updatedName($value): void
     {
         if (empty($this->slug)) {
             $this->slug = str($value)->slug()->toString();
         }
     }
- 
+
     protected function rules(): array
     {
         return [
@@ -88,7 +88,7 @@ class BranchEdit extends Component
             'company_id' => ['required', 'exists:companies,id'],
             'is_main' => ['boolean'],
             'status' => ['required', 'in:active,inactive'],
-            
+
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:50'],
             'phone_secondary' => ['nullable', 'string', 'max:50'],
@@ -102,7 +102,7 @@ class BranchEdit extends Component
             'postal_code' => ['nullable', 'string', 'max:50'],
             'country' => ['required', 'string', 'max:255'],
 
-            'latitude'  => ['required', 'numeric', 'between:-90,90'],
+            'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
             'notes' => ['nullable', 'string'],
         ];
@@ -121,17 +121,17 @@ class BranchEdit extends Component
             'longitude.required' => 'GPS Longitude is necessary for mapping.',
         ];
     }
- 
+
     public function save()
     {
         $validated = $this->validate();
- 
+
         $this->branch->update($validated);
- 
+
         session()->flash('status', 'Branch updated successfully.');
         return redirect()->route('superadmin.branches');
     }
- 
+
     public function render()
     {
         return view('livewire.branch.edit', [

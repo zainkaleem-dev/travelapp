@@ -14,10 +14,14 @@
                 <table class="w-full">
                     <thead>
                         <tr class="border-b border-gray-200 bg-gray-50">
-                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Company</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Type</th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Status</th>
-                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wide">Actions</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">
+                                Company</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Type
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">
+                                Status</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wide">
+                                Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,7 +30,8 @@
                                 <td class="px-6 py-4 text-sm font-semibold text-gray-900">{{ $companyName }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-700">{{ $companyType ?: '—' }}</td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center rounded-md {{ $isActive ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2 py-0.5 text-[11px] font-black">
+                                    <span
+                                        class="inline-flex items-center rounded-md {{ $isActive ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2 py-0.5 text-[11px] font-black">
                                         {{ $isActive ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>

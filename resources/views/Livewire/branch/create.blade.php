@@ -55,36 +55,56 @@
 
                         <div>
                             <label class="field-label">Parent Company <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, selected: @js((string) ($company_id ?? '')), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                            <div class="relative"
+                                x-data="{ open: false, selected: @js((string) ($company_id ?? '')), labels: @js($companies->pluck('name', 'id')) }"
+                                @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn" @click="open = !open">
-                                    <span x-text="selected === '' ? 'Select Company...' : (labels[selected] ?? 'Select Company...')"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    <span
+                                        x-text="selected === '' ? 'Select Company...' : (labels[selected] ?? 'Select Company...')"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
+                                        :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                                 <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('company_id', '')">Select Company...</button>
+                                    <button type="button" class="admin-menu-item"
+                                        :class="{ 'is-active': selected === '' }"
+                                        @click="selected = ''; open = false; $wire.set('company_id', '')">Select
+                                        Company...</button>
                                     @foreach($companies as $company)
-                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $company->id }}' }" @click="selected = '{{ $company->id }}'; open = false; $wire.set('company_id', '{{ $company->id }}')">{{ $company->name }}</button>
+                                        <button type="button" class="admin-menu-item"
+                                            :class="{ 'is-active': selected === '{{ $company->id }}' }"
+                                            @click="selected = '{{ $company->id }}'; open = false; $wire.set('company_id', '{{ $company->id }}')">{{ $company->name }}</button>
                                     @endforeach
                                 </div>
                             </div>
                             @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Status <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, selected: @js($status ?? 'active') }" @keydown.escape.window="open = false" @click.outside="open = false">
+                            <div class="relative" x-data="{ open: false, selected: @js($status ?? 'active') }"
+                                @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn" @click="open = !open">
                                     <span x-text="selected.charAt(0).toUpperCase() + selected.slice(1)"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
+                                        :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                                 <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'active' }" @click="selected = 'active'; open = false; $wire.set('status', 'active')">Active</button>
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'inactive' }" @click="selected = 'inactive'; open = false; $wire.set('status', 'inactive')">Inactive</button>
+                                    <button type="button" class="admin-menu-item"
+                                        :class="{ 'is-active': selected === 'active' }"
+                                        @click="selected = 'active'; open = false; $wire.set('status', 'active')">Active</button>
+                                    <button type="button" class="admin-menu-item"
+                                        :class="{ 'is-active': selected === 'inactive' }"
+                                        @click="selected = 'inactive'; open = false; $wire.set('status', 'inactive')">Inactive</button>
                                 </div>
                             </div>
                         </div>
@@ -126,7 +146,8 @@
                             <input type="text" wire:model="phone_secondary" class="input-field"
                                 placeholder="+1234567890">
                             @error('phone_secondary') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
@@ -140,7 +161,8 @@
                             <label class="field-label">WhatsApp</label>
                             <input type="text" wire:model="whatsapp" class="input-field" placeholder="+1234567890">
                             @error('whatsapp') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
                     </div>
                 </div>
@@ -157,14 +179,16 @@
                             <input type="text" wire:model="address_line_1" class="input-field"
                                 placeholder="Street address, P.O. box">
                             @error('address_line_1') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Address Line 2</label>
                             <input type="text" wire:model="address_line_2" class="input-field"
                                 placeholder="Apartment, suite, unit, building, floor">
                             @error('address_line_2') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
@@ -183,20 +207,24 @@
                             <label class="field-label">Postal Code</label>
                             <input type="text" wire:model="postal_code" class="input-field" placeholder="e.g. 12345">
                             @error('postal_code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Country <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="country" class="input-field"
                                 placeholder="e.g. United Arab Emirates">
                             @error('country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div class="md:col-span-3">
                             <label class="field-label mb-2">Pin Location on Map (Leaflet)</label>
-                            <div id="branch-map" class="w-full h-[300px] rounded-xl border border-gray-200 shadow-inner" wire:ignore></div>
-                            <p class="text-[10px] text-red-500 mt-2 italic">Drag the marker or click on the map to update coordinates automatically.</p>
+                            <div id="branch-map" class="w-full h-[300px] rounded-xl border border-gray-200 shadow-inner"
+                                wire:ignore></div>
+                            <p class="text-[10px] text-red-500 mt-2 italic">Drag the marker or click on the map to
+                                update coordinates automatically.</p>
                         </div>
 
                         <div>
@@ -204,14 +232,16 @@
                             <input type="text" id="branch-lat" wire:model="latitude" class="input-field font-mono"
                                 placeholder="e.g. 25.2048">
                             @error('latitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Longitude <span class="text-red-500">*</span></label>
                             <input type="text" id="branch-lng" wire:model="longitude" class="input-field font-mono"
                                 placeholder="e.g. 55.2708">
                             @error('longitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div class="md:col-span-3">
@@ -239,86 +269,88 @@
 </div>
 
 @push('styles')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<style>
-    .leaflet-container {
-        z-index: 10;
-        border-radius: 0.75rem;
-    }
-</style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        .leaflet-container {
+            z-index: 10;
+            border-radius: 0.75rem;
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script>
-    (function() {
-        let map, marker;
-        const defaultLat = 25.2048;
-        const defaultLng = 55.2708;
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        (function () {
+            let map, marker;
+            const defaultLat = 25.2048;
+            const defaultLng = 55.2708;
 
-        function initLeafletMap() {
-            const mapEl = document.getElementById('branch-map');
-            if (!mapEl || mapEl._leaflet_id) return;
+            function initLeafletMap() {
+                const mapEl = document.getElementById('branch-map');
+                if (!mapEl || mapEl._leaflet_id) return;
 
-            const latInput = document.getElementById('branch-lat');
-            const lngInput = document.getElementById('branch-lng');
+                const latInput = document.getElementById('branch-lat');
+                const lngInput = document.getElementById('branch-lng');
 
-            const initialLat = parseFloat(latInput.value) || defaultLat;
-            const initialLng = parseFloat(lngInput.value) || defaultLng;
+                const initialLat = parseFloat(latInput.value) || defaultLat;
+                const initialLng = parseFloat(lngInput.value) || defaultLng;
 
-            map = L.map('branch-map').setView([initialLat, initialLng], 13);
-            
-            // Fix for gray box / tile loading issues
-            setTimeout(() => {
-                map.invalidateSize();
-            }, 100);
+                map = L.map('branch-map').setView([initialLat, initialLng], 13);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
+                // Fix for gray box / tile loading issues
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
 
-            marker = L.marker([initialLat, initialLng], {
-                draggable: true
-            }).addTo(map);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
 
-            marker.on('dragend', function(event) {
-                const pos = event.target.getLatLng();
-                updateLatLng(pos.lat, pos.lng);
-            });
+                marker = L.marker([initialLat, initialLng], {
+                    draggable: true
+                }).addTo(map);
 
-            map.on('click', function(e) {
-                const lat = e.latlng.lat;
-                const lng = e.latlng.lng;
-                marker.setLatLng([lat, lng]);
-                updateLatLng(lat, lng);
-            });
-
-            // Handle manual input changes
-            [latInput, lngInput].forEach(el => {
-                el.addEventListener('change', function() {
-                    const lat = parseFloat(latInput.value) || 0;
-                    const lng = parseFloat(lngInput.value) || 0;
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        marker.setLatLng([lat, lng]);
-                        map.panTo([lat, lng]);
-                    }
+                marker.on('dragend', function (event) {
+                    const pos = event.target.getLatLng();
+                    updateLatLng(pos.lat, pos.lng);
                 });
-            });
 
-            function updateLatLng(lat, lng) {
-                const latFixed = lat.toFixed(6);
-                const lngFixed = lng.toFixed(6);
-                latInput.value = latFixed;
-                lngInput.value = lngFixed;
-                @this.set('latitude', latFixed);
-                @this.set('longitude', lngFixed);
+                map.on('click', function (e) {
+                    const lat = e.latlng.lat;
+                    const lng = e.latlng.lng;
+                    marker.setLatLng([lat, lng]);
+                    updateLatLng(lat, lng);
+                });
+
+                // Handle manual input changes
+                [latInput, lngInput].forEach(el => {
+                    el.addEventListener('change', function () {
+                        const lat = parseFloat(latInput.value) || 0;
+                        const lng = parseFloat(lngInput.value) || 0;
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            marker.setLatLng([lat, lng]);
+                            map.panTo([lat, lng]);
+                        }
+                    });
+                });
+
+                function updateLatLng(lat, lng) {
+                    const latFixed = lat.toFixed(6);
+                    const lngFixed = lng.toFixed(6);
+                    latInput.value = latFixed;
+                    lngInput.value = lngFixed;
+                    @this.set('latitude', latFixed);
+                    @this.set('longitude', lngFixed);
+                }
             }
-        }
 
-        // Run on load and on Livewire navigation
-        initLeafletMap();
-        document.addEventListener('livewire:navigated', initLeafletMap);
-    })();
-</script>
+            // Run on load and on Livewire navigation
+            initLeafletMap();
+            document.addEventListener('livewire:navigated', initLeafletMap);
+        })();
+    </script>
 @endpush

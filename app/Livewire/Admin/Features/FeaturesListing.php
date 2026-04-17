@@ -19,86 +19,86 @@ class FeaturesListing extends Component
     public array $definedFeatures = [
         // ── Travel Modules ───────────────────────────────────────────
         'flights-module' => [
-            'label'       => 'Flights',
-            'icon'        => 'plane',
+            'label' => 'Flights',
+            'icon' => 'plane',
             'description' => 'Flight search, booking, and management capabilities.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
         'hotels-module' => [
-            'label'       => 'Hotels',
-            'icon'        => 'building',
+            'label' => 'Hotels',
+            'icon' => 'building',
             'description' => 'Hotel reservations and accommodation services.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
         'cars-module' => [
-            'label'       => 'Cars',
-            'icon'        => 'car',
+            'label' => 'Cars',
+            'icon' => 'car',
             'description' => 'Car rental management and transportation booking.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
         'concierge-module' => [
-            'label'       => 'Concierge',
-            'icon'        => 'bell',
+            'label' => 'Concierge',
+            'icon' => 'bell',
             'description' => 'Premium concierge and VIP travel services.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
         'travel-hub-module' => [
-            'label'       => 'Travel Hub',
-            'icon'        => 'hub',
+            'label' => 'Travel Hub',
+            'icon' => 'hub',
             'description' => 'Unified travel dashboard for document syncing.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
 
         // ── Admin Modules ────────────────────────────────────────────
         'companies-module' => [
-            'label'       => 'Companies',
-            'icon'        => 'office-building',
+            'label' => 'Companies',
+            'icon' => 'office-building',
             'description' => 'Company creation and management access.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
         'branches-module' => [
-            'label'       => 'Branches',
-            'icon'        => 'branch',
+            'label' => 'Branches',
+            'icon' => 'branch',
             'description' => 'Branch management within each company.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
         'users-module' => [
-            'label'       => 'Users',
-            'icon'        => 'users',
+            'label' => 'Users',
+            'icon' => 'users',
             'description' => 'User creation, assignment, and management.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
         'roles-permissions-module' => [
-            'label'       => 'Roles & Permissions',
-            'icon'        => 'shield',
+            'label' => 'Roles & Permissions',
+            'icon' => 'shield',
             'description' => 'Role-based access control and permission assignment.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
         'feature-management-module' => [
-            'label'       => 'Feature Management',
-            'icon'        => 'cog',
+            'label' => 'Feature Management',
+            'icon' => 'cog',
             'description' => 'Control which features are enabled per company.',
-            'type'        => 'toggle',
+            'type' => 'toggle',
         ],
 
         // ── Quantity Limits ──────────────────────────────────────────
         'companies-quantity' => [
-            'label'       => 'Max Companies',
-            'icon'        => 'hash',
+            'label' => 'Max Companies',
+            'icon' => 'hash',
             'description' => 'Maximum number of companies allowed in the system.',
-            'type'        => 'quantity',
+            'type' => 'quantity',
         ],
         'branches-quantity' => [
-            'label'       => 'Max Branches',
-            'icon'        => 'hash',
+            'label' => 'Max Branches',
+            'icon' => 'hash',
             'description' => 'Maximum number of branches allowed per company.',
-            'type'        => 'quantity',
+            'type' => 'quantity',
         ],
         'users-quantity' => [
-            'label'       => 'Max Users',
-            'icon'        => 'hash',
+            'label' => 'Max Users',
+            'icon' => 'hash',
             'description' => 'Maximum number of users allowed per company.',
-            'type'        => 'quantity',
+            'type' => 'quantity',
         ],
     ];
 
@@ -160,7 +160,7 @@ class FeaturesListing extends Component
             ->get();
 
         // Calculate stats — only count toggle features for sidebar
-        $toggleKeys = array_keys(array_filter($this->definedFeatures, fn ($f) => ($f['type'] ?? 'toggle') === 'toggle'));
+        $toggleKeys = array_keys(array_filter($this->definedFeatures, fn($f) => ($f['type'] ?? 'toggle') === 'toggle'));
         $companyStats = [];
         foreach ($sidebarCompanies as $company) {
             $activeCount = 0;
@@ -170,17 +170,17 @@ class FeaturesListing extends Component
                 }
             }
             $companyStats[$company->id] = [
-                'active'       => $activeCount,
-                'total'        => count($toggleKeys),
-                'is_any_active'=> $activeCount > 0,
+                'active' => $activeCount,
+                'total' => count($toggleKeys),
+                'is_any_active' => $activeCount > 0,
             ];
         }
 
         // Selected company details
-        $activeCompany   = $this->selectedCompany;
-        $activeFeatures  = [];
+        $activeCompany = $this->selectedCompany;
+        $activeFeatures = [];
         $activePercentage = 0;
-        $onCount  = 0;
+        $onCount = 0;
         $offCount = 0;
 
         if ($activeCompany) {
@@ -191,8 +191,10 @@ class FeaturesListing extends Component
                 } else {
                     $status = Feature::for($activeCompany)->active($f);
                     $activeFeatures[$f] = $status;
-                    if ($status) $onCount++;
-                    else         $offCount++;
+                    if ($status)
+                        $onCount++;
+                    else
+                        $offCount++;
                 }
             }
             $activePercentage = count($toggleKeys) > 0

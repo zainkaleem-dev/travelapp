@@ -18,28 +18,39 @@
                 <!-- Section 1: Identity -->
                 <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Identity & Organization</h2>
+                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Identity & Organization
+                        </h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         @role('Super Admin')
                         <div>
                             <label class="field-label">Select Company <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, selected: @entangle('company_id').live, labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                            <div class="relative"
+                                x-data="{ open: false, selected: @entangle('company_id').live, labels: @js($companies->pluck('name', 'id')) }"
+                                @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn" @click="open = !open">
-                                    <span x-text="!selected ? '-- Choose Company --' : (labels[selected] ?? '-- Choose Company --')"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    <span
+                                        x-text="!selected ? '-- Choose Company --' : (labels[selected] ?? '-- Choose Company --')"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
+                                        :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                                 <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': !selected }" @click="selected = ''; open = false">-- Choose Company --</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': !selected }"
+                                        @click="selected = ''; open = false">-- Choose Company --</button>
                                     @foreach($companies as $company)
-                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': String(selected) === '{{ $company->id }}' }" @click="selected = '{{ $company->id }}'; open = false">{{ $company->name }}</button>
+                                        <button type="button" class="admin-menu-item"
+                                            :class="{ 'is-active': String(selected) === '{{ $company->id }}' }"
+                                            @click="selected = '{{ $company->id }}'; open = false">{{ $company->name }}</button>
                                     @endforeach
                                 </div>
                             </div>
-                            @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
+                            {{ $message }}</p> @enderror
                         </div>
                         @endrole
 
@@ -49,25 +60,37 @@
                                 class="relative"
                                 x-data="{ open: false, selected: @entangle('branch_id').live, labels: @js(collect($branches)->pluck('name', 'id')) }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn" @click="if (!{{ empty($branches) ? 'true' : 'false' }}) open = !open" :class="{ 'opacity-60 cursor-not-allowed': {{ empty($branches) ? 'true' : 'false' }} }">
-                                    <span x-text="!selected ? '-- Choose Branch --' : (labels[selected] ?? '-- Choose Branch --')"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                <button type="button" class="admin-menu-btn"
+                                    @click="if (!{{ empty($branches) ? 'true' : 'false' }}) open = !open"
+                                    :class="{ 'opacity-60 cursor-not-allowed': {{ empty($branches) ? 'true' : 'false' }} }">
+                                    <span
+                                        x-text="!selected ? '-- Choose Branch --' : (labels[selected] ?? '-- Choose Branch --')"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
+                                        :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                                 <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': !selected }" @click="selected = ''; open = false">-- Choose Branch --</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': !selected }"
+                                        @click="selected = ''; open = false">-- Choose Branch --</button>
                                     @foreach($branches as $branch)
-                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': String(selected) === '{{ $branch->id }}' }" @click="selected = '{{ $branch->id }}'; open = false">{{ $branch->name }}</button>
+                                        <button type="button" class="admin-menu-item"
+                                            :class="{ 'is-active': String(selected) === '{{ $branch->id }}' }"
+                                            @click="selected = '{{ $branch->id }}'; open = false">{{ $branch->name }}</button>
                                     @endforeach
                                 </div>
                             </div>
                             @if(empty($branches) && $company_id)
-                            <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">This company has no branches yet.</p>
+                                <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">This company has no branches
+                                    yet.</p>
                             @elseif(!$company_id && auth()->user()->hasRole('Super Admin'))
-                            <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">Please select a company first.</p>
+                                <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">Please select a company first.
+                                </p>
                             @endif
-                            @error('branch_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            @error('branch_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
+                            {{ $message }}</p> @enderror
                         </div>
                     </div>
 
@@ -75,19 +98,22 @@
                         <div>
                             <label class="field-label">First Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="first_name" class="input-field" placeholder="e.g. John">
-                            @error('first_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            @error('first_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
+                            {{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Middle Name</label>
                             <input type="text" wire:model="middle_name" class="input-field" placeholder="e.g. Quincy">
-                            @error('middle_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            @error('middle_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
+                            {{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Last Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="last_name" class="input-field" placeholder="e.g. Doe">
-                            @error('last_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            @error('last_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
+                            {{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
@@ -101,14 +127,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="field-label">Email Address <span class="text-red-500">*</span></label>
-                            <input type="email" wire:model="email" class="input-field" placeholder="john.doe@example.com">
-                            @error('email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            <input type="email" wire:model="email" class="input-field"
+                                placeholder="john.doe@example.com">
+                            @error('email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Password <span class="text-red-500">*</span></label>
                             <input type="password" wire:model="password" class="input-field" placeholder="••••••••">
-                            @error('password') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            @error('password') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
+                            {{ $message }}</p> @enderror
                         </div>
 
                     </div>

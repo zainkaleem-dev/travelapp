@@ -54,7 +54,7 @@ class BranchCreate extends Component
             'company_id' => ['required', 'exists:companies,id'],
             'is_main' => ['boolean'],
             'status' => ['required', 'in:active,inactive'],
-            
+
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:50'],
             'phone_secondary' => ['nullable', 'string', 'max:50'],
@@ -68,7 +68,7 @@ class BranchCreate extends Component
             'postal_code' => ['nullable', 'string', 'max:50'],
             'country' => ['required', 'string', 'max:255'],
 
-            'latitude'  => ['required', 'numeric', 'between:-90,90'],
+            'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
             'notes' => ['nullable', 'string'],
         ];

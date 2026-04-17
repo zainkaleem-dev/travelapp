@@ -1,13 +1,13 @@
 <?php
- 
+
 namespace App\Livewire\Branch;
- 
+
 use App\Models\Branch;
 use App\Models\Company;
 use App\Services\PaginationService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
- 
+
 #[Layout('layouts.flight')]
 class BranchListing extends Component
 {
@@ -18,19 +18,19 @@ class BranchListing extends Component
     public string $sortDirection = 'asc';
     public string $companyFilter = '';
     public string $statusFilter = '';
- 
+
     public function mount()
     {
         $this->authorize('View Branch');
         $this->currentPage = (int) request()->query('page', 1);
     }
- 
+
     #[\Livewire\Attributes\On('paginationGoTo')]
     public function goToPage($page): void
     {
         $this->currentPage = (int) $page;
     }
- 
+
     public function updatedSearch(): void
     {
         $this->currentPage = 1;
@@ -61,7 +61,7 @@ class BranchListing extends Component
         }
         $this->currentPage = 1;
     }
- 
+
     public function toggleActive(int $branchId): void
     {
         $this->authorize('Edit Branch');
@@ -75,10 +75,10 @@ class BranchListing extends Component
         $this->authorize('Delete Branch');
         $branch = Branch::query()->findOrFail($branchId);
         $branch->delete();
-        
+
         session()->flash('status', 'Branch deleted successfully.');
     }
- 
+
     public function render(PaginationService $paginationService)
     {
         $search = trim($this->search);
@@ -104,9 +104,9 @@ class BranchListing extends Component
             ->leftJoin('companies', 'branches.company_id', '=', 'companies.id')
             ->select('branches.*')
             ->orderBy($this->sortBy === 'company' ? 'companies.name' : 'branches.' . $this->sortBy, $this->sortDirection);
- 
+
         $branches = $paginationService->paginate($query, $this->perPage, $this->currentPage);
- 
+
         return view('livewire.branch.listing', [
             'branches' => $branches,
             'companies' => Company::orderBy('name')->get(['id', 'name']),
