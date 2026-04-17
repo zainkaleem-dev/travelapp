@@ -29,9 +29,9 @@ class User extends Authenticatable implements MustVerifyEmail
         // 1. Get all roles currently assigned to the user that are ACTIVE (status = 1)
         // We check both the current team context and the global context (null)
         $originalTeamId = getPermissionsTeamId();
-        
+
         try {
-            $hasActiveRole = function($roleNames, $teamId) use ($guard) {
+            $hasActiveRole = function ($roleNames, $teamId) use ($guard) {
                 // Normalize $roleNames to an array of strings if it's a collection or array of objects
                 $names = [];
                 if (is_iterable($roleNames)) {
