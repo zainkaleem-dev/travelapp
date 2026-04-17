@@ -342,34 +342,56 @@ class RolesPermissions extends Component
         session()->flash('status', "Role '{$role->name}' status updated to " . ($role->status ? 'Active' : 'Inactive'));
     }
 
-    public function toggleUserAssignment($roleName)
+    public function toggleUserAssignment($roleId)
     {
         if (!$this->selectedUserId)
             return;
 
         $user = \App\Models\User::find($this->selectedUserId);
-        // Context follows the user's company
+        if (!$user) return;
+
         $teamId = $user->company_id;
         setPermissionsTeamId($teamId);
 
-        if ($user->hasRole($roleName)) {
-            $user->removeRole($roleName);
-            session()->flash('status', "Role '{$roleName}' removed from user.");
+        // Find the specific role record
+        $role = \App\Models\Role::find($roleId);
+        if (!$role) return;
+
+        // Check assignment by ID directly via pivot table
+        $isAssigned = \Illuminate\Support\Facades\DB::table('model_has_roles')
+            ->where('role_id', $role->id)
+            ->where('model_id', $user->id)
+            ->where('model_type', \App\Models\User::class)
+            ->where('company_id', $teamId)
+            ->exists();
+
+        if ($isAssigned) {
+            \Illuminate\Support\Facades\DB::table('model_has_roles')
+                ->where('role_id', $role->id)
+                ->where('model_id', $user->id)
+                ->where('model_type', \App\Models\User::class)
+                ->where('company_id', $teamId)
+                ->delete();
+            session()->flash('status', "Role '{$role->name}' removed from user.");
         } else {
-            // Force assignment via Spatie's team-aware logic
-            $user->assignRole($roleName);
+            \Illuminate\Support\Facades\DB::table('model_has_roles')->insert([
+                'role_id'    => $role->id,
+                'model_id'   => $user->id,
+                'model_type' => \App\Models\User::class,
+                'company_id' => $teamId,
+            ]);
+            session()->flash('status', "Role '{$role->name}' assigned to user.");
         }
 
-        // Clear permissions cache immediately
+        // Clear permissions cache
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 
     public function toggleDoubleSync($roleName, $roleId)
     {
-        // If we are in 'users' mode, we only want to toggle the assignment, 
-        // NOT the global role status.
+        // If we are in 'users' mode, we toggle the specific role ID assignment
         if ($this->viewMode === 'users') {
-            $this->toggleUserAssignment($roleName);
+            $this->toggleUserAssignment($roleId);
             return;
         }
 
@@ -421,7 +443,7 @@ class RolesPermissions extends Component
         }
 
         // For user assignment mode
-        $currentUserRoles = [];
+        $currentUserRoleIds = [];
         $contextRoles = [];
 
         if ($this->viewMode === 'users' && $this->activeUser) {
@@ -429,7 +451,13 @@ class RolesPermissions extends Component
             $teamId = $this->activeUser->company_id;
             setPermissionsTeamId($teamId);
 
-            $currentUserRoles = $this->activeUser->roles()->pluck('name')->toArray();
+            // Read ACTUAL assignments by ID from pivot - bypasses name-match bleeding and ORM filters
+            $currentUserRoleIds = \Illuminate\Support\Facades\DB::table('model_has_roles')
+                ->where('model_id', $this->activeUser->id)
+                ->where('model_type', \App\Models\User::class)
+                ->where('company_id', $teamId)
+                ->pluck('role_id')
+                ->toArray();
 
             $contextRoles = \App\Models\Role::query()
                 ->where('company_id', $teamId)
@@ -449,7 +477,7 @@ class RolesPermissions extends Component
             'currentRolePermissions' => $currentRolePermissions,
             'selectedRole' => $selectedRole,
             'sidebarUsers' => $this->sidebarUsers,
-            'currentUserRoles' => $currentUserRoles,
+            'currentUserRoleIds' => $currentUserRoleIds,
             'contextRoles' => $contextRoles,
         ]);
     }

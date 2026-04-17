@@ -267,15 +267,15 @@
                                         @foreach($contextRoles as $role)
                                             <div wire:key="user-{{ $activeUser->id }}-role-{{ $role->id }}" 
                                                 class="group border rounded-2xl p-4 flex items-center justify-between transition-all duration-300 shadow-sm hover:shadow-md
-                                                {{ in_array($role->name, $currentUserRoles) ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
+                                                {{ in_array($role->id, $currentUserRoleIds) ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
                                                 <div class="flex items-center gap-4">
                                                     <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-teal-50 transition-colors">
                                                         <svg class="w-5 h-5 text-gray-400 group-hover:text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                                     </div>
                                                     <div>
-                                                        <h4 class="text-sm font-bold {{ in_array($role->name, $currentUserRoles) ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
+                                                        <h4 class="text-sm font-bold {{ in_array($role->id, $currentUserRoleIds) ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
                                                         <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mt-0.5">
-                                                            {{ in_array($role->name, $currentUserRoles) ? 'Assigned to User' : 'Not Assigned' }}
+                                                            {{ in_array($role->id, $currentUserRoleIds) ? 'Assigned to User' : 'Not Assigned' }}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -286,7 +286,7 @@
                                                             @if($role->company_id !== null)
                                                                 wire:click="toggleDoubleSync('{{ $role->name }}', {{ $role->id }})"
                                                             @endif
-                                                            {{ in_array($role->name, $currentUserRoles) ? 'checked' : '' }}
+                                                            {{ in_array($role->id, $currentUserRoleIds) ? 'checked' : '' }}
                                                             {{ $role->company_id === null ? 'disabled' : '' }}
                                                             class="sr-only peer">
                                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors
