@@ -24,6 +24,7 @@ class UserCreate extends Component
 
     public $companies = [];
     public $branches = [];
+    public string $routePrefix = 'superadmin';
 
     public function mount(TenantContext $tenantContext)
     {
@@ -35,6 +36,10 @@ class UserCreate extends Component
         } else {
             $this->company_id = $tenantContext->companyId();
             $this->updatedCompanyId();
+        }
+
+        if (request()->is('company*')) {
+            $this->routePrefix = 'company';
         }
     }
 
@@ -97,7 +102,7 @@ class UserCreate extends Component
         }
 
         session()->flash('status', "User '{$user->display_name}' created successfully with default permissions.");
-        return redirect()->route('superadmin.users');
+        return redirect()->route($this->routePrefix . '.users.index');
     }
 
     public function render()

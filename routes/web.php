@@ -185,6 +185,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/branches', BranchListing::class)->name('company.branches.index');
         Route::get('/branches/create', BranchCreate::class)->name('company.branches.create');
         Route::get('/branches/{id}/edit', BranchEdit::class)->name('company.branches.edit');
+        Route::get('/users', UserListing::class)->name('company.users');
+        Route::get('/users/create', UserCreate::class)->name('company.users.create');
+        Route::get('/users/{id}/edit', UserEdit::class)->name('company.users.edit');
+        Route::get('/features', FeaturesListing::class)->name('company.features');
         Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('company.roles.index');
     });
 

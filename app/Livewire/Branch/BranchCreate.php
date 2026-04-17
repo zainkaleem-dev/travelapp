@@ -15,8 +15,16 @@ class BranchCreate extends Component
     public string $code = '';
     public string $slug = '';
     public ?int $company_id = null;
+    public string $routePrefix = 'superadmin';
     public bool $is_main = false;
-    public string $status = 'active';
+
+    public function mount()
+    {
+        if (request()->is('company*')) {
+            $this->routePrefix = 'company';
+            $this->company_id = auth()->user()->company_id;
+        }
+    }    public string $status = 'active';
 
     // Contact
     public ?string $email = null;
@@ -95,7 +103,7 @@ class BranchCreate extends Component
         Branch::query()->create($validated);
 
         session()->flash('status', 'Branch created successfully.');
-        return redirect()->route('superadmin.branches');
+        return redirect()->route($this->routePrefix . '.branches.index');
     }
 
     public function render()

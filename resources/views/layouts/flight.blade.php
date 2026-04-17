@@ -849,6 +849,7 @@
             $hideMainNavForCompanyAdmin = $user && !$user->hasRole('Super Admin') && request()->is('company*');
 
             $isSuperAdminArea = $isSuperAdmin && (request()->is('super-admin*') || request()->routeIs('superadmin.*'));
+            $isCompanyAdminArea = $isCompanyAdmin && (request()->is('company*') || request()->routeIs('company.*'));
             $isManagementArea = request()->routeIs(['profile', 'settings', 'corporate.settings', 'tmc.settings', 'flights.list']);
           @endphp 
 
@@ -947,7 +948,7 @@
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
         <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 {{ ($isSuperAdminArea || $isManagementArea) ? 'mt-2 pt-0' : 'mt-8 pt-4' }} pb-12 sm:pb-16">
-            @if (!$isSuperAdminArea && !request()->routeIs(['flights.list', 'profile', 'settings', 'corporate.settings', 'tmc.settings']))
+            @if (!$isSuperAdminArea && !$isCompanyAdminArea && !request()->routeIs(['flights.list', 'profile', 'settings', 'corporate.settings', 'tmc.settings']))
                 {{-- ── Trip Type Bar (flight search only, read-only) ── --}}
                 @if (request()->routeIs('flights.search'))
                     @php
@@ -1094,7 +1095,7 @@
 
 
 
-                @if ($isSuperAdminArea)
+                @if ($isSuperAdminArea || $isCompanyAdminArea)
                     <div class="flex flex-col md:flex-row gap-6 mt-0">
                         {{-- Sidebar --}}
                         <div class="w-full md:w-64 flex-shrink-0">

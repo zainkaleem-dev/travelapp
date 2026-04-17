@@ -13,6 +13,7 @@ class BranchEdit extends Component
 {
     public int $branchId;
     public Branch $branch;
+    public string $routePrefix = 'superadmin';
 
     // Identity
     public string $name = '';
@@ -44,6 +45,10 @@ class BranchEdit extends Component
 
     public function mount(int $id): void
     {
+        if (request()->is('company*')) {
+            $this->routePrefix = 'company';
+        }
+
         $this->branchId = $id;
         $this->branch = Branch::query()->findOrFail($id);
 
@@ -129,7 +134,7 @@ class BranchEdit extends Component
         $this->branch->update($validated);
 
         session()->flash('status', 'Branch updated successfully.');
-        return redirect()->route('superadmin.branches');
+        return redirect()->route($this->routePrefix . '.branches.index');
     }
 
     public function render()

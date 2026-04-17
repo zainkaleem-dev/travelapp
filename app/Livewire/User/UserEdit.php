@@ -28,6 +28,7 @@ class UserEdit extends Component
 
     public $companies = [];
     public $branches = [];
+    public string $routePrefix = 'superadmin';
 
     public function mount(int $id, TenantContext $tenantContext): void
     {
@@ -49,6 +50,10 @@ class UserEdit extends Component
             $this->company_id = $this->user->company_id;
         } else {
             $this->company_id = $tenantContext->companyId();
+        }
+
+        if (request()->is('company*')) {
+            $this->routePrefix = 'company';
         }
 
         $this->branch_id = $this->user->branch_id;
@@ -109,7 +114,7 @@ class UserEdit extends Component
         }
 
         session()->flash('status', 'User updated successfully.');
-        return redirect()->route('superadmin.users');
+        return redirect()->route($this->routePrefix . '.users.index');
     }
 
     public function render()

@@ -3,6 +3,7 @@
         <div class="flex flex-col lg:flex-row gap-6 bg-transparent min-h-[calc(100vh-200px)]">
 
             {{-- ── Sidebar: Company List ─────────────────────────────── --}}
+            @if(!$isCompanyContext)
             <div class="w-full lg:w-60 flex-shrink-0">
                 <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
                     <div class="p-6 border-b border-gray-100 bg-[#f9faf6]">
@@ -55,6 +56,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
             {{-- ── Main Content ──────────────────────────────────────── --}}
             <div class="flex-1 min-w-0">

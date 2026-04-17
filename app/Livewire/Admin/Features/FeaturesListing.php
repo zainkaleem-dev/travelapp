@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Features;
 
 use App\Models\Company;
 use App\Services\PaginationService;
+use App\Support\TenantContext;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Laravel\Pennant\Feature;
@@ -102,12 +103,17 @@ class FeaturesListing extends Component
         ],
     ];
 
-    public function mount($company = null): void
+    public function mount(TenantContext $tenantContext, $company = null): void
     {
         if ($company instanceof Company && $company->exists) {
             $this->selectedCompanyId = $company->id;
         } elseif (is_numeric($company)) {
             $this->selectedCompanyId = (int) $company;
+        }
+
+        // If in company context and no company selected, default to current tenant
+        if (request()->is('company*') && !$this->selectedCompanyId) {
+            $this->selectedCompanyId = (int) ($tenantContext->companyId() ?? 0);
         }
     }
 
@@ -121,11 +127,20 @@ class FeaturesListing extends Component
 
     public function selectCompany(int $id): void
     {
+        // If in company context, prevent switching away from own company
+        if (request()->is('company*')) {
+            return;
+        }
         $this->selectedCompanyId = $id;
     }
 
-    public function toggleFeature(int $companyId, string $featureKey): void
+    public function toggleFeature(int $companyId, string $featureKey, TenantContext $tenantContext): void
     {
+        // Protection: if in company context, ensure we are editing our own company
+        if (request()->is('company*') && $companyId != $tenantContext->companyId()) {
+            return;
+        }
+
         $company = Company::findOrFail($companyId);
 
         if (Feature::for($company)->active($featureKey)) {
@@ -137,8 +152,13 @@ class FeaturesListing extends Component
         session()->flash('status', "Feature status updated for {$company->name}.");
     }
 
-    public function updateQuantity(int $companyId, string $featureKey, int $value): void
+    public function updateQuantity(int $companyId, string $featureKey, int $value, TenantContext $tenantContext): void
     {
+        // Protection: if in company context, ensure we are editing our own company
+        if (request()->is('company*') && $companyId != $tenantContext->companyId()) {
+            return;
+        }
+
         $company = Company::findOrFail($companyId);
         Feature::for($company)->activate($featureKey, max(0, $value));
         session()->flash('status', "Quantity limit updated for {$company->name}.");
@@ -149,11 +169,16 @@ class FeaturesListing extends Component
         return $this->selectedCompanyId ? Company::find($this->selectedCompanyId) : null;
     }
 
-    public function render()
+    public function render(TenantContext $tenantContext)
     {
-        // Fetch companies for the sidebar (without standard pagination since it's a scrollable list)
+        $isCompanyContext = request()->is('company*');
+        
+        // Fetch companies for the sidebar 
         $sidebarCompanies = Company::query()
-            ->when($this->search, function ($q) {
+            ->when($isCompanyContext, function ($q) use ($tenantContext) {
+                $q->where('id', $tenantContext->companyId());
+            })
+            ->when(!$isCompanyContext && $this->search, function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%');
             })
             ->orderBy('name')
@@ -178,6 +203,12 @@ class FeaturesListing extends Component
 
         // Selected company details
         $activeCompany = $this->selectedCompany;
+        
+        // Final protection: if company context, ensure activeCompany matches tenant
+        if ($isCompanyContext && $activeCompany && $activeCompany->id != $tenantContext->companyId()) {
+            $activeCompany = Company::find($tenantContext->companyId());
+        }
+
         $activeFeatures = [];
         $activePercentage = 0;
         $onCount = 0;
@@ -210,6 +241,7 @@ class FeaturesListing extends Component
             'onCount' => $onCount,
             'offCount' => $offCount,
             'activePercentage' => $activePercentage,
+            'isCompanyContext' => $isCompanyContext,
         ]);
     }
 }

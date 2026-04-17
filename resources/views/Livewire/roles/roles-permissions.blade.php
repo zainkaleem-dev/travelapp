@@ -2,8 +2,7 @@
     <div class="px-1 py-1 w-full">
         <div class="flex flex-col lg:flex-row gap-6 bg-transparent min-h-[calc(100vh-200px)]">
             
-            {{-- Sidebar: Company Selection (Super Admin Only) --}}
-            @if($isSuperAdmin)
+            {{-- Sidebar: Access Control (Super Admin sees Context, Company Admin sees their own) --}}
             <div class="w-full lg:w-60 flex-shrink-0">
                 <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
                     <div class="p-6 bg-[#f9faf6] border-b border-gray-100">
@@ -126,7 +125,6 @@
                     </div>
                 </div>
             </div>
-            @endif
 
             {{-- Main Content: Roles & Permissions --}}
             <div class="flex-1 min-h-0">

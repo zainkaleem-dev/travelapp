@@ -18,11 +18,16 @@ class BranchListing extends Component
     public string $sortDirection = 'asc';
     public string $companyFilter = '';
     public string $statusFilter = '';
+    public string $routePrefix = 'superadmin';
 
     public function mount()
     {
         $this->authorize('View Branch');
         $this->currentPage = (int) request()->query('page', 1);
+
+        if (request()->is('company*')) {
+            $this->routePrefix = 'company';
+        }
     }
 
     #[\Livewire\Attributes\On('paginationGoTo')]

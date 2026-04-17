@@ -17,10 +17,12 @@ class UserListing extends Component
     public string $statusFilter = '';
     public string $sortBy = 'first_name';
     public string $sortDirection = 'asc';
+    public string $routePrefix = 'superadmin';
 
     public function mount(): void
     {
         $this->authorize('View User');
+        $this->routePrefix = request()->is('super-admin*') ? 'superadmin' : 'company';
         $this->currentPage = (int) request()->query('page', 1);
     }
 

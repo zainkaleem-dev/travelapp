@@ -16,7 +16,7 @@
                                     d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                             </svg>
                         </button>
-                        <a href="{{ route('superadmin.branches.create') }}"
+                        <a href="{{ route($routePrefix . '.branches.create') }}"
                             class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                             Add Branch
                         </a>
@@ -34,6 +34,7 @@
                 <div class="flex flex-col gap-4">
                     <!-- Top Filter Row -->
                     <div class="flex flex-wrap items-center gap-3">
+                        @if($routePrefix === 'superadmin')
                         <div class="w-full sm:w-64">
                             <div class="relative"
                                 x-data="{ open: false, selected: @js((string) ($companyFilter ?? '')), labels: @js($companies->pluck('name', 'id')) }"
@@ -61,6 +62,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
 
                         <div class="w-full sm:w-44">
                             <div class="relative" x-data="{ open: false, selected: @js($statusFilter ?? '') }"
@@ -321,7 +323,7 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-1">
-                                            <a href="{{ route('superadmin.branches.edit', $branch->id) }}"
+                                            <a href="{{ route($routePrefix . '.branches.edit', $branch->id) }}"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                 title="Edit">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
