@@ -32,7 +32,8 @@ class TenantContext
             return null;
         }
 
-        if ($this->isSuperAdmin === null) {
+        if ($user) {
+            // Ensure we resolve or re-resolve if the user is present
             $this->isSuperAdmin = $user->hasRole('Super Admin');
         }
 

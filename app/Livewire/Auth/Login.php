@@ -86,6 +86,9 @@ class Login extends Component
         Auth::login($user, $this->remember); 
         request()->session()->regenerate(); 
 
+        // Set the multi-tenant context before checking roles for redirection
+        setPermissionsTeamId($user->company_id);
+
         if ($user->hasRole('Super Admin')) {
             $this->redirect(route('superadmin.companies.index'));
             return;

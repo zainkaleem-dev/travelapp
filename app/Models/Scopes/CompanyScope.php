@@ -41,9 +41,8 @@ class CompanyScope implements Scope
             }
 
             if ($companyId === null) {
-                // If the user is authenticated but no company is resolved, 
-                // and they aren't a super admin, we should restrict unless we are in a truly global context.
-                $builder->whereRaw('1 = 0');
+                // If the context isn't set yet (e.g. during early authentication or login),
+                // we skip adding the filter. This allows the user to be found so the context can be set.
                 return;
             }
 

@@ -182,6 +182,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['company.tenant', 'company.admin', 'can:View Company'])->prefix('company')->group(function () {
         Route::get('/companies', CompanyListing::class)->name('company.companies.index');
+        Route::get('/branches', BranchListing::class)->name('company.branches.index');
+        Route::get('/branches/create', BranchCreate::class)->name('company.branches.create');
+        Route::get('/branches/{id}/edit', BranchEdit::class)->name('company.branches.edit');
         Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('company.roles.index');
     });
 
