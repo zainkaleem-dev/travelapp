@@ -70,15 +70,6 @@
     @elseif ($isCompanyAdminArea)
         {{-- Company Admin Navigation --}}
 
-        <a href="{{ route('company.companies.index') }}"
-            class="inline-flex items-center gap-1.5 {{ $isVertical ? 'px-4 py-2.5 w-full rounded-lg' : 'px-3 py-2 sm:px-4 flex-shrink-0' }} {{ request()->routeIs('company.companies.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} {{ $isVertical ? '' : 'rounded-t' }} text-xs whitespace-nowrap">
-            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
-            </svg>
-            Company Profile
-        </a>
         <a href="{{ route('company.branches.index') }}"
             class="inline-flex items-center gap-1.5 {{ $isVertical ? 'px-4 py-2.5 w-full rounded-lg' : 'px-3 py-2 sm:px-4 flex-shrink-0' }} {{ request()->routeIs('company.branches*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} {{ $isVertical ? '' : 'rounded-t' }} text-xs whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
