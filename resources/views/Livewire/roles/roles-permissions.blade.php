@@ -51,11 +51,11 @@
                             </div>
                             @if($viewMode === 'roles')
                                 <input type="text" wire:model.live.debounce.300ms="search"
-                                    class="input-field block w-full pl-10 pr-3 placeholder-gray-400"
+                                    class="input-field block w-full pl-10 pr-3"
                                     placeholder="Search roles...">
                             @else
                                 <input type="text" wire:model.live.debounce.300ms="searchUsers"
-                                    class="input-field block w-full pl-10 pr-3 placeholder-gray-400"
+                                    class="input-field block w-full pl-10 pr-3"
                                     placeholder="Search users...">
                             @endif
                         </div>

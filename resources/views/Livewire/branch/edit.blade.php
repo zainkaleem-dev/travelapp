@@ -199,7 +199,7 @@
                         <div class="md:col-span-3">
                             <label class="field-label mb-2">Pin Location on Map (Leaflet)</label>
                             <div id="branch-map" class="w-full h-[300px] rounded-xl border border-gray-200 shadow-inner" wire:ignore></div>
-                            <p class="text-[10px] text-gray-500 mt-2 italic">Drag the marker or click on the map to update coordinates automatically.</p>
+                            <p class="text-[10px] text-red-500 mt-2 italic">Drag the marker or click on the map to update coordinates automatically.</p>
                         </div>
 
                         <div>

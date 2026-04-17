@@ -25,17 +25,17 @@
                         @role('Super Admin')
                         <div>
                             <label class="field-label">Select Company <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, selected: @js((string) ($company_id ?? '')), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                            <div class="relative" x-data="{ open: false, selected: @entangle('company_id').live, labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn" @click="open = !open">
-                                    <span x-text="selected === '' ? '-- Choose Company --' : (labels[selected] ?? '-- Choose Company --')"></span>
+                                    <span x-text="!selected ? '-- Choose Company --' : (labels[selected] ?? '-- Choose Company --')"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                                 <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('company_id', '')">-- Choose Company --</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': !selected }" @click="selected = ''; open = false">-- Choose Company --</button>
                                     @foreach($companies as $company)
-                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $company->id }}' }" @click="selected = '{{ $company->id }}'; open = false; $wire.set('company_id', '{{ $company->id }}')">{{ $company->name }}</button>
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': String(selected) === '{{ $company->id }}' }" @click="selected = '{{ $company->id }}'; open = false">{{ $company->name }}</button>
                                     @endforeach
                                 </div>
                             </div>
@@ -45,24 +45,27 @@
 
                         <div @unless(auth()->user()->hasRole('Super Admin')) class="col-span-2" @endunless>
                             <label class="field-label">Select Branch <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, selected: @js((string) ($branch_id ?? '')), labels: @js(collect($branches)->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                            <div wire:key="create-branch-dropdown-{{ $company_id ?? 'none' }}-{{ count($branches) }}"
+                                class="relative"
+                                x-data="{ open: false, selected: @entangle('branch_id').live, labels: @js(collect($branches)->pluck('name', 'id')) }"
+                                @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn" @click="if (!{{ empty($branches) ? 'true' : 'false' }}) open = !open" :class="{ 'opacity-60 cursor-not-allowed': {{ empty($branches) ? 'true' : 'false' }} }">
-                                    <span x-text="selected === '' ? '-- Choose Branch --' : (labels[selected] ?? '-- Choose Branch --')"></span>
+                                    <span x-text="!selected ? '-- Choose Branch --' : (labels[selected] ?? '-- Choose Branch --')"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
                                 <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('branch_id', '')">-- Choose Branch --</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': !selected }" @click="selected = ''; open = false">-- Choose Branch --</button>
                                     @foreach($branches as $branch)
-                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $branch->id }}' }" @click="selected = '{{ $branch->id }}'; open = false; $wire.set('branch_id', '{{ $branch->id }}')">{{ $branch->name }}</button>
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': String(selected) === '{{ $branch->id }}' }" @click="selected = '{{ $branch->id }}'; open = false">{{ $branch->name }}</button>
                                     @endforeach
                                 </div>
                             </div>
                             @if(empty($branches) && $company_id)
-                            <p class="mt-1 text-[11px] font-bold text-orange-500 uppercase">This company has no branches yet.</p>
+                            <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">This company has no branches yet.</p>
                             @elseif(!$company_id && auth()->user()->hasRole('Super Admin'))
-                            <p class="mt-1 text-[11px] font-bold text-gray-400 uppercase">Please select a company first.</p>
+                            <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">Please select a company first.</p>
                             @endif
                             @error('branch_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
