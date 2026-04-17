@@ -25,24 +25,40 @@
                         @role('Super Admin')
                         <div>
                             <label class="field-label">Select Company <span class="text-red-500">*</span></label>
-                            <select wire:model.live="company_id" class="field-input">
-                                <option value="">-- Choose Company --</option>
-                                @foreach($companies as $company)
-                                <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="relative" x-data="{ open: false, selected: @js((string) ($company_id ?? '')), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                    <span x-text="selected === '' ? '-- Choose Company --' : (labels[selected] ?? '-- Choose Company --')"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('company_id', '')">-- Choose Company --</button>
+                                    @foreach($companies as $company)
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $company->id }}' }" @click="selected = '{{ $company->id }}'; open = false; $wire.set('company_id', '{{ $company->id }}')">{{ $company->name }}</button>
+                                    @endforeach
+                                </div>
+                            </div>
                             @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                         @endrole
 
                         <div @unless(auth()->user()->hasRole('Super Admin')) class="col-span-2" @endunless>
                             <label class="field-label">Select Branch <span class="text-red-500">*</span></label>
-                            <select wire:model="branch_id" class="field-input" {{ empty($branches) ? 'disabled' : '' }}>
-                                <option value="">-- Choose Branch --</option>
-                                @foreach($branches as $branch)
-                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="relative" x-data="{ open: false, selected: @js((string) ($branch_id ?? '')), labels: @js(collect($branches)->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn" @click="if (!{{ empty($branches) ? 'true' : 'false' }}) open = !open" :class="{ 'opacity-60 cursor-not-allowed': {{ empty($branches) ? 'true' : 'false' }} }">
+                                    <span x-text="selected === '' ? '-- Choose Branch --' : (labels[selected] ?? '-- Choose Branch --')"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('branch_id', '')">-- Choose Branch --</button>
+                                    @foreach($branches as $branch)
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $branch->id }}' }" @click="selected = '{{ $branch->id }}'; open = false; $wire.set('branch_id', '{{ $branch->id }}')">{{ $branch->name }}</button>
+                                    @endforeach
+                                </div>
+                            </div>
                             @if(empty($branches) && $company_id)
                             <p class="mt-1 text-[11px] font-bold text-orange-500 uppercase">This company has no branches yet.</p>
                             @elseif(!$company_id && auth()->user()->hasRole('Super Admin'))
@@ -55,19 +71,19 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="field-label">First Name <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="first_name" class="field-input" placeholder="e.g. John">
+                            <input type="text" wire:model="first_name" class="input-field" placeholder="e.g. John">
                             @error('first_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Middle Name</label>
-                            <input type="text" wire:model="middle_name" class="field-input" placeholder="e.g. Quincy">
+                            <input type="text" wire:model="middle_name" class="input-field" placeholder="e.g. Quincy">
                             @error('middle_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Last Name <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="last_name" class="field-input" placeholder="e.g. Doe">
+                            <input type="text" wire:model="last_name" class="input-field" placeholder="e.g. Doe">
                             @error('last_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                     </div>
@@ -82,14 +98,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="field-label">Email Address <span class="text-red-500">*</span></label>
-                            <input type="email" wire:model="email" class="field-input" placeholder="john.doe@example.com">
+                            <input type="email" wire:model="email" class="input-field" placeholder="john.doe@example.com">
                             @error('email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
 
                         <div class="md:col-span-2 pt-4 border-t border-gray-100 mt-4">
                             <label class="field-label">Change Password</label>
-                            <input type="password" wire:model="password" class="field-input" placeholder="Leave blank to keep current password">
+                            <input type="password" wire:model="password" class="input-field" placeholder="Leave blank to keep current password">
                             <p class="mt-1.5 text-[10px] text-gray-500 font-medium">Only fill this if you want to reset the user's password.</p>
                             @error('password') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>

@@ -32,37 +32,47 @@
                     <!-- Top Filter Row -->
                     <div class="flex flex-wrap items-center gap-3">
                         <div class="w-full sm:w-44">
-                            <div class="field-wrap !py-2 !px-3">
-                                <select wire:model.live="statusFilter"
-                                    class="field-input !p-0 !border-0 !bg-transparent text-sm font-bold text-gray-900 focus:ring-0 cursor-pointer appearance-none">
-                                    <option value="">All Statuses</option>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
+                            <div class="relative" x-data="{ open: false, selected: @js($statusFilter ?? '') }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                    <span x-text="selected === '' ? 'All Statuses' : (selected.charAt(0).toUpperCase() + selected.slice(1))"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('statusFilter', '')">All Statuses</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'active' }" @click="selected = 'active'; open = false; $wire.set('statusFilter', 'active')">Active</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'inactive' }" @click="selected = 'inactive'; open = false; $wire.set('statusFilter', 'inactive')">Inactive</button>
+                                </div>
                             </div>
                         </div>
 
                         <div class="w-full sm:w-24 ms-auto">
-                            <div class="field-wrap !py-2 !px-3 flex items-center justify-center">
-                                <select wire:model.live="perPage"
-                                    class="field-input !p-0 !border-0 !bg-transparent text-sm font-bold text-gray-900 focus:ring-0 cursor-pointer appearance-none text-center">
-                                    <option value="10">10</option>
-                                    <option value="20">20</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
+                            <div class="relative flex items-center justify-center" x-data="{ open: false, selected: @js((string) ($perPage ?? 10)) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn justify-center" @click="open = !open">
+                                    <span x-text="selected"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '10' }" @click="selected = '10'; open = false; $wire.set('perPage', '10')">10</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '20' }" @click="selected = '20'; open = false; $wire.set('perPage', '20')">20</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '50' }" @click="selected = '50'; open = false; $wire.set('perPage', '50')">50</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '100' }" @click="selected = '100'; open = false; $wire.set('perPage', '100')">100</button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Search Row -->
                     <div class="w-full">
-                        <div class="field-wrap !py-3 !px-4 flex items-center gap-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="relative">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
-                            <input type="text" class="field-input text-base placeholder-gray-400" wire:model.live.debounce.300ms="search"
+                            <input type="text" class="input-field pl-10 placeholder-gray-400" wire:model.live.debounce.300ms="search"
                                 placeholder="Search users by name or email..." />
                         </div>
                     </div>

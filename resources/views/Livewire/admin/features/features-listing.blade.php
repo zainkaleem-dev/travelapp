@@ -17,7 +17,7 @@
                                 </svg>
                             </div>
                             <input type="text" wire:model.live.debounce.300ms="search"
-                                class="block w-full pl-10 pr-3 py-2.5 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
+                                class="input-field block w-full pl-10 pr-3 placeholder-gray-400"
                                 placeholder="Search companies...">
                         </div>
                     </div>
@@ -220,7 +220,7 @@
                                                         <button type="button" @click="qty = Math.max(0, qty - 1)"
                                                             class="w-6 h-6 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-sm">−</button>
                                                         <input type="number" x-model.number="qty" min="0"
-                                                            class="w-10 text-center text-[13px] font-black text-gray-800 bg-transparent border-0 p-0 focus:ring-0">
+                                                            class="input-field w-12 text-center text-[13px] font-black text-gray-800 !bg-transparent !border-0 p-0 focus:ring-0">
                                                         <button type="button" @click="qty = qty + 1"
                                                             class="w-6 h-6 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-sm">+</button>
                                                     </div>

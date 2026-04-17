@@ -134,6 +134,127 @@
             background: #fff;
         }
 
+        /* Auth-style input used in admin modules */
+        .input-field {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: all 0.15s ease;
+        }
+
+        .input-field::placeholder {
+            color: #94a3b8;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .admin-dropdown-wrap {
+            position: relative;
+        }
+
+        .admin-dropdown {
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            border-radius: 9999px;
+            padding: 6px 32px 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            line-height: 1.25rem;
+            transition: border-color .15s, box-shadow .15s;
+            cursor: pointer;
+        }
+
+        .admin-dropdown:focus {
+            outline: none;
+            border-color: #d1d5db;
+            box-shadow: 0 0 0 2px rgba(229, 231, 235, .9);
+        }
+
+        .admin-dropdown-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: #6b7280;
+            pointer-events: none;
+        }
+
+        .admin-menu-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            border-radius: 9999px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            line-height: 1.25rem;
+            transition: border-color .15s, box-shadow .15s;
+        }
+
+        .admin-menu-btn:hover {
+            border-color: #d1d5db;
+        }
+
+        .admin-menu-btn:focus {
+            outline: none;
+            border-color: #d1d5db;
+            box-shadow: 0 0 0 2px rgba(229, 231, 235, .9);
+        }
+
+        .admin-menu-panel {
+            position: absolute;
+            right: 0;
+            left: 0;
+            margin-top: 8px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(17, 24, 39, .12);
+            overflow: hidden;
+            z-index: 60;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .admin-menu-item {
+            width: 100%;
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #374151;
+            background: #fff;
+            transition: background-color .12s;
+        }
+
+        .admin-menu-item:hover {
+            background: #f9fafb;
+        }
+
+        .admin-menu-item.is-active {
+            color: #2ab4c0;
+            font-weight: 700;
+        }
+
         select.field-input {
             appearance: auto;
             -webkit-appearance: auto;

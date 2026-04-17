@@ -64,47 +64,55 @@
 
                         <div class="md:col-span-2">
                             <label class="field-label">Company Name <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model.debounce.500ms="company_name" class="field-input" placeholder="e.g. Acme Travel Services">
+                            <input type="text" wire:model.debounce.500ms="company_name" class="input-field" placeholder="e.g. Acme Travel Services">
                             @error('company_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Slug / ID <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="slug" class="field-input bg-gray-50 font-mono text-xs" placeholder="acme-travel">
+                            <input type="text" wire:model="slug" class="input-field bg-gray-50 font-mono" placeholder="acme-travel">
                             @error('slug') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Company Type <span class="text-red-500">*</span></label>
-                            <select wire:model="company_type" class="field-input">
-                                <option value="">Select type...</option>
-                                <option value="TMC">TMC (Travel Management)</option>
-                                <option value="Corporate">Corporate Client</option>
-                            </select>
+                            <div class="relative" x-data="{ open: false, selected: @js($company_type ?? '') }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                    <span x-text="selected === '' ? 'Select type...' : (selected === 'TMC' ? 'TMC (Travel Management)' : 'Corporate Client')"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('company_type', '')">Select type...</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'TMC' }" @click="selected = 'TMC'; open = false; $wire.set('company_type', 'TMC')">TMC (Travel Management)</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'Corporate' }" @click="selected = 'Corporate'; open = false; $wire.set('company_type', 'Corporate')">Corporate Client</button>
+                                </div>
+                            </div>
                             @error('company_type') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Registration No. <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="registration_number" class="field-input" placeholder="e.g. 12345-678">
+                            <input type="text" wire:model="registration_number" class="input-field" placeholder="e.g. 12345-678">
                             @error('registration_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Tax ID / VAT</label>
-                            <input type="text" wire:model="tax_number" class="field-input" placeholder="e.g. GB12345678">
+                            <input type="text" wire:model="tax_number" class="input-field" placeholder="e.g. GB12345678">
                             @error('tax_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Founded Year <span class="text-red-500">*</span></label>
-                            <input type="number" wire:model="founded_year" class="field-input" placeholder="e.g. 2010" min="1900" max="{{ date('Y') }}">
+                            <input type="number" wire:model="founded_year" class="input-field" placeholder="e.g. 2010" min="1900" max="{{ date('Y') }}">
                             @error('founded_year') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="md:col-span-3">
                             <label class="field-label">Company Description</label>
-                            <textarea wire:model="description" rows="3" class="field-input pt-2" placeholder="Tell us more about this company..."></textarea>
+                            <textarea wire:model="description" rows="3" class="input-field pt-2" placeholder="Tell us more about this company..."></textarea>
                             @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                     </div>
@@ -115,15 +123,23 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="field-label">Status <span class="text-red-500">*</span></label>
-                            <select wire:model="status" class="field-input">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
+                            <div class="relative" x-data="{ open: false, selected: @js($status ?? 'active') }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                    <span x-text="selected.charAt(0).toUpperCase() + selected.slice(1)"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'active' }" @click="selected = 'active'; open = false; $wire.set('status', 'active')">Active</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'inactive' }" @click="selected = 'inactive'; open = false; $wire.set('status', 'inactive')">Inactive</button>
+                                </div>
+                            </div>
                             @error('status') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                         <div class="md:col-span-2">
                             <label class="field-label">Internal Notes</label>
-                            <textarea wire:model="notes" rows="3" class="field-input pt-2" placeholder="Private internal notes..."></textarea>
+                            <textarea wire:model="notes" rows="3" class="input-field pt-2" placeholder="Private internal notes..."></textarea>
                             @error('notes') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                     </div>

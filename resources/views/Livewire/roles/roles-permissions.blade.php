@@ -26,12 +26,20 @@
                         @if($isSuperAdmin)
                         <div class="mb-4">
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Company Context</label>
-                            <select wire:model.live="contextCompanyId" class="w-full py-2.5 pl-3 pr-8 bg-white border border-gray-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all text-gray-700 shadow-sm">
-                                <option value="">Global System</option>
-                                @foreach($companies as $company)
-                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="relative" x-data="{ open: false, selected: @js((string) ($contextCompanyId ?? '')), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn w-full" @click="open = !open">
+                                    <span x-text="selected === '' ? 'Global System' : (labels[selected] ?? 'Global System')"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('contextCompanyId', '')">Global System</button>
+                                    @foreach($companies as $company)
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $company->id }}' }" @click="selected = '{{ $company->id }}'; open = false; $wire.set('contextCompanyId', '{{ $company->id }}')">{{ $company->name }}</button>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
                         @endif
 
@@ -43,11 +51,11 @@
                             </div>
                             @if($viewMode === 'roles')
                                 <input type="text" wire:model.live.debounce.300ms="search"
-                                    class="block w-full pl-10 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
+                                    class="input-field block w-full pl-10 pr-3 placeholder-gray-400"
                                     placeholder="Search roles...">
                             @else
                                 <input type="text" wire:model.live.debounce.300ms="searchUsers"
-                                    class="block w-full pl-10 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/20 focus:border-[#2ab4c0] transition-all"
+                                    class="input-field block w-full pl-10 pr-3 placeholder-gray-400"
                                     placeholder="Search users...">
                             @endif
                         </div>
@@ -162,7 +170,7 @@
                                     <div class="flex items-center gap-4">
                                         <div class="relative w-64">
                                             <input type="text" wire:model.live.debounce.300ms="searchPermissions"
-                                                class="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/10 transition-all font-medium"
+                                                class="input-field w-full pl-9 pr-4 transition-all font-medium"
                                                 placeholder="Filter permissions...">
                                             <svg class="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                         </div>

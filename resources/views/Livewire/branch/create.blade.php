@@ -32,7 +32,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-2">
                             <label class="field-label">Branch Name <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model.live.debounce.500ms="name" class="field-input"
+                            <input type="text" wire:model.live.debounce.500ms="name" class="input-field"
                                 placeholder="e.g. Dubai Main Office">
                             @error('name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
@@ -40,7 +40,7 @@
 
                         <div>
                             <label class="field-label">Slug / URL <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="slug" class="field-input bg-gray-50 font-mono text-xs"
+                            <input type="text" wire:model="slug" class="input-field bg-gray-50 font-mono"
                                 placeholder="dubai-office">
                             @error('slug') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
@@ -48,29 +48,45 @@
 
                         <div>
                             <label class="field-label">Branch Code <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="code" class="field-input" placeholder="e.g. DXB-001">
+                            <input type="text" wire:model="code" class="input-field" placeholder="e.g. DXB-001">
                             @error('code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Parent Company <span class="text-red-500">*</span></label>
-                            <select wire:model="company_id" class="field-input">
-                                <option value="">Select Company...</option>
-                                @foreach($companies as $company)
-                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="relative" x-data="{ open: false, selected: @js((string) ($company_id ?? '')), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                    <span x-text="selected === '' ? 'Select Company...' : (labels[selected] ?? 'Select Company...')"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('company_id', '')">Select Company...</button>
+                                    @foreach($companies as $company)
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $company->id }}' }" @click="selected = '{{ $company->id }}'; open = false; $wire.set('company_id', '{{ $company->id }}')">{{ $company->name }}</button>
+                                    @endforeach
+                                </div>
+                            </div>
                             @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Status <span class="text-red-500">*</span></label>
-                            <select wire:model="status" class="field-input">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
+                            <div class="relative" x-data="{ open: false, selected: @js($status ?? 'active') }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                    <span x-text="selected.charAt(0).toUpperCase() + selected.slice(1)"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'active' }" @click="selected = 'active'; open = false; $wire.set('status', 'active')">Active</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === 'inactive' }" @click="selected = 'inactive'; open = false; $wire.set('status', 'inactive')">Inactive</button>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="md:col-span-3">
@@ -93,21 +109,21 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="field-label">Email Address <span class="text-red-500">*</span></label>
-                            <input type="email" wire:model="email" class="field-input" placeholder="branch@company.com">
+                            <input type="email" wire:model="email" class="input-field" placeholder="branch@company.com">
                             @error('email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Primary Phone <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="phone" class="field-input" placeholder="+1234567890">
+                            <input type="text" wire:model="phone" class="input-field" placeholder="+1234567890">
                             @error('phone') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Secondary Phone</label>
-                            <input type="text" wire:model="phone_secondary" class="field-input"
+                            <input type="text" wire:model="phone_secondary" class="input-field"
                                 placeholder="+1234567890">
                             @error('phone_secondary') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
@@ -115,14 +131,14 @@
 
                         <div>
                             <label class="field-label">Fax Number</label>
-                            <input type="text" wire:model="fax" class="field-input" placeholder="+1234567890">
+                            <input type="text" wire:model="fax" class="input-field" placeholder="+1234567890">
                             @error('fax') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">WhatsApp</label>
-                            <input type="text" wire:model="whatsapp" class="field-input" placeholder="+1234567890">
+                            <input type="text" wire:model="whatsapp" class="input-field" placeholder="+1234567890">
                             @error('whatsapp') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
                         </div>
@@ -138,14 +154,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-2">
                             <label class="field-label">Address Line 1 <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="address_line_1" class="field-input"
+                            <input type="text" wire:model="address_line_1" class="input-field"
                                 placeholder="Street address, P.O. box">
                             @error('address_line_1') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Address Line 2</label>
-                            <input type="text" wire:model="address_line_2" class="field-input"
+                            <input type="text" wire:model="address_line_2" class="input-field"
                                 placeholder="Apartment, suite, unit, building, floor">
                             @error('address_line_2') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
@@ -153,25 +169,25 @@
 
                         <div>
                             <label class="field-label">City <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="city" class="field-input" placeholder="e.g. Dubai">
+                            <input type="text" wire:model="city" class="input-field" placeholder="e.g. Dubai">
                             @error('city') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
                         <div>
                             <label class="field-label">State / Province <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="state" class="field-input" placeholder="e.g. Dubai">
+                            <input type="text" wire:model="state" class="input-field" placeholder="e.g. Dubai">
                             @error('state') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Postal Code</label>
-                            <input type="text" wire:model="postal_code" class="field-input" placeholder="e.g. 12345">
+                            <input type="text" wire:model="postal_code" class="input-field" placeholder="e.g. 12345">
                             @error('postal_code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Country <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="country" class="field-input"
+                            <input type="text" wire:model="country" class="input-field"
                                 placeholder="e.g. United Arab Emirates">
                             @error('country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
@@ -185,14 +201,14 @@
 
                         <div>
                             <label class="field-label">Latitude <span class="text-red-500">*</span></label>
-                            <input type="text" id="branch-lat" wire:model="latitude" class="field-input font-mono text-xs"
+                            <input type="text" id="branch-lat" wire:model="latitude" class="input-field font-mono"
                                 placeholder="e.g. 25.2048">
                             @error('latitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Longitude <span class="text-red-500">*</span></label>
-                            <input type="text" id="branch-lng" wire:model="longitude" class="field-input font-mono text-xs"
+                            <input type="text" id="branch-lng" wire:model="longitude" class="input-field font-mono"
                                 placeholder="e.g. 55.2708">
                             @error('longitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                             {{ $message }}</p> @enderror
@@ -200,7 +216,7 @@
 
                         <div class="md:col-span-3">
                             <label class="field-label">Internal Notes</label>
-                            <textarea wire:model="notes" rows="3" class="field-input pt-2"
+                            <textarea wire:model="notes" rows="3" class="input-field pt-2"
                                 placeholder="Private internal notes about this branch..."></textarea>
                         </div>
                     </div>
