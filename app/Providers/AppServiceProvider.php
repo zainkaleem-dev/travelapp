@@ -29,11 +29,20 @@ class AppServiceProvider extends ServiceProvider
 
         // Implicitly grant "Super Admin" role all permissions globally
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('Super Admin') ? true : null;
+            return $user->hasPermissionTo('Manage Global System') ? true : null;
         });
 
         // Resolve Pennant scope to the current company
         Feature::resolveScopeUsing(fn() => app(TenantContext::class)->currentCompany(request()));
+
+        // Register custom Blade directive for Feature Gating with Super Admin Bypass
+        \Illuminate\Support\Facades\Blade::if('featureOrAdmin', function ($feature) {
+            $user = auth()->user();
+            if ($user && $user->can('Manage Global System')) {
+                return true;
+            }
+            return Feature::active($feature);
+        });
 
         // ── Travel Module Features ───
         Feature::define('flights-module', fn() => true);

@@ -28,7 +28,7 @@ class PermissionSeeder extends Seeder
         \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
         // 4. Standard Permissions
-        $permissions = [
+        $standardPermissions = [
             'View Dashboard',
             'View Company',
             'Create Company',
@@ -43,25 +43,30 @@ class PermissionSeeder extends Seeder
             'Manage Features',
         ];
 
-        foreach ($permissions as $permission) {
+        $globalPermissions = [
+            'Manage Global System',
+        ];
+
+        foreach (array_merge($standardPermissions, $globalPermissions) as $permission) {
             \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // 5. Global Roles (Explicitly NULL company_id)
         $superAdmin = \App\Models\Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $superAdmin->syncPermissions($permissions);
+        // Super Admin gets EVERYTHING including Global System management
+        $superAdmin->syncPermissions(array_merge($standardPermissions, $globalPermissions));
 
         $companyAdmin = \App\Models\Role::firstOrCreate(['name' => 'Company Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $companyAdmin->syncPermissions($permissions);
+        $companyAdmin->syncPermissions($standardPermissions);
 
         $branchAdmin = \App\Models\Role::firstOrCreate(['name' => 'Branch Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $branchAdmin->syncPermissions($permissions);
+        $branchAdmin->syncPermissions($standardPermissions);
 
         $agent = \App\Models\Role::firstOrCreate(['name' => 'Agent', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $agent->syncPermissions($permissions);
+        $agent->syncPermissions($standardPermissions);
 
         $user = \App\Models\Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $user->syncPermissions($permissions);
+        $user->syncPermissions($standardPermissions);
 
         // 6. Ensure Base Admin User exists and has role
         $admin = \App\Models\User::firstOrCreate(

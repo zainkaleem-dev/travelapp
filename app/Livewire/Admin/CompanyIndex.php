@@ -23,6 +23,7 @@ class CompanyIndex extends Component
  
     public function mount()
     {
+        $this->authorize('View Company');
         $this->currentPage = (int) request()->query('page', 1);
     }
  
@@ -65,6 +66,7 @@ class CompanyIndex extends Component
  
     public function toggleActive(int $companyId): void
     {
+        $this->authorize('Edit Company');
         $company = Company::query()->findOrFail($companyId);
         $newStatus = $company->status === 'active' ? 'inactive' : 'active';
         $company->update(['status' => $newStatus]);
@@ -72,6 +74,7 @@ class CompanyIndex extends Component
 
     public function deleteCompany(int $companyId): void
     {
+        $this->authorize('Delete Company');
         $company = Company::query()->findOrFail($companyId);
         $company->delete();
         

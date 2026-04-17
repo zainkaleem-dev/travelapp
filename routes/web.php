@@ -64,11 +64,21 @@ Route::get('/currency/{code}', function (Request $request, string $code) {
 // Root URL
 Route::get('/', function () {
     if (auth()->check()) {
-        if (auth()->user()->hasRole('Super Admin')) {
+        if (auth()->user()->can('Manage Global System')) {
             return redirect()->route('superadmin.companies.index');
         }
-        if (auth()->user()->hasRole('Company Admin')) {
+        if (auth()->user()->can('View Company')) {
             return redirect()->route('company.companies.index');
+        }
+        if (auth()->user()->can('View Branch')) {
+            return redirect()->route('branch.users.index');
+        }
+        // Agents and Users land on their specific prefixes if they have admin-style dashboard permissions
+        if (auth()->user()->hasRole('Agent')) {
+            return redirect()->route('agent.users.index');
+        }
+        if (auth()->user()->hasRole('User')) {
+            return redirect()->route('user.roles.index');
         }
         return redirect()->route('flights.search');
     }
@@ -140,7 +150,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tmc-settings', TmcSettings::class)->name('tmc.settings');
     Route::get('/super-admin-settings', SuperAdminSettings::class)->name('superadmin.settings');
 
-    Route::middleware(['superadmin'])->prefix('super-admin')->group(function () {
+    Route::middleware(['superadmin', 'can:View Dashboard'])->prefix('super-admin')->group(function () {
         Route::get('/companies', CompanyIndex::class)->name('superadmin.companies.index');
         Route::get('/branches', BranchListing::class)->name('superadmin.branches');
         Route::get('/branches/create', BranchCreate::class)->name('superadmin.branches.create');
@@ -160,33 +170,41 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/impersonate/leave', [\App\Http\Controllers\ImpersonateController::class, 'leave'])->name('impersonate.leave');
 
-    Route::middleware(['company.tenant', 'company.admin'])->prefix('company')->group(function () {
+    Route::middleware(['company.tenant', 'company.admin', 'can:View Company'])->prefix('company')->group(function () {
         Route::get('/companies', CompanyListing::class)->name('company.companies.index');
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('company.roles.index');
+        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('company.roles.index');
+    });
+
+    Route::middleware(['company.tenant', 'branch.admin', 'can:View Branch'])->prefix('branch')->group(function () {
+        // Branch Admins primarily manage their own users and roles
+        Route::get('/users', UserListing::class)->name('branch.users.index');
+        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('branch.roles.index');
+    });
+
+    Route::middleware(['company.tenant', 'agent.access'])->prefix('agent')->group(function () {
+        // Agents can access their assigned context
+        Route::get('/users', UserListing::class)->name('agent.users.index');
+        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('agent.roles.index');
+    });
+
+    Route::middleware(['company.tenant', 'user.access'])->prefix('user')->group(function () {
+        // Regular Users can see their own context and settings
+        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('user.roles.index');
     });
 
 
-    Route::get('/hotels', Hotel::class)->name('hotels');
-    Route::get('/cars', Car::class)->name('cars');
-    Route::get('/concierge', Concierge::class)->name('concierge');
-    Route::get('/travel-hub', TravelHub::class)->name('travel.hub');
+    Route::get('/hotels', Hotel::class)->middleware('feature.access:hotels-module')->name('hotels');
+    Route::get('/cars', Car::class)->middleware('feature.access:cars-module')->name('cars');
+    Route::get('/concierge', Concierge::class)->middleware('feature.access:concierge-module')->name('concierge');
+    Route::get('/travel-hub', TravelHub::class)->middleware('feature.access:travel-hub-module')->name('travel.hub');
 
-    Route::get('/flights-search', FlightSearch::class)
-        ->name('flights.search');
-
-    Route::get('/flights-list', FlightList::class)
-        ->name('flights.list');
-
-    Route::get('/passenger-details', PassengerDetail::class)
-        ->name('passenger.details');
-
-    Route::get('/seating', ChooseSeat::class)
-        ->name('seating');
-
-    Route::get('/additional-services', AdditionalServices::class)
-        ->name('additional.services');
-
-    Route::get('/flight-confirmation', FlightConfirmation::class)
-        ->name('flight.confirmation');
+    Route::middleware(['feature.access:flights-module'])->group(function () {
+        Route::get('/flights-search', FlightSearch::class)->name('flights.search');
+        Route::get('/flights-list', FlightList::class)->name('flights.list');
+        Route::get('/passenger-details', PassengerDetail::class)->name('passenger.details');
+        Route::get('/seating', ChooseSeat::class)->name('seating');
+        Route::get('/additional-services', AdditionalServices::class)->name('additional.services');
+        Route::get('/flight-confirmation', FlightConfirmation::class)->name('flight.confirmation');
+    });
 
 });

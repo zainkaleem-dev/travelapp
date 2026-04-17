@@ -21,7 +21,7 @@ class EnsureAnyAdmin
             return redirect()->route('login');
         }
 
-        if ($user->hasRole('Super Admin') || $user->hasRole('Company Admin') || $user->hasRole('Branch Admin')) {
+        if ($user->can('Manage Global System') || $user->can('View Company') || $user->can('View Branch')) {
             return $next($request);
         }
 

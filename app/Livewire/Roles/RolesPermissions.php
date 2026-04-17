@@ -108,6 +108,10 @@ class RolesPermissions extends Component
 
         return \App\Models\Role::query()
             ->where('company_id', $companyId)
+            ->when($companyId === null, function ($query) {
+                // Strictly restrict the Global Context to only show the "Super Admin" role
+                $query->where('name', 'Super Admin');
+            })
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
@@ -145,8 +149,8 @@ class RolesPermissions extends Component
 
         $user = \App\Models\User::find($this->selectedUserId);
 
-        // Handle Team/Company Context
-        $teamId = $this->getNormalizedCompanyId();
+        // Handle Team/Company Context based on the role/user native context
+        $teamId = $user->company_id;
         setPermissionsTeamId($teamId);
 
         if ($user->hasRole($roleName)) {
@@ -162,7 +166,22 @@ class RolesPermissions extends Component
 
     public function getAllPermissionsProperty()
     {
+        // Resolve the selected role once to check its name for specific UI filtering
+        $selectedRole = $this->selectedRoleId ? \App\Models\Role::find($this->selectedRoleId) : null;
+        
+        // Determine the current context company ID
+        $contextCompanyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : app(\App\Support\TenantContext::class)->companyId();
+
         return Permission::query()
+            ->when($selectedRole && $selectedRole->name === 'Super Admin' && $selectedRole->company_id === null, function ($query) {
+                // For the Super Admin role, only show the "Manage Global System" permission
+                $query->where('name', 'Manage Global System');
+            })
+            ->when(($selectedRole && $selectedRole->company_id !== null) || $contextCompanyId !== null || !$this->isSuperAdmin, function ($query) {
+                // NEVER show the "Manage Global System" permission in a company context/role
+                // or to non-super admins. It is strictly for Global context roles.
+                $query->where('name', '!=', 'Manage Global System');
+            })
             ->when($this->searchPermissions, function ($query) {
                 $query->where('name', 'like', '%' . $this->searchPermissions . '%');
             })
@@ -217,9 +236,15 @@ class RolesPermissions extends Component
         if (!$this->selectedRoleId)
             return;
 
+        // Security check: Only Super Admins can touch the Global System Master Key
+        if ($permissionName === 'Manage Global System' && !$this->isSuperAdmin) {
+            session()->flash('error', 'Unauthorized action.');
+            return;
+        }
+
         // Use standard Eloquent to bypass Spatie's strict findById
         $role = \App\Models\Role::find($this->selectedRoleId);
-        if (!$role || $role->company_id === null)
+        if (!$role || $role->company_id === null && !$this->isSuperAdmin)
             return;
 
         // Set context to match the role's company
@@ -273,7 +298,7 @@ class RolesPermissions extends Component
         } else {
             // Check if role is active before assigning
             $role = \App\Models\Role::where('name', $roleName)->where('company_id', $teamId)->first();
-            if ($role && !$role->status) {
+            if ($role && !$role->status && $role->name !== 'Super Admin') {
                 session()->flash('error', "Cannot assign inactive role '{$roleName}'. Please activate it first.");
                 return;
             }
@@ -284,13 +309,15 @@ class RolesPermissions extends Component
 
     public function toggleDoubleSync($roleName, $roleId)
     {
-        // 1. Toggle Global Status
+        // 1. Toggle Global Status (Only for non-protected roles)
         $role = \App\Models\Role::find($roleId);
-        if (!$role || $role->company_id === null)
-            return;
+        if (!$role) return;
 
-        $role->status = !$role->status;
-        $role->save();
+        // Skip global status toggle for Super Admin to ensure it stays active for the system
+        if ($role->company_id !== null || $role->name !== 'Super Admin') {
+            $role->status = !$role->status;
+            $role->save();
+        }
 
         // 2. Sync User Assignment to match the new status
         if ($this->selectedUserId) {
@@ -354,6 +381,10 @@ class RolesPermissions extends Component
 
             $contextRoles = \App\Models\Role::query()
                 ->where('company_id', $teamId)
+                ->when($teamId === null, function ($query) {
+                    // In User assignment mode, for global context (Super Admin)
+                    $query->where('name', 'Super Admin');
+                })
                 ->orderBy('name')
                 ->get();
         }

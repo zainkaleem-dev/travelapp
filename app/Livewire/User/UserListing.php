@@ -20,6 +20,7 @@ class UserListing extends Component
  
     public function mount(): void
     {
+        $this->authorize('View User');
         $this->currentPage = (int) request()->query('page', 1);
     }
  
@@ -52,6 +53,7 @@ class UserListing extends Component
  
     public function toggleActive(int $userId): void
     {
+        $this->authorize('Edit User');
         $user = User::query()
             ->withoutRole('Super Admin')
             ->findOrFail($userId);
@@ -62,6 +64,7 @@ class UserListing extends Component
 
     public function delete(int $userId, TenantContext $tenantContext): void
     {
+        $this->authorize('Delete User');
         $companyId = (int) ($tenantContext->companyId() ?? 0);
  
         $user = User::query()

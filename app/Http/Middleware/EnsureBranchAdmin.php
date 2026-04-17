@@ -16,11 +16,7 @@ class EnsureBranchAdmin
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if (!$user || $user->hasRole('Super Admin') || $user->hasRole('Company Admin')) {
-            return $next($request);
-        }
-
-        abort_unless($user->hasRole('Branch Admin'), 403);
+        abort_unless($user->can('View Branch'), 403);
  
  
         $branchId = (int) ($user->branch_id ?? 0);

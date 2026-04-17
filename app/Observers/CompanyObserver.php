@@ -32,13 +32,17 @@ class CompanyObserver
             'Manage Features',
         ];
 
+        // Define explicit safeguard to ensure the Master Key is NEVER assigned during company creation
+        $safePermissions = array_filter($allPermissions, fn($p) => $p !== 'Manage Global System');
+
+        // 3. Create Default Roles for the Company
         $companyAdmin = Role::firstOrCreate([
             'name' => 'Company Admin',
             'guard_name' => 'web',
             'company_id' => $company->id,
             'status' => 1
         ]);
-        $companyAdmin->syncPermissions($allPermissions);
+        $companyAdmin->syncPermissions($safePermissions);
 
         $branchAdmin = Role::firstOrCreate([
             'name' => 'Branch Admin',
@@ -46,7 +50,7 @@ class CompanyObserver
             'company_id' => $company->id,
             'status' => 1
         ]);
-        $branchAdmin->syncPermissions($allPermissions);
+        $branchAdmin->syncPermissions($safePermissions);
 
         $agent = Role::firstOrCreate([
             'name' => 'Agent',
@@ -54,7 +58,7 @@ class CompanyObserver
             'company_id' => $company->id,
             'status' => 1
         ]);
-        $agent->syncPermissions($allPermissions);
+        $agent->syncPermissions($safePermissions);
 
         $userRole = Role::firstOrCreate([
             'name' => 'User',
@@ -62,7 +66,7 @@ class CompanyObserver
             'company_id' => $company->id,
             'status' => 1
         ]);
-        $userRole->syncPermissions($allPermissions);
+        $userRole->syncPermissions($safePermissions);
 
         // 4. Reset context to null (Safety)
         setPermissionsTeamId(null);

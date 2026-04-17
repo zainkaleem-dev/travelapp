@@ -28,33 +28,42 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         // 1. Get all roles currently assigned to the user that are ACTIVE (status = 1)
         // We check both the current team context and the global context (null)
-        $currentTeamId = getPermissionsTeamId();
+        $originalTeamId = getPermissionsTeamId();
         
-        $hasActiveRole = function($roleNames, $teamId) use ($guard) {
-            setPermissionsTeamId($teamId);
-            return $this->roles()
-                ->where('roles.status', 1)
-                ->where(function($query) use ($roleNames) {
-                    if (is_array($roleNames)) {
-                        $query->whereIn('roles.name', $roleNames);
-                    } else {
-                        $query->where('roles.name', $roleNames);
+        try {
+            $hasActiveRole = function($roleNames, $teamId) use ($guard) {
+                // Normalize $roleNames to an array of strings if it's a collection or array of objects
+                $names = [];
+                if (is_iterable($roleNames)) {
+                    foreach ($roleNames as $role) {
+                        $names[] = is_string($role) ? $role : (is_numeric($role) ? $role : $role->name);
                     }
-                })
-                ->exists();
-        };
+                } else {
+                    $names = [is_string($roleNames) ? $roleNames : (is_numeric($roleNames) ? $roleNames : $roleNames->name)];
+                }
 
-        // Check in current context
-        if ($hasActiveRole($roles, $currentTeamId)) {
-            return true;
+                setPermissionsTeamId($teamId);
+                return $this->roles()
+                    ->where('roles.status', 1)
+                    ->whereIn('roles.name', $names)
+                    ->exists();
+            };
+
+            // Check in current context
+            if ($hasActiveRole($roles, $originalTeamId)) {
+                return true;
+            }
+
+            // Check in global context (for Super Admin bypass)
+            if ($originalTeamId !== null && $hasActiveRole($roles, null)) {
+                return true;
+            }
+
+            return false;
+        } finally {
+            // ALWAYS restore the original team context to avoid side-effects in other parts of the app
+            setPermissionsTeamId($originalTeamId);
         }
-
-        // Check in global context (for Super Admin bypass)
-        if ($currentTeamId !== null && $hasActiveRole($roles, null)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
