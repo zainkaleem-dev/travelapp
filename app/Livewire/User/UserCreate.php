@@ -91,7 +91,12 @@ class UserCreate extends Component
             'email_verified_at' => now(),
         ]);
  
-        session()->flash('status', 'User created successfully.');
+        if ($this->company_id) {
+            setPermissionsTeamId($this->company_id);
+            $user->assignRole('User');
+        }
+
+        session()->flash('status', "User '{$user->display_name}' created successfully with default permissions.");
         return redirect()->route('superadmin.users');
     }
  

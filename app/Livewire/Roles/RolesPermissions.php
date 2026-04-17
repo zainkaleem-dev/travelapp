@@ -61,7 +61,7 @@ class RolesPermissions extends Component
         $this->activeUser = null;
         $this->search = '';
         $this->searchUsers = '';
-        
+
         // Auto-select first item in new context if available
         $this->setViewMode($this->viewMode);
     }
@@ -126,10 +126,17 @@ class RolesPermissions extends Component
         $tenantContext = app(\App\Support\TenantContext::class);
         $companyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : $tenantContext->companyId();
 
+        // Ensure Spatie context is aligned with our filter
+        setPermissionsTeamId($companyId);
+
         return \App\Models\User::query()
             ->when($companyId, function ($q) use ($companyId) {
                 // Filter users by the selected company context
                 $q->where('company_id', $companyId);
+            })
+            ->when($companyId === null, function ($q) {
+                // Strictly restrict the Global Context to only show Super Admins
+                $q->role('Super Admin');
             })
             ->when($this->searchUsers, function ($query) {
                 $query->where(function ($q) {
@@ -168,7 +175,7 @@ class RolesPermissions extends Component
     {
         // Resolve the selected role once to check its name for specific UI filtering
         $selectedRole = $this->selectedRoleId ? \App\Models\Role::find($this->selectedRoleId) : null;
-        
+
         // Determine the current context company ID
         $contextCompanyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : app(\App\Support\TenantContext::class)->companyId();
 
@@ -187,6 +194,52 @@ class RolesPermissions extends Component
             })
             ->orderBy('name')
             ->get();
+    }
+
+    public function editRole($id)
+    {
+        $role = \App\Models\Role::find($id);
+        if (!$role)
+            return;
+
+        $protectedRoles = ['Super Admin', 'Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
+        if (in_array($role->name, $protectedRoles)) {
+            session()->flash('error', "The '{$role->name}' role is a system-protected role and cannot be renamed.");
+            return;
+        }
+
+        $this->editingRoleId = $id;
+        $this->editingRoleName = $role->name;
+    }
+
+    public function cancelEdit()
+    {
+        $this->editingRoleId = null;
+        $this->editingRoleName = '';
+    }
+
+    public function updateRole()
+    {
+        if (!$this->editingRoleId)
+            return;
+
+        $this->validate([
+            'editingRoleName' => 'required|string|max:255',
+        ]);
+
+        $role = \App\Models\Role::find($this->editingRoleId);
+        if (!$role)
+            return;
+
+        $protectedRoles = ['Super Admin', 'Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
+        if (in_array($role->name, $protectedRoles)) {
+            session()->flash('error', "The '{$role->name}' role name is protected.");
+            return;
+        }
+
+        $role->update(['name' => $this->editingRoleName]);
+        $this->cancelEdit();
+        session()->flash('status', 'Role updated successfully.');
     }
 
     public function refreshData()
@@ -253,9 +306,16 @@ class RolesPermissions extends Component
         if ($role->hasPermissionTo($permissionName)) {
             $role->revokePermissionTo($permissionName);
         } else {
-            $role->givePermissionTo($permissionName);
+            // Explicitly attach with company_id pivot data to ensure isolation
+            $permission = Permission::findByName($permissionName);
+            $role->permissions()->attach($permission->id, ['company_id' => $role->company_id]);
         }
 
+        // FORCE RELOAD: Ensure the next render gets the actual database state
+        $role->unsetRelation('permissions');
+        $role->load('permissions');
+
+        // Force cache refresh for the current registrar
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 
@@ -296,22 +356,27 @@ class RolesPermissions extends Component
             $user->removeRole($roleName);
             session()->flash('status', "Role '{$roleName}' removed from user.");
         } else {
-            // Check if role is active before assigning
-            $role = \App\Models\Role::where('name', $roleName)->where('company_id', $teamId)->first();
-            if ($role && !$role->status && $role->name !== 'Super Admin') {
-                session()->flash('error', "Cannot assign inactive role '{$roleName}'. Please activate it first.");
-                return;
-            }
+            // Force assignment via Spatie's team-aware logic
             $user->assignRole($roleName);
-            session()->flash('status', "Role '{$roleName}' assigned to user.");
         }
+
+        // Clear permissions cache immediately
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 
     public function toggleDoubleSync($roleName, $roleId)
     {
-        // 1. Toggle Global Status (Only for non-protected roles)
+        // If we are in 'users' mode, we only want to toggle the assignment, 
+        // NOT the global role status.
+        if ($this->viewMode === 'users') {
+            $this->toggleUserAssignment($roleName);
+            return;
+        }
+
+        // Toggle Global Status (Only for non-protected roles)
         $role = \App\Models\Role::find($roleId);
-        if (!$role) return;
+        if (!$role)
+            return;
 
         // Skip global status toggle for Super Admin to ensure it stays active for the system
         if ($role->company_id !== null || $role->name !== 'Super Admin') {
@@ -319,23 +384,9 @@ class RolesPermissions extends Component
             $role->save();
         }
 
-        // 2. Sync User Assignment to match the new status
-        if ($this->selectedUserId) {
-            $user = \App\Models\User::find($this->selectedUserId);
-            // Context follows the user's company
-            $teamId = $user->company_id;
-            setPermissionsTeamId($teamId);
-
-            if ($role->status) {
-                $user->assignRole($roleName);
-            } else {
-                $user->removeRole($roleName);
-            }
-        }
-
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-        $statusText = $role->status ? 'Active and Assigned' : 'Inactive and Removed';
-        session()->flash('status', "Role '{$roleName}' is now {$statusText}.");
+        $statusText = $role->status ? 'Active' : 'Inactive';
+        session()->flash('status', "Role '{$roleName}' status is now {$statusText}.");
     }
 
     public function deleteRole($id)
@@ -344,8 +395,9 @@ class RolesPermissions extends Component
         if (!$role)
             return;
 
-        if ($role->name === 'Super Admin') {
-            session()->flash('error', 'Cannot delete Super Admin.');
+        $protectedRoles = ['Super Admin', 'Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
+        if (in_array($role->name, $protectedRoles)) {
+            session()->flash('error', "Cannot delete system-protected role '{$role->name}'.");
             return;
         }
 
@@ -374,7 +426,7 @@ class RolesPermissions extends Component
 
         if ($this->viewMode === 'users' && $this->activeUser) {
             // Context follows the selected user's own company
-            $teamId = $this->activeUser->company_id; 
+            $teamId = $this->activeUser->company_id;
             setPermissionsTeamId($teamId);
 
             $currentUserRoles = $this->activeUser->roles()->pluck('name')->toArray();

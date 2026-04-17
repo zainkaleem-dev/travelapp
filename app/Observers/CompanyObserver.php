@@ -16,57 +16,34 @@ class CompanyObserver
         // 1. Force context to the new company
         setPermissionsTeamId($company->id);
 
-        // 2. Define Default Permissions Sets (match PermissionSeeder logic)
+        // 2. Define Default Permissions Sets
         $allPermissions = [
-            'View Dashboard',
-            'View Company',
-            'Create Company',
-            'Edit Company',
-            'View Branch',
-            'Create Branch',
-            'Edit Branch',
-            'View User',
-            'Create User',
-            'Edit User',
-            'Manage Roles and Permissions',
-            'Manage Features',
+            'View Dashboard', 'View Company', 'Create Company', 'Edit Company',
+            'View Branch', 'Create Branch', 'Edit Branch', 'View User',
+            'Create User', 'Edit User', 'Manage Roles and Permissions', 'Manage Features',
         ];
 
         // Define explicit safeguard to ensure the Master Key is NEVER assigned during company creation
-        $safePermissions = array_filter($allPermissions, fn($p) => $p !== 'Manage Global System');
+        $safePermissionNames = array_filter($allPermissions, fn($p) => $p !== 'Manage Global System');
+        
+        // Fetch permission IDs for efficient syncing
+        $permissionIds = Permission::whereIn('name', $safePermissionNames)->pluck('id');
+        $syncData = $permissionIds->mapWithKeys(fn($id) => [$id => ['company_id' => $company->id]])->toArray();
 
-        // 3. Create Default Roles for the Company
-        $companyAdmin = Role::firstOrCreate([
-            'name' => 'Company Admin',
-            'guard_name' => 'web',
-            'company_id' => $company->id,
-            'status' => 1
-        ]);
-        $companyAdmin->syncPermissions($safePermissions);
+        // 3. Create Default Roles and Assign Permissions explicitly to pivot
+        $roleNames = ['Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
 
-        $branchAdmin = Role::firstOrCreate([
-            'name' => 'Branch Admin',
-            'guard_name' => 'web',
-            'company_id' => $company->id,
-            'status' => 1
-        ]);
-        $branchAdmin->syncPermissions($safePermissions);
-
-        $agent = Role::firstOrCreate([
-            'name' => 'Agent',
-            'guard_name' => 'web',
-            'company_id' => $company->id,
-            'status' => 1
-        ]);
-        $agent->syncPermissions($safePermissions);
-
-        $userRole = Role::firstOrCreate([
-            'name' => 'User',
-            'guard_name' => 'web',
-            'company_id' => $company->id,
-            'status' => 1
-        ]);
-        $userRole->syncPermissions($safePermissions);
+        foreach ($roleNames as $roleName) {
+            $role = Role::firstOrCreate([
+                'name' => $roleName,
+                'guard_name' => 'web',
+                'company_id' => $company->id,
+                'status' => 1
+            ]);
+            
+            // Use standard Laravel relationship sync to ensure company_id is populated in the pivot
+            $role->permissions()->sync($syncData);
+        }
 
         // 4. Reset context to null (Safety)
         setPermissionsTeamId(null);

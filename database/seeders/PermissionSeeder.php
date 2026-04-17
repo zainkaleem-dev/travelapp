@@ -59,6 +59,9 @@ class PermissionSeeder extends Seeder
         $companyAdmin = \App\Models\Role::firstOrCreate(['name' => 'Company Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
         $companyAdmin->syncPermissions($standardPermissions);
 
+        $organizationAdmin = \App\Models\Role::firstOrCreate(['name' => 'Organization Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
+        $organizationAdmin->syncPermissions($standardPermissions);
+
         $branchAdmin = \App\Models\Role::firstOrCreate(['name' => 'Branch Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
         $branchAdmin->syncPermissions($standardPermissions);
 

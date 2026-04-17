@@ -134,14 +134,24 @@
                     <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
                         {{-- Header / Create Role --}}
                         <div class="p-8 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-white to-[#fafbfc] rounded-t-3xl">
-                            <div class="flex items-center gap-5">
+                            <div class="flex items-center gap-5 group">
                                 <div class="w-16 h-16 rounded-3xl bg-[#f2feff] border border-[#2ab4c0]/20 flex items-center justify-center text-2xl font-black text-[#2ab4c0] shadow-sm">
                                     {{ $selectedRole ? strtoupper(substr($selectedRole->name, 0, 1)) : 'R' }}
                                 </div>
                                 <div>
-                                    <h2 class="text-3xl font-black text-gray-900 tracking-tight">
-                                        {{ $selectedRole ? $selectedRole->name : 'Role Architecture' }}
-                                    </h2>
+                                    <div class="flex items-center gap-2">
+                                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">
+                                            {{ $selectedRole ? $selectedRole->name : 'Role Architecture' }}
+                                        </h2>
+                                        @php
+                                            $protectedRoles = ['Super Admin', 'Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
+                                        @endphp
+                                        @if($selectedRole && !in_array($selectedRole->name, $protectedRoles))
+                                            <button wire:click="editRole({{ $selectedRole->id }})" class="opacity-0 group-hover:opacity-100 p-1.5 text-gray-400 hover:text-[#2ab4c0] hover:bg-[#2ab4c0]/5 rounded-lg transition-all" title="Rename Role">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                            </button>
+                                        @endif
+                                    </div>
                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
                                         @if($selectedRole)
                                             {{ $selectedRole->company ? $selectedRole->company->name : 'Global System Role' }}
@@ -184,7 +194,7 @@
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     @foreach($allPermissions as $permission)
-                                        <div wire:key="perm-{{ $permission->id }}" 
+                                        <div wire:key="role-{{ $selectedRoleId }}-perm-{{ $permission->id }}" 
                                             class="group border rounded-2xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300
                                             {{ in_array($permission->name, $currentRolePermissions) ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
                                             <div class="flex items-center gap-4">
@@ -255,20 +265,15 @@
                                 @if(count($contextRoles) > 0)
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         @foreach($contextRoles as $role)
-                                            <div wire:key="user-role-{{ $role->id }}" 
+                                            <div wire:key="user-{{ $activeUser->id }}-role-{{ $role->id }}" 
                                                 class="group border rounded-2xl p-4 flex items-center justify-between transition-all duration-300 shadow-sm hover:shadow-md
-                                                {{ $role->status ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
+                                                {{ in_array($role->name, $currentUserRoles) ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
                                                 <div class="flex items-center gap-4">
-                                                    {{-- Static Letter Icon --}}
-                                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black transition-all
-                                                        {{ $role->status ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-100 text-gray-400' }}">
-                                                        {{ strtoupper(substr($role->name, 0, 1)) }}
+                                                    <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-teal-50 transition-colors">
+                                                        <svg class="w-5 h-5 text-gray-400 group-hover:text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                                     </div>
-
                                                     <div>
-                                                        <div class="flex items-center gap-2">
-                                                            <h4 class="text-sm font-bold {{ $role->status ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
-                                                        </div>
+                                                        <h4 class="text-sm font-bold {{ in_array($role->name, $currentUserRoles) ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
                                                         <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mt-0.5">
                                                             {{ in_array($role->name, $currentUserRoles) ? 'Assigned to User' : 'Not Assigned' }}
                                                         </p>
@@ -281,7 +286,7 @@
                                                             @if($role->company_id !== null)
                                                                 wire:click="toggleDoubleSync('{{ $role->name }}', {{ $role->id }})"
                                                             @endif
-                                                            {{ $role->status ? 'checked' : '' }}
+                                                            {{ in_array($role->name, $currentUserRoles) ? 'checked' : '' }}
                                                             {{ $role->company_id === null ? 'disabled' : '' }}
                                                             class="sr-only peer">
                                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors

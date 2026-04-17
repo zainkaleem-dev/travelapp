@@ -62,6 +62,17 @@ class UserListing extends Component
         $user->update(['status' => $newStatus]);
     }
 
+    public function verifyUser(int $userId): void
+    {
+        $this->authorize('Edit User');
+        $user = User::query()
+            ->withoutRole('Super Admin')
+            ->findOrFail($userId);
+
+        $user->markEmailAsVerified();
+        session()->flash('status', "User '{$user->display_name}' verified successfully.");
+    }
+
     public function delete(int $userId, TenantContext $tenantContext): void
     {
         $this->authorize('Delete User');

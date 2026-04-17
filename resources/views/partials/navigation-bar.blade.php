@@ -4,7 +4,7 @@
 
     // Authorization Flags
     $isSuperAdmin = $user && $user->hasRole('Super Admin');
-    $isCompanyAdmin = $user && $user->hasRole('Company Admin');
+    $isCompanyAdmin = $user && ($user->hasRole('Company Admin') || $user->hasRole('Organization Admin'));
 
     // Area Flags
     $isSuperAdminArea = $isSuperAdmin && request()->is('super-admin*');

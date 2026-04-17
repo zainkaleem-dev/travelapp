@@ -91,7 +91,7 @@ class Login extends Component
             return;
         }
 
-        if ($user->hasRole('Company Admin')) {
+        if ($user->hasRole('Company Admin') || $user->hasRole('Organization Admin')) {
             $this->redirect(route('company.companies.index'));
             return;
         }

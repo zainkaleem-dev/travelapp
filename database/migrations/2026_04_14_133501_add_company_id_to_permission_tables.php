@@ -52,20 +52,47 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Truncate tables to prevent unique constraint violations when dropping company_id
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        try {
+            \Illuminate\Support\Facades\DB::table('model_has_permissions')->truncate();
+            \Illuminate\Support\Facades\DB::table('model_has_roles')->truncate();
+            \Illuminate\Support\Facades\DB::table('roles')->truncate();
+        } catch (\Exception $e) {}
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         Schema::table('model_has_permissions', function (Blueprint $table) {
-            $table->dropColumn('company_id');
+            if (Schema::hasColumn('model_has_permissions', 'company_id')) {
+                $table->dropColumn('company_id');
+            }
         });
 
         Schema::table('model_has_roles', function (Blueprint $table) {
-            $table->dropColumn('company_id');
+            if (Schema::hasColumn('model_has_roles', 'company_id')) {
+                $table->dropColumn('company_id');
+            }
         });
 
         Schema::table('roles', function (Blueprint $table) {
-            $table->dropUnique('roles_company_name_guard_unique');
-            $table->dropColumn('company_id');
-            $table->string('name', 90)->change();
-            $table->string('guard_name', 90)->change();
-            $table->unique(['name', 'guard_name'], 'roles_name_guard_name_unique');
+            if (Schema::hasColumn('roles', 'company_id')) {
+                // Drop index only if it exists
+                $indexes = DB::getSchemaBuilder()->getIndexes('roles');
+                $hasUnique = false;
+                foreach ($indexes as $index) {
+                    if ($index['name'] === 'roles_company_name_guard_unique') {
+                        $hasUnique = true;
+                        break;
+                    }
+                }
+                if ($hasUnique) {
+                    $table->dropUnique('roles_company_name_guard_unique');
+                }
+                
+                $table->dropColumn('company_id');
+                $table->string('name', 90)->change();
+                $table->string('guard_name', 90)->change();
+                $table->unique(['name', 'guard_name'], 'roles_name_guard_name_unique');
+            }
         });
     }
 };

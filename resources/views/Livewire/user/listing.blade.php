@@ -175,6 +175,17 @@
                                             </svg>
                                         </a>
 
+                                        @if (!$user->email_verified_at)
+                                            <button type="button"
+                                                wire:click="verifyUser({{ $user->id }})"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                title="Verify User Email">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </button>
+                                        @endif
+
                                         <a href="{{ route('superadmin.users.edit', $user->id) }}"
                                             class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                             title="Edit">

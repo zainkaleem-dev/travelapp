@@ -842,7 +842,7 @@
         @php 
             $user = auth()->user();
             $isSuperAdmin = $user && $user->hasRole('Super Admin');
-            $isCompanyAdmin = $user && $user->hasRole('Company Admin');
+            $isCompanyAdmin = $user && ($user->hasRole('Company Admin') || $user->hasRole('Organization Admin'));
 
             $hideMainNavForSuperAdmin = $user && $user->hasRole('Super Admin') && request()->is('super-admin*'); 
  
