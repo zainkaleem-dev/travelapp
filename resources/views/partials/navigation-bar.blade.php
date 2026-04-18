@@ -6,13 +6,15 @@
     $isSuperAdmin = $user && $user->hasRole('Super Admin');
     $isOrganizationAdmin = $user && ($user->hasRole('Organization Admin'));
     $isCompanyAdmin = $user && ($user->hasRole('Company Admin'));
+    $isBranchAdmin = $user && ($user->hasRole('Branch Admin'));
 
     // Area Flags
     $isAdminArea = request()->is('admin*') || request()->routeIs('admin.*');
-    $isCompanyAdminArea = false; // Legacy, Company Admins now use isAdminArea
+    $isCompanyAdminArea = false; // Legacy
+    $isBranchAdminArea = false; // Legacy
 
     // Navigation View Logic
-    $isAdminView = $isAdminArea || ($isCompanyAdmin && request()->is('admin*'));
+    $isAdminView = $isAdminArea || ($isCompanyAdmin && request()->is('admin*')) || ($isBranchAdmin && request()->is('admin*'));
 
     // Orientation
     $isVertical = $vertical ?? false;

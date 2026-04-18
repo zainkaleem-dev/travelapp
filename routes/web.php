@@ -82,7 +82,7 @@ Route::get('/', function () {
             return redirect()->route('admin.companies.index');
         }
         if ($user->can('View Branch')) {
-            return redirect()->route('branch.users.index');
+            return redirect()->route('admin.users.index');
         }
         // Agents and Users land on their specific prefixes if they have admin-style dashboard permissions
         if ($user->hasRole('Agent')) {
@@ -184,11 +184,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Redundant company group removed. Company Admins now use the unified /admin group.
 
-    Route::middleware(['company.tenant', 'branch.admin', 'can:View Branch'])->prefix('branch')->group(function () {
-        // Branch Admins primarily manage their own users and roles
-        Route::get('/users', UserListing::class)->name('branch.users.index');
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('branch.roles.index');
-    });
+    // Redundant branch group removed. Branch Admins now use the unified /admin group.
 
     Route::middleware(['company.tenant', 'agent.access'])->prefix('agent')->group(function () {
         // Agents can access their assigned context

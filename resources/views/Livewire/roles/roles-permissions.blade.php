@@ -128,6 +128,20 @@
 
             {{-- Main Content: Roles & Permissions --}}
             <div class="flex-1 min-h-0">
+                {{-- Global Alerts --}}
+                @if (session('status'))
+                    <div class="mb-4 p-4 bg-teal-50 border border-teal-100 rounded-2xl flex items-center gap-3 text-teal-700 shadow-sm animate-fade-in">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="text-sm font-bold">{{ session('status') }}</span>
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="mb-4 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3 text-red-700 shadow-sm animate-fade-in">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="text-sm font-bold">{{ session('error') }}</span>
+                    </div>
+                @endif
+
                 @if($viewMode === 'roles')
                     <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
                         {{-- Header / Create Role --}}
@@ -238,7 +252,15 @@
                                         {{ strtoupper(substr($activeUser->first_name ?? $activeUser->email, 0, 1)) }}
                                     </div>
                                     <div>
-                                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">{{ $activeUser->display_name ?? $activeUser->first_name }}</h2>
+                                        <div class="flex items-center gap-3">
+                                            <h2 class="text-3xl font-black text-gray-900 tracking-tight">{{ $activeUser->display_name ?? $activeUser->first_name }}</h2>
+                                            @if($activeUser->id === auth()->id())
+                                                <div class="flex items-center gap-1.5 px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-lg text-[9px] font-black text-amber-700 uppercase tracking-wider">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                                    Self-Assignment Locked
+                                                </div>
+                                            @endif
+                                        </div>
                                         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">{{ $activeUser->email }}</p>
                                     </div>
                                 </div>
@@ -279,13 +301,13 @@
                                                 </div>
 
                                                 <div class="flex items-center gap-3">
-                                                    <label class="relative inline-flex items-center {{ $role->company_id === null ? 'cursor-not-allowed' : 'cursor-pointer' }}">
+                                                    <label class="relative inline-flex items-center {{ ($role->company_id === null || $activeUser->id === auth()->id()) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }}">
                                                         <input type="checkbox" 
-                                                            @if($role->company_id !== null)
+                                                            @if($role->company_id !== null && $activeUser->id !== auth()->id())
                                                                 wire:click="toggleDoubleSync('{{ $role->name }}', {{ $role->id }})"
                                                             @endif
                                                             {{ in_array($role->id, $currentUserRoleIds) ? 'checked' : '' }}
-                                                            {{ $role->company_id === null ? 'disabled' : '' }}
+                                                            {{ ($role->company_id === null || $activeUser->id === auth()->id()) ? 'disabled' : '' }}
                                                             class="sr-only peer">
                                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors
                                                             {{ $role->company_id === null ? 'opacity-30' : '' }}"></div>

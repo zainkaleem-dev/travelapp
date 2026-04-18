@@ -26,6 +26,31 @@ class RolesPermissions extends Component
     public $searchUsers = '';
     public $selectedUserId = null;
     public $activeUser = null;
+    public $editingRoleId = null;
+    public $editingRoleName = '';
+
+    private function getRoleRank($roleName): int
+    {
+        return match ($roleName) {
+            'Super Admin'        => 100,
+            'Organization Admin' => 80,
+            'Company Admin'      => 60,
+            'Branch Admin'       => 40,
+            'Agent'              => 20,
+            'User'               => 0,
+            default              => 10, // Custom roles start with low rank
+        };
+    }
+
+    private function getAuthUserMaxRank(): int
+    {
+        $maxRank = 0;
+        foreach (auth()->user()->getRoleNames() as $roleName) {
+            $rank = $this->getRoleRank($roleName);
+            if ($rank > $maxRank) $maxRank = $rank;
+        }
+        return $maxRank;
+    }
 
     public function mount(): void
     {
@@ -153,6 +178,21 @@ class RolesPermissions extends Component
     {
         if (!$this->selectedUserId)
             return;
+
+        // Requirement 1: Cannot change OWN role
+        if ($this->selectedUserId == auth()->id()) {
+            session()->flash('error', 'You cannot modify your own roles for security reasons.');
+            return;
+        }
+
+        // Requirement 2: Cannot manage roles higher than your own
+        $authMaxRank = $this->getAuthUserMaxRank();
+        $targetRoleRank = $this->getRoleRank($roleName);
+
+        if ($targetRoleRank > $authMaxRank) {
+            session()->flash('error', 'You do not have permission to manage higher-ranking roles.');
+            return;
+        }
 
         $user = \App\Models\User::find($this->selectedUserId);
 
@@ -347,6 +387,12 @@ class RolesPermissions extends Component
         if (!$this->selectedUserId)
             return;
 
+        // Requirement 1: Cannot change OWN role
+        if ($this->selectedUserId == auth()->id()) {
+            session()->flash('error', 'You cannot modify your own roles for security reasons.');
+            return;
+        }
+
         $user = \App\Models\User::find($this->selectedUserId);
         if (!$user) return;
 
@@ -356,6 +402,15 @@ class RolesPermissions extends Component
         // Find the specific role record
         $role = \App\Models\Role::find($roleId);
         if (!$role) return;
+
+        // Requirement 2: Cannot manage roles higher than your own
+        $authMaxRank = $this->getAuthUserMaxRank();
+        $targetRoleRank = $this->getRoleRank($role->name);
+
+        if ($targetRoleRank > $authMaxRank) {
+            session()->flash('error', 'You do not have permission to manage higher-ranking roles.');
+            return;
+        }
 
         // Check assignment by ID directly via pivot table
         $isAssigned = \Illuminate\Support\Facades\DB::table('model_has_roles')
@@ -459,6 +514,7 @@ class RolesPermissions extends Component
                 ->pluck('role_id')
                 ->toArray();
 
+            $authMaxRank = $this->getAuthUserMaxRank();
             $contextRoles = \App\Models\Role::query()
                 ->where('company_id', $teamId)
                 ->when($teamId === null, function ($query) {
@@ -466,7 +522,18 @@ class RolesPermissions extends Component
                     $query->where('name', 'Super Admin');
                 })
                 ->orderBy('name')
-                ->get();
+                ->get()
+                ->filter(function ($role) use ($authMaxRank, $currentUserRoleIds) {
+                    // Requirement: Only show roles at or below the authorized user's rank
+                    $isSubordinateRole = $this->getRoleRank($role->name) <= $authMaxRank;
+
+                    // New Requirement: If viewing SELF, only show roles they currently HAVE
+                    if ($this->activeUser->id === auth()->id()) {
+                        return $isSubordinateRole && in_array($role->id, $currentUserRoleIds);
+                    }
+
+                    return $isSubordinateRole;
+                });
         }
 
         $sidebarRoles = $this->getSidebarRolesProperty();

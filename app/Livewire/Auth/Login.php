@@ -89,7 +89,7 @@ class Login extends Component
         // Set the multi-tenant context before checking roles for redirection
         setPermissionsTeamId($user->company_id);
 
-        if ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin')) {
+        if ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin') || $user->hasRole('Branch Admin')) {
             $this->redirect(route('admin.companies.index'));
             return;
         }
