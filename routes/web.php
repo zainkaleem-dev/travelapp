@@ -79,7 +79,7 @@ Route::get('/', function () {
             return redirect()->route('admin.companies.index');
         }
         if ($user->can('View Company')) {
-            return redirect()->route('company.companies.index');
+            return redirect()->route('admin.companies.index');
         }
         if ($user->can('View Branch')) {
             return redirect()->route('branch.users.index');
@@ -182,17 +182,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/impersonate/leave', [\App\Http\Controllers\ImpersonateController::class, 'leave'])->name('impersonate.leave');
 
-    Route::middleware(['company.tenant', 'company.admin', 'can:View Company'])->prefix('company')->group(function () {
-        Route::get('/companies', CompanyListing::class)->name('company.companies.index');
-        Route::get('/branches', BranchListing::class)->name('company.branches.index');
-        Route::get('/branches/create', BranchCreate::class)->name('company.branches.create');
-        Route::get('/branches/{id}/edit', BranchEdit::class)->name('company.branches.edit');
-        Route::get('/users', UserListing::class)->name('company.users.index');
-        Route::get('/users/create', UserCreate::class)->name('company.users.create');
-        Route::get('/users/{id}/edit', UserEdit::class)->name('company.users.edit');
-        Route::get('/features', FeaturesListing::class)->name('company.features');
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('company.roles.index');
-    });
+    // Redundant company group removed. Company Admins now use the unified /admin group.
 
     Route::middleware(['company.tenant', 'branch.admin', 'can:View Branch'])->prefix('branch')->group(function () {
         // Branch Admins primarily manage their own users and roles

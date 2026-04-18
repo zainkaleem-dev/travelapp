@@ -8,11 +8,11 @@
     $isCompanyAdmin = $user && ($user->hasRole('Company Admin'));
 
     // Area Flags
-    $isAdminArea = request()->is('admin*') || request()->routeIs('dashboard');
-    $isCompanyAdminArea = $isCompanyAdmin && (request()->is('company*') || ($isAdminArea && !$isSuperAdmin && !$isOrganizationAdmin));
+    $isAdminArea = request()->is('admin*') || request()->routeIs('admin.*');
+    $isCompanyAdminArea = false; // Legacy, Company Admins now use isAdminArea
 
     // Navigation View Logic
-    $isAdminView = $isAdminArea || $isCompanyAdminArea;
+    $isAdminView = $isAdminArea || ($isCompanyAdmin && request()->is('admin*'));
 
     // Orientation
     $isVertical = $vertical ?? false;
@@ -25,7 +25,6 @@
             // Dynamic route mapping based on area
             $prefix = match(true) {
                 request()->is('admin*') => 'admin',
-                request()->is('company*') => 'company',
                 default => 'admin'
             };
  

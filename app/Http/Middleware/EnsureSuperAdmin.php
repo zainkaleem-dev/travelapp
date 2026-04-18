@@ -15,7 +15,7 @@ class EnsureSuperAdmin
     {
         $user = $request->user();
 
-        if (!$user || (!$user->can('Manage Global System') && !$user->hasRole('Organization Admin'))) {
+        if (!$user || (!$user->can('Manage Global System') && !$user->hasRole('Organization Admin') && !$user->hasRole('Company Admin'))) {
             abort(403);
         }
 
