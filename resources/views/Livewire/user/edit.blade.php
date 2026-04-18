@@ -7,7 +7,7 @@
                     <p class="text-xs text-gray-500 mt-1">Update account details for <span
                             class="font-bold text-gray-700">{{ $user->display_name }}</span></p>
                 </div>
-                <a href="{{ route('admin.users') }}"
+                <a href="{{ route($routePrefix . '.users.index') }}"
                     class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
                     Back to List
                 </a>

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\ScopedToBranch;
 use App\Models\Concerns\ScopedToCompany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Branch extends Model
 {
-    use ScopedToCompany, ScopedToBranch, SoftDeletes, HasFactory;
+    use ScopedToCompany, SoftDeletes, HasFactory;
  
     protected $table = 'branches';
 

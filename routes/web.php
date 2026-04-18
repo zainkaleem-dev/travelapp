@@ -164,14 +164,14 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['superadmin', 'can:View Dashboard'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings', SuperAdminSettings::class)->name('settings');
         Route::get('/companies', CompanyIndex::class)->name('companies.index');
-        Route::get('/branches', BranchListing::class)->name('branches');
+        Route::get('/branches', BranchListing::class)->name('branches.index');
         Route::get('/branches/create', BranchCreate::class)->name('branches.create');
         Route::get('/branches/{id}/edit', BranchEdit::class)->name('branches.edit');
         Route::get('/companies/create', CompanyCreate::class)->name('companies.create');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit');
         Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features');
         Route::get('/features', FeaturesListing::class)->name('features');
-        Route::get('/users', UserListing::class)->name('users');
+        Route::get('/users', UserListing::class)->name('users.index');
         Route::get('/users/create', UserCreate::class)->name('users.create');
         Route::get('/users/{id}/edit', UserEdit::class)->name('users.edit');
         Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('roles.index');
@@ -187,7 +187,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/branches', BranchListing::class)->name('company.branches.index');
         Route::get('/branches/create', BranchCreate::class)->name('company.branches.create');
         Route::get('/branches/{id}/edit', BranchEdit::class)->name('company.branches.edit');
-        Route::get('/users', UserListing::class)->name('company.users');
+        Route::get('/users', UserListing::class)->name('company.users.index');
         Route::get('/users/create', UserCreate::class)->name('company.users.create');
         Route::get('/users/{id}/edit', UserEdit::class)->name('company.users.edit');
         Route::get('/features', FeaturesListing::class)->name('company.features');

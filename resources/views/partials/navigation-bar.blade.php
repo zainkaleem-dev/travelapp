@@ -32,8 +32,8 @@
             // Unified route structure
             $routes = [
                 'companies' => "{$prefix}.companies.index",
-                'branches'  => ($prefix === 'admin') ? "{$prefix}.branches" : "{$prefix}.branches.index",
-                'users'     => "{$prefix}.users",
+                'branches'  => "{$prefix}.branches.index",
+                'users'     => "{$prefix}.users.index",
                 'roles'     => "{$prefix}.roles.index",
                 'features'  => "{$prefix}.features",
             ];
