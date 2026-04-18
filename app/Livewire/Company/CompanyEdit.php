@@ -144,14 +144,20 @@ class CompanyEdit extends Component
  
     public function render()
     {
-        // Recursively get all descendant IDs to exclude from the parent list
-        $descendantIds = $this->getDescendantIds($this->company);
-        $excludeIds = array_merge([$this->companyId], $descendantIds);
+        $companies = collect();
+
+        if (auth()->user()->can('Manage Global System')) {
+            // Recursively get all descendant IDs to exclude from the parent list to prevent cycles
+            $descendantIds = $this->getDescendantIds($this->company);
+            $excludeIds = array_merge([$this->companyId], $descendantIds);
+
+            $companies = Company::whereNotIn('id', $excludeIds)
+                ->orderBy('name')
+                ->get(['id', 'name']);
+        }
 
         return view('livewire.company.edit', [
-            'companies' => Company::whereNotIn('id', $excludeIds)
-                ->orderBy('name')
-                ->get(['id', 'name']),
+            'companies' => $companies,
         ]);
     }
 

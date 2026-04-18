@@ -100,7 +100,17 @@ class UserCreate extends Component
 
         if ($this->company_id) {
             setPermissionsTeamId($this->company_id);
-            $user->assignRole('User');
+            // Explicitly resolve the role belonging to THIS company to prevent Global role bleeds
+            $role = \App\Models\Role::where('name', 'User')
+                ->where('company_id', $this->company_id)
+                ->first();
+
+            if ($role) {
+                $user->assignRole($role);
+            } else {
+                // Fallback or error if company roles aren't seeded yet
+                $user->assignRole('User');
+            }
         }
 
         session()->flash('status', "User '{$user->display_name}' created successfully with default permissions.");

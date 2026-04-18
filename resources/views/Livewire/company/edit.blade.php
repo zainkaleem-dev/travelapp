@@ -92,6 +92,7 @@
                             @error('company_type') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
+                        @can('Manage Global System')
                         <div>
                             <label class="field-label">Parent Company</label>
                             <div class="relative" x-data="{ open: false, selected: @js($parent_id ?? ''), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
@@ -110,6 +111,7 @@
                             </div>
                             @error('parent_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
+                        @endcan
 
                         <div>
                             <label class="field-label">Registration No. <span class="text-red-500">*</span></label>

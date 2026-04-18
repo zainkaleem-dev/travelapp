@@ -19,6 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasRoles, ScopedToCompany, ScopedToBranch {
         hasRole as protected traitHasRole;
+        hasPermissionTo as protected traitHasPermissionTo;
     }
 
     /**
@@ -140,4 +141,34 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Company::class, 'company_id');
     }
 
+    /**
+     * Override Spatie's hasPermissionTo to ensure strict multi-tenant isolation.
+     * This prevents "bleeding" from global role templates (company_id = null)
+     * by forcing the check to only consider the current company context.
+     */
+    public function hasPermissionTo($permission, $guardName = null): bool
+    {
+        // 1. Super Admin bypass (Global Master Key)
+        // We use a direct check to avoid recursion in Gate::before
+        $isGlobalSuperAdmin = \Illuminate\Support\Facades\DB::table('model_has_roles')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->where('model_has_roles.model_id', $this->id)
+            ->where('model_has_roles.model_type', self::class)
+            ->where('roles.name', 'Super Admin')
+            ->whereNull('model_has_roles.company_id')
+            ->exists();
+
+        if ($isGlobalSuperAdmin) {
+            return true;
+        }
+
+        // 2. Enforce Company Context
+        $contextCompanyId = $this->company_id;
+
+        // Ensure Spatie Registrar respects the current context
+        setPermissionsTeamId($contextCompanyId);
+
+        // Standard Spatie check, but now guarded by our context-aware traits and relationships
+        return $this->traitHasPermissionTo($permission, $guardName);
+    }
 }

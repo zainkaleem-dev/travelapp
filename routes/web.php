@@ -84,12 +84,9 @@ Route::get('/', function () {
         if ($user->can('View Branch')) {
             return redirect()->route('admin.users.index');
         }
-        // Agents and Users land on their specific prefixes if they have admin-style dashboard permissions
-        if ($user->hasRole('Agent')) {
-            return redirect()->route('agent.users.index');
-        }
-        if ($user->hasRole('User')) {
-            return redirect()->route('user.roles.index');
+        // Agents and Users land on the flight search page
+        if ($user->hasRole('Agent') || $user->hasRole('User')) {
+            return redirect()->route('flights.search');
         }
         return redirect()->route('flights.search');
     }

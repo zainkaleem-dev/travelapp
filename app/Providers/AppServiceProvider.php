@@ -29,7 +29,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Implicitly grant "Super Admin" role all permissions globally
         Gate::before(function ($user, $ability) {
-            return $user->hasPermissionTo('Manage Global System') ? true : null;
+            // Context-insensitive check: directly look for the 'Manage Global System' permission 
+            // without a company_id to identify Global Super Admins.
+            return $user->hasDirectPermission('Manage Global System') ||
+                $user->hasPermissionTo('Manage Global System') ? true : null;
         });
 
         // Resolve Pennant scope to the current company

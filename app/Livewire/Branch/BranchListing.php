@@ -89,7 +89,7 @@ class BranchListing extends Component
     public function render(PaginationService $paginationService, \App\Support\TenantContext $tenantContext)
     {
         $companyId = $tenantContext->companyId();
- 
+
         $query = Branch::query()
             ->with('company')
             ->when($companyId, function ($query) use ($companyId) {

@@ -53,7 +53,7 @@ class BranchEdit extends Component
 
         $this->branchId = $id;
         $companyId = $tenantContext->companyId();
-        
+
         $this->branch = Branch::query()
             ->when($companyId, function ($query) use ($companyId) {
                 $query->where('company_id', $companyId);
@@ -148,7 +148,7 @@ class BranchEdit extends Component
     public function render(\App\Support\TenantContext $tenantContext)
     {
         $companyId = $tenantContext->companyId();
-        
+
         return view('livewire.branch.edit', [
             'companies' => Company::query()
                 ->when($companyId, function ($query) use ($companyId) {

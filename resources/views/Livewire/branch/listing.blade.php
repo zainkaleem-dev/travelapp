@@ -16,10 +16,12 @@
                                     d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                             </svg>
                         </button>
-                        <a href="{{ route($routePrefix . '.branches.create') }}"
-                            class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                            Add Branch
-                        </a>
+                        @can('Create Branch')
+                            <a href="{{ route($routePrefix . '.branches.create') }}"
+                                class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                Add Branch
+                            </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -35,33 +37,33 @@
                     <!-- Top Filter Row -->
                     <div class="flex flex-wrap items-center gap-3">
                         @if($routePrefix === 'admin')
-                        <div class="w-full sm:w-64">
-                            <div class="relative"
-                                x-data="{ open: false, selected: @js((string) ($companyFilter ?? '')), labels: @js($companies->pluck('name', 'id')) }"
-                                @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn" @click="open = !open">
-                                    <span
-                                        x-text="selected === '' ? 'All Companies' : (labels[selected] ?? 'All Companies')"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
-                                        :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item"
-                                        :class="{ 'is-active': selected === '' }"
-                                        @click="selected = ''; open = false; $wire.set('companyFilter', '')">All
-                                        Companies</button>
-                                    @foreach ($companies as $company)
+                            <div class="w-full sm:w-64">
+                                <div class="relative"
+                                    x-data="{ open: false, selected: @js((string) ($companyFilter ?? '')), labels: @js($companies->pluck('name', 'id')) }"
+                                    @keydown.escape.window="open = false" @click.outside="open = false">
+                                    <button type="button" class="admin-menu-btn" @click="open = !open">
+                                        <span
+                                            x-text="selected === '' ? 'All Companies' : (labels[selected] ?? 'All Companies')"></span>
+                                        <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
+                                            :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
                                         <button type="button" class="admin-menu-item"
-                                            :class="{ 'is-active': selected === '{{ $company->id }}' }"
-                                            @click="selected = '{{ $company->id }}'; open = false; $wire.set('companyFilter', '{{ $company->id }}')">{{ $company->name }}</button>
-                                    @endforeach
+                                            :class="{ 'is-active': selected === '' }"
+                                            @click="selected = ''; open = false; $wire.set('companyFilter', '')">All
+                                            Companies</button>
+                                        @foreach ($companies as $company)
+                                            <button type="button" class="admin-menu-item"
+                                                :class="{ 'is-active': selected === '{{ $company->id }}' }"
+                                                @click="selected = '{{ $company->id }}'; open = false; $wire.set('companyFilter', '{{ $company->id }}')">{{ $company->name }}</button>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         @endif
 
                         <div class="w-full sm:w-44">
@@ -323,22 +325,23 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-1">
-                                            <a href="{{ route($routePrefix . '.branches.edit', $branch->id) }}"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
-                                                title="Edit">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                            </a>
-
+                                            @can('Edit Branch')
+                                                <a href="{{ route($routePrefix . '.branches.edit', $branch->id) }}"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    title="Edit">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                </a>
+                                            @endcan
                                             <button type="button" x-on:click="appSwalConfirmAction({
-                                                        wire: $wire,
-                                                        action: 'toggleActive',
-                                                        args: [{{ $branch->id }}],
-                                                        confirmTitle: 'Change branch status?',
-                                                        doneTitle: 'Branch status updated'
-                                                    })"
+                                                                        wire: $wire,
+                                                                        action: 'toggleActive',
+                                                                        args: [{{ $branch->id }}],
+                                                                        confirmTitle: 'Change branch status?',
+                                                                        doneTitle: 'Branch status updated'
+                                                                    })"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                 title="{{ $branch->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                                 @if ($branch->status === 'active')
@@ -355,15 +358,15 @@
                                             </button>
 
                                             <button type="button" x-on:click="appSwalConfirmAction({
-                                                        wire: $wire,
-                                                        action: 'deleteBranch',
-                                                        args: [{{ $branch->id }}],
-                                                        confirmTitle: 'Are you sure?',
-                                                        confirmText: 'This will delete the branch and its related data.',
-                                                        confirmButtonText: 'Yes, delete it',
-                                                        doneTitle: 'Deleted!',
-                                                        doneText: 'Branch has been deleted.'
-                                                    })"
+                                                                        wire: $wire,
+                                                                        action: 'deleteBranch',
+                                                                        args: [{{ $branch->id }}],
+                                                                        confirmTitle: 'Are you sure?',
+                                                                        confirmText: 'This will delete the branch and its related data.',
+                                                                        confirmButtonText: 'Yes, delete it',
+                                                                        doneTitle: 'Deleted!',
+                                                                        doneText: 'Branch has been deleted.'
+                                                                    })"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                 title="Delete Branch">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -412,7 +415,7 @@
                                     {{-- Page Numbers --}}
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                                     <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
-                                                                                        {{ $page === $paginationMeta['current_page']
+                                                                                                                                                                                        {{ $page === $paginationMeta['current_page']
                                         ? 'bg-[#2ab4c0] text-white'
                                         : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
                                                         {{ $page }}

@@ -88,25 +88,6 @@
                         </div>
 
                         <div>
-                            <label class="field-label">Parent Company</label>
-                            <div class="relative" x-data="{ open: false, selected: @js($parent_id ?? ''), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn" @click="open = !open">
-                                    <span x-text="selected === '' ? 'None (Root Company)' : (labels[selected] ?? 'None (Root Company)')"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('parent_id', '')">None (Root Company)</button>
-                                    @foreach($companies as $comp)
-                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected == '{{ $comp->id }}' }" @click="selected = '{{ $comp->id }}'; open = false; $wire.set('parent_id', '{{ $comp->id }}')">{{ $comp->name }}</button>
-                                    @endforeach
-                                </div>
-                            </div>
-                            @error('parent_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
-
-                        <div>
                             <label class="field-label">Registration No. <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="registration_number" class="input-field" placeholder="e.g. 12345-678">
                             @error('registration_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror

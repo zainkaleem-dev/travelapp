@@ -23,7 +23,6 @@ class CompanyCreate extends Component
     public $company_logo = null;
     public ?int $founded_year = null;
     public ?string $description = null;
-    public ?int $parent_id = null;
 
     // SaaS / Status
     public string $status = 'active';
@@ -46,7 +45,7 @@ class CompanyCreate extends Component
             'registration_number' => ['required', 'string', 'max:50'],
             'founded_year' => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
             'status' => ['required', Rule::in(['active', 'inactive'])],
-            'parent_id' => ['nullable', 'integer', 'exists:companies,id'],
+
 
             // Other fields
             'legal_name' => ['nullable', 'string', 'max:255'],
@@ -93,7 +92,7 @@ class CompanyCreate extends Component
             'description' => $validated['description'],
             'status' => $validated['status'],
             'notes' => $validated['notes'],
-            'parent_id' => $validated['parent_id'],
+            'parent_id' => auth()->user()->can('Manage Global System') ? null : auth()->user()->company_id,
             'settings' => [
                 'logo_path' => $logoPath,
             ],
@@ -105,8 +104,6 @@ class CompanyCreate extends Component
 
     public function render()
     {
-        return view('livewire.company.create', [
-            'companies' => Company::orderBy('name')->get(['id', 'name']),
-        ]);
+        return view('livewire.company.create');
     }
 }

@@ -32,29 +32,41 @@ class RolesPermissions extends Component
     private function getRoleRank($roleName): int
     {
         return match ($roleName) {
-            'Super Admin'        => 100,
+            'Super Admin' => 100,
             'Organization Admin' => 80,
-            'Company Admin'      => 60,
-            'Branch Admin'       => 40,
-            'Agent'              => 20,
-            'User'               => 0,
-            default              => 10, // Custom roles start with low rank
+            'Company Admin' => 60,
+            'Branch Admin' => 40,
+            'Agent' => 20,
+            'User' => 0,
+            default => 10, // Custom roles start with low rank
         };
     }
 
     private function getAuthUserMaxRank(): int
     {
+        if ($this->isSuperAdmin)
+            return 100;
+
         $maxRank = 0;
         foreach (auth()->user()->getRoleNames() as $roleName) {
             $rank = $this->getRoleRank($roleName);
-            if ($rank > $maxRank) $maxRank = $rank;
+            if ($rank > $maxRank)
+                $maxRank = $rank;
         }
         return $maxRank;
     }
 
     public function mount(): void
     {
-        $this->isSuperAdmin = auth()->user()->hasRole('Super Admin');
+        // Use a context-insensitive check: bypass Spatie's current team ID
+        // by looking directly at the model_has_roles table for global entries (company_id = null)
+        $this->isSuperAdmin = \Illuminate\Support\Facades\DB::table('model_has_roles')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->where('model_has_roles.model_id', auth()->id())
+            ->where('model_has_roles.model_type', \App\Models\User::class)
+            ->where('roles.name', 'Super Admin')
+            ->whereNull('model_has_roles.company_id')
+            ->exists();
 
         if ($this->isSuperAdmin) {
             $this->companies = \App\Models\Company::orderBy('name')->get();
@@ -200,10 +212,20 @@ class RolesPermissions extends Component
         $teamId = $user->company_id;
         setPermissionsTeamId($teamId);
 
-        if ($user->hasRole($roleName)) {
-            $user->removeRole($roleName);
+        // Explicitly resolve the role record within the user's company context
+        $role = \App\Models\Role::where('name', $roleName)
+            ->where('company_id', $teamId)
+            ->first();
+
+        if (!$role) {
+            session()->flash('error', "Role '{$roleName}' not found for this company context.");
+            return;
+        }
+
+        if ($user->hasRole($role)) {
+            $user->removeRole($role);
         } else {
-            $user->assignRole($roleName);
+            $user->assignRole($role);
         }
     }
 
@@ -394,14 +416,16 @@ class RolesPermissions extends Component
         }
 
         $user = \App\Models\User::find($this->selectedUserId);
-        if (!$user) return;
+        if (!$user)
+            return;
 
         $teamId = $user->company_id;
         setPermissionsTeamId($teamId);
 
         // Find the specific role record
         $role = \App\Models\Role::find($roleId);
-        if (!$role) return;
+        if (!$role)
+            return;
 
         // Requirement 2: Cannot manage roles higher than your own
         $authMaxRank = $this->getAuthUserMaxRank();
@@ -430,8 +454,8 @@ class RolesPermissions extends Component
             session()->flash('status', "Role '{$role->name}' removed from user.");
         } else {
             \Illuminate\Support\Facades\DB::table('model_has_roles')->insert([
-                'role_id'    => $role->id,
-                'model_id'   => $user->id,
+                'role_id' => $role->id,
+                'model_id' => $user->id,
                 'model_type' => \App\Models\User::class,
                 'company_id' => $teamId,
             ]);

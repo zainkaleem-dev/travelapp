@@ -29,6 +29,9 @@ class BranchCreate extends Component
         }
 
         $this->company_id = $tenantContext->companyId();
+
+        // Enforcement: Only users with 'Create Branch' permission (or Super Admin bypass) can access this page
+        $this->authorize('Create Branch');
     }
 
     // Contact
