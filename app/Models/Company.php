@@ -12,6 +12,7 @@ class Company extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'parent_id',
         'name',
         'slug',
         'legal_name',
@@ -30,6 +31,18 @@ class Company extends Model
         'founded_year' => 'integer',
     ];
 
+
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Company, Company> */
+    public function parent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'parent_id');
+    }
+
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<Company, Company> */
+    public function children(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Company::class, 'parent_id');
+    }
 
     /** @return HasMany<Branch, Company> */
     public function branches(): HasMany

@@ -28,6 +28,7 @@ class CompanyEdit extends Component
     public ?string $existing_logo_path = null;
     public ?int $founded_year = null;
     public ?string $description = null;
+    public ?int $parent_id = null;
  
     // SaaS / Status
     public string $status = 'active';
@@ -54,6 +55,7 @@ class CompanyEdit extends Component
         $this->description = $this->company->description;
         $this->status = $this->company->status;
         $this->notes = $this->company->notes;
+        $this->parent_id = $this->company->parent_id;
     }
  
     public function updatedCompanyName($value): void
@@ -79,6 +81,7 @@ class CompanyEdit extends Component
             'registration_number' => ['required', 'string', 'max:50'],
             'founded_year'        => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
             'status'              => ['required', Rule::in(['active', 'inactive'])],
+            'parent_id'           => ['nullable', 'integer', 'exists:companies,id', 'different:companyId'],
 
             // Other fields
             'legal_name'          => ['nullable', 'string', 'max:255'],
@@ -128,6 +131,7 @@ class CompanyEdit extends Component
                 'description' => $validated['description'],
                 'status' => $validated['status'],
                 'notes' => $validated['notes'],
+                'parent_id' => $validated['parent_id'],
                 'settings' => array_merge($this->company->settings ?? [], [
                     'logo_path' => $logoPath,
                 ]),
@@ -140,6 +144,24 @@ class CompanyEdit extends Component
  
     public function render()
     {
-        return view('livewire.company.edit');
+        // Recursively get all descendant IDs to exclude from the parent list
+        $descendantIds = $this->getDescendantIds($this->company);
+        $excludeIds = array_merge([$this->companyId], $descendantIds);
+
+        return view('livewire.company.edit', [
+            'companies' => Company::whereNotIn('id', $excludeIds)
+                ->orderBy('name')
+                ->get(['id', 'name']),
+        ]);
+    }
+
+    private function getDescendantIds($company): array
+    {
+        $ids = [];
+        foreach ($company->children as $child) {
+            $ids[] = $child->id;
+            $ids = array_merge($ids, $this->getDescendantIds($child));
+        }
+        return $ids;
     }
 }
