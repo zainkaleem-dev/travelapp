@@ -28,13 +28,18 @@ class UserEdit extends Component
 
     public $companies = [];
     public $branches = [];
-    public string $routePrefix = 'superadmin';
+    public string $routePrefix = 'admin';
 
     public function mount(int $id, TenantContext $tenantContext): void
     {
+        $companyId = $tenantContext->companyId();
+        
         $this->userId = $id;
         $this->user = User::query()
             ->withoutRole('Super Admin')
+            ->when($companyId, function ($query) use ($companyId) {
+                $query->where('company_id', $companyId);
+            })
             ->findOrFail($id);
 
         $this->first_name = (string) ($this->user->first_name ?? '');
@@ -52,7 +57,9 @@ class UserEdit extends Component
             $this->company_id = $tenantContext->companyId();
         }
 
-        if (request()->is('company*')) {
+        if (request()->is('admin*')) {
+            $this->routePrefix = 'admin';
+        } elseif (request()->is('company*')) {
             $this->routePrefix = 'company';
         }
 

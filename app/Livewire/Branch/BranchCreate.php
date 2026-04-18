@@ -15,16 +15,21 @@ class BranchCreate extends Component
     public string $code = '';
     public string $slug = '';
     public ?int $company_id = null;
-    public string $routePrefix = 'superadmin';
+    public string $routePrefix = 'admin';
     public bool $is_main = false;
 
-    public function mount()
+    public string $status = 'active';
+
+    public function mount(\App\Support\TenantContext $tenantContext)
     {
-        if (request()->is('company*')) {
+        if (request()->is('admin*')) {
+            $this->routePrefix = 'admin';
+        } elseif (request()->is('company*')) {
             $this->routePrefix = 'company';
-            $this->company_id = auth()->user()->company_id;
         }
-    }    public string $status = 'active';
+
+        $this->company_id = $tenantContext->companyId();
+    }
 
     // Contact
     public ?string $email = null;
@@ -106,10 +111,17 @@ class BranchCreate extends Component
         return redirect()->route($this->routePrefix . '.branches.index');
     }
 
-    public function render()
+    public function render(\App\Support\TenantContext $tenantContext)
     {
+        $companyId = $tenantContext->companyId();
+
         return view('livewire.branch.create', [
-            'companies' => Company::query()->orderBy('name')->get(),
+            'companies' => Company::query()
+                ->when($companyId, function ($query) use ($companyId) {
+                    $query->where('id', $companyId);
+                })
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 }

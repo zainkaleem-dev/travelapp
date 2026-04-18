@@ -34,7 +34,7 @@
                 <div class="flex flex-col gap-4">
                     <!-- Top Filter Row -->
                     <div class="flex flex-wrap items-center gap-3">
-                        @if($routePrefix === 'superadmin')
+                        @if($routePrefix === 'admin')
                         <div class="w-full sm:w-64">
                             <div class="relative"
                                 x-data="{ open: false, selected: @js((string) ($companyFilter ?? '')), labels: @js($companies->pluck('name', 'id')) }"

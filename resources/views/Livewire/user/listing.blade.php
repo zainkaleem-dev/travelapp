@@ -220,7 +220,7 @@
                                                         </td>
                                                         <td class="px-6 py-4">
                                                             <div class="flex items-center gap-1">
-                                                                <a href="{{ route('impersonate.take', $user->id) }}"
+                                                                <a href="{{ route('admin.impersonate.take', $user->id) }}"
                                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                                     title="Login as User">
                                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

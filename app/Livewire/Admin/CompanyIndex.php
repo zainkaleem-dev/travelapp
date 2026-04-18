@@ -86,6 +86,10 @@ class CompanyIndex extends Component
         $search = trim($this->search);
  
         $query = Company::query()
+            ->when(!auth()->user()->can('Manage Global System'), function ($query) {
+                // Organization Admin only sees their own company
+                $query->where('id', auth()->user()->company_id);
+            })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")

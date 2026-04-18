@@ -42,7 +42,7 @@ class ImpersonateController extends Controller
 
         if ($admin) {
             Auth::login($admin);
-            return redirect()->route('superadmin.users')->with('status', 'Returned to admin session.');
+            return redirect()->route('admin.users')->with('status', 'Returned to admin session.');
         }
 
         return redirect()->route('login');

@@ -17,12 +17,12 @@ class UserListing extends Component
     public string $statusFilter = '';
     public string $sortBy = 'first_name';
     public string $sortDirection = 'asc';
-    public string $routePrefix = 'superadmin';
+    public string $routePrefix = 'admin';
 
     public function mount(): void
     {
         $this->authorize('View User');
-        $this->routePrefix = request()->is('super-admin*') ? 'superadmin' : 'company';
+        $this->routePrefix = request()->is('admin*') ? 'admin' : 'company';
         $this->currentPage = (int) request()->query('page', 1);
     }
 
@@ -105,6 +105,9 @@ class UserListing extends Component
             })
             ->when($this->statusFilter, function ($query) {
                 $query->where('status', $this->statusFilter);
+            })
+            ->when($companyId > 0, function ($query) use ($companyId) {
+                $query->where('company_id', $companyId);
             })
             ->orderBy($this->sortBy, $this->sortDirection);
 

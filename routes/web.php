@@ -74,20 +74,21 @@ Route::get('/trip-type/{type}', function (Request $request, string $type) {
 // Root URL
 Route::get('/', function () {
     if (auth()->check()) {
-        if (auth()->user()->can('Manage Global System')) {
-            return redirect()->route('superadmin.companies.index');
+        $user = auth()->user();
+        if ($user->can('Manage Global System') || $user->hasRole('Organization Admin')) {
+            return redirect()->route('admin.companies.index');
         }
-        if (auth()->user()->can('View Company')) {
+        if ($user->can('View Company')) {
             return redirect()->route('company.companies.index');
         }
-        if (auth()->user()->can('View Branch')) {
+        if ($user->can('View Branch')) {
             return redirect()->route('branch.users.index');
         }
         // Agents and Users land on their specific prefixes if they have admin-style dashboard permissions
-        if (auth()->user()->hasRole('Agent')) {
+        if ($user->hasRole('Agent')) {
             return redirect()->route('agent.users.index');
         }
-        if (auth()->user()->hasRole('User')) {
+        if ($user->hasRole('User')) {
             return redirect()->route('user.roles.index');
         }
         return redirect()->route('flights.search');
@@ -158,21 +159,22 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/corporate-settings', CorporateSettings::class)->name('corporate.settings');
     Route::get('/tmc-settings', TmcSettings::class)->name('tmc.settings');
-    Route::get('/super-admin-settings', SuperAdminSettings::class)->name('superadmin.settings');
 
-    Route::middleware(['superadmin', 'can:View Dashboard'])->prefix('super-admin')->group(function () {
-        Route::get('/companies', CompanyIndex::class)->name('superadmin.companies.index');
-        Route::get('/branches', BranchListing::class)->name('superadmin.branches');
-        Route::get('/branches/create', BranchCreate::class)->name('superadmin.branches.create');
-        Route::get('/branches/{id}/edit', BranchEdit::class)->name('superadmin.branches.edit');
-        Route::get('/companies/create', CompanyCreate::class)->name('superadmin.companies.create');
-        Route::get('/companies/{id}/edit', CompanyEdit::class)->name('superadmin.companies.edit');
-        Route::get('/companies/{company}/features', FeaturesListing::class)->name('superadmin.companies.features');
-        Route::get('/features', FeaturesListing::class)->name('superadmin.features');
-        Route::get('/users', UserListing::class)->name('superadmin.users');
-        Route::get('/users/create', UserCreate::class)->name('superadmin.users.create');
-        Route::get('/users/{id}/edit', UserEdit::class)->name('superadmin.users.edit');
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('superadmin.roles.index');
+
+    Route::middleware(['superadmin', 'can:View Dashboard'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/settings', SuperAdminSettings::class)->name('settings');
+        Route::get('/companies', CompanyIndex::class)->name('companies.index');
+        Route::get('/branches', BranchListing::class)->name('branches');
+        Route::get('/branches/create', BranchCreate::class)->name('branches.create');
+        Route::get('/branches/{id}/edit', BranchEdit::class)->name('branches.edit');
+        Route::get('/companies/create', CompanyCreate::class)->name('companies.create');
+        Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit');
+        Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features');
+        Route::get('/features', FeaturesListing::class)->name('features');
+        Route::get('/users', UserListing::class)->name('users');
+        Route::get('/users/create', UserCreate::class)->name('users.create');
+        Route::get('/users/{id}/edit', UserEdit::class)->name('users.edit');
+        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('roles.index');
 
         // Impersonation
         Route::get('/impersonate/take/{user}', [\App\Http\Controllers\ImpersonateController::class, 'take'])->name('impersonate.take');

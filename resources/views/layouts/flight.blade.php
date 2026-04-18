@@ -807,7 +807,7 @@
                             </a>
 
                             {{-- @can('Manage Global System')
-                            <a href="{{ route('superadmin.settings') }}"
+                            <a href="{{ route('admin.settings') }}"
                                 class="w-full px-4 py-2.5 text-sm text-left text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -842,19 +842,20 @@
         @php 
             $user = auth()->user();
             $isSuperAdmin = $user && $user->hasRole('Super Admin');
-            $isCompanyAdmin = $user && ($user->hasRole('Company Admin') || $user->hasRole('Organization Admin'));
+            $isOrganizationAdmin = $user && $user->hasRole('Organization Admin');
+            $isCompanyAdmin = $user && $user->hasRole('Company Admin');
 
-            $hideMainNavForSuperAdmin = $user && $user->hasRole('Super Admin') && request()->is('super-admin*'); 
- 
-            $hideMainNavForCompanyAdmin = $user && !$user->hasRole('Super Admin') && request()->is('company*');
+            // Hide Main Nav for both Super and Organization Admins in the common /admin area
+            $hideMainNavForAdmin = ($isSuperAdmin || $isOrganizationAdmin) && request()->is('admin*'); 
+            $hideMainNavForCompanyAdmin = $isCompanyAdmin && request()->is('company*');
 
-            $isSuperAdminArea = $isSuperAdmin && (request()->is('super-admin*') || request()->routeIs('superadmin.*'));
+            $isAdminArea = ($isSuperAdmin || $isOrganizationAdmin) && (request()->is('admin*') || request()->routeIs('admin.*'));
             $isCompanyAdminArea = $isCompanyAdmin && (request()->is('company*') || request()->routeIs('company.*'));
             $isManagementArea = request()->routeIs(['profile', 'settings', 'corporate.settings', 'tmc.settings', 'flights.list']);
           @endphp 
 
  
-        @unless ($hideMainNavForSuperAdmin || $hideMainNavForCompanyAdmin) 
+        @unless ($hideMainNavForAdmin || $hideMainNavForCompanyAdmin) 
             <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center justify-between"> 
                 <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold w-full"> 
                 @featureOrAdmin('flights-module')
@@ -901,9 +902,9 @@
                     $isAgent = $user->hasRole('Agent');
                     $isUser = $user->hasRole('User');
 
-                    if ($isSuper) {
-                        $rolesRoute = route('superadmin.roles.index');
-                        $rolesRouteIs = 'superadmin.roles.index';
+                    if ($isSuperAdmin || $isOrganizationAdmin) {
+                        $rolesRoute = route('admin.roles.index');
+                        $rolesRouteIs = 'admin.roles.index';
                     } elseif ($isCompany) {
                         $rolesRoute = route('company.roles.index');
                         $rolesRouteIs = 'company.roles.index';
@@ -947,8 +948,8 @@
 
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
-        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 {{ ($isSuperAdminArea || $isManagementArea) ? 'mt-2 pt-0' : 'mt-8 pt-4' }} pb-12 sm:pb-16">
-            @if (!$isSuperAdminArea && !$isCompanyAdminArea && !request()->routeIs(['flights.list', 'profile', 'settings', 'corporate.settings', 'tmc.settings']))
+        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 {{ ($isAdminArea || $isManagementArea) ? 'mt-2 pt-0' : 'mt-8 pt-4' }} pb-12 sm:pb-16">
+            @if (!$isAdminArea && !$isCompanyAdminArea && !request()->routeIs(['flights.list', 'profile', 'settings', 'corporate.settings', 'tmc.settings']))
                 {{-- ── Trip Type Bar (flight search only, read-only) ── --}}
                 @if (request()->routeIs('flights.search'))
                     @php
@@ -980,7 +981,7 @@
                 <div class="max-w-[960px] mx-auto h-px bg-gray-100"></div>
             @endif
             
-            @unless ($isSuperAdmin && request()->is('super-admin*'))
+            @unless (($isSuperAdmin || $isOrganizationAdmin) && request()->is('admin*'))
                 <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms class="{{ request()->routeIs('flights.list') ? 'w-full mt-4 mb-4 px-3 sm:px-4' : 'max-w-[960px] mx-auto mt-4 mb-4' }}">
                     @livewire('quick-search')
                 </div>
@@ -1095,7 +1096,7 @@
 
 
 
-                @if ($isSuperAdminArea || $isCompanyAdminArea)
+                @if ($isAdminArea || $isCompanyAdminArea)
                     <div class="flex flex-col md:flex-row gap-6 mt-0">
                         {{-- Sidebar --}}
                         <div class="w-full md:w-64 flex-shrink-0">

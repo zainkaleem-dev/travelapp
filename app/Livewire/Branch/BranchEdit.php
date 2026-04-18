@@ -13,7 +13,7 @@ class BranchEdit extends Component
 {
     public int $branchId;
     public Branch $branch;
-    public string $routePrefix = 'superadmin';
+    public string $routePrefix = 'admin';
 
     // Identity
     public string $name = '';
@@ -43,14 +43,22 @@ class BranchEdit extends Component
     public ?string $longitude = null;
     public ?string $notes = null;
 
-    public function mount(int $id): void
+    public function mount(int $id, \App\Support\TenantContext $tenantContext): void
     {
-        if (request()->is('company*')) {
+        if (request()->is('admin*')) {
+            $this->routePrefix = 'admin';
+        } elseif (request()->is('company*')) {
             $this->routePrefix = 'company';
         }
 
         $this->branchId = $id;
-        $this->branch = Branch::query()->findOrFail($id);
+        $companyId = $tenantContext->companyId();
+        
+        $this->branch = Branch::query()
+            ->when($companyId, function ($query) use ($companyId) {
+                $query->where('company_id', $companyId);
+            })
+            ->findOrFail($id);
 
         $this->name = $this->branch->name;
         $this->code = $this->branch->code;
@@ -137,10 +145,17 @@ class BranchEdit extends Component
         return redirect()->route($this->routePrefix . '.branches.index');
     }
 
-    public function render()
+    public function render(\App\Support\TenantContext $tenantContext)
     {
+        $companyId = $tenantContext->companyId();
+        
         return view('livewire.branch.edit', [
-            'companies' => Company::query()->orderBy('name')->get(),
+            'companies' => Company::query()
+                ->when($companyId, function ($query) use ($companyId) {
+                    $query->where('id', $companyId);
+                })
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 }

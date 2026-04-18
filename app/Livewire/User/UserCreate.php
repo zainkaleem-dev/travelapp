@@ -24,7 +24,7 @@ class UserCreate extends Component
 
     public $companies = [];
     public $branches = [];
-    public string $routePrefix = 'superadmin';
+    public string $routePrefix = 'admin';
 
     public function mount(TenantContext $tenantContext)
     {
@@ -38,7 +38,9 @@ class UserCreate extends Component
             $this->updatedCompanyId();
         }
 
-        if (request()->is('company*')) {
+        if (request()->is('admin*')) {
+            $this->routePrefix = 'admin';
+        } elseif (request()->is('company*')) {
             $this->routePrefix = 'company';
         }
     }

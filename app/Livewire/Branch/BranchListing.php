@@ -18,14 +18,16 @@ class BranchListing extends Component
     public string $sortDirection = 'asc';
     public string $companyFilter = '';
     public string $statusFilter = '';
-    public string $routePrefix = 'superadmin';
+    public string $routePrefix = 'admin';
 
     public function mount()
     {
         $this->authorize('View Branch');
         $this->currentPage = (int) request()->query('page', 1);
 
-        if (request()->is('company*')) {
+        if (request()->is('admin*')) {
+            $this->routePrefix = 'admin';
+        } elseif (request()->is('company*')) {
             $this->routePrefix = 'company';
         }
     }
@@ -84,13 +86,17 @@ class BranchListing extends Component
         session()->flash('status', 'Branch deleted successfully.');
     }
 
-    public function render(PaginationService $paginationService)
+    public function render(PaginationService $paginationService, \App\Support\TenantContext $tenantContext)
     {
-        $search = trim($this->search);
-
+        $companyId = $tenantContext->companyId();
+ 
         $query = Branch::query()
             ->with('company')
-            ->when($search !== '', function ($query) use ($search) {
+            ->when($companyId, function ($query) use ($companyId) {
+                $query->where('branches.company_id', $companyId);
+            })
+            ->when($this->search !== '', function ($query) {
+                $search = $this->search;
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
                         ->orWhere('code', 'like', "%{$search}%")

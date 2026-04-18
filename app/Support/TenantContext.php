@@ -21,9 +21,9 @@ class TenantContext
         return $this->companyId;
     }
 
-    public function inSuperAdminArea(Request $request): bool
+    public function inAdminArea(Request $request): bool
     {
-        return $request->is('super-admin*');
+        return $request->is('admin*');
     }
 
     public function resolveCompanyId(Request $request, ?Authenticatable $user): ?int
@@ -43,7 +43,7 @@ class TenantContext
             || $request->is('livewire/*')
             || $request->route()?->getName() === 'livewire.update';
 
-        if ($this->inSuperAdminArea($request) || ($isSuperAdmin && $isLivewireRequest)) {
+        if ($isSuperAdmin && ($this->inAdminArea($request) || $isLivewireRequest)) {
             return null;
         }
 

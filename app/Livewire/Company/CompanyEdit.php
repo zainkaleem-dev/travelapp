@@ -36,7 +36,12 @@ class CompanyEdit extends Component
     public function mount(int $id): void
     {
         $this->companyId = $id;
-        $this->company = Company::query()->findOrFail($id);
+        $this->company = Company::query()
+            ->when(!auth()->user()->can('Manage Global System'), function ($query) {
+                // Organization Admin can only find/edit their own company
+                $query->where('id', auth()->user()->company_id);
+            })
+            ->findOrFail($id);
  
         $this->company_name = $this->company->name;
         $this->slug = $this->company->slug;
@@ -130,7 +135,7 @@ class CompanyEdit extends Component
         });
  
         session()->flash('status', 'Company updated successfully.');
-        return redirect()->route('superadmin.companies.index');
+        return redirect()->route('admin.companies.index');
     }
  
     public function render()

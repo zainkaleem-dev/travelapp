@@ -5,7 +5,7 @@
                 <div>
                     <h1 class="text-2xl font-black text-gray-900 tracking-tight">Add Company</h1>
                 </div>
-                <a href="{{ route('superadmin.companies.index') }}"
+                <a href="{{ route('admin.companies.index') }}"
                     class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
                     Back
                 </a>
