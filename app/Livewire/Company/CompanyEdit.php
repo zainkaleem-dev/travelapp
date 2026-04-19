@@ -139,7 +139,7 @@ class CompanyEdit extends Component
         });
 
         session()->flash('status', 'Company updated successfully.');
-        return redirect()->route('admin.companies.index');
+        return redirect()->route('companies.index');
     }
 
     public function render()

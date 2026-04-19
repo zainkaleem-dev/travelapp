@@ -99,7 +99,7 @@ class CompanyCreate extends Component
         ]);
 
         session()->flash('status', 'Company created successfully.');
-        return $this->redirect(route('admin.companies.index'));
+        return $this->redirect(route('companies.index'));
     }
 
     public function render()

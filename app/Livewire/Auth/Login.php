@@ -83,8 +83,8 @@ class Login extends Component
         // Clear rate limiter on success
         RateLimiter::clear($this->throttleKey());
 
-        Auth::login($user, $this->remember); 
-        request()->session()->regenerate(); 
+        Auth::login($user, $this->remember);
+        request()->session()->regenerate();
 
         // Set the multi-tenant context before checking roles for redirection
         setPermissionsTeamId($user->company_id);
@@ -95,12 +95,12 @@ class Login extends Component
         }
 
         if ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin') || $user->hasRole('Branch Admin')) {
-            $this->redirect(route('admin.companies.index'));
+            $this->redirect(route('companies.index'));
             return;
         }
 
         $this->redirect(route('flights.search'));
-    } 
+    }
 
     // ─── Social auth placeholders ─────────────────────────────────
     public function loginWithGoogle(): void
