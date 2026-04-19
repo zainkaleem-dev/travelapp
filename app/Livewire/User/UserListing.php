@@ -21,7 +21,6 @@ class UserListing extends Component
 
     public function mount(): void
     {
-        $this->authorize('View User');
         $this->routePrefix = request()->is('admin*') ? 'admin' : 'company';
         $this->currentPage = (int) request()->query('page', 1);
     }

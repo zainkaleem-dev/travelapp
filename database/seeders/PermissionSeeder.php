@@ -4,7 +4,12 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 class PermissionSeeder extends Seeder
 {
     /**
@@ -20,12 +25,12 @@ class PermissionSeeder extends Seeder
         setPermissionsTeamId(null);
 
         // 3. Clean Start (Optional but recommended for this specific seeder setup)
-        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
-        \Illuminate\Support\Facades\DB::table('role_has_permissions')->truncate();
-        \Illuminate\Support\Facades\DB::table('model_has_roles')->truncate();
-        \Illuminate\Support\Facades\DB::table('roles')->truncate();
-        \Illuminate\Support\Facades\DB::table('permissions')->truncate();
-        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+        Schema::disableForeignKeyConstraints();
+        DB::table('role_has_permissions')->truncate();
+        DB::table('model_has_roles')->truncate();
+        DB::table('roles')->truncate();
+        DB::table('permissions')->truncate();
+        Schema::enableForeignKeyConstraints();
 
         // 4. Standard Permissions
         $standardPermissions = [
@@ -33,12 +38,15 @@ class PermissionSeeder extends Seeder
             'View Company',
             'Create Company',
             'Edit Company',
+            'Delete Company',
             'View Branch',
             'Create Branch',
             'Edit Branch',
-            'View User',
+            'Delete Branch',
+            'View Users',
             'Create User',
             'Edit User',
+            'Delete User',
             'Manage Roles and Permissions',
             'Manage Features',
         ];
@@ -48,36 +56,21 @@ class PermissionSeeder extends Seeder
         ];
 
         foreach (array_merge($standardPermissions, $globalPermissions) as $permission) {
-            \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // 5. Global Roles (Explicitly NULL company_id)
-        $superAdmin = \App\Models\Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
+        $superAdmin = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
         // Super Admin gets EVERYTHING including Global System management
         $superAdmin->syncPermissions(array_merge($standardPermissions, $globalPermissions));
 
-        $companyAdmin = \App\Models\Role::firstOrCreate(['name' => 'Company Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $companyAdmin->syncPermissions($standardPermissions);
-
-        $organizationAdmin = \App\Models\Role::firstOrCreate(['name' => 'Organization Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $organizationAdmin->syncPermissions($standardPermissions);
-
-        $branchAdmin = \App\Models\Role::firstOrCreate(['name' => 'Branch Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $branchAdmin->syncPermissions($standardPermissions);
-
-        $agent = \App\Models\Role::firstOrCreate(['name' => 'Agent', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $agent->syncPermissions($standardPermissions);
-
-        $user = \App\Models\Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
-        $user->syncPermissions($standardPermissions);
-
         // 6. Ensure Base Admin User exists and has role
-        $admin = \App\Models\User::firstOrCreate(
+        $admin = User::firstOrCreate(
             ['email' => 'admin@gmail.com'],
             [
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
-                'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+                'password' => Hash::make('admin123'),
                 'email_verified_at' => now(),
             ]
         );

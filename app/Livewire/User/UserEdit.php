@@ -33,7 +33,7 @@ class UserEdit extends Component
     public function mount(int $id, TenantContext $tenantContext): void
     {
         $companyId = $tenantContext->companyId();
-        
+
         $this->userId = $id;
         $this->user = User::query()
             ->withoutRole('Super Admin')
@@ -121,7 +121,7 @@ class UserEdit extends Component
         }
 
         session()->flash('status', 'User updated successfully.');
-        return redirect()->route($this->routePrefix . '.users.index');
+        return redirect()->route('users.index');
     }
 
     public function render()

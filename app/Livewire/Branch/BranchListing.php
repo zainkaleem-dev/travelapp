@@ -22,14 +22,7 @@ class BranchListing extends Component
 
     public function mount()
     {
-        $this->authorize('View Branch');
         $this->currentPage = (int) request()->query('page', 1);
-
-        if (request()->is('admin*')) {
-            $this->routePrefix = 'admin';
-        } elseif (request()->is('company*')) {
-            $this->routePrefix = 'company';
-        }
     }
 
     #[\Livewire\Attributes\On('paginationGoTo')]
@@ -71,7 +64,6 @@ class BranchListing extends Component
 
     public function toggleActive(int $branchId): void
     {
-        $this->authorize('Edit Branch');
         $branch = Branch::query()->findOrFail($branchId);
         $newStatus = $branch->status === 'active' ? 'inactive' : 'active';
         $branch->update(['status' => $newStatus]);
@@ -79,7 +71,6 @@ class BranchListing extends Component
 
     public function deleteBranch(int $branchId): void
     {
-        $this->authorize('Delete Branch');
         $branch = Branch::query()->findOrFail($branchId);
         $branch->delete();
 

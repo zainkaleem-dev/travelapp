@@ -45,11 +45,7 @@ class BranchEdit extends Component
 
     public function mount(int $id, \App\Support\TenantContext $tenantContext): void
     {
-        if (request()->is('admin*')) {
-            $this->routePrefix = 'admin';
-        } elseif (request()->is('company*')) {
-            $this->routePrefix = 'company';
-        }
+
 
         $this->branchId = $id;
         $companyId = $tenantContext->companyId();
@@ -142,7 +138,7 @@ class BranchEdit extends Component
         $this->branch->update($validated);
 
         session()->flash('status', 'Branch updated successfully.');
-        return redirect()->route($this->routePrefix . '.branches.index');
+        return redirect()->route('branches.index');
     }
 
     public function render(\App\Support\TenantContext $tenantContext)

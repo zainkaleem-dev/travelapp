@@ -55,8 +55,8 @@ class User extends Authenticatable implements MustVerifyEmail
                 return true;
             }
 
-            // Check in global context (for Super Admin bypass)
-            if ($originalTeamId !== null && $hasActiveRole($roles, null)) {
+            // Check in global context (Only for Super Admin bypass)
+            if ($originalTeamId !== null && $hasActiveRole(['Super Admin'], null)) {
                 return true;
             }
 

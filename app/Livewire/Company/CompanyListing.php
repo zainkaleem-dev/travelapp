@@ -67,7 +67,6 @@ class CompanyListing extends Component
 
     public function toggleActive(int $companyId): void
     {
-        $this->authorize('Edit Company');
         $company = Company::query()->findOrFail($companyId);
         $newStatus = $company->status === 'active' ? 'inactive' : 'active';
         $company->update(['status' => $newStatus]);
@@ -75,7 +74,6 @@ class CompanyListing extends Component
 
     public function deleteCompany(int $companyId): void
     {
-        $this->authorize('Delete Company');
         $company = Company::query()->findOrFail($companyId);
         $company->delete();
 

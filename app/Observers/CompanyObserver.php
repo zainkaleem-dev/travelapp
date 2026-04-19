@@ -16,34 +16,31 @@ class CompanyObserver
         // 1. Force context to the new company
         setPermissionsTeamId($company->id);
 
-        $basePermissions = [
+        $standardPermissions = [
             'View Dashboard',
             'View Company',
-            'View Branch',
-            'View User',
-        ];
-
-        $managementPermissions = [
             'Create Company',
             'Edit Company',
+            'Delete Company',
+            'View Branch',
+            'Create Branch',
+            'Edit Branch',
+            'Delete Branch',
+            'View Users',
             'Create User',
             'Edit User',
+            'Delete User',
             'Manage Roles and Permissions',
             'Manage Features',
         ];
 
-        $executivePermissions = [
-            'Create Branch',
-            'Edit Branch',
-        ];
 
-        // 3. Define Roles and their specific permission mappings
         $roleDefinitions = [
-            'Company Admin' => array_merge($basePermissions, $managementPermissions, $executivePermissions),
-            'Organization Admin' => array_merge($basePermissions, $managementPermissions),
-            'Branch Admin' => array_merge($basePermissions, $managementPermissions),
-            'Agent' => $basePermissions,
-            'User' => $basePermissions,
+            'Company Admin' => $standardPermissions,
+            'Organization Admin' => $standardPermissions,
+            'Branch Admin' => $standardPermissions,
+            'Agent' => $standardPermissions,
+            'User' => $standardPermissions,
         ];
 
         foreach ($roleDefinitions as $roleName => $perms) {

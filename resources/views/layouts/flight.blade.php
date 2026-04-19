@@ -66,7 +66,7 @@
         }
 
         .trip-tab {
-            padding: 8px 20px;
+            padding: 6px 13px;
             font-size: 13px;
             font-weight: 600;
             color: black;
@@ -277,9 +277,13 @@
 	        }
 
 	        /* Right-side icons inside inputs (From/To) */
-	        .field-wrap.has-icon-right {
-	            padding-right: 46px;
-	        }
+	        /* .field-wrap.has-icon-right {
+	            padding-right: 85px;
+	        } */
+
+            .field-wrap.has-icon-right {
+                padding-right: clamp(170px, 8vw, 85px);
+            }
 
 	        .field-wrap.has-icon-right.has-clear {
 	            padding-right: 76px;
@@ -831,8 +835,16 @@
         </div>
         
         
-        @if(!request()->routeIs('companies.*'))
+        @if(!request()->routeIs([
+            'companies.*',
+            'branches.*',
+            'users.*',
+            'roles.*',
+            'features.*'
+        ]))           
+        
             @include('partials.navigation-user')
+
         @endif
     </nav>
 
@@ -848,9 +860,14 @@
             <div class="flex flex-col relative">
 
                 @include('partials.form-wizard')
-                @if(request()->routeIs('companies.*') || request()->routeIs('branches.*') || request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('features.*'))
-
-                @include("partials.navigation-admin")
+                @if(request()->routeIs([
+                    'companies.*',
+                    'branches.*',
+                    'users.*',
+                    'roles.*',
+                    'features.*'
+                ]))
+                    @include("partials.navigation-admin")
                 @else
                     {{ $slot }}
                 @endif

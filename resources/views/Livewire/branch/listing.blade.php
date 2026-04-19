@@ -17,7 +17,7 @@
                             </svg>
                         </button>
                         @can('Create Branch')
-                            <a href="{{ route($routePrefix . '.branches.create') }}"
+                            <a href="{{ route('branches.create') }}"
                                 class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                                 Add Branch
                             </a>
@@ -326,7 +326,7 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-1">
                                             @can('Edit Branch')
-                                                <a href="{{ route($routePrefix . '.branches.edit', $branch->id) }}"
+                                                <a href="{{ route('branches.edit', $branch->id) }}"
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,12 +336,12 @@
                                                 </a>
                                             @endcan
                                             <button type="button" x-on:click="appSwalConfirmAction({
-                                                                        wire: $wire,
-                                                                        action: 'toggleActive',
-                                                                        args: [{{ $branch->id }}],
-                                                                        confirmTitle: 'Change branch status?',
-                                                                        doneTitle: 'Branch status updated'
-                                                                    })"
+                                                                                            wire: $wire,
+                                                                                            action: 'toggleActive',
+                                                                                            args: [{{ $branch->id }}],
+                                                                                            confirmTitle: 'Change branch status?',
+                                                                                            doneTitle: 'Branch status updated'
+                                                                                        })"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                 title="{{ $branch->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                                 @if ($branch->status === 'active')
@@ -356,24 +356,25 @@
                                                     </svg>
                                                 @endif
                                             </button>
-
-                                            <button type="button" x-on:click="appSwalConfirmAction({
-                                                                        wire: $wire,
-                                                                        action: 'deleteBranch',
-                                                                        args: [{{ $branch->id }}],
-                                                                        confirmTitle: 'Are you sure?',
-                                                                        confirmText: 'This will delete the branch and its related data.',
-                                                                        confirmButtonText: 'Yes, delete it',
-                                                                        doneTitle: 'Deleted!',
-                                                                        doneText: 'Branch has been deleted.'
-                                                                    })"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
-                                                title="Delete Branch">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
+                                            @can('Delete Branch')
+                                                <button type="button" x-on:click="appSwalConfirmAction({
+                                                                                                    wire: $wire,
+                                                                                                    action: 'deleteBranch',
+                                                                                                    args: [{{ $branch->id }}],
+                                                                                                    confirmTitle: 'Are you sure?',
+                                                                                                    confirmText: 'This will delete the branch and its related data.',
+                                                                                                    confirmButtonText: 'Yes, delete it',
+                                                                                                    doneTitle: 'Deleted!',
+                                                                                                    doneText: 'Branch has been deleted.'
+                                                                                                })"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    title="Delete Branch">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -415,7 +416,7 @@
                                     {{-- Page Numbers --}}
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                                     <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
-                                                                                                                                                                                        {{ $page === $paginationMeta['current_page']
+                                                                                                                                                                                                                                                                                                                {{ $page === $paginationMeta['current_page']
                                         ? 'bg-[#2ab4c0] text-white'
                                         : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
                                                         {{ $page }}

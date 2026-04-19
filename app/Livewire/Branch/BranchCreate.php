@@ -22,16 +22,11 @@ class BranchCreate extends Component
 
     public function mount(\App\Support\TenantContext $tenantContext)
     {
-        if (request()->is('admin*')) {
-            $this->routePrefix = 'admin';
-        } elseif (request()->is('company*')) {
-            $this->routePrefix = 'company';
-        }
+
 
         $this->company_id = $tenantContext->companyId();
 
         // Enforcement: Only users with 'Create Branch' permission (or Super Admin bypass) can access this page
-        $this->authorize('Create Branch');
     }
 
     // Contact
@@ -111,7 +106,7 @@ class BranchCreate extends Component
         Branch::query()->create($validated);
 
         session()->flash('status', 'Branch created successfully.');
-        return redirect()->route($this->routePrefix . '.branches.index');
+        return redirect()->route('branches.index');
     }
 
     public function render(\App\Support\TenantContext $tenantContext)

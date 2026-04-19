@@ -115,7 +115,7 @@ class UserCreate extends Component
         }
 
         session()->flash('status', "User '{$user->display_name}' created successfully with default permissions.");
-        return redirect()->route($this->routePrefix . '.users.index');
+        return redirect()->route('users.index');
     }
 
     public function render()

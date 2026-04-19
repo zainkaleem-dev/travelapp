@@ -36,14 +36,16 @@
         @if($tripType === 'return')
             <div wire:key="trip-panel-return" class="">
                 {{-- Row 1 --}}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-x-12 mb-3">
+                <div
+                    class="flex items-center md:space-y-0 space-y-4 md:space-x-4 space-x-0 md:flex-row flex-col justify-between mb-3">
 
                     {{-- Departure --}}
                     <div>
                         <div class="field-wrap has-icon-right {{ $returnDep ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">From</span>
-                            <span class="field-icon right" aria-hidden="true" style="color: {{ $returnDep ? '#2ab4c0' : '#9ca3af' }};">
+                            <span class="field-icon right" aria-hidden="true"
+                                style="color: {{ $returnDep ? '#2ab4c0' : '#9ca3af' }};">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
@@ -98,26 +100,27 @@
                                 </div>
                             </div>
 
-                            {{-- Swap Button --}}
-                            <button type="button" wire:click="swapReturnAirports"
-                                class="hidden md:flex absolute right-[-24px] rtl:right-auto rtl:left-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 rtl:-translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
-                                title="Swap locations">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                </svg>
-                            </button>
+
                         </div>
                         @error('returnDep') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
-
+                    {{-- Swap Button --}}
+                    <button type="button" wire:click="swapReturnAirports"
+                        class="m-0 flex z-50 px-2 w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                        title="Swap locations">
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                    </button>
                     {{-- Arrival --}}
                     <div>
                         <div class="field-wrap has-icon-right {{ $returnArr ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">To</span>
-                            <span class="field-icon right" aria-hidden="true" style="color: {{ $returnArr ? '#2ab4c0' : '#9ca3af' }};">
+                            <span class="field-icon right" aria-hidden="true"
+                                style="color: {{ $returnArr ? '#2ab4c0' : '#9ca3af' }};">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
@@ -269,7 +272,8 @@
                                                     <template x-for="cell in m.cells" :key="cell.key">
                                                         <button type="button"
                                                             class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition flex flex-col items-center justify-center leading-none"
-                                                            @mouseenter="hoveredIso = cell.iso" @mouseleave="hoveredIso = null"
+                                                            @mouseenter="hoveredIso = cell.iso"
+                                                            @mouseleave="hoveredIso = null"
                                                             @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
                                                             <span x-text="cell.day || ''"></span>
                                                             <span x-show="depIso && cell.iso === depIso" class="-mt-0.5"
@@ -323,10 +327,10 @@
                                 style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
                                 <div wire:key="return-departure-picker-{{ $returnDepDate ?: 'empty' }}-{{ $errors->has('returnDepDate') ? 'error' : 'ok' }}"
                                     x-data="singleDatePicker({
-                                                                                                                                                                                                                                                                                                                                                                                                 value: @js($returnDepDate),
-                                                                                                                                                                                                                                                                                                                                                                                                 wireValueKey: 'returnDepDate',
-                                                                                                                                                                                                                                                                                                                                                                                                 title: 'Please choose your departure date',
-                                                                                                                                                                                                                                                                                                                                                                                             })"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         value: @js($returnDepDate),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         wireValueKey: 'returnDepDate',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         title: 'Please choose your departure date',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     })"
                                     x-init="init()">
                                     <span class="field-label">Departing</span>
                                     <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
@@ -426,10 +430,10 @@
 
                                 <div wire:key="return-arrival-picker-{{ $returnRetDate ?: 'empty' }}-{{ $errors->has('returnRetDate') ? 'error' : 'ok' }}"
                                     x-data="singleDatePicker({
-                                                                                                                                                                                                                                                                                                                                                                                                value: @js($returnRetDate),
-                                                                                                                                                                                                                                                                                                                                                                                                wireValueKey: 'returnRetDate',
-                                                                                                                                                                                                                                                                                                                                                                                                title: 'When would you like to return?',
-                                                                                                                                                                                                                                                                                                                                                                                            })"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        value: @js($returnRetDate),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        wireValueKey: 'returnRetDate',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        title: 'When would you like to return?',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    })"
                                     x-init="init()">
                                     <span class="field-label">Returning</span>
                                     <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
@@ -680,15 +684,15 @@
                         <div x-cloak x-show="open" x-transition
                             class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 210px;">
-	                            <div class="px-4 py-3">
-	                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
-	                                <div class="h-px bg-gray-100 mt-2"></div>
-	                            </div>
-	                            <div class="py-2 max-h-72 overflow-auto">
-	                                @foreach($currencies as $code => $label)
-	                                    <button type="button"
-	                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-	                                        @click.prevent="selected = '{{ $code }}'; open = false">
+                            <div class="px-4 py-3">
+                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
+                                <div class="h-px bg-gray-100 mt-2"></div>
+                            </div>
+                            <div class="py-2 max-h-72 overflow-auto">
+                                @foreach($currencies as $code => $label)
+                                    <button type="button"
+                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+                                        @click.prevent="selected = '{{ $code }}'; open = false">
                                         <span
                                             :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
                                             {{ $label }}
@@ -793,9 +797,11 @@
                                             <div>
                                                 <div
                                                     class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">
-                                                    {{ $a['name'] }}</div>
+                                                    {{ $a['name'] }}
+                                                </div>
                                                 <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">
-                                                    {{ $a['code'] }}</div>
+                                                    {{ $a['code'] }}
+                                                </div>
                                             </div>
                                         </div>
                                     </button>
@@ -838,28 +844,31 @@
         ══════════════════════════════════════ --}}
         @if($tripType === 'oneway')
             <div wire:key="trip-panel-oneway" class="">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-x-12 mb-3">
+                <div
+                    class="flex items-center md:space-y-0 space-y-4 md:space-x-4 space-x-0 md:flex-row flex-col justify-between mb-3">
 
+                    {{-- Departure --}}
                     <div>
-                        <div class="field-wrap has-icon-right {{ $onewayDep ? 'has-clear' : '' }}"
+                        <div class="field-wrap has-icon-right {{ $returnDep ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">From</span>
-                            <span class="field-icon right" aria-hidden="true" style="color: {{ $onewayDep ? '#2ab4c0' : '#9ca3af' }};">
+                            <span class="field-icon right" aria-hidden="true"
+                                style="color: {{ $returnDep ? '#2ab4c0' : '#9ca3af' }};">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
                                 </svg>
                             </span>
-                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.350ms="onewayDep"
-                                wire:key="oneway-dep-input" @focus="show = true" placeholder="City or airport"
+                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.350ms="returnDep"
+                                wire:key="return-dep-input" @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
-                            @if($onewayDep)
-                                <button class="field-clear" wire:click.stop="$set('onewayDep', '')" title="Clear">×</button>
+                            @if($returnDep)
+                                <button class="field-clear" wire:click.stop="$set('returnDep', '')" title="Clear">×</button>
                             @endif
 
                             <div x-cloak x-show="show"
                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                style="min-width: 280px;">
+                                style="min-width: 0;">
                                 <div class="px-4 py-3">
                                     <div class="flex items-center gap-2 text-xs text-gray-500">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -875,14 +884,14 @@
                                     @php
                                         $items = $this->airportSearchResults;
                                     @endphp
-                                    @if($searchType === 'onewayDep')
+                                    @if($searchType === 'returnDep')
                                         @forelse($items as $a)
                                             @php
                                                 $display = $a['city'] . ' (' . $a['code'] . ')';
                                             @endphp
                                             <button type="button"
                                                 class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                wire:click.stop="selectOnewayDepAirport('{{ $display }}')" @click="show = false">
+                                                wire:click.stop="selectReturnDepAirport('{{ $display }}')" @click="show = false">
                                                 <div>
                                                     <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
                                                         {{ $a['country'] }}
@@ -899,40 +908,42 @@
                                 </div>
                             </div>
 
-                            {{-- Swap Button --}}
-                            <button type="button" wire:click="swapOnewayAirports"
-                                class="hidden md:flex absolute right-[-24px] rtl:right-auto rtl:left-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 rtl:-translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
-                                title="Swap locations">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                </svg>
-                            </button>
-                        </div>
-                        @error('onewayDep') <span class="field-error">{{ $message }}</span> @enderror
-                    </div>
 
+                        </div>
+                        @error('returnDep') <span class="field-error">{{ $message }}</span> @enderror
+                    </div>
+                    {{-- Swap Button --}}
+                    <button type="button" wire:click="swapReturnAirports"
+                        class="m-0 flex z-50 px-2 w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                        title="Swap locations">
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                    </button>
+                    {{-- Arrival --}}
                     <div>
-                        <div class="field-wrap has-icon-right {{ $onewayArr ? 'has-clear' : '' }}"
+                        <div class="field-wrap has-icon-right {{ $returnArr ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">To</span>
-                            <span class="field-icon right" aria-hidden="true" style="color: {{ $onewayArr ? '#2ab4c0' : '#9ca3af' }};">
+                            <span class="field-icon right" aria-hidden="true"
+                                style="color: {{ $returnArr ? '#2ab4c0' : '#9ca3af' }};">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
                                         d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
                                 </svg>
                             </span>
-                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.350ms="onewayArr"
-                                wire:key="oneway-arr-input" @focus="show = true" placeholder="City or airport"
+                            <input class="field-input md:pr-10" type="text" wire:model.live.debounce.350ms="returnArr"
+                                wire:key="return-arr-input" @focus="show = true" placeholder="City or airport"
                                 autocomplete="off">
-                            @if($onewayArr)
-                                <button class="field-clear" wire:click.stop="$set('onewayArr', '')" title="Clear">×</button>
+                            @if($returnArr)
+                                <button class="field-clear" wire:click.stop="$set('returnArr', '')" title="Clear">×</button>
                             @endif
 
                             <div x-cloak x-show="show"
                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                style="min-width: 280px;">
+                                style="min-width: 0;">
                                 <div class="px-4 py-3">
                                     <div class="flex items-center gap-2 text-xs text-gray-500">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -948,14 +959,14 @@
                                     @php
                                         $items = $this->airportSearchResults;
                                     @endphp
-                                    @if($searchType === 'onewayArr')
+                                    @if($searchType === 'returnArr')
                                         @forelse($items as $a)
                                             @php
                                                 $display = $a['city'] . ' (' . $a['code'] . ')';
                                             @endphp
                                             <button type="button"
                                                 class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                wire:click.stop="selectOnewayArrAirport('{{ $display }}')" @click="show = false">
+                                                wire:click.stop="selectReturnArrAirport('{{ $display }}')" @click="show = false">
                                                 <div>
                                                     <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
                                                         {{ $a['country'] }}
@@ -972,106 +983,367 @@
                                 </div>
                             </div>
                         </div>
-                        @error('onewayArr') <span class="field-error">{{ $message }}</span> @enderror
+                        @error('returnArr') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
 
-                    <div>
+                    {{-- Date range --}}
+                    <div wire:key="return-date-range-picker-{{ $returnDepDate ?: 'empty' }}-{{ $returnRetDate ?: 'empty' }}-{{ ($errors->has('returnDepDate') || $errors->has('returnRetDate')) ? 'error' : 'ok' }}"
+                        x-data="dateRangePicker({ dep: @js($returnDepDate), ret: @js($returnRetDate) })" x-init="init()">
                         <div class="field-wrap"
-                            x-data="singleDatePicker({ value: @js($onewayDepDate), wireValueKey: 'onewayDepDate', title: 'Please choose your departure date' })"
-                            x-init="init()">
-                            <span class="field-label">Departing</span>
-                            <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
-                                inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
-                                @click="open = true">
+                            style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
+                            <div>
+                                <span class="field-label">Departing</span>
+                                <input class="field-input date-input" :class="dep ? 'has-val' : ''" type="text"
+                                    inputmode="none" readonly :value="dep || ''" placeholder="mm/dd/yyyy"
+                                    @click="active = 'dep'; open = true">
+                            </div>
+                            <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">&ndash;</span>
+                            <div>
+                                <span class="field-label">Returning</span>
+                                <input class="field-input date-input" :class="ret ? 'has-val' : ''" type="text"
+                                    inputmode="none" readonly :value="ret || ''" placeholder="mm/dd/yyyy"
+                                    @click="active = (depIso ? 'ret' : 'dep'); open = true">
+                            </div>
+                        </div>
 
-                            {{-- Calendar modal --}}
-                            <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
-                                aria-modal="true" role="dialog">
-                                <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+                        <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px;">
+                            <div>@error('returnDepDate') <span class="field-error">{{ $message }}</span> @enderror</div>
+                            <div></div>
+                            <div>@error('returnRetDate') <span class="field-error">{{ $message }}</span> @enderror</div>
+                        </div>
 
-                                <div
-                                    class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
-                                    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <p class="text-base font-medium text-gray-800" x-text="title"></p>
+                        {{-- Calendar modal --}}
+                        <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
+                            aria-modal="true" role="dialog">
+                            <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+
+                            <div
+                                class="relative w-[92vw] max-w-3xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-base font-medium text-gray-800">Select your travel dates</p>
+                                            <p class="text-xs text-gray-500"
+                                                x-text="active === 'dep' ? 'Pick departing date' : 'Pick returning date'">
+                                            </p>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="px-6 py-5">
-                                        <div class="grid grid-cols-1 gap-8">
-                                            <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
-                                                <div>
-                                                    <div class="flex items-center justify-between mb-4">
-                                                        <div class="w-10">
-                                                            <button type="button"
-                                                                class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
-                                                                @click.prevent="prevMonth()">
-                                                                <svg class="w-5 h-5 text-gray-700" fill="none"
-                                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2" d="M15 19l-7-7 7-7" />
-                                                                </svg>
-                                                            </button>
-                                                        </div>
-                                                        <p class="text-lg font-medium text-gray-800 text-center"
-                                                            x-text="m.title">
-                                                        </p>
-                                                        <div class="w-10 flex justify-end">
-                                                            <button type="button"
-                                                                class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
-                                                                @click.prevent="nextMonth()">
-                                                                <svg class="w-5 h-5 text-gray-700" fill="none"
-                                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        stroke-width="2" d="M9 5l7 7-7 7" />
-                                                                </svg>
-                                                            </button>
-                                                        </div>
+                                <div class="px-6 py-5 overflow-auto">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <template x-for="(m, idx) in months" :key="m.key">
+                                            <div>
+                                                <div class="flex items-center justify-between mb-4">
+                                                    <div class="w-10">
+                                                        <button type="button"
+                                                            class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                            x-show="idx === 0" @click.prevent="prevMonth()">
+                                                            <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                            </svg>
+                                                        </button>
                                                     </div>
 
-                                                    <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
-                                                        <template x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
-                                                            :key="d">
-                                                            <div class="text-center tracking-widest" x-text="d"></div>
-                                                        </template>
-                                                    </div>
+                                                    <p class="text-lg font-medium text-gray-800 text-center"
+                                                        x-text="m.title">
+                                                    </p>
 
-                                                    <div class="grid grid-cols-7 gap-1.5">
-                                                        <template x-for="cell in m.cells" :key="cell.key">
-                                                            <button type="button"
-                                                                class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
-                                                                :disabled="cell.disabled || !cell.day"
-                                                                @mouseenter="hoveredIso = cell.iso" @mouseleave="hoveredIso = null"
-                                                                @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
-                                                                <span x-text="cell.day || ''"></span>
-                                                            </button>
-                                                        </template>
+                                                    <div class="w-10 flex justify-end">
+                                                        <button type="button"
+                                                            class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                            x-show="idx === 1" @click.prevent="nextMonth()">
+                                                            <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M9 5l7 7-7 7" />
+                                                            </svg>
+                                                        </button>
                                                     </div>
                                                 </div>
-                                            </template>
-                                        </div>
-                                    </div>
 
-                                    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                                                <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
+                                                    <template x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                        :key="d">
+                                                        <div class="text-center tracking-widest" x-text="d"></div>
+                                                    </template>
+                                                </div>
+
+                                                <div class="grid grid-cols-7 gap-1.5">
+                                                    <template x-for="cell in m.cells" :key="cell.key">
+                                                        <button type="button"
+                                                            class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition flex flex-col items-center justify-center leading-none"
+                                                            @mouseenter="hoveredIso = cell.iso"
+                                                            @mouseleave="hoveredIso = null"
+                                                            @click="cell.day && pick(cell.iso)" :class="dayClass(cell)">
+                                                            <span x-text="cell.day || ''"></span>
+                                                            <span x-show="depIso && cell.iso === depIso" class="-mt-0.5"
+                                                                aria-hidden="true">
+                                                                <svg class="w-3 h-3" viewBox="0 0 24 24"
+                                                                    fill="currentColor">
+                                                                    <path
+                                                                        d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
+                                                                </svg>
+                                                            </span>
+                                                            <span x-show="retIso && cell.iso === retIso" class="-mt-0.5"
+                                                                aria-hidden="true">
+                                                                <svg class="w-3 h-3" viewBox="0 0 24 24"
+                                                                    fill="currentColor">
+                                                                    <path
+                                                                        d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
+                                                                </svg>
+                                                            </span>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3">
+                                    <div class="text-xs text-gray-500">
+                                        <span x-text="dep ? ('Departing: ' + dep) : 'Departing: \\u2014'"></span>
+                                        <span class="mx-2">&bull;</span>
+                                        <span x-text="ret ? ('Returning: ' + ret) : 'Returning: \\u2014'"></span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
                                         <button type="button"
                                             class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
                                             @click="open = false">Close</button>
                                         <button type="button"
                                             class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
-                                            :disabled="!iso" @click="apply(); open = false">
+                                            :disabled="!depIso || !retIso" @click="apply(); open = false">
                                             Done
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @error('onewayDepDate') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
+
+                    @if(false)
+                        <div>
+                            <div class="field-wrap"
+                                style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
+                                <div wire:key="return-departure-picker-{{ $returnDepDate ?: 'empty' }}-{{ $errors->has('returnDepDate') ? 'error' : 'ok' }}"
+                                    x-data="singleDatePicker({
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         value: @js($returnDepDate),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         wireValueKey: 'returnDepDate',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         title: 'Please choose your departure date',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     })"
+                                    x-init="init()">
+                                    <span class="field-label">Departing</span>
+                                    <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
+                                        inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
+                                        @click="open = true">
+
+                                    {{-- Calendar modal --}}
+                                    <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
+                                        aria-modal="true" role="dialog">
+                                        <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+
+                                        <div
+                                            class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                    <p class="text-base font-medium text-gray-800" x-text="title"></p>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="px-6 py-5">
+                                                <div class="grid grid-cols-1 gap-8">
+                                                    <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
+                                                        <div>
+                                                            <div class="flex items-center justify-between mb-4">
+                                                                <div class="w-10">
+                                                                    <button type="button"
+                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                        @click.prevent="prevMonth()">
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                                <p class="text-lg font-medium text-gray-800 text-center"
+                                                                    x-text="m.title"></p>
+                                                                <div class="w-10 flex justify-end">
+                                                                    <button type="button"
+                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                        @click.prevent="nextMonth()">
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                stroke-width="2" d="M9 5l7 7-7 7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
+                                                                <template
+                                                                    x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                                    :key="d">
+                                                                    <div class="text-center tracking-widest" x-text="d"></div>
+                                                                </template>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-7 gap-1.5">
+                                                                <template x-for="cell in m.cells" :key="cell.key">
+                                                                    <button type="button"
+                                                                        class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
+                                                                        :disabled="cell.disabled || !cell.day"
+                                                                        @click="cell.day && pick(cell.iso)"
+                                                                        :class="dayClass(cell)">
+                                                                        <span x-text="cell.day || ''"></span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+
+                                            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                                                <button type="button"
+                                                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                                    @click="open = false">Close</button>
+                                                <button type="button"
+                                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
+                                                    :disabled="!iso" @click="apply(); open = false">
+                                                    Done
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">–</span>
+
+                                <div wire:key="return-arrival-picker-{{ $returnRetDate ?: 'empty' }}-{{ $errors->has('returnRetDate') ? 'error' : 'ok' }}"
+                                    x-data="singleDatePicker({
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        value: @js($returnRetDate),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        wireValueKey: 'returnRetDate',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        title: 'When would you like to return?',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    })"
+                                    x-init="init()">
+                                    <span class="field-label">Returning</span>
+                                    <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
+                                        inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
+                                        @click="open = true">
+
+                                    {{-- Calendar modal --}}
+                                    <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
+                                        aria-modal="true" role="dialog">
+                                        <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+
+                                        <div
+                                            class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                    <p class="text-base font-medium text-gray-800" x-text="title"></p>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="px-6 py-5">
+                                                <div class="grid grid-cols-1 gap-8">
+                                                    <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
+                                                        <div>
+                                                            <div class="flex items-center justify-between mb-4">
+                                                                <div class="w-10">
+                                                                    <button type="button"
+                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                        @click.prevent="prevMonth()">
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                                <p class="text-lg font-medium text-gray-800 text-center"
+                                                                    x-text="m.title"></p>
+                                                                <div class="w-10 flex justify-end">
+                                                                    <button type="button"
+                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                        @click.prevent="nextMonth()">
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                stroke-width="2" d="M9 5l7 7-7 7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
+                                                                <template
+                                                                    x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                                    :key="d">
+                                                                    <div class="text-center tracking-widest" x-text="d"></div>
+                                                                </template>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-7 gap-1.5">
+                                                                <template x-for="cell in m.cells" :key="cell.key">
+                                                                    <button type="button"
+                                                                        class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
+                                                                        :disabled="cell.disabled || !cell.day"
+                                                                        @click="cell.day && pick(cell.iso)"
+                                                                        :class="dayClass(cell)">
+                                                                        <span x-text="cell.day || ''"></span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+
+                                            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                                                <button type="button"
+                                                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                                    @click="open = false">Close</button>
+                                                <button type="button"
+                                                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
+                                                    :disabled="!iso" @click="apply(); open = false">
+                                                    Done
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px;">
+                                <div>@error('returnDepDate') <span class="field-error">{{ $message }}</span> @enderror</div>
+                                <div></div>
+                                <div>@error('returnRetDate') <span class="field-error">{{ $message }}</span> @enderror</div>
+                            </div>
+                        </div>
+                    @endif
 
                 </div>
 
@@ -1219,15 +1491,15 @@
                         <div x-cloak x-show="open" x-transition
                             class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                             style="min-width: 210px;">
-	                            <div class="px-4 py-3">
-	                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
-	                                <div class="h-px bg-gray-100 mt-2"></div>
-	                            </div>
-	                            <div class="py-2 max-h-72 overflow-auto">
-	                                @foreach($currencies as $code => $label)
-	                                    <button type="button"
-	                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-	                                        @click.prevent="selected = '{{ $code }}'; open = false">
+                            <div class="px-4 py-3">
+                                <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
+                                <div class="h-px bg-gray-100 mt-2"></div>
+                            </div>
+                            <div class="py-2 max-h-72 overflow-auto">
+                                @foreach($currencies as $code => $label)
+                                    <button type="button"
+                                        class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+                                        @click.prevent="selected = '{{ $code }}'; open = false">
                                         <span
                                             :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
                                             {{ $label }}
@@ -1332,9 +1604,11 @@
                                             <div>
                                                 <div
                                                     class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">
-                                                    {{ $a['name'] }}</div>
+                                                    {{ $a['name'] }}
+                                                </div>
                                                 <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">
-                                                    {{ $a['code'] }}</div>
+                                                    {{ $a['code'] }}
+                                                </div>
                                             </div>
                                         </div>
                                     </button>
@@ -1388,30 +1662,32 @@
                     @foreach($multiFlights as $index => $flight)
                         <div>
                             <p class="text-xs font-semibold text-gray-500 mb-2">Flight {{ $index + 1 }}</p>
-                            <div class="mc-row">
+                            <div
+                                class="flex items-center md:space-y-0 space-y-4 md:space-x-4 space-x-0 md:flex-row flex-col justify-between mb-3">
 
+                                {{-- Departure --}}
                                 <div>
-                                    <div class="field-wrap has-icon-right {{ ($flight['dep'] ?? '') ? 'has-clear' : '' }}"
+                                    <div class="field-wrap has-icon-right {{ $returnDep ? 'has-clear' : '' }}"
                                         style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                                         <span class="field-label">From</span>
-                                        <span class="field-icon right" aria-hidden="true" style="color: {{ ($flight['dep'] ?? '') ? '#2ab4c0' : '#9ca3af' }};">
+                                        <span class="field-icon right" aria-hidden="true"
+                                            style="color: {{ $returnDep ? '#2ab4c0' : '#9ca3af' }};">
                                             <svg viewBox="0 0 24 24" fill="currentColor">
                                                 <path
                                                     d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
                                             </svg>
                                         </span>
                                         <input class="field-input md:pr-10" type="text"
-                                            wire:model.live.debounce.350ms="multiFlights.{{ $index }}.dep"
-                                            wire:key="multi-dep-input-{{ $index }}" @focus="show = true"
-                                            placeholder="City or airport" autocomplete="off">
-                                        @if($flight['dep'] && $index === 0)
-                                            <button class="field-clear" wire:click.stop="$set('multiFlights.0.dep', '')"
+                                            wire:model.live.debounce.350ms="returnDep" wire:key="return-dep-input"
+                                            @focus="show = true" placeholder="City or airport" autocomplete="off">
+                                        @if($returnDep)
+                                            <button class="field-clear" wire:click.stop="$set('returnDep', '')"
                                                 title="Clear">×</button>
                                         @endif
 
                                         <div x-cloak x-show="show"
                                             class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                            style="min-width: 280px;">
+                                            style="min-width: 0;">
                                             <div class="px-4 py-3">
                                                 <div class="flex items-center gap-2 text-xs text-gray-500">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1425,17 +1701,16 @@
                                             <div class="h-px bg-gray-100"></div>
                                             <div class="max-h-72 overflow-auto">
                                                 @php
-                                                    $q = $multiFlights[$index]['dep'] ?? '';
                                                     $items = $this->airportSearchResults;
                                                 @endphp
-                                                @if($searchType === "multi.$index.dep")
+                                                @if($searchType === 'returnDep')
                                                     @forelse($items as $a)
                                                         @php
                                                             $display = $a['city'] . ' (' . $a['code'] . ')';
                                                         @endphp
                                                         <button type="button"
                                                             class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                            wire:click.stop="selectMultiDepAirport({{ $index }}, '{{ $display }}')"
+                                                            wire:click.stop="selectReturnDepAirport('{{ $display }}')"
                                                             @click="show = false">
                                                             <div>
                                                                 <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
@@ -1453,42 +1728,43 @@
                                             </div>
                                         </div>
 
-                                        {{-- Swap Button --}}
-                                        <button type="button" wire:click="swapMultiAirports({{ $index }})"
-                                            class="hidden md:flex absolute right-[-24px] rtl:right-auto rtl:left-[-24px] top-1/2 -translate-y-1/2 translate-x-1/2 rtl:-translate-x-1/2 z-[15] w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
-                                            title="Swap locations">
-                                            <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    @error("multiFlights.$index.dep") <span class="field-error">{{ $message }}</span> @enderror
-                                </div>
 
+                                    </div>
+                                    @error('returnDep') <span class="field-error">{{ $message }}</span> @enderror
+                                </div>
+                                {{-- Swap Button --}}
+                                <button type="button" wire:click="swapReturnAirports"
+                                    class="m-0 flex z-50 px-2 w-8 h-8 items-center justify-center bg-white border border-gray-200 rounded-full shadow-sm hover:border-[#2ab4c0] hover:text-[#2ab4c0] transition-all group"
+                                    title="Swap locations">
+                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-[#2ab4c0]" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                    </svg>
+                                </button>
+                                {{-- Arrival --}}
                                 <div>
-                                    <div class="field-wrap has-icon-right {{ ($flight['arr'] ?? '') ? 'has-clear' : '' }}"
+                                    <div class="field-wrap has-icon-right {{ $returnArr ? 'has-clear' : '' }}"
                                         style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                                         <span class="field-label">To</span>
-                                        <span class="field-icon right" aria-hidden="true" style="color: {{ ($flight['arr'] ?? '') ? '#2ab4c0' : '#9ca3af' }};">
+                                        <span class="field-icon right" aria-hidden="true"
+                                            style="color: {{ $returnArr ? '#2ab4c0' : '#9ca3af' }};">
                                             <svg viewBox="0 0 24 24" fill="currentColor">
                                                 <path
                                                     d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
                                             </svg>
                                         </span>
                                         <input class="field-input md:pr-10" type="text"
-                                            wire:model.live.debounce.350ms="multiFlights.{{ $index }}.arr"
-                                            wire:key="multi-arr-input-{{ $index }}" @focus="show = true"
-                                            placeholder="City or airport" autocomplete="off">
-                                        @if($flight['arr'])
-                                            <button class="field-clear" wire:click.stop="$set('multiFlights.{{ $index }}.arr', '')"
+                                            wire:model.live.debounce.350ms="returnArr" wire:key="return-arr-input"
+                                            @focus="show = true" placeholder="City or airport" autocomplete="off">
+                                        @if($returnArr)
+                                            <button class="field-clear" wire:click.stop="$set('returnArr', '')"
                                                 title="Clear">×</button>
                                         @endif
 
                                         <div x-cloak x-show="show"
                                             class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden"
-                                            style="min-width: 280px;">
+                                            style="min-width: 0;">
                                             <div class="px-4 py-3">
                                                 <div class="flex items-center gap-2 text-xs text-gray-500">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1502,17 +1778,16 @@
                                             <div class="h-px bg-gray-100"></div>
                                             <div class="max-h-72 overflow-auto">
                                                 @php
-                                                    $q = $multiFlights[$index]['arr'] ?? '';
                                                     $items = $this->airportSearchResults;
                                                 @endphp
-                                                @if($searchType === "multi.$index.arr")
+                                                @if($searchType === 'returnArr')
                                                     @forelse($items as $a)
                                                         @php
                                                             $display = $a['city'] . ' (' . $a['code'] . ')';
                                                         @endphp
                                                         <button type="button"
                                                             class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
-                                                            wire:click.stop="selectMultiArrAirport({{ $index }}, '{{ $display }}')"
+                                                            wire:click.stop="selectReturnArrAirport('{{ $display }}')"
                                                             @click="show = false">
                                                             <div>
                                                                 <div class="text-sm font-semibold text-gray-800">{{ $a['city'] }},
@@ -1530,114 +1805,394 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @error("multiFlights.$index.arr") <span class="field-error">{{ $message }}</span> @enderror
+                                    @error('returnArr') <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
 
-                                <div>
+                                {{-- Date range --}}
+                                <div wire:key="return-date-range-picker-{{ $returnDepDate ?: 'empty' }}-{{ $returnRetDate ?: 'empty' }}-{{ ($errors->has('returnDepDate') || $errors->has('returnRetDate')) ? 'error' : 'ok' }}"
+                                    x-data="dateRangePicker({ dep: @js($returnDepDate), ret: @js($returnRetDate) })"
+                                    x-init="init()">
                                     <div class="field-wrap"
-                                        x-data="singleDatePicker({ value: @js($multiFlights[$index]['date'] ?? ''), wireValueKey: 'multiFlights.{{ $index }}.date', title: 'Please choose your departure date' })"
-                                        x-init="init()">
-                                        <span class="field-label">Departing</span>
-                                        <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
-                                            inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
-                                            @click="open = true">
+                                        style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
+                                        <div>
+                                            <span class="field-label">Departing</span>
+                                            <input class="field-input date-input" :class="dep ? 'has-val' : ''" type="text"
+                                                inputmode="none" readonly :value="dep || ''" placeholder="mm/dd/yyyy"
+                                                @click="active = 'dep'; open = true">
+                                        </div>
+                                        <span
+                                            style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">&ndash;</span>
+                                        <div>
+                                            <span class="field-label">Returning</span>
+                                            <input class="field-input date-input" :class="ret ? 'has-val' : ''" type="text"
+                                                inputmode="none" readonly :value="ret || ''" placeholder="mm/dd/yyyy"
+                                                @click="active = (depIso ? 'ret' : 'dep'); open = true">
+                                        </div>
+                                    </div>
 
-                                        {{-- Calendar modal --}}
-                                        <div x-cloak x-show="open"
-                                            class="fixed inset-0 z-[999] flex items-center justify-center" aria-modal="true"
-                                            role="dialog">
-                                            <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+                                    <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px;">
+                                        <div>@error('returnDepDate') <span class="field-error">{{ $message }}</span> @enderror
+                                        </div>
+                                        <div></div>
+                                        <div>@error('returnRetDate') <span class="field-error">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
 
-                                            <div
-                                                class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
-                                                <div
-                                                    class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                                                    <div class="flex items-center gap-3">
-                                                        <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
-                                                            viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                        </svg>
-                                                        <p class="text-base font-medium text-gray-800" x-text="title"></p>
+                                    {{-- Calendar modal --}}
+                                    <div x-cloak x-show="open" class="fixed inset-0 z-[999] flex items-center justify-center"
+                                        aria-modal="true" role="dialog">
+                                        <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+
+                                        <div
+                                            class="relative w-[92vw] max-w-3xl max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                                                <div class="flex items-center gap-3">
+                                                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                    <div>
+                                                        <p class="text-base font-medium text-gray-800">Select your travel dates
+                                                        </p>
+                                                        <p class="text-xs text-gray-500"
+                                                            x-text="active === 'dep' ? 'Pick departing date' : 'Pick returning date'">
+                                                        </p>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div class="px-6 py-5">
-                                                    <div class="grid grid-cols-1 gap-8">
-                                                        <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
-                                                            <div>
-                                                                <div class="flex items-center justify-between mb-4">
-                                                                    <div class="w-10">
-                                                                        <button type="button"
-                                                                            class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
-                                                                            @click.prevent="prevMonth()">
-                                                                            <svg class="w-5 h-5 text-gray-700" fill="none"
-                                                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                                                <path stroke-linecap="round"
-                                                                                    stroke-linejoin="round" stroke-width="2"
-                                                                                    d="M15 19l-7-7 7-7" />
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
-                                                                    <p class="text-lg font-medium text-gray-800 text-center"
-                                                                        x-text="m.title"></p>
-                                                                    <div class="w-10 flex justify-end">
-                                                                        <button type="button"
-                                                                            class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
-                                                                            @click.prevent="nextMonth()">
-                                                                            <svg class="w-5 h-5 text-gray-700" fill="none"
-                                                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                                                <path stroke-linecap="round"
-                                                                                    stroke-linejoin="round" stroke-width="2"
-                                                                                    d="M9 5l7 7-7 7" />
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
+                                            <div class="px-6 py-5 overflow-auto">
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                    <template x-for="(m, idx) in months" :key="m.key">
+                                                        <div>
+                                                            <div class="flex items-center justify-between mb-4">
+                                                                <div class="w-10">
+                                                                    <button type="button"
+                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                        x-show="idx === 0" @click.prevent="prevMonth()">
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                stroke-width="2" d="M15 19l-7-7 7-7" />
+                                                                        </svg>
+                                                                    </button>
                                                                 </div>
 
-                                                                <div
-                                                                    class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
-                                                                    <template
-                                                                        x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
-                                                                        :key="d">
-                                                                        <div class="text-center tracking-widest" x-text="d">
-                                                                        </div>
-                                                                    </template>
-                                                                </div>
+                                                                <p class="text-lg font-medium text-gray-800 text-center"
+                                                                    x-text="m.title">
+                                                                </p>
 
-                                                                <div class="grid grid-cols-7 gap-1.5">
-                                                                    <template x-for="cell in m.cells" :key="cell.key">
-                                                                        <button type="button"
-                                                                            class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
-                                                                            @mouseenter="hoveredIso = cell.iso" @mouseleave="hoveredIso = null"
-                                                                            @click="cell.day && pick(cell.iso)"
-                                                                            :class="dayClass(cell)">
-                                                                            <span x-text="cell.day || ''"></span>
-                                                                        </button>
-                                                                    </template>
+                                                                <div class="w-10 flex justify-end">
+                                                                    <button type="button"
+                                                                        class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                        x-show="idx === 1" @click.prevent="nextMonth()">
+                                                                        <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                stroke-width="2" d="M9 5l7 7-7 7" />
+                                                                        </svg>
+                                                                    </button>
                                                                 </div>
                                                             </div>
-                                                        </template>
-                                                    </div>
-                                                </div>
 
-                                                <div
-                                                    class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                                                            <div class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
+                                                                <template
+                                                                    x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                                    :key="d">
+                                                                    <div class="text-center tracking-widest" x-text="d"></div>
+                                                                </template>
+                                                            </div>
+
+                                                            <div class="grid grid-cols-7 gap-1.5">
+                                                                <template x-for="cell in m.cells" :key="cell.key">
+                                                                    <button type="button"
+                                                                        class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition flex flex-col items-center justify-center leading-none"
+                                                                        @mouseenter="hoveredIso = cell.iso"
+                                                                        @mouseleave="hoveredIso = null"
+                                                                        @click="cell.day && pick(cell.iso)"
+                                                                        :class="dayClass(cell)">
+                                                                        <span x-text="cell.day || ''"></span>
+                                                                        <span x-show="depIso && cell.iso === depIso"
+                                                                            class="-mt-0.5" aria-hidden="true">
+                                                                            <svg class="w-3 h-3" viewBox="0 0 24 24"
+                                                                                fill="currentColor">
+                                                                                <path
+                                                                                    d="M2.5 19h19v2h-19v-2zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10l-4.7-4.22-1.66.44 2.82 4.89-4.76 1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55-2.29 5.1-1.37c.8-.21 1.28-1.04 1.06-1.84z" />
+                                                                            </svg>
+                                                                        </span>
+                                                                        <span x-show="retIso && cell.iso === retIso"
+                                                                            class="-mt-0.5" aria-hidden="true">
+                                                                            <svg class="w-3 h-3" viewBox="0 0 24 24"
+                                                                                fill="currentColor">
+                                                                                <path
+                                                                                    d="M2.5 19h19v2h-19v-2zm17.07-9.36c.21-.8-.26-1.63-1.06-1.84l-5.1-1.37-4.7-4.22-1.66.44 2.82 4.89-4.76-1.27-1.61-1.43-1.19.32 1.86 3.23.21.36.43-.11 8.55 2.29 5.31 1.42c.8.22 1.63-.26 1.84-1.06z" />
+                                                                            </svg>
+                                                                        </span>
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+
+                                            <div
+                                                class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3">
+                                                <div class="text-xs text-gray-500">
+                                                    <span x-text="dep ? ('Departing: ' + dep) : 'Departing: \\u2014'"></span>
+                                                    <span class="mx-2">&bull;</span>
+                                                    <span x-text="ret ? ('Returning: ' + ret) : 'Returning: \\u2014'"></span>
+                                                </div>
+                                                <div class="flex items-center gap-3">
                                                     <button type="button"
                                                         class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
                                                         @click="open = false">Close</button>
                                                     <button type="button"
                                                         class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
-                                                        :disabled="!iso" @click="apply(); open = false">
+                                                        :disabled="!depIso || !retIso" @click="apply(); open = false">
                                                         Done
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    @error("multiFlights.$index.date") <span class="field-error">{{ $message }}</span> @enderror
                                 </div>
+
+                                @if(false)
+                                    <div>
+                                        <div class="field-wrap"
+                                            style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
+                                            <div wire:key="return-departure-picker-{{ $returnDepDate ?: 'empty' }}-{{ $errors->has('returnDepDate') ? 'error' : 'ok' }}"
+                                                x-data="singleDatePicker({
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         value: @js($returnDepDate),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         wireValueKey: 'returnDepDate',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         title: 'Please choose your departure date',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     })"
+                                                x-init="init()">
+                                                <span class="field-label">Departing</span>
+                                                <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
+                                                    inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
+                                                    @click="open = true">
+
+                                                {{-- Calendar modal --}}
+                                                <div x-cloak x-show="open"
+                                                    class="fixed inset-0 z-[999] flex items-center justify-center" aria-modal="true"
+                                                    role="dialog">
+                                                    <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+
+                                                    <div
+                                                        class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                                        <div
+                                                            class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                                                            <div class="flex items-center gap-3">
+                                                                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                </svg>
+                                                                <p class="text-base font-medium text-gray-800" x-text="title"></p>
+                                                            </div>
+
+
+                                                        </div>
+
+                                                        <div class="px-6 py-5">
+                                                            <div class="grid grid-cols-1 gap-8">
+                                                                <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
+                                                                    <div>
+                                                                        <div class="flex items-center justify-between mb-4">
+                                                                            <div class="w-10">
+                                                                                <button type="button"
+                                                                                    class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                                    @click.prevent="prevMonth()">
+                                                                                    <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                                                        <path stroke-linecap="round"
+                                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                                            d="M15 19l-7-7 7-7" />
+                                                                                    </svg>
+                                                                                </button>
+                                                                            </div>
+                                                                            <p class="text-lg font-medium text-gray-800 text-center"
+                                                                                x-text="m.title"></p>
+                                                                            <div class="w-10 flex justify-end">
+                                                                                <button type="button"
+                                                                                    class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                                    @click.prevent="nextMonth()">
+                                                                                    <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                                                        <path stroke-linecap="round"
+                                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                                            d="M9 5l7 7-7 7" />
+                                                                                    </svg>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div
+                                                                            class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
+                                                                            <template
+                                                                                x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                                                :key="d">
+                                                                                <div class="text-center tracking-widest" x-text="d">
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+
+                                                                        <div class="grid grid-cols-7 gap-1.5">
+                                                                            <template x-for="cell in m.cells" :key="cell.key">
+                                                                                <button type="button"
+                                                                                    class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
+                                                                                    :disabled="cell.disabled || !cell.day"
+                                                                                    @click="cell.day && pick(cell.iso)"
+                                                                                    :class="dayClass(cell)">
+                                                                                    <span x-text="cell.day || ''"></span>
+                                                                                </button>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+
+                                                        <div
+                                                            class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                                                            <button type="button"
+                                                                class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                                                @click="open = false">Close</button>
+                                                            <button type="button"
+                                                                class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
+                                                                :disabled="!iso" @click="apply(); open = false">
+                                                                Done
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <span style="color:#9ca3af; font-size:18px; padding:0 4px; margin-top:10px;">–</span>
+
+                                            <div wire:key="return-arrival-picker-{{ $returnRetDate ?: 'empty' }}-{{ $errors->has('returnRetDate') ? 'error' : 'ok' }}"
+                                                x-data="singleDatePicker({
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        value: @js($returnRetDate),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        wireValueKey: 'returnRetDate',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        title: 'When would you like to return?',
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    })"
+                                                x-init="init()">
+                                                <span class="field-label">Returning</span>
+                                                <input class="field-input date-input" :class="display ? 'has-val' : ''" type="text"
+                                                    inputmode="none" readonly :value="display || ''" placeholder="mm/dd/yyyy"
+                                                    @click="open = true">
+
+                                                {{-- Calendar modal --}}
+                                                <div x-cloak x-show="open"
+                                                    class="fixed inset-0 z-[999] flex items-center justify-center" aria-modal="true"
+                                                    role="dialog">
+                                                    <div class="absolute inset-0 bg-black/40" @click="open = false"></div>
+
+                                                    <div
+                                                        class="relative w-[92vw] max-w-lg max-h-[85vh] rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+                                                        <div
+                                                            class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                                                            <div class="flex items-center gap-3">
+                                                                <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M8 7V3m8 4V3M5 11h14M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                </svg>
+                                                                <p class="text-base font-medium text-gray-800" x-text="title"></p>
+                                                            </div>
+
+
+                                                        </div>
+
+                                                        <div class="px-6 py-5">
+                                                            <div class="grid grid-cols-1 gap-8">
+                                                                <template x-for="(m, idx) in months.slice(0, 1)" :key="m.key">
+                                                                    <div>
+                                                                        <div class="flex items-center justify-between mb-4">
+                                                                            <div class="w-10">
+                                                                                <button type="button"
+                                                                                    class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                                    @click.prevent="prevMonth()">
+                                                                                    <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                                                        <path stroke-linecap="round"
+                                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                                            d="M15 19l-7-7 7-7" />
+                                                                                    </svg>
+                                                                                </button>
+                                                                            </div>
+                                                                            <p class="text-lg font-medium text-gray-800 text-center"
+                                                                                x-text="m.title"></p>
+                                                                            <div class="w-10 flex justify-end">
+                                                                                <button type="button"
+                                                                                    class="w-10 h-10 rounded-full hover:bg-gray-50 flex items-center justify-center"
+                                                                                    @click.prevent="nextMonth()">
+                                                                                    <svg class="w-5 h-5 text-gray-700" fill="none"
+                                                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                                                        <path stroke-linecap="round"
+                                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                                            d="M9 5l7 7-7 7" />
+                                                                                    </svg>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div
+                                                                            class="grid grid-cols-7 gap-1.5 text-xs text-gray-500 mb-2">
+                                                                            <template
+                                                                                x-for="d in ['MON','TUE','WED','THU','FRI','SAT','SUN']"
+                                                                                :key="d">
+                                                                                <div class="text-center tracking-widest" x-text="d">
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+
+                                                                        <div class="grid grid-cols-7 gap-1.5">
+                                                                            <template x-for="cell in m.cells" :key="cell.key">
+                                                                                <button type="button"
+                                                                                    class="h-9 w-9 mx-auto rounded-full text-sm font-medium transition"
+                                                                                    :disabled="cell.disabled || !cell.day"
+                                                                                    @click="cell.day && pick(cell.iso)"
+                                                                                    :class="dayClass(cell)">
+                                                                                    <span x-text="cell.day || ''"></span>
+                                                                                </button>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+
+                                                        <div
+                                                            class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                                                            <button type="button"
+                                                                class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                                                @click="open = false">Close</button>
+                                                            <button type="button"
+                                                                class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2ab4c0] hover:bg-[#239ea9] disabled:opacity-50"
+                                                                :disabled="!iso" @click="apply(); open = false">
+                                                                Done
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px;">
+                                            <div>@error('returnDepDate') <span class="field-error">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div></div>
+                                            <div>@error('returnRetDate') <span class="field-error">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
 
                                 {{-- Remove button (only for flight 3+) --}}
                                 @if($index >= 2)
@@ -1805,15 +2360,15 @@
                             <div x-cloak x-show="open" x-transition
                                 class="absolute left-0 right-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg"
                                 style="min-width: 210px;">
-	                                <div class="px-4 py-3">
-	                                    <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
-	                                    <div class="h-px bg-gray-100 mt-2"></div>
-	                                </div>
-	                                <div class="py-2 max-h-72 overflow-auto">
-	                                    @foreach($currencies as $code => $label)
-	                                        <button type="button"
-	                                            class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
-	                                            @click.prevent="selected = '{{ $code }}'; open = false">
+                                <div class="px-4 py-3">
+                                    <p class="text-sm font-medium text-gray-700">Preferred Currency</p>
+                                    <div class="h-px bg-gray-100 mt-2"></div>
+                                </div>
+                                <div class="py-2 max-h-72 overflow-auto">
+                                    @foreach($currencies as $code => $label)
+                                        <button type="button"
+                                            class="w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-gray-50"
+                                            @click.prevent="selected = '{{ $code }}'; open = false">
                                             <span
                                                 :class="selected === '{{ $code }}' ? 'text-[#2ab4c0] font-semibold' : 'text-gray-900 font-medium text-xs'">
                                                 {{ $label }}
@@ -1916,9 +2471,11 @@
                                                 <div>
                                                     <div
                                                         class="text-sm font-semibold text-gray-800 group-hover:text-[#2ab4c0] transition-colors">
-                                                        {{ $a['name'] }}</div>
+                                                        {{ $a['name'] }}
+                                                    </div>
                                                     <div class="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">
-                                                        {{ $a['code'] }}</div>
+                                                        {{ $a['code'] }}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </button>

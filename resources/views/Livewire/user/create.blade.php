@@ -6,9 +6,9 @@
                     <h1 class="text-2xl font-black text-gray-900 tracking-tight">Add New User</h1>
                     <p class="text-xs text-gray-500 mt-1">Create a login account for the selected company</p>
                 </div>
-                <a href="{{ route($routePrefix . '.users.index') }}"
+                <a href="{{ route('users.index') }}"
                     class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                    Back to List
+                    Back
                 </a>
             </div>
         </div>
@@ -50,7 +50,8 @@
                                 </div>
                             </div>
                             @error('company_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
                         @endrole
 
@@ -90,7 +91,8 @@
                                 </p>
                             @endif
                             @error('branch_id') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
                     </div>
 
@@ -99,21 +101,24 @@
                             <label class="field-label">First Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="first_name" class="input-field" placeholder="e.g. John">
                             @error('first_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Middle Name</label>
                             <input type="text" wire:model="middle_name" class="input-field" placeholder="e.g. Quincy">
                             @error('middle_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Last Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="last_name" class="input-field" placeholder="e.g. Doe">
                             @error('last_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
                     </div>
                 </div>
@@ -137,7 +142,8 @@
                             <label class="field-label">Password <span class="text-red-500">*</span></label>
                             <input type="password" wire:model="password" class="input-field" placeholder="••••••••">
                             @error('password') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                     </div>
