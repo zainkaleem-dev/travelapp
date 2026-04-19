@@ -840,7 +840,7 @@
             'branches.*',
             'users.*',
             'roles.*',
-            'features.*'
+            'features*'
         ]))           
         
             @include('partials.navigation-user')
@@ -865,7 +865,7 @@
                     'branches.*',
                     'users.*',
                     'roles.*',
-                    'features.*'
+                    'features*'
                 ]))
                     @include("partials.navigation-admin")
                 @else

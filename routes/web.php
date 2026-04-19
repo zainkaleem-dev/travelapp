@@ -75,19 +75,31 @@ Route::get('/trip-type/{type}', function (Request $request, string $type) {
 Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();
-        if ($user->can('Manage Global System') || $user->hasRole('Organization Admin')) {
+        // 1. Global Super Admin landing
+        if ($user->can('Manage Global System')) {
             return redirect()->route('companies.index');
         }
+
+        // 2. Tenant Admin landing (Organization/Company Admins)
+        if ($user->can('View Users')) {
+            return redirect()->route('users.index');
+        }
+
+        if ($user->can('View Branch')) {
+            return redirect()->route('branches.index');
+        }
+
         if ($user->can('View Company')) {
             return redirect()->route('companies.index');
         }
-        if ($user->can('View Branch')) {
-            return redirect()->route('users.index');
+        if ($user->can('Manage Roles And Permissions')) {
+            return redirect()->route('roles.index');
         }
-        // Agents and Users land on the flight search page
-        if ($user->hasRole('Agent') || $user->hasRole('User')) {
-            return redirect()->route('flights.search');
+        if ($user->can('Manage Features')) {
+            return redirect()->route('features.index');
         }
+
+        // 3. Agent/User landing
         return redirect()->route('flights.search');
     }
     return redirect()->route('login');
