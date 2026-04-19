@@ -86,6 +86,20 @@ class UserCreate extends Component
 
     public function save(TenantContext $tenantContext)
     {
+        // 1. Resolve Limit
+        // We use the target company_id for scoping the feature check
+        $scope = $this->company_id ? Company::find($this->company_id) : null;
+        $limit = (int) \Laravel\Pennant\Feature::for($scope)->value('users-quantity');
+
+        // 2. Count Existing for target company
+        $count = User::where('company_id', $this->company_id)->count();
+
+        // 3. Prevent save if limit is reached
+        if ($count >= $limit) {
+            session()->flash('error', "Limit reached. This company is only allowed to have {$limit} users.");
+            return $this->redirect(route('users.index'));
+        }
+
         $validated = $this->validate();
 
         $user = User::query()->create([
