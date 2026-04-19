@@ -119,6 +119,7 @@
                                 <span class="text-sm font-semibold text-gray-700">Set as Main Branch for this
                                     Company</span>
                             </label>
+                            @error('is_main') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
