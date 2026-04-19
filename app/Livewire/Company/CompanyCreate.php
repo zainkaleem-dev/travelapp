@@ -64,7 +64,7 @@ class CompanyCreate extends Component
             'slug.unique' => 'This ID is already taken. Try a different one.',
             'slug.alpha_dash' => 'The ID can only contain letters, numbers, dashes and underscores.',
             'company_logo.required' => 'A company logo is required.',
-            'company_logo.image'    => 'The logo must be an image file.',
+            'company_logo.image' => 'The logo must be an image file.',
             'company_logo.max' => 'The logo size must not exceed 2MB.',
             'founded_year.integer' => 'Please enter a valid year (e.g., 2024).',
             'founded_year.max' => 'The founded year cannot be in the future.',

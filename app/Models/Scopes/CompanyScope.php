@@ -34,7 +34,7 @@ class CompanyScope implements Scope
 
             $user = auth()->user();
             $isSuperAdmin = $user && $user->hasRole('Super Admin');
-            
+
             // Global bypass for Super Admin or Unauthenticated users (allows login)
             if ($isSuperAdmin || !auth()->check()) {
                 return;

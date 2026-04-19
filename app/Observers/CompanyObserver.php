@@ -39,11 +39,11 @@ class CompanyObserver
 
         // 3. Define Roles and their specific permission mappings
         $roleDefinitions = [
-            'Company Admin'      => array_merge($basePermissions, $managementPermissions, $executivePermissions),
+            'Company Admin' => array_merge($basePermissions, $managementPermissions, $executivePermissions),
             'Organization Admin' => array_merge($basePermissions, $managementPermissions),
-            'Branch Admin'       => array_merge($basePermissions, $managementPermissions),
-            'Agent'             => $basePermissions,
-            'User'              => $basePermissions,
+            'Branch Admin' => array_merge($basePermissions, $managementPermissions),
+            'Agent' => $basePermissions,
+            'User' => $basePermissions,
         ];
 
         foreach ($roleDefinitions as $roleName => $perms) {
@@ -58,7 +58,7 @@ class CompanyObserver
             $permissionIds = Permission::whereIn('name', $perms)
                 ->where('name', '!=', 'Manage Global System')
                 ->pluck('id');
-                
+
             $syncData = $permissionIds->mapWithKeys(fn($id) => [$id => ['company_id' => $company->id]])->toArray();
             $role->permissions()->sync($syncData);
         }
