@@ -115,6 +115,18 @@ class BranchCreate extends Component
 
     public function save()
     {
+        // 1. Resolve Limit
+        $limit = (int) \Laravel\Pennant\Feature::value('branches-quantity');
+
+        // 2. Count Existing for current company
+        $count = Branch::where('company_id', $this->company_id)->count();
+
+        // 3. Prevent save if limit is reached
+        if ($count >= $limit) {
+            session()->flash('error', "Limit reached. You are only allowed to have {$limit} branches.");
+            return $this->redirect(route('branches.index'));
+        }
+
         $validated = $this->validate();
 
         Branch::query()->create($validated);
