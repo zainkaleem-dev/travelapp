@@ -25,7 +25,6 @@ use App\Livewire\Tmc\TmcSettings;
 use App\Livewire\Admin\SuperAdminSettings;
 use App\Livewire\Company\CompanyCreate;
 use App\Livewire\Company\CompanyEdit;
-use App\Livewire\Admin\CompanyIndex;
 use App\Livewire\User\UserListing;
 use App\Livewire\User\UserCreate;
 use App\Livewire\User\UserEdit;
@@ -35,6 +34,7 @@ use App\Livewire\Branch\BranchListing;
 use App\Livewire\Branch\BranchCreate;
 use App\Livewire\Branch\BranchEdit;
 use App\Livewire\Admin\Features\FeaturesListing;
+use App\Livewire\Roles\RolesPermissions;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
     $locale = strtolower($locale);
@@ -76,13 +76,13 @@ Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();
         if ($user->can('Manage Global System') || $user->hasRole('Organization Admin')) {
-            return redirect()->route('admin.companies.index');
+            return redirect()->route('companies.index');
         }
         if ($user->can('View Company')) {
-            return redirect()->route('admin.companies.index');
+            return redirect()->route('companies.index');
         }
         if ($user->can('View Branch')) {
-            return redirect()->route('admin.users.index');
+            return redirect()->route('users.index');
         }
         // Agents and Users land on the flight search page
         if ($user->hasRole('Agent') || $user->hasRole('User')) {
@@ -158,41 +158,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tmc-settings', TmcSettings::class)->name('tmc.settings');
 
 
-    Route::middleware(['superadmin', 'can:View Dashboard'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['superadmin'])->group(function () {
         Route::get('/settings', SuperAdminSettings::class)->name('settings');
-        Route::get('/companies', CompanyIndex::class)->name('companies.index');
-        Route::get('/branches', BranchListing::class)->name('branches.index');
-        Route::get('/branches/create', BranchCreate::class)->name('branches.create');
-        Route::get('/branches/{id}/edit', BranchEdit::class)->name('branches.edit');
-        Route::get('/companies/create', CompanyCreate::class)->name('companies.create');
-        Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit');
-        Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features');
-        Route::get('/features', FeaturesListing::class)->name('features');
-        Route::get('/users', UserListing::class)->name('users.index');
-        Route::get('/users/create', UserCreate::class)->name('users.create');
-        Route::get('/users/{id}/edit', UserEdit::class)->name('users.edit');
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->name('roles.index');
+        Route::get('/companies', CompanyListing::class)->name('companies.index')->middleware('can:View Company');
+        Route::get('/branches', BranchListing::class)->name('branches.index')->middleware('can:View Branch');
+        Route::get('/branches/create', BranchCreate::class)->name('branches.create')->middleware('can:Create Branch');
+        Route::get('/branches/{id}/edit', BranchEdit::class)->name('branches.edit')->middleware('can:Edit Branch');
+        Route::get('/companies/create', CompanyCreate::class)->name('companies.create')->middleware('can:Create Company');
+        Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit')->middleware('can:Edit Company');
+        Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features')->middleware('can:Manage Features');
+        Route::get('/features', FeaturesListing::class)->name('features')->middleware('can:Manage Features');
+        Route::get('/users', UserListing::class)->name('users.index')->middleware('can:View Users');
+        Route::get('/users/create', UserCreate::class)->name('users.create')->middleware('can:Create User');
+        Route::get('/users/{id}/edit', UserEdit::class)->name('users.edit')->middleware('can:Edit User');
+        Route::get('/roles-permissions', RolesPermissions::class)->name('roles.index')->middleware('can:Manage Roles and Permissions');
 
         // Impersonation
         Route::get('/impersonate/take/{user}', [\App\Http\Controllers\ImpersonateController::class, 'take'])->name('impersonate.take');
     });
 
-    Route::get('/impersonate/leave', [\App\Http\Controllers\ImpersonateController::class, 'leave'])->name('impersonate.leave');
 
-    // Redundant company group removed. Company Admins now use the unified /admin group.
 
-    // Redundant branch group removed. Branch Admins now use the unified /admin group.
 
-    Route::middleware(['company.tenant', 'agent.access'])->prefix('agent')->group(function () {
-        // Agents can access their assigned context
-        Route::get('/users', UserListing::class)->name('agent.users.index');
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('agent.roles.index');
-    });
-
-    Route::middleware(['company.tenant', 'user.access'])->prefix('user')->group(function () {
-        // Regular Users can see their own context and settings
-        Route::get('/roles-permissions', \App\Livewire\Roles\RolesPermissions::class)->middleware('can:Manage Roles and Permissions')->name('user.roles.index');
-    });
 
 
     Route::get('/hotels', Hotel::class)->middleware('feature.access:hotels-module')->name('hotels');

@@ -43,6 +43,7 @@ class UserCreate extends Component
         } elseif (request()->is('company*')) {
             $this->routePrefix = 'company';
         }
+        $this->authorize('Create User');
     }
 
     public function updatedCompanyId()

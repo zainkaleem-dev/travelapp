@@ -657,20 +657,11 @@
 </head>
 
 <body x-data="{ searchOpen: false }">
-    @if(session()->has('impersonated_by'))
-        <div class="bg-indigo-600 text-white py-2 px-4 flex items-center justify-between text-sm font-bold shadow-lg sticky top-0 z-[9999]">
-            <div class="flex items-center gap-3">
-                <svg class="w-5 h-5 animate-pulse text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>You are currently acting as <span class="underline decoration-indigo-300">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</span></span>
-            </div>
-            <a href="{{ route('impersonate.leave') }}" class="bg-white text-indigo-600 px-4 py-1 rounded-full hover:bg-indigo-50 transition-colors shadow-sm ring-1 ring-black/5">
-                Switch back to Admin
-            </a>
-        </div>
-    @endif
 
+    @php 
+        $user = auth()->user();
+        $isAdmin = $user && $user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin');
+    @endphp 
     {{-- ── Navbar ── --}}
     <nav class="relative z-50 bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between gap-4">
@@ -838,284 +829,37 @@
                 @endauth
             </div>
         </div>
-
-        @php 
-            $user = auth()->user();
-            $isSuperAdmin = $user && $user->hasRole('Super Admin');
-            $isOrganizationAdmin = $user && $user->hasRole('Organization Admin');
-            $isCompanyAdmin = $user && $user->hasRole('Company Admin');
-
-            // Hide Main Nav for both Super and Organization Admins in the common /admin area
-            $hideMainNavForAdmin = ($isSuperAdmin || $isOrganizationAdmin) && request()->is('admin*'); 
-            $hideMainNavForCompanyAdmin = $isCompanyAdmin && request()->is('company*');
-
-            $isAdminArea = ($isSuperAdmin || $isOrganizationAdmin) && (request()->is('admin*') || request()->routeIs('admin.*'));
-            $isCompanyAdminArea = $isCompanyAdmin && (request()->is('company*') || request()->routeIs('company.*'));
-            $isManagementArea = request()->routeIs(['profile', 'settings', 'corporate.settings', 'tmc.settings', 'flights.list']);
-          @endphp 
-
- 
-        @unless ($hideMainNavForAdmin || $hideMainNavForCompanyAdmin) 
-            <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center justify-between"> 
-                <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold w-full"> 
-                @featureOrAdmin('flights-module')
-                <a href="{{ route('flights.search') }}" 
-                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.search') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap"> 
-                    <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/>
-                    </svg>
-                    Book Trip
-                </a>
-                <a href="#"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.list') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875c-.621 0-1.125-.504-1.125-1.125v-4.25m16.5 0a2.25 2.25 0 00-2.25-2.25H18.75V8.25A2.25 2.25 0 0016.5 6H7.5A2.25 2.25 0 005.25 8.25V11.9h-1.5a2.25 2.25 0 00-2.25 2.25m16.5 0a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25m13.5-3.75V11.9m-9 0V8.25"/>
-                    </svg>
-                    My Trip
-                </a>
-                @endfeatureOrAdmin
-                @can('View Dashboard')
-                <a href="#"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('dashboard') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-2.25v2.25m3-2.25v2.25m3-2.25v2.25m-9-4.5v2.25m3-2.25v2.25m3-2.25v2.25m3-2.25v2.25m-9-4.5v2.25m3-2.25v2.25m3-2.25v2.25m3-2.25v2.25M3.75 20.25h16.5A2.25 2.25 0 0022.5 18V6a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 6v12a2.25 2.25 0 002.25 2.25z"/>
-                    </svg>
-                    Dashboard
-                </a>
-                @endcan
-                @featureOrAdmin('travel-hub-module')
-                <a href="{{ route('travel.hub') }}"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('travel.hub') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6.75V15m-10.5 2.25l.75-12 4.5-2.25 4.5 2.25 4.5-2.25 .75 12-4.5 2.25-4.5-2.25-4.5 2.25z"/>
-                    </svg>
-                    Travel hub
-                </a>
-                @endfeatureOrAdmin
-
-                @can('Manage Roles and Permissions')
-                @php
-                    $user = auth()->user();
-                    $isSuper = $user->can('Manage Global System');
-                    $isCompany = $user->can('View Company');
-                    $isBranch = $user->can('View Branch');
-                    $isAgent = $user->hasRole('Agent');
-                    $isUser = $user->hasRole('User');
-
-                    if ($isSuperAdmin || $isOrganizationAdmin) {
-                        $rolesRoute = route('admin.roles.index');
-                        $rolesRouteIs = 'admin.roles.index';
-                    } elseif ($isCompany) {
-                        $rolesRoute = route('company.roles.index');
-                        $rolesRouteIs = 'company.roles.index';
-                    } elseif ($isBranch) {
-                        $rolesRoute = route('branch.roles.index');
-                        $rolesRouteIs = 'branch.roles.index';
-                    } elseif ($isAgent) {
-                        $rolesRoute = route('agent.roles.index');
-                        $rolesRouteIs = 'agent.roles.index';
-                    } else {
-                        $rolesRoute = route('user.roles.index');
-                        $rolesRouteIs = 'user.roles.index';
-                    }
-                @endphp
-                @featureOrAdmin('roles-permissions-module')
-                <a href="{{ $rolesRoute }}"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs($rolesRouteIs) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                    </svg>
-                    Roles & Permissions
-                </a>
-                @endfeatureOrAdmin
-                @endcan
-                </div>
-
-                @if(request()->routeIs('flights.list'))
-                    <div class="ms-auto ps-4 border-s border-gray-200 flex-shrink-0">
-                        <button type="button" @click="searchOpen = !searchOpen"
-                            class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-500 hover:text-[#2ab4c0] hover:border-[#2ab4c0]/60 hover:bg-[#2ab4c0]/5 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/40 -translate-y-[1.5px]"
-                            title="Modify Search">
-                            <svg class="w-3.5 h-3.5 drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
-                            </svg>
-                        </button>
-                    </div>
-                @endif
-            </div>
-        @endunless
+        
+        
+        @if(!request()->routeIs('companies.*'))
+            @include('partials.navigation-user')
+        @endif
     </nav>
 
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
-        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 {{ ($isAdminArea || $isManagementArea) ? 'mt-2 pt-0' : 'mt-8 pt-4' }} pb-12 sm:pb-16">
-            @if (!$isAdminArea && !$isCompanyAdminArea && !request()->routeIs(['flights.list', 'profile', 'settings', 'corporate.settings', 'tmc.settings']))
-                {{-- ── Trip Type Bar (flight search only, read-only) ── --}}
-                @if (request()->routeIs('flights.search'))
-                    @php
-                        $currentTripType = auth()->check()
-                            ? optional(\App\Models\UserSetting::where('user_id', auth()->id())->first())->trip_type
-                            : null;
-                        $tripTypeLabels = [
-                            'business_trip' => 'Business Trip',
-                            'personal_trip' => 'Personal Trip',
-                            'annual_trip'   => 'Annual Trip',
-                            'guest'         => 'Guest',
-                        ];
-                    @endphp
-                    @if ($currentTripType && isset($tripTypeLabels[$currentTripType]))
-                        <div class="max-w-[960px] mx-auto">
-                            <div class="flex items-center gap-3 bg-white border border-b border-gray-200 rounded-t-xl px-4 py-2.5">
-                                <div class="inline-flex max-w-full items-center gap-2 rounded-xl border border-[#2ab4c0]/45 bg-[#eaf9fb] px-3 py-1.5 shadow-[0_2px_10px_rgba(42,180,192,0.18)] ring-1 ring-[#2ab4c0]/15">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#4b5563]">Trip purpose</span>
-                                    <span class="text-xs font-semibold text-[#1f9aa6]">{{ $tripTypeLabels[$currentTripType] }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                @endif
-
-                <div class="max-w-[960px] mx-auto bg-white {{ (request()->routeIs('flights.search') && $currentTripType && isset($tripTypeLabels[$currentTripType])) ? 'rounded-b-xl rounded-t-none border-t-0' : 'rounded-xl' }} border border-gray-200 shadow-sm overflow-visible px-2 sm:px-3">
-                    @include('partials.navigation-bar')
-                </div>
-                <div class="max-w-[960px] mx-auto h-px bg-gray-100"></div>
+        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 mt-8 pt-4 pb-12 sm:pb-16">
+            @if(request()->routeIs('flights.search'))
+                @include('partials.navigation-flight')
             @endif
-            
-            @unless (($isSuperAdmin || $isOrganizationAdmin) && request()->is('admin*'))
-                <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms class="{{ request()->routeIs('flights.list') ? 'w-full mt-4 mb-4 px-3 sm:px-4' : 'max-w-[960px] mx-auto mt-4 mb-4' }}">
-                    @livewire('quick-search')
-                </div>
-            @endunless
-
-            <div class="p-3 sm:p-4">
-                <div class="flex flex-col relative">
-
-    @if (in_array(request()->route()?->getName(), ['flights.list', 'additional.services', 'seating', 'passenger.details'], true))
-    {{-- Form Wizard (frontend services) --}}
-    @php
-        $routeName = request()->route()?->getName();
-        $activeStep = match ($routeName) {
-            'flights.list' => 1,
-            'additional.services' => 2,
-            'seating' => 3,
-            'passenger.details' => 4,
-            default => 1,
-        };
-
-        // 4-step connector: fill up to active circle.
-        // Steps are rendered in 4 equal parts (w-1/4), so step 1 circle center ~ 12.5%.
-        $connectorPercent = match ($activeStep) {
-            1 => 12.5,
-            2 => 37.5,
-            3 => 62.5,
-            4 => 100,
-            default => 12.5,
-        };
-    @endphp
-
-    <div class="pt-4 pb-2 -order-1">
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-            <div class="flex items-center justify-between gap-3 mb-3">
-                <div>
-                    <div class="text-sm font-bold text-gray-800">Service Wizard</div>
-                    <div class="text-xs mt-0.5">
-                        <span class="{{ $activeStep === 1 ? 'font-bold text-[#000000]' : 'font-normal text-gray-500' }}">Flight List</span>
-                        <span class="text-gray-500"> / </span>
-                        <span class="{{ $activeStep === 2 ? 'font-bold text-[#000000]' : 'font-normal text-gray-500' }}">Additional Services</span>
-                        <span class="text-gray-500"> / </span>
-                        <span class="{{ $activeStep === 3 ? 'font-bold text-[#000000]' : 'font-normal text-gray-500' }}">Seating</span>
-                        <span class="text-gray-500"> / </span>
-                        <span class="{{ $activeStep === 4 ? 'font-bold text-[#000000]' : 'font-normal text-gray-500' }}">Passenger Details</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative">
-                {{-- connector line --}}
-                <div class="absolute left-0 right-0 top-5 h-[2px] bg-gray-200"></div>
-                <div class="absolute left-0 top-5 h-[2px] bg-[#2ab4c0]" style="width: {{ $connectorPercent }}%"></div>
-
-                <div class="flex items-start justify-between">
-                    {{-- 1. Flight List --}}
-                    <div class="flex flex-col items-center w-1/4">
-                        <a href="{{ route('flights.list') }}"
-                            class="w-10 h-10 rounded-full border-2 flex items-center justify-center z-10 transition-colors
-                            {{ $activeStep === 1 ? 'bg-[#2ab4c0] border-[#2ab4c0] text-white' : 'bg-white border-gray-200 text-gray-400' }}">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 6h16" />
-                                <path d="M4 12h16" />
-                                <path d="M4 18h10" />
-                            </svg>
-                        </a>
-                        <div class="mt-2 text-[11px] {{ $activeStep === 1 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-600' }}">
-                            Flight List
-                        </div>
-                    </div>
-
-                    {{-- 2. Additional Services --}}
-                    <div class="flex flex-col items-center w-1/4">
-                        <div
-                            class="w-10 h-10 rounded-full border-2 flex items-center justify-center z-10
-                            {{ $activeStep === 2 ? 'bg-[#2ab4c0] border-[#2ab4c0] text-white' : 'bg-white border-gray-200 text-gray-400' }}">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 6H9l-2 4H20l-2 4H7l-2 4" />
-                            </svg>
-                        </div>
-                        <div class="mt-2 text-[11px] {{ $activeStep === 2 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-600' }}">Additional Services</div>
-                    </div>
-
-                    {{-- 3. Seating --}}
-                    <div class="flex flex-col items-center w-1/4">
-                        <div
-                            class="w-10 h-10 rounded-full border-2 flex items-center justify-center z-10
-                            {{ $activeStep === 3 ? 'bg-[#2ab4c0] border-[#2ab4c0] text-white' : 'bg-white border-gray-200 text-gray-400' }}">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h10M7 11h10M7 15h10M7 19h10" />
-                            </svg>
-                        </div>
-                        <div class="mt-2 text-[11px] {{ $activeStep === 3 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-600' }}">Seating</div>
-                    </div>
-
-                    {{-- 4. Passenger Details --}}
-                    <div class="flex flex-col items-center w-1/4">
-                        <div
-                            class="w-10 h-10 rounded-full border-2 flex items-center justify-center z-10
-                            {{ $activeStep === 4 ? 'bg-[#2ab4c0] border-[#2ab4c0] text-white' : 'bg-white border-gray-200 text-gray-400' }}">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                <circle cx="12" cy="7" r="4" />
-                            </svg>
-                        </div>
-                        <div class="mt-2 text-[11px] {{ $activeStep === 4 ? 'font-bold text-[#2ab4c0]' : 'font-normal text-gray-600' }}">Passenger Details</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
 
 
+        <div class="p-3 sm:p-4">
+            <div class="flex flex-col relative">
 
-                @if ($isAdminArea || $isCompanyAdminArea)
-                    <div class="flex flex-col md:flex-row gap-6 mt-0">
-                        {{-- Sidebar --}}
-                        <div class="w-full md:w-64 flex-shrink-0">
-                            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sticky top-24">
-                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 px-4">Management</div>
-                                @include('partials.navigation-bar', ['vertical' => true])
-                            </div>
-                        </div>
+                @include('partials.form-wizard')
+                @if(request()->routeIs('companies.*') || request()->routeIs('branches.*') || request()->routeIs('users.*') || request()->routeIs('roles.*') || request()->routeIs('features.*'))
 
-                        {{-- Main Content --}}
-                        <div class="flex-1 min-w-0">
-                            {{ $slot }}
-                        </div>
-                    </div>
+                @include("partials.navigation-admin")
                 @else
                     {{ $slot }}
                 @endif
+
             </div>
         </div>
+            
+            
+
         </div>
     </div>
     </div>
