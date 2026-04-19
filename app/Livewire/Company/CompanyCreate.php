@@ -74,6 +74,24 @@ class CompanyCreate extends Component
 
     public function save()
     {
+        // 1. Resolve Limit
+        $limit = (int) \Laravel\Pennant\Feature::value('companies-quantity');
+
+        // 2. Count Existing based on scope
+        $query = Company::query();
+        if (auth()->user()->can('Manage Global System')) {
+            $query->whereNull('parent_id');
+        } else {
+            $query->where('parent_id', auth()->user()->company_id);
+        }
+        $count = $query->count();
+
+        // 3. Prevent save if limit is reached
+        if ($count >= $limit) {
+            session()->flash('error', "Limit reached. You are only allowed to have more than {$limit} companies.");
+            return $this->redirect(route('companies.index'));
+        }
+
         $validated = $this->validate();
 
         $logoPath = null;
