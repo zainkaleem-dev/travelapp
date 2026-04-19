@@ -95,7 +95,22 @@ class BranchEdit extends Component
             'code' => ['required', 'string', 'max:50', Rule::unique('branches', 'code')->ignore($this->branchId)],
             'slug' => ['required', 'string', 'max:255', Rule::unique('branches', 'slug')->ignore($this->branchId), 'alpha_dash'],
             'company_id' => ['required', 'exists:companies,id'],
-            'is_main' => ['boolean'],
+            'is_main' => [
+                'boolean',
+                function ($attribute, $value, $fail) {
+                    if ($value && $this->company_id) {
+                        $exists = Branch::query()
+                            ->where('company_id', $this->company_id)
+                            ->where('is_main', true)
+                            ->where('id', '!=', $this->branchId)
+                            ->exists();
+
+                        if ($exists) {
+                            $fail('This company already has a main branch. Only one main branch is allowed.');
+                        }
+                    }
+                }
+            ],
             'status' => ['required', 'in:active,inactive'],
 
             'email' => ['required', 'email', 'max:255'],
