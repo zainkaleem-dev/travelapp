@@ -149,26 +149,32 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasPermissionTo($permission, $guardName = null): bool
     {
         // 1. Super Admin bypass (Global Master Key)
-        // We use a direct check to avoid recursion in Gate::before
-        $isGlobalSuperAdmin = \Illuminate\Support\Facades\DB::table('model_has_roles')
-            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-            ->where('model_has_roles.model_id', $this->id)
-            ->where('model_has_roles.model_type', self::class)
-            ->where('roles.name', 'Super Admin')
-            ->whereNull('model_has_roles.company_id')
-            ->exists();
+        // Check cache first for performance
+        $userId = $this->id;
+        $isGlobalSuperAdmin = \Illuminate\Support\Facades\Cache::remember(
+            "user_{$userId}_is_global_super_admin",
+            now()->addMinutes(10),
+            fn() => \Illuminate\Support\Facades\DB::table('model_has_roles')
+                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                ->where('model_has_roles.model_id', $userId)
+                ->where('model_has_roles.model_type', self::class)
+                ->where('roles.name', 'Super Admin')
+                ->whereNull('model_has_roles.company_id')
+                ->exists()
+        );
 
         if ($isGlobalSuperAdmin) {
             return true;
         }
 
-        // 2. Enforce Company Context
-        $contextCompanyId = $this->company_id;
+        // 2. Enforce Active Context (Multi-Tenant Awareness)
+        // Use the active company context from TenantContext if set, fallback to user's home company
+        $contextCompanyId = app(\App\Support\TenantContext::class)->companyId() ?? $this->company_id;
 
         // Ensure Spatie Registrar respects the current context
         setPermissionsTeamId($contextCompanyId);
 
-        // Standard Spatie check, but now guarded by our context-aware traits and relationships
+        // Standard Spatie check, but now guarded by our context-aware logic
         return $this->traitHasPermissionTo($permission, $guardName);
     }
 }

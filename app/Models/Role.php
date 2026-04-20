@@ -34,6 +34,7 @@ class Role extends SpatieRole
             config('permission.table_names.role_has_permissions'),
             config('permission.column_names.role_pivot_key') ?? 'role_id',
             config('permission.column_names.permission_pivot_key') ?? 'permission_id'
-        )->withPivot('company_id');
+        )->withPivot('company_id')
+         ->wherePivot('company_id', getPermissionsTeamId());
     }
 }

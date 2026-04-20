@@ -27,12 +27,20 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        // Implicitly grant "Super Admin" role all permissions globally
+        // Implicitly grant "Global Super Admins" all permissions.
+        // We use a raw DB query here to avoid recursion with model-level overrides.
         Gate::before(function ($user, $ability) {
-            // Context-insensitive check: directly look for the 'Manage Global System' permission 
-            // without a company_id to identify Global Super Admins.
-            return $user->hasDirectPermission('Manage Global System') ||
-                $user->hasPermissionTo('Manage Global System') ? true : null;
+            return \Illuminate\Support\Facades\Cache::remember(
+                "user_{$user->id}_is_global_super_admin",
+                now()->addMinutes(10),
+                fn() => \Illuminate\Support\Facades\DB::table('model_has_roles')
+                    ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                    ->where('model_has_roles.model_id', $user->id)
+                    ->where('model_has_roles.model_type', \App\Models\User::class)
+                    ->where('roles.name', 'Super Admin')
+                    ->whereNull('model_has_roles.company_id')
+                    ->exists()
+            ) ? true : null;
         });
 
         // Resolve Pennant scope to the current company
