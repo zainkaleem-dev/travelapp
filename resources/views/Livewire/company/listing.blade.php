@@ -18,7 +18,7 @@
                         </button>
                         @can('Create Company')
                             <a href="{{ route('companies.create') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                                 Add Company
                             </a>
                         @endcan
@@ -283,16 +283,14 @@
                                                     </svg>
                                                 </a>
                                             @endcan
-                                            <button type="button" x-on:click="appSwalConfirmAction({
-                                                                                                    wire: $wire,
-                                                                                                    action: 'toggleActive',
-                                                                                                    args: [{{ $company->id }}],
-                                                                                                    confirmTitle: 'Change company status?',
-                                                                                                    confirmText: 'Are you sure you want to change the active status of this company?',
-                                                                                                    confirmButtonText: 'Yes, change it',
-                                                                                                    doneTitle: 'Updated!',
-                                                                                                    doneText: 'Company status has been updated.'
-                                                                                                })"
+                                            <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
+                                                data-action="toggleActive"
+                                                data-args='[{{ $company->id }}]'
+                                                data-confirm-title="Change company status?"
+                                                data-confirm-text="Are you sure you want to change the active status of this company?"
+                                                data-confirm-button-text="Yes, change it"
+                                                data-done-title="Updated!"
+                                                data-done-text="Company status has been updated."
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                 title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                                 @if ($company->status === 'active')
@@ -308,16 +306,14 @@
                                                 @endif
                                             </button>
                                             @can('Delete Company')
-                                                <button type="button" x-on:click="appSwalConfirmAction({
-                                                                                                                wire: $wire,
-                                                                                                                action: 'deleteCompany',
-                                                                                                                args: [{{ $company->id }}],
-                                                                                                                confirmTitle: 'Are you sure?',
-                                                                                                                confirmText: 'This will delete the company and its related data.',
-                                                                                                                confirmButtonText: 'Yes, delete it',
-                                                                                                                doneTitle: 'Deleted!',
-                                                                                                                doneText: 'Company has been deleted.'
-                                                                                                            })"
+                                                <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
+                                                    data-action="deleteCompany"
+                                                    data-args='[{{ $company->id }}]'
+                                                    data-confirm-title="Are you sure?"
+                                                    data-confirm-text="This will delete the company and its related data."
+                                                    data-confirm-button-text="Yes, delete it"
+                                                    data-done-title="Deleted!"
+                                                    data-done-text="Company has been deleted."
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete Company">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

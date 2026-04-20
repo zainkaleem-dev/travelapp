@@ -78,7 +78,7 @@
                         <div class="md:col-span-2">
                             <label class="field-label">Organization Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.debounce.500ms="company_name" class="input-field"
-                                placeholder="e.g. Acme Travel Services">
+                                placeholder="Acme Travel Services">
                             @error('company_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -86,7 +86,7 @@
 
                         <div>
                             <label class="field-label">Slug / ID <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="slug" class="input-field bg-gray-50 font-mono"
+                            <input type="text" wire:model="slug" class="input-field font-mono"
                                 placeholder="acme-travel">
                             @error('slug') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
@@ -96,7 +96,7 @@
                             <label class="field-label">Organization Type <span class="text-red-500">*</span></label>
                             <div class="relative" x-data="{ open: false, selected: @js($company_type ?? '') }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
                                     <span
                                         x-text="selected === '' ? 'Select type...' : (selected === 'TMC' ? 'TMC (Travel Management)' : 'Corporate Client')"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
@@ -132,7 +132,7 @@
                                 <div class="relative"
                                     x-data="{ open: false, selected: @js($parent_id ?? ''), labels: @js($companies->pluck('name', 'id')) }"
                                     @keydown.escape.window="open = false" @click.outside="open = false">
-                                    <button type="button" class="admin-menu-btn" @click="open = !open">
+                                    <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
                                         <span
                                             x-text="selected === '' ? 'None (Root Company)' : (labels[selected] ?? 'None (Root Company)')"></span>
                                         <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
@@ -163,7 +163,7 @@
                         <div>
                             <label class="field-label">Registration No. <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="registration_number" class="input-field"
-                                placeholder="e.g. 12345-678">
+                                placeholder="12345-678">
                             @error('registration_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -172,7 +172,7 @@
                         <div>
                             <label class="field-label">Tax ID / VAT</label>
                             <input type="text" wire:model="tax_number" class="input-field"
-                                placeholder="e.g. GB12345678">
+                                placeholder="GB12345678">
                             @error('tax_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -180,7 +180,7 @@
 
                         <div>
                             <label class="field-label">Founded Year <span class="text-red-500">*</span></label>
-                            <input type="number" wire:model="founded_year" class="input-field" placeholder="e.g. 2010"
+                            <input type="number" wire:model="founded_year" class="input-field" placeholder="2010"
                                 min="1900" max="{{ date('Y') }}">
                             @error('founded_year') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
@@ -205,7 +205,7 @@
                             <label class="field-label">Status <span class="text-red-500">*</span></label>
                             <div class="relative" x-data="{ open: false, selected: @js($status ?? 'active') }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
                                     <span x-text="selected.charAt(0).toUpperCase() + selected.slice(1)"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
                                         :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
@@ -239,11 +239,11 @@
 
                 <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                     <button type="button" onclick="history.back()"
-                        class="inline-flex items-center justify-center rounded-xl border border-gray-200 px-6 py-3 text-xs font-black text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-widest">
+                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                         Cancel
                     </button>
                     <button type="submit"
-                        class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                         Save Changes
                     </button>
                 </div>

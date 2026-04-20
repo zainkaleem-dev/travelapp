@@ -818,7 +818,7 @@
 
                 {{-- Search Button --}}
                 <div class="flex justify-end mt-4">
-                    <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
+                    <button class="btn-search rounded-lg px-4 py-2 h-auto text-sm" wire:click="search" wire:loading.attr="disabled">
                         {{-- Spinner (visible only when loading) --}}
                         <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -1626,7 +1626,7 @@
                 {{-- Search Button --}}
                 <div class="flex justify-end mt-4">
                     <div class="">
-                        <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
+                        <button class="btn-search rounded-lg px-4 py-2 h-auto text-sm" wire:click="search" wire:loading.attr="disabled">
                             <div class="flex items-center justify-center gap-2">
                                 {{-- Spinner (visible only when loading) --}}
                                 <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none"
@@ -2495,7 +2495,7 @@
                 {{-- Search Button --}}
                 <div class="flex justify-end mt-6">
                     <div class="">
-                        <button class="btn-search" wire:click="search" wire:loading.attr="disabled">
+                        <button class="btn-search rounded-lg px-4 py-2 h-auto text-sm" wire:click="search" wire:loading.attr="disabled">
                             <div class="flex items-center justify-center gap-2">
                                 {{-- Spinner (visible only when loading) --}}
                                 <svg wire:loading wire:target="search" class="animate-spin w-4 h-4" fill="none"

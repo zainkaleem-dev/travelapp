@@ -132,8 +132,8 @@
 
                         {{-- Login button --}}
                         <button type="submit" wire:loading.attr="disabled"
-                            class="fu6 login-btn w-full py-2.5 rounded-lg text-white font-bold flex items-center justify-center gap-2 mt-4"
-                            style="font-size:13px; background: #2ab4c0;">
+                            class="fu6 login-btn w-full rounded-lg px-4 py-2 text-sm font-semibold text-white flex items-center justify-center gap-2 mt-4"
+                            style="background: #2ab4c0;">
 
                             {{-- Spinner (visible only when loading) --}}
                             <svg wire:loading wire:target="login" class="animate-spin w-4 h-4" fill="none"

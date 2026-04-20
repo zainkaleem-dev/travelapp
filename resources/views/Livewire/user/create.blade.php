@@ -29,7 +29,7 @@
                             <div class="relative"
                                 x-data="{ open: false, selected: @entangle('company_id').live, labels: @js($companies->pluck('name', 'id')) }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
                                     <span
                                         x-text="!selected ? '-- Choose Company --' : (labels[selected] ?? '-- Choose Company --')"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
@@ -55,13 +55,13 @@
                         </div>
                         @endif
 
-                        <div @if(count($companies) <= 1) class="col-span-2" @endif>
+                        <div>
                             <label class="field-label">Select Branch <span class="text-red-500">*</span></label>
                             <div wire:key="create-branch-dropdown-{{ $company_id ?? 'none' }}-{{ count($branches) }}"
                                 class="relative"
                                 x-data="{ open: false, selected: @entangle('branch_id').live, labels: @js(collect($branches)->pluck('name', 'id')) }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn"
+                                <button type="button" class="input-field flex items-center justify-between text-left"
                                     @click="if (!{{ empty($branches) ? 'true' : 'false' }}) open = !open"
                                     :class="{ 'opacity-60 cursor-not-allowed': {{ empty($branches) ? 'true' : 'false' }} }">
                                     <span
@@ -99,7 +99,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="field-label">First Name <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="first_name" class="input-field" placeholder="e.g. John">
+                            <input type="text" wire:model="first_name" class="input-field" placeholder="John">
                             @error('first_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -107,7 +107,7 @@
 
                         <div>
                             <label class="field-label">Middle Name</label>
-                            <input type="text" wire:model="middle_name" class="input-field" placeholder="e.g. Quincy">
+                            <input type="text" wire:model="middle_name" class="input-field" placeholder="Quincy">
                             @error('middle_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -115,7 +115,7 @@
 
                         <div>
                             <label class="field-label">Last Name <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="last_name" class="input-field" placeholder="e.g. Doe">
+                            <input type="text" wire:model="last_name" class="input-field" placeholder="Doe">
                             @error('last_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -152,11 +152,11 @@
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                 <button type="button" onclick="window.history.back()"
-                    class="inline-flex items-center justify-center rounded-xl border border-gray-200 px-6 py-3 text-xs font-black text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-widest">
+                    class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                     <span wire:loading.remove>Create User</span>
                     <span wire:loading>Creating...</span>
                 </button>

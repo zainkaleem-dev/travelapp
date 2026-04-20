@@ -18,7 +18,7 @@
                         </button>
                         @can('Create Branch')
                             <a href="{{ route('branches.create') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                                 Add Branch
                             </a>
                         @endcan
@@ -341,13 +341,11 @@
                                                     </svg>
                                                 </a>
                                             @endcan
-                                            <button type="button" x-on:click="appSwalConfirmAction({
-                                                                                            wire: $wire,
-                                                                                            action: 'toggleActive',
-                                                                                            args: [{{ $branch->id }}],
-                                                                                            confirmTitle: 'Change branch status?',
-                                                                                            doneTitle: 'Branch status updated'
-                                                                                        })"
+                                            <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
+                                                data-action="toggleActive"
+                                                data-args='[{{ $branch->id }}]'
+                                                data-confirm-title="Change branch status?"
+                                                data-done-title="Branch status updated"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                 title="{{ $branch->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                                 @if ($branch->status === 'active')
@@ -363,16 +361,14 @@
                                                 @endif
                                             </button>
                                             @can('Delete Branch')
-                                                <button type="button" x-on:click="appSwalConfirmAction({
-                                                                                                    wire: $wire,
-                                                                                                    action: 'deleteBranch',
-                                                                                                    args: [{{ $branch->id }}],
-                                                                                                    confirmTitle: 'Are you sure?',
-                                                                                                    confirmText: 'This will delete the branch and its related data.',
-                                                                                                    confirmButtonText: 'Yes, delete it',
-                                                                                                    doneTitle: 'Deleted!',
-                                                                                                    doneText: 'Branch has been deleted.'
-                                                                                                })"
+                                                <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
+                                                    data-action="deleteBranch"
+                                                    data-args='[{{ $branch->id }}]'
+                                                    data-confirm-title="Are you sure?"
+                                                    data-confirm-text="This will delete the branch and its related data."
+                                                    data-confirm-button-text="Yes, delete it"
+                                                    data-done-title="Deleted!"
+                                                    data-done-text="Branch has been deleted."
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete Branch">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

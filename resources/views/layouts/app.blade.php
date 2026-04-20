@@ -94,9 +94,9 @@
 
         .input-field:focus {
             outline: none;
-            border-color: #6366f1;
+            border-color: #2ab4c0;
             background: #fff;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 3px rgba(42, 180, 192, 0.1);
         }
 
         .login-btn {

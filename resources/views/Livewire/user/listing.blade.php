@@ -18,7 +18,7 @@
                         </button>
                         @can('Create User')
                             <a href="{{ route('users.create') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                                 Add User
                             </a>
                         @endcan
@@ -259,12 +259,11 @@
                                                                     </a>
                                                                 @endcan
                                                                 @can('Delete User')
-                                                                    <button type="button" x-on:click="appSwalConfirmAction({wire: $wire,
-                                                                                                                                    action: 'delete',
-                                                                                                                                    args: [{{ $user->id }}],
-                                                                                                                                    confirmTitle: 'Delete user?',
-                                                                                                                                    doneTitle: 'User deleted'
-                                                                                                                                })"
+                                                                    <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
+                                                                        data-action="delete"
+                                                                        data-args='[{{ $user->id }}]'
+                                                                        data-confirm-title="Delete user?"
+                                                                        data-done-title="User deleted"
                                                                         class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                                         title="Delete">
                                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

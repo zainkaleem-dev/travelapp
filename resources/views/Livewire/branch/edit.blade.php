@@ -34,14 +34,14 @@
                         <div class="md:col-span-2">
                             <label class="field-label">Branch Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.live.debounce.500ms="name" class="input-field"
-                                placeholder="e.g. Dubai Main Office">
+                                placeholder="Dubai Main Office">
                             @error('name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
 
                         <div>
                             <label class="field-label">Slug / URL <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="slug" class="input-field bg-gray-50 font-mono"
+                            <input type="text" wire:model="slug" class="input-field font-mono"
                                 placeholder="dubai-office">
                             @error('slug') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
@@ -49,7 +49,7 @@
 
                         <div>
                             <label class="field-label">Branch Code <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="code" class="input-field" placeholder="e.g. DXB-001">
+                            <input type="text" wire:model="code" class="input-field" placeholder="DXB-001">
                             @error('code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
@@ -59,7 +59,7 @@
                             <div class="relative"
                                 x-data="{ open: false, selected: @js((string) ($company_id ?? '')), labels: @js($companies->pluck('name', 'id')) }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
                                     <span
                                         x-text="selected === '' ? 'Select Company...' : (labels[selected] ?? 'Select Company...')"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
@@ -90,7 +90,7 @@
                             <label class="field-label">Status <span class="text-red-500">*</span></label>
                             <div class="relative" x-data="{ open: false, selected: @js($status ?? 'active') }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="admin-menu-btn" @click="open = !open">
+                                <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
                                     <span x-text="selected.charAt(0).toUpperCase() + selected.slice(1)"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
                                         :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
@@ -197,19 +197,19 @@
 
                         <div>
                             <label class="field-label">City <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="city" class="input-field" placeholder="e.g. Dubai">
+                            <input type="text" wire:model="city" class="input-field" placeholder="Dubai">
                             @error('city') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
                         <div>
                             <label class="field-label">State / Province <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="state" class="input-field" placeholder="e.g. Dubai">
+                            <input type="text" wire:model="state" class="input-field" placeholder="Dubai">
                             @error('state') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
                         <div>
                             <label class="field-label">Postal Code</label>
-                            <input type="text" wire:model="postal_code" class="input-field" placeholder="e.g. 12345">
+                            <input type="text" wire:model="postal_code" class="input-field" placeholder="12345">
                             @error('postal_code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -217,7 +217,7 @@
                         <div>
                             <label class="field-label">Country <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="country" class="input-field"
-                                placeholder="e.g. United Arab Emirates">
+                                placeholder="United Arab Emirates">
                             @error('country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -234,7 +234,7 @@
                         <div>
                             <label class="field-label">Latitude <span class="text-red-500">*</span></label>
                             <input type="text" id="branch-lat" wire:model="latitude" class="input-field font-mono"
-                                placeholder="e.g. 25.2048">
+                                placeholder="25.2048">
                             @error('latitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -242,7 +242,7 @@
                         <div>
                             <label class="field-label">Longitude <span class="text-red-500">*</span></label>
                             <input type="text" id="branch-lng" wire:model="longitude" class="input-field font-mono"
-                                placeholder="e.g. 55.2708">
+                                placeholder="55.2708">
                             @error('longitude') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
@@ -261,11 +261,11 @@
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                 <button type="button" onclick="window.history.back()"
-                    class="inline-flex items-center justify-center rounded-xl border border-gray-200 px-6 py-3 text-xs font-black text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-widest">
+                    class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                     <span wire:loading.remove>Update Branch</span>
                     <span wire:loading>Updating...</span>
                 </button>
@@ -293,18 +293,46 @@
             let map, marker;
             const defaultLat = 25.2048;
             const defaultLng = 55.2708;
+            const initialWireLat = @js($latitude);
+            const initialWireLng = @js($longitude);
+
+            function parseCoordinate(value, fallback, min, max) {
+                const normalized = String(value ?? '').replace(',', '.').trim();
+                const parsed = Number.parseFloat(normalized);
+                if (!Number.isFinite(parsed)) return fallback;
+                if (parsed < min || parsed > max) return fallback;
+                return parsed;
+            }
+
+            function getInitialCoords(latInput, lngInput) {
+                const latSource = latInput?.value !== '' ? latInput?.value : initialWireLat;
+                const lngSource = lngInput?.value !== '' ? lngInput?.value : initialWireLng;
+
+                return {
+                    lat: parseCoordinate(latSource, defaultLat, -90, 90),
+                    lng: parseCoordinate(lngSource, defaultLng, -180, 180),
+                };
+            }
 
             function initLeafletMap() {
                 const mapEl = document.getElementById('branch-map');
-                if (!mapEl || mapEl._leaflet_id) return;
+                if (!mapEl) return;
+
+                // Recreate map on each navigation/render so marker always matches current lat/lng.
+                if (window.__branchLeafletMap && typeof window.__branchLeafletMap.remove === 'function') {
+                    window.__branchLeafletMap.remove();
+                    window.__branchLeafletMap = null;
+                    window.__branchLeafletMarker = null;
+                }
 
                 const latInput = document.getElementById('branch-lat');
                 const lngInput = document.getElementById('branch-lng');
+                if (!latInput || !lngInput) return;
 
-                const initialLat = parseFloat(latInput.value) || defaultLat;
-                const initialLng = parseFloat(lngInput.value) || defaultLng;
+                const { lat: initialLat, lng: initialLng } = getInitialCoords(latInput, lngInput);
 
                 map = L.map('branch-map').setView([initialLat, initialLng], 13);
+                window.__branchLeafletMap = map;
 
                 // Fix for gray box / tile loading issues
                 setTimeout(() => {
@@ -319,6 +347,7 @@
                 marker = L.marker([initialLat, initialLng], {
                     draggable: true
                 }).addTo(map);
+                window.__branchLeafletMarker = marker;
 
                 marker.on('dragend', function (event) {
                     const pos = event.target.getLatLng();
@@ -335,8 +364,8 @@
                 // Handle manual input changes
                 [latInput, lngInput].forEach(el => {
                     el.addEventListener('change', function () {
-                        const lat = parseFloat(latInput.value) || 0;
-                        const lng = parseFloat(lngInput.value) || 0;
+                        const lat = parseCoordinate(latInput.value, defaultLat, -90, 90);
+                        const lng = parseCoordinate(lngInput.value, defaultLng, -180, 180);
                         if (!isNaN(lat) && !isNaN(lng)) {
                             marker.setLatLng([lat, lng]);
                             map.panTo([lat, lng]);
