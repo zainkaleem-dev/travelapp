@@ -870,6 +870,16 @@
         @endif
     </nav>
 
+    @if(request()->routeIs('flights.list'))
+        <div x-cloak x-show="searchOpen" x-transition.opacity x-transition.duration.200ms class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 mt-4 mb-4">
+            <div class="p-3 sm:p-4">
+                <div class="flex flex-col relative">
+                    @livewire('quick-search')
+                </div>
+            </div>
+        </div>
+    @endif
+
     {{-- ── Step bar ── --}}
     <div class="z-40 bg-transparent">
         <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 mt-8 pt-4 pb-12 sm:pb-16">
