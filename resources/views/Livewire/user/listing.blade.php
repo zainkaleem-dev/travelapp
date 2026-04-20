@@ -277,7 +277,7 @@
                                                     </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-6 py-10 text-center text-gray-500">
+                                    <td colspan="4" class="px-6 py-16 text-center align-middle text-gray-500">
                                         No users found for this company.
                                     </td>
                                 </tr>

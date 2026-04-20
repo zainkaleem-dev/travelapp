@@ -34,7 +34,7 @@
                         <div class="md:col-span-2">
                             <label class="field-label">Branch Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.live.debounce.500ms="name" class="input-field"
-                                placeholder="Dubai Main Office">
+                                placeholder="City Main Office">
                             @error('name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
@@ -42,7 +42,7 @@
                         <div>
                             <label class="field-label">Slug / URL <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="slug" class="input-field font-mono"
-                                placeholder="dubai-office">
+                                placeholder="City-office">
                             @error('slug') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
@@ -197,13 +197,13 @@
 
                         <div>
                             <label class="field-label">City <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="city" class="input-field" placeholder="Dubai">
+                            <input type="text" wire:model="city" class="input-field" placeholder="City">
                             @error('city') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
                         <div>
                             <label class="field-label">State / Province <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="state" class="input-field" placeholder="Dubai">
+                            <input type="text" wire:model="state" class="input-field" placeholder="City">
                             @error('state') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                         </div>
@@ -217,7 +217,7 @@
                         <div>
                             <label class="field-label">Country <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="country" class="input-field"
-                                placeholder="United Arab Emirates">
+                                placeholder="Country">
                             @error('country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror

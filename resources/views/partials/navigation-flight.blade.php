@@ -1,10 +1,22 @@
+@php
+    $tripPurposeKey = null;
+    $tripPurposeLabel = '--';
+
+    if (auth()->check()) {
+        $tripPurposeKey = \App\Models\UserSetting::query()
+            ->where('user_id', auth()->id())
+            ->value('trip_type');
+        $tripPurposeLabel = \App\Models\UserSetting::tripTypeLabel($tripPurposeKey) ?? '--';
+    }
+@endphp
+
 {{-- ── Trip Type Bar (flight search only, read-only) ── --}}
 <div class="max-w-[960px] mx-auto">
     <div class="flex items-center gap-3 bg-white border border-b border-gray-200 rounded-t-xl px-4 py-2.5">
         <div
             class="inline-flex max-w-full items-center gap-2 rounded-xl border border-[#2ab4c0]/45 bg-[#eaf9fb] px-3 py-1.5 shadow-[0_2px_10px_rgba(42,180,192,0.18)] ring-1 ring-[#2ab4c0]/15">
             <span class="text-[10px] font-bold uppercase tracking-wider text-[#4b5563]">Trip purpose</span>
-            <span class="text-xs font-semibold text-[#1f9aa6]">sasa</span>
+            <span class="text-xs font-semibold text-[#1f9aa6]">{{ $tripPurposeLabel }}</span>
         </div>
     </div>
 </div>
