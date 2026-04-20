@@ -40,7 +40,7 @@
                     class="flex items-center md:space-y-0 space-y-4 md:space-x-4 space-x-0 md:flex-row flex-col justify-between mb-3">
 
                     {{-- Departure --}}
-                    <div class="flex-1 min-w-0">
+                    <div class="w-full md:flex-1 md:min-w-0">
                         <div class="field-wrap has-icon-right {{ $returnDep ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">From</span>
@@ -115,7 +115,7 @@
                         </svg>
                     </button>
                     {{-- Arrival --}}
-                    <div class="flex-1 min-w-0">
+                    <div class="w-full md:flex-1 md:min-w-0">
                         <div class="field-wrap has-icon-right {{ $returnArr ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">To</span>
@@ -181,7 +181,7 @@
                     {{-- Date range --}}
                     <div wire:key="return-date-range-picker-{{ $returnDepDate ?: 'empty' }}-{{ $returnRetDate ?: 'empty' }}-{{ ($errors->has('returnDepDate') || $errors->has('returnRetDate')) ? 'error' : 'ok' }}"
                         x-data="dateRangePicker({ dep: @js($returnDepDate), ret: @js($returnRetDate) })" x-init="init()"
-                        class="flex-1 min-w-0">
+                        class="w-full md:flex-1 md:min-w-0">
                         <div class="field-wrap"
                             style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
                             <div>
@@ -849,7 +849,7 @@
                     class="flex items-center md:space-y-0 space-y-4 md:space-x-4 space-x-0 md:flex-row flex-col justify-between mb-3">
 
                     {{-- Departure --}}
-                    <div class="flex-1 min-w-0">
+                    <div class="w-full md:flex-1 md:min-w-0">
                         <div class="field-wrap has-icon-right {{ $returnDep ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">From</span>
@@ -924,7 +924,7 @@
                         </svg>
                     </button>
                     {{-- Arrival --}}
-                    <div class="flex-1 min-w-0">
+                    <div class="w-full md:flex-1 md:min-w-0">
                         <div class="field-wrap has-icon-right {{ $returnArr ? 'has-clear' : '' }}"
                             style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                             <span class="field-label">To</span>
@@ -990,7 +990,7 @@
                     {{-- Date range --}}
                     <div wire:key="return-date-range-picker-{{ $returnDepDate ?: 'empty' }}-{{ $returnRetDate ?: 'empty' }}-{{ ($errors->has('returnDepDate') || $errors->has('returnRetDate')) ? 'error' : 'ok' }}"
                         x-data="dateRangePicker({ dep: @js($returnDepDate), ret: @js($returnRetDate) })" x-init="init()"
-                        class="flex-1 min-w-0">
+                        class="w-full md:flex-1 md:min-w-0">
                         <div class="field-wrap"
                             style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
                             <div>
@@ -1668,7 +1668,7 @@
                                 class="flex items-center md:space-y-0 space-y-4 md:space-x-4 space-x-0 md:flex-row flex-col justify-between mb-3">
 
                                 {{-- Departure --}}
-                                <div class="flex-1 min-w-0">
+                                <div class="w-full md:flex-1 md:min-w-0">
                                     <div class="field-wrap has-icon-right {{ $returnDep ? 'has-clear' : '' }}"
                                         style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                                         <span class="field-label">From</span>
@@ -1745,7 +1745,7 @@
                                     </svg>
                                 </button>
                                 {{-- Arrival --}}
-                                <div class="flex-1 min-w-0">
+                                <div class="w-full md:flex-1 md:min-w-0">
                                     <div class="field-wrap has-icon-right {{ $returnArr ? 'has-clear' : '' }}"
                                         style="position:relative;" x-data="{ show: false }" @click.outside="show = false">
                                         <span class="field-label">To</span>
@@ -1813,7 +1813,7 @@
                                 {{-- Date range --}}
                                 <div wire:key="return-date-range-picker-{{ $returnDepDate ?: 'empty' }}-{{ $returnRetDate ?: 'empty' }}-{{ ($errors->has('returnDepDate') || $errors->has('returnRetDate')) ? 'error' : 'ok' }}"
                                     x-data="dateRangePicker({ dep: @js($returnDepDate), ret: @js($returnRetDate) })"
-                                    x-init="init()" class="flex-1 min-w-0">
+                                    x-init="init()" class="w-full md:flex-1 md:min-w-0">
                                     <div class="field-wrap"
                                         style="display:grid; grid-template-columns:1fr auto 1fr; gap:4px; align-items:center;">
                                         <div>
