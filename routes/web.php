@@ -171,7 +171,6 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::middleware(['superadmin'])->group(function () {
-        Route::get('/settings', SuperAdminSettings::class)->name('settings');
         Route::get('/companies', CompanyListing::class)->name('companies.index')->middleware('can:View Company');
         Route::get('/branches', BranchListing::class)->name('branches.index')->middleware('can:View Branch');
         Route::get('/branches/create', BranchCreate::class)->name('branches.create')->middleware('can:Create Branch');
