@@ -3,7 +3,7 @@
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Edit Company</h1>
+                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Edit Organization</h1>
                     <p class="text-sm text-gray-500 mt-1">Refining {{ $company->name }} profile</p>
                 </div>
                 <div class="flex items-center gap-3">
@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <label
-                                        class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">Company
+                                        class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">Organization
                                         logo <span class="text-red-500">*</span></label>
                                     <p class="text-[11px] text-gray-500 mb-2">JPG, PNG or SVG. Max 2MB.</p>
                                     <div class="flex items-center gap-3">
@@ -76,7 +76,7 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="field-label">Company Name <span class="text-red-500">*</span></label>
+                            <label class="field-label">Organization Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.debounce.500ms="company_name" class="input-field"
                                 placeholder="e.g. Acme Travel Services">
                             @error('company_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
@@ -93,7 +93,7 @@
                         </div>
 
                         <div>
-                            <label class="field-label">Company Type <span class="text-red-500">*</span></label>
+                            <label class="field-label">Organization Type <span class="text-red-500">*</span></label>
                             <div class="relative" x-data="{ open: false, selected: @js($company_type ?? '') }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn" @click="open = !open">
@@ -128,7 +128,7 @@
 
                         @can('Manage Global System')
                             <div>
-                                <label class="field-label">Parent Company</label>
+                                <label class="field-label">Parent Organization</label>
                                 <div class="relative"
                                     x-data="{ open: false, selected: @js($parent_id ?? ''), labels: @js($companies->pluck('name', 'id')) }"
                                     @keydown.escape.window="open = false" @click.outside="open = false">
@@ -146,7 +146,7 @@
                                         <button type="button" class="admin-menu-item"
                                             :class="{ 'is-active': selected === '' }"
                                             @click="selected = ''; open = false; $wire.set('parent_id', '')">None (Root
-                                            Company)</button>
+                                            Organization)</button>
                                         @foreach($companies as $comp)
                                             <button type="button" class="admin-menu-item"
                                                 :class="{ 'is-active': selected == '{{ $comp->id }}' }"
@@ -188,9 +188,9 @@
                         </div>
 
                         <div class="md:col-span-3">
-                            <label class="field-label">Company Description</label>
+                            <label class="field-label">Description</label>
                             <textarea wire:model="description" rows="3" class="input-field pt-2"
-                                placeholder="Tell us more about this company..."></textarea>
+                                placeholder="Tell us more about this Organization..."></textarea>
                             @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror

@@ -1,5 +1,8 @@
 <div class="max-w-7xl mx-auto px-3 sm:px-4 flex items-center justify-between">
     <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-xs font-semibold w-full">
+
+        @featureOrAdmin('flights-module')
+
         <a href="{{ route('flights.search') }}"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.search') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -9,6 +12,8 @@
             </svg>
             Book Trip
         </a>
+        @endfeatureOrAdmin
+
         <a href="#"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('flights.list') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -36,6 +41,17 @@
             </svg>
             Travel hub
         </a>
+        @if(auth()->user()->role == 'admin')
+            <a href="{{ route('root') }}"
+                class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('root') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t transition-colors whitespace-nowrap">
+                <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.744c0 5.052 3.823 9.213 8.712 9.637.33.029.662.043.997.043.335 0 .668-.014 1-.043 4.888-.424 8.712-8.585 8.712-9.637 0-1.332-.239-2.607-.678-3.791A11.956 11.956 0 0112 2.714z" />
+                </svg>
+                Admin Console
+            </a>
+        @endif
 
     </div>
 

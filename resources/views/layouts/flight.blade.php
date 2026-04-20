@@ -686,10 +686,15 @@
     {{-- ── Navbar ── --}}
     <nav class="relative z-50 bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between gap-4">
-            <a href="{{ route('flights.search') }}" class="whitespace-nowrap">
+            <a href="{{ route('root') }}" class="flex-shrink-0">
                 <img src="{{ asset('assets/images/travelapp_logo.png') }}" alt="TravelApp logo"
                     class="h-9 w-auto object-contain" />
             </a>
+
+            {{-- Hierarchical Context Switcher --}}
+            {{-- <div class="hidden md:block ml-4">
+                <livewire:common.global-context-switcher />
+            </div> --}}
 
             <div class="flex items-center gap-3">
                 <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">

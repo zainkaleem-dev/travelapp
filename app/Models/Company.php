@@ -49,4 +49,20 @@ class Company extends Model
     {
         return $this->hasMany(Branch::class);
     }
+
+    /**
+     * Recursively fetch all IDs of descendant companies.
+     * 
+     * @return array<int>
+     */
+    public function getAllDescendantIds(): array
+    {
+        $ids = [$this->id];
+
+        foreach ($this->children as $child) {
+            $ids = array_merge($ids, $child->getAllDescendantIds());
+        }
+
+        return array_unique($ids);
+    }
 }

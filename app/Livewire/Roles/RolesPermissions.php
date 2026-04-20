@@ -58,19 +58,30 @@ class RolesPermissions extends Component
 
     public function mount(): void
     {
-        // Use a context-insensitive check: bypass Spatie's current team ID
-        // by looking directly at the model_has_roles table for global entries (company_id = null)
+        $user = auth()->user();
+        if (!$user) return;
+
+        /** @var TenantContext $tenantContext */
+        $tenantContext = app(TenantContext::class);
+
+        // 1. Determine local Super Admin status
         $this->isSuperAdmin = \Illuminate\Support\Facades\DB::table('model_has_roles')
             ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-            ->where('model_has_roles.model_id', auth()->id())
-            ->where('model_has_roles.model_type', \App\Models\User::class)
+            ->where('model_has_roles.model_id', $user->id)
+            ->where('model_has_roles.model_type', get_class($user))
             ->where('roles.name', 'Super Admin')
             ->whereNull('model_has_roles.company_id')
             ->exists();
 
-        if ($this->isSuperAdmin) {
-            $this->companies = \App\Models\Company::orderBy('name')->get();
-        }
+        // 2. Fetch manageable companies for the context switcher
+        $manageableIds = $tenantContext->getManageableHierarchy($user);
+        
+        $this->companies = \App\Models\Company::whereIn('id', $manageableIds)
+            ->orderBy('name')
+            ->get();
+
+        // 3. Set initial context from session or default
+        $this->contextCompanyId = session('active_company_id');
 
         $this->setViewMode('roles');
     }

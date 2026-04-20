@@ -3,7 +3,7 @@
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Add Company</h1>
+                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Add Organization</h1>
                 </div>
                 <a href="{{ route('companies.index') }}"
                     class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <label
-                                        class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">Company
+                                        class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">Organization
                                         logo <span class="text-red-500">*</span></label>
                                     <p class="text-[11px] text-gray-500 mb-2">JPG, PNG or SVG. Max 2MB.</p>
                                     <div class="flex items-center gap-3">
@@ -62,17 +62,19 @@
                                         @endif
                                     </div>
                                     @error('company_logo') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                                    {{ $message }}</p> @enderror
+                                        {{ $message }}
+                                    </p> @enderror
                                 </div>
                             </div>
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="field-label">Company Name <span class="text-red-500">*</span></label>
+                            <label class="field-label">Organization Name <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.debounce.500ms="company_name" class="input-field"
                                 placeholder="e.g. Acme Travel Services">
                             @error('company_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
@@ -84,7 +86,7 @@
                         </div>
 
                         <div>
-                            <label class="field-label">Company Type <span class="text-red-500">*</span></label>
+                            <label class="field-label">Organization Type <span class="text-red-500">*</span></label>
                             <div class="relative" x-data="{ open: false, selected: @js($company_type ?? '') }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn" @click="open = !open">
@@ -113,7 +115,8 @@
                                 </div>
                             </div>
                             @error('company_type') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
@@ -121,7 +124,8 @@
                             <input type="text" wire:model="registration_number" class="input-field"
                                 placeholder="e.g. 12345-678">
                             @error('registration_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
@@ -129,7 +133,8 @@
                             <input type="text" wire:model="tax_number" class="input-field"
                                 placeholder="e.g. GB12345678">
                             @error('tax_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div>
@@ -137,15 +142,17 @@
                             <input type="number" wire:model="founded_year" class="input-field" placeholder="e.g. 2010"
                                 min="1900" max="{{ date('Y') }}">
                             @error('founded_year') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
 
                         <div class="md:col-span-3">
-                            <label class="field-label">Company Description</label>
+                            <label class="field-label">Organization Description</label>
                             <textarea wire:model="description" rows="3" class="input-field pt-2"
-                                placeholder="Tell us more about this company..."></textarea>
+                                placeholder="Tell us more about this Organization..."></textarea>
                             @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                            {{ $message }}</p> @enderror
+                                {{ $message }}
+                            </p> @enderror
                         </div>
                     </div>
                 </div>
@@ -196,7 +203,7 @@
                 </button>
                 <button type="submit"
                     class="inline-flex items-center justify-center gap-2 rounded-[0.999rem] bg-[#2ab4c0] px-3 py-2 text-[13px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                    Create Company
+                    Create Organization
                 </button>
             </div>
         </form>

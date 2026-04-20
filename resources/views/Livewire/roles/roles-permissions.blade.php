@@ -21,8 +21,8 @@
                             </button>
                         </div>
 
-                        {{-- Context Selector (Super Admin Only) --}}
-                        @if($isSuperAdmin)
+                        {{-- Context Selector (Visible to Super Admin or any Admin with manageable companies) --}}
+                        @if($isSuperAdmin || count($companies) > 0)
                         <div class="mb-4">
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Company Context</label>
                             <div class="relative" x-data="{ open: false, selected: @js((string) ($contextCompanyId ?? '')), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
@@ -33,7 +33,9 @@
                                     </svg>
                                 </button>
                                 <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('contextCompanyId', '')">Global System</button>
+                                    @if($isSuperAdmin)
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '' }" @click="selected = ''; open = false; $wire.set('contextCompanyId', '')">Global System</button>
+                                    @endif
                                     @foreach($companies as $company)
                                         <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $company->id }}' }" @click="selected = '{{ $company->id }}'; open = false; $wire.set('contextCompanyId', '{{ $company->id }}')">{{ $company->name }}</button>
                                     @endforeach
