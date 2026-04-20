@@ -28,7 +28,15 @@ class ImpersonateController extends Controller
         // Login as the user
         Auth::login($user);
 
-        return redirect()->route('travel.hub')->with('status', "Now impersonating {$user->first_name}");
+        // Set context before redirection check
+        setPermissionsTeamId($user->company_id);
+
+        // Redirect based on role (Align with Login.php)
+        if ($user->hasRole(['Agent', 'User'])) {
+            return redirect()->route('flights.search')->with('status', "Now impersonating {$user->first_name}");
+        }
+
+        return redirect()->route('companies.index')->with('status', "Now impersonating {$user->first_name}");
     }
 
     public function leave()
@@ -42,7 +50,7 @@ class ImpersonateController extends Controller
 
         if ($admin) {
             Auth::login($admin);
-            return redirect()->route('users.index')->with('status', 'Returned to admin session.');
+            return redirect()->route('companies.index')->with('status', 'Returned to admin session.');
         }
 
         return redirect()->route('login');
