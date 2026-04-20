@@ -105,8 +105,9 @@ class UserListing extends Component
             ->when($this->statusFilter, function ($query) {
                 $query->where('status', $this->statusFilter);
             })
-            ->when($companyId > 0, function ($query) use ($companyId) {
-                $query->where('company_id', $companyId);
+            ->when($companyId > 0, function ($query) {
+                // Hierarchical visibility is now handled by CompanyScope
+                $query->where('users.company_id', '>', 0);
             })
             ->orderBy($this->sortBy, $this->sortDirection);
 

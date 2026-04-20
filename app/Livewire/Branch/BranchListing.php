@@ -83,8 +83,10 @@ class BranchListing extends Component
 
         $query = Branch::query()
             ->with('company')
+            ->leftJoin('companies', 'branches.company_id', '=', 'companies.id')
             ->when($companyId, function ($query) use ($companyId) {
-                $query->where('branches.company_id', $companyId);
+                // Hierarchical visibility is now handled by CompanyScope
+                $query->where('branches.company_id', '>', 0);
             })
             ->when($this->search !== '', function ($query) {
                 $search = $this->search;
@@ -103,7 +105,6 @@ class BranchListing extends Component
             ->when($this->statusFilter, function ($query) {
                 $query->where('branches.status', $this->statusFilter);
             })
-            ->leftJoin('companies', 'branches.company_id', '=', 'companies.id')
             ->select('branches.*')
             ->orderBy($this->sortBy === 'company' ? 'companies.name' : 'branches.' . $this->sortBy, $this->sortDirection);
 
@@ -111,7 +112,13 @@ class BranchListing extends Component
 
         return view('livewire.branch.listing', [
             'branches' => $branches,
-            'companies' => Company::orderBy('name')->get(['id', 'name']),
+            'companies' => Company::query()
+                ->when($companyId, function ($query) use ($companyId) {
+                    $query->where('id', $companyId)
+                        ->orWhere('parent_id', $companyId);
+                })
+                ->orderBy('name')
+                ->get(['id', 'name']),
             'paginationMeta' => $paginationService->getPaginationMeta($branches),
         ]);
     }

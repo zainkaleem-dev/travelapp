@@ -142,7 +142,8 @@ class BranchCreate extends Component
         return view('livewire.branch.create', [
             'companies' => Company::query()
                 ->when($companyId, function ($query) use ($companyId) {
-                    $query->where('id', $companyId);
+                    $query->where('id', $companyId)
+                          ->orWhere('parent_id', $companyId);
                 })
                 ->orderBy('name')
                 ->get(),

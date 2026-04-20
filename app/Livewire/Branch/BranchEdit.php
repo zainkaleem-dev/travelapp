@@ -163,7 +163,8 @@ class BranchEdit extends Component
         return view('livewire.branch.edit', [
             'companies' => Company::query()
                 ->when($companyId, function ($query) use ($companyId) {
-                    $query->where('id', $companyId);
+                    $query->where('id', $companyId)
+                          ->orWhere('parent_id', $companyId);
                 })
                 ->orderBy('name')
                 ->get(),

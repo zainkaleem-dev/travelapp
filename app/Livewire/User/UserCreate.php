@@ -35,6 +35,10 @@ class UserCreate extends Component
             $this->companies = Company::orderBy('name')->get();
         } else {
             $this->company_id = $tenantContext->companyId();
+            $this->companies = Company::where('id', $this->company_id)
+                ->orWhere('parent_id', $this->company_id)
+                ->orderBy('name')
+                ->get();
             $this->updatedCompanyId();
         }
 

@@ -46,7 +46,15 @@ class CompanyScope implements Scope
                 return;
             }
 
-            $builder->where($model->getTable() . '.company_id', $companyId);
+            $builder->where(function ($query) use ($model, $companyId) {
+                $query->where($model->getTable() . '.company_id', $companyId)
+                    ->orWhereExists(function ($subQuery) use ($companyId, $model) {
+                        $subQuery->select(\Illuminate\Support\Facades\DB::raw(1))
+                            ->from('companies')
+                            ->whereColumn('companies.id', $model->getTable() . '.company_id')
+                            ->where('companies.parent_id', $companyId);
+                    });
+            });
         } finally {
             static::$isResolving = false;
         }
