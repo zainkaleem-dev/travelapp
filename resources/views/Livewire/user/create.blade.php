@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        @role('Super Admin')
+                        @if(count($companies) > 0)
                         <div>
                             <label class="field-label">Select Company <span class="text-red-500">*</span></label>
                             <div class="relative"
@@ -53,9 +53,9 @@
                                 {{ $message }}
                             </p> @enderror
                         </div>
-                        @endrole
+                        @endif
 
-                        <div @unless(auth()->user()->hasRole('Super Admin')) class="col-span-2" @endunless>
+                        <div @if(count($companies) <= 1) class="col-span-2" @endif>
                             <label class="field-label">Select Branch <span class="text-red-500">*</span></label>
                             <div wire:key="create-branch-dropdown-{{ $company_id ?? 'none' }}-{{ count($branches) }}"
                                 class="relative"
