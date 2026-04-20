@@ -661,6 +661,23 @@
 </head>
 
 <body x-data="{ searchOpen: false }">
+    @if(session()->has('impersonated_by'))
+        <div class="bg-indigo-600 px-4 py-2 text-white shadow-sm sticky top-0 z-[1000]">
+            <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span class="text-[13px] font-semibold leading-tight">
+                        You are currently impersonating <span class="underline decoration-indigo-300 decoration-2 underline-offset-2">{{ auth()->user()->display_name }}</span>
+                    </span>
+                </div>
+                <a href="{{ route('impersonate.leave') }}" class="flex-shrink-0 rounded-lg bg-white/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50">
+                    Return to Admin
+                </a>
+            </div>
+        </div>
+    @endif
 
     @php 
         $user = auth()->user();

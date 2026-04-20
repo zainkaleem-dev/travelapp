@@ -188,6 +188,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/impersonate/take/{user}', [\App\Http\Controllers\ImpersonateController::class, 'take'])->name('impersonate.take');
     });
 
+    Route::get('/impersonate/leave', [\App\Http\Controllers\ImpersonateController::class, 'leave'])->name('impersonate.leave');
+
 
 
 
