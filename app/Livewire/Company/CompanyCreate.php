@@ -3,6 +3,7 @@
 namespace App\Livewire\Company;
 
 use App\Models\Company;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -33,6 +34,8 @@ class CompanyCreate extends Component
         if (empty($this->slug)) {
             $this->slug = str($value)->slug()->toString();
         }
+
+        $this->registration_number = $this->generateRegistrationNumber($value);
     }
 
     protected function rules(): array
@@ -42,7 +45,7 @@ class CompanyCreate extends Component
             'company_logo' => ['required', 'image', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
             'slug' => ['required', 'string', 'max:255', 'unique:companies,slug', 'alpha_dash'],
             'company_type' => ['required', Rule::in(['TMC', 'Corporate'])],
-            'registration_number' => ['required', 'string', 'max:50'],
+            'registration_number' => ['required', 'string', 'max:50', 'unique:companies,registration_number'],
             'founded_year' => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
             'status' => ['required', Rule::in(['active', 'inactive'])],
 
@@ -123,5 +126,23 @@ class CompanyCreate extends Component
     public function render()
     {
         return view('livewire.company.create');
+    }
+
+    private function generateRegistrationNumber(?string $companyName): string
+    {
+        $base = Str::of((string) $companyName)->trim()->slug('-')->toString();
+        if ($base === '') {
+            $base = 'organization';
+        }
+
+        // Keep room for hyphen + 4 digits (max:50).
+        $base = Str::limit($base, 45, '');
+
+        do {
+            $suffix = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+            $candidate = "{$base}-{$suffix}";
+        } while (Company::where('registration_number', $candidate)->exists());
+
+        return $candidate;
     }
 }
