@@ -45,16 +45,25 @@ class BranchEdit extends Component
 
     public function mount(int $id, \App\Support\TenantContext $tenantContext): void
     {
-
-
         $this->branchId = $id;
-        $companyId = $tenantContext->companyId();
 
+        // 1. Resolve hierarchy for current admin
+        $currentUser = auth()->user();
+        $isSuperAdmin = $currentUser->hasRole('Super Admin');
+        $manageableHierarchy = $tenantContext->getManageableHierarchy($currentUser);
+
+        // 2. Resolve the branch WITHOUT restrictive global scopes for existence check
+        // while maintaining security via explicit hierarchy validation.
         $this->branch = Branch::query()
-            ->when($companyId, function ($query) use ($companyId) {
-                $query->where('company_id', $companyId);
-            })
+            ->withoutGlobalScopes()
             ->findOrFail($id);
+
+        // 3. Security Check: Ensure the target branch is within the admin's management hierarchy
+        if (!$isSuperAdmin) {
+            if (!in_array($this->branch->company_id, $manageableHierarchy)) {
+                abort(403, 'You do not have permission to edit this branch (Cross-tenant access denied).');
+            }
+        }
 
         $this->name = $this->branch->name;
         $this->code = $this->branch->code;
@@ -164,7 +173,7 @@ class BranchEdit extends Component
             'companies' => Company::query()
                 ->when($companyId, function ($query) use ($companyId) {
                     $query->where('id', $companyId)
-                          ->orWhere('parent_id', $companyId);
+                        ->orWhere('parent_id', $companyId);
                 })
                 ->orderBy('name')
                 ->get(),

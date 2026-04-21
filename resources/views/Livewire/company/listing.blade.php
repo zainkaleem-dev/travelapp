@@ -19,7 +19,7 @@
                         @can('Create Company')
                             <a href="{{ route('companies.create') }}"
                                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                                Add Company
+                                Add Organization
                             </a>
                         @endcan
                     </div>
@@ -284,12 +284,10 @@
                                                 </a>
                                             @endcan
                                             <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
-                                                data-action="toggleActive"
-                                                data-args='[{{ $company->id }}]'
+                                                data-action="toggleActive" data-args='[{{ $company->id }}]'
                                                 data-confirm-title="Change company status?"
                                                 data-confirm-text="Are you sure you want to change the active status of this company?"
-                                                data-confirm-button-text="Yes, change it"
-                                                data-done-title="Updated!"
+                                                data-confirm-button-text="Yes, change it" data-done-title="Updated!"
                                                 data-done-text="Company status has been updated."
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                 title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
@@ -307,12 +305,10 @@
                                             </button>
                                             @can('Delete Company')
                                                 <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
-                                                    data-action="deleteCompany"
-                                                    data-args='[{{ $company->id }}]'
+                                                    data-action="deleteCompany" data-args='[{{ $company->id }}]'
                                                     data-confirm-title="Are you sure?"
                                                     data-confirm-text="This will delete the company and its related data."
-                                                    data-confirm-button-text="Yes, delete it"
-                                                    data-done-title="Deleted!"
+                                                    data-confirm-button-text="Yes, delete it" data-done-title="Deleted!"
                                                     data-done-text="Company has been deleted."
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete Company">
@@ -356,7 +352,7 @@
 
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                                     <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
-                                                                                                                                                                                                                                                                                                                                                                 {{ $page === $paginationMeta['current_page']
+                                                                                                                                                                                                                                                                                                                                                                                                                                         {{ $page === $paginationMeta['current_page']
                                         ? 'bg-[#2ab4c0] text-white'
                                         : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
                                                         {{ $page }}

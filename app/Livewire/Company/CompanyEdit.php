@@ -37,12 +37,26 @@ class CompanyEdit extends Component
     public function mount(int $id): void
     {
         $this->companyId = $id;
+
+        // 1. Resolve hierarchy for current admin
+        $currentUser = auth()->user();
+        $isSuperAdmin = $currentUser->hasRole('Super Admin');
+        /** @var \App\Support\TenantContext $tenantContext */
+        $tenantContext = app(\App\Support\TenantContext::class);
+        $manageableHierarchy = $tenantContext->getManageableHierarchy($currentUser);
+
+        // 2. Resolve the company WITHOUT restrictive global scopes for existence check
+        // while maintaining security via explicit hierarchy validation.
         $this->company = Company::query()
-            ->when(!auth()->user()->can('Manage Global System'), function ($query) {
-                // Organization Admin can only find/edit their own company
-                $query->where('id', auth()->user()->company_id);
-            })
+            ->withoutGlobalScopes()
             ->findOrFail($id);
+
+        // 3. Security Check: Ensure the target company is within the admin's management hierarchy
+        if (!$isSuperAdmin) {
+            if (!in_array($this->company->id, $manageableHierarchy)) {
+                abort(403, 'You do not have permission to edit this organization (Access denied).');
+            }
+        }
 
         $this->company_name = $this->company->name;
         $this->slug = $this->company->slug;

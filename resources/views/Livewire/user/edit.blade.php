@@ -28,11 +28,15 @@
                         <div>
                             <label class="field-label">Select Company <span class="text-red-500">*</span></label>
                             <div class="relative"
-                                x-data="{ open: false, selected: @entangle('company_id').live, labels: @js($companies->pluck('name', 'id')) }"
+                                x-data="{ 
+                                    open: false, 
+                                    selected: @entangle('company_id').live, 
+                                    labels: @js($companies->pluck('name', 'id')->toArray()) 
+                                }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
                                     <span
-                                        x-text="!selected ? '-- Choose Company --' : (labels[selected] ?? '-- Choose Company --')"></span>
+                                        x-text="!selected ? '-- Choose Company --' : (labels[String(selected)] ?? '-- Choose Company --')"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
                                         :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -46,7 +50,7 @@
                                     @foreach($companies as $company)
                                         <button type="button" class="admin-menu-item"
                                             :class="{ 'is-active': String(selected) === '{{ $company->id }}' }"
-                                            @click="selected = '{{ $company->id }}'; open = false">{{ $company->name }}</button>
+                                            @click="selected = {{ $company->id }}; open = false">{{ $company->name }}</button>
                                     @endforeach
                                 </div>
                             </div>

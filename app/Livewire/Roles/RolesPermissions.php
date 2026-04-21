@@ -76,7 +76,11 @@ class RolesPermissions extends Component
         // 2. Fetch manageable companies for the context switcher
         $manageableIds = $tenantContext->getManageableHierarchy($user);
         
+        // Exclude own company for non-Super Admins
         $this->companies = \App\Models\Company::whereIn('id', $manageableIds)
+            ->when(!$this->isSuperAdmin, function ($q) use ($user) {
+                $q->where('id', '!=', $user->company_id);
+            })
             ->orderBy('name')
             ->get();
 
@@ -149,7 +153,13 @@ class RolesPermissions extends Component
     public function getSidebarRolesProperty()
     {
         $tenantContext = app(\App\Support\TenantContext::class);
-        $companyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : $tenantContext->companyId();
+        $companyId = $this->getNormalizedCompanyId();
+
+        // If not super admin and no context selected, default to their own company
+        // However, the UI now filters out their own company from context selection
+        if (!$this->isSuperAdmin && $companyId === null) {
+            $companyId = $tenantContext->companyId();
+        }
 
         // Ensure Spatie context is aligned with our filter
         setPermissionsTeamId($companyId);
@@ -172,7 +182,11 @@ class RolesPermissions extends Component
     public function getSidebarUsersProperty()
     {
         $tenantContext = app(\App\Support\TenantContext::class);
-        $companyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : $tenantContext->companyId();
+        $companyId = $this->getNormalizedCompanyId();
+
+        if (!$this->isSuperAdmin && $companyId === null) {
+            $companyId = $tenantContext->companyId();
+        }
 
         // Ensure Spatie context is aligned with our filter
         setPermissionsTeamId($companyId);
@@ -253,10 +267,6 @@ class RolesPermissions extends Component
         $contextCompanyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : app(\App\Support\TenantContext::class)->companyId();
 
         return Permission::query()
-            ->when($selectedRole && $selectedRole->name === 'Super Admin' && $selectedRole->company_id === null, function ($query) {
-                // For the Super Admin role, only show the "Manage Global System" permission
-                $query->where('name', 'Manage Global System');
-            })
             ->when(($selectedRole && $selectedRole->company_id !== null) || $contextCompanyId !== null || !$this->isSuperAdmin, function ($query) {
                 // NEVER show the "Manage Global System" permission in a company context/role
                 // or to non-super admins. It is strictly for Global context roles.
@@ -379,9 +389,7 @@ class RolesPermissions extends Component
         if ($role->hasPermissionTo($permissionName)) {
             $role->revokePermissionTo($permissionName);
         } else {
-            // Explicitly attach with company_id pivot data to ensure isolation
-            $permission = Permission::findByName($permissionName);
-            $role->permissions()->attach($permission->id, ['company_id' => $role->company_id]);
+            $role->givePermissionTo($permissionName);
         }
 
         // FORCE RELOAD: Ensure the next render gets the actual database state
@@ -447,29 +455,12 @@ class RolesPermissions extends Component
             return;
         }
 
-        // Check assignment by ID directly via pivot table
-        $isAssigned = \Illuminate\Support\Facades\DB::table('model_has_roles')
-            ->where('role_id', $role->id)
-            ->where('model_id', $user->id)
-            ->where('model_type', \App\Models\User::class)
-            ->where('company_id', $teamId)
-            ->exists();
-
-        if ($isAssigned) {
-            \Illuminate\Support\Facades\DB::table('model_has_roles')
-                ->where('role_id', $role->id)
-                ->where('model_id', $user->id)
-                ->where('model_type', \App\Models\User::class)
-                ->where('company_id', $teamId)
-                ->delete();
+        // Use Spatie's native methods which respect setPermissionsTeamId
+        if ($user->hasRole($role)) {
+            $user->removeRole($role);
             session()->flash('status', "Role '{$role->name}' removed from user.");
         } else {
-            \Illuminate\Support\Facades\DB::table('model_has_roles')->insert([
-                'role_id' => $role->id,
-                'model_id' => $user->id,
-                'model_type' => \App\Models\User::class,
-                'company_id' => $teamId,
-            ]);
+            $user->assignRole($role);
             session()->flash('status', "Role '{$role->name}' assigned to user.");
         }
 
@@ -501,24 +492,7 @@ class RolesPermissions extends Component
         session()->flash('status', "Role '{$roleName}' status is now {$statusText}.");
     }
 
-    public function deleteRole($id)
-    {
-        $role = \App\Models\Role::find($id);
-        if (!$role)
-            return;
 
-        $protectedRoles = ['Super Admin', 'Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
-        if (in_array($role->name, $protectedRoles)) {
-            session()->flash('error', "Cannot delete system-protected role '{$role->name}'.");
-            return;
-        }
-
-        $role->delete();
-        if ($this->selectedRoleId == $id) {
-            $this->selectedRoleId = null;
-        }
-        session()->flash('status', 'Role deleted successfully.');
-    }
 
     public function render()
     {

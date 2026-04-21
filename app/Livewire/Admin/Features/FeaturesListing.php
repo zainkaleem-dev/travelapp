@@ -175,6 +175,7 @@ class FeaturesListing extends Component
         
         // Fetch companies for the sidebar 
         $sidebarCompanies = Company::query()
+            ->where('id', '!=', auth()->user()->company_id)
             ->when($isCompanyContext, function ($q) use ($tenantContext) {
                 $q->where('id', $tenantContext->companyId());
             })

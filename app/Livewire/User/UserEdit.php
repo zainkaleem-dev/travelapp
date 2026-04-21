@@ -35,12 +35,29 @@ class UserEdit extends Component
         $companyId = $tenantContext->companyId();
 
         $this->userId = $id;
+
+        // 1. Resolve hierarchy for current admin
+        $currentUser = auth()->user();
+        $isSuperAdmin = $currentUser->hasRole('Super Admin');
+        $manageableHierarchy = $tenantContext->getManageableHierarchy($currentUser);
+
+        // 2. Resolve the user WITHOUT restrictive global scopes for existence check
+        // while maintaining security via explicit hierarchy validation.
         $this->user = User::query()
-            ->withoutRole('Super Admin')
-            ->when($companyId, function ($query) use ($companyId) {
-                $query->where('company_id', $companyId);
-            })
+            ->withoutGlobalScopes()
             ->findOrFail($id);
+
+        // 3. Security Check: Prevent editing Super Admins unless you are one
+        if ($this->user->hasRole('Super Admin') && !$isSuperAdmin) {
+            abort(403, 'You are not authorized to edit a Super Admin account.');
+        }
+
+        // 4. Security Check: Ensure the target user is within the admin's management hierarchy
+        if (!$isSuperAdmin) {
+            if (!in_array($this->user->company_id, $manageableHierarchy)) {
+                abort(403, 'You do not have permission to edit this user (Cross-tenant access denied).');
+            }
+        }
 
         $this->first_name = (string) ($this->user->first_name ?? '');
         $this->middle_name = (string) ($this->user->middle_name ?? '');
@@ -50,13 +67,14 @@ class UserEdit extends Component
         $currentUser = auth()->user();
         $isSuperAdmin = $currentUser->hasRole('Super Admin');
 
+        $this->company_id = $this->user->company_id;
+
         if ($isSuperAdmin) {
             $this->companies = Company::orderBy('name')->get();
-            $this->company_id = $this->user->company_id;
         } else {
-            $this->company_id = $tenantContext->companyId();
-            $this->companies = Company::where('id', $this->company_id)
-                ->orWhere('parent_id', $this->company_id)
+            $myCompanyId = $tenantContext->companyId();
+            $this->companies = Company::where('id', $myCompanyId)
+                ->orWhere('parent_id', $myCompanyId)
                 ->orderBy('name')
                 ->get();
         }
