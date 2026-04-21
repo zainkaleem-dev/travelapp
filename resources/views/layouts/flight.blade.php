@@ -679,13 +679,20 @@
         </div>
     @endif
 
-    @php 
+    @php
         $user = auth()->user();
         $isAdmin = $user && $user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin');
-    @endphp 
+        $isAdminRoute = request()->routeIs([
+            'companies.*',
+            'branches.*',
+            'users.*',
+            'roles.*',
+            'features*'
+        ]);
+    @endphp
     {{-- ── Navbar ── --}}
     <nav class="relative z-50 bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between gap-4">
+        <div class="{{ $isAdminRoute ? 'w-full px-3 sm:px-4 lg:px-6 py-3' : 'max-w-7xl mx-auto px-3 sm:px-4 py-3' }} flex items-center justify-between gap-4">
             <a href="{{ route('root') }}" class="flex-shrink-0">
                 <img src="{{ asset('assets/images/travelapp_logo.png') }}" alt="TravelApp logo"
                     class="h-9 w-auto object-contain" />
@@ -857,16 +864,8 @@
         </div>
         
         
-        @if(!request()->routeIs([
-            'companies.*',
-            'branches.*',
-            'users.*',
-            'roles.*',
-            'features*'
-        ]))           
-        
+        @if(!$isAdminRoute)
             @include('partials.navigation-user')
-
         @endif
     </nav>
 
@@ -880,37 +879,27 @@
         </div>
     @endif
 
-    {{-- ── Step bar ── --}}
-    <div class="z-40 bg-transparent">
-        <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 mt-8 pt-4 pb-12 sm:pb-16">
-            @if(request()->routeIs('flights.search'))
-                @include('partials.navigation-flight')
-            @endif
-
-
-        <div class="p-3 sm:p-4">
-            <div class="flex flex-col relative">
-
-                @include('partials.form-wizard')
-                @if(request()->routeIs([
-                    'companies.*',
-                    'branches.*',
-                    'users.*',
-                    'roles.*',
-                    'features*'
-                ]))
-                    @include("partials.navigation-admin")
-                @else
-                    {{ $slot }}
+    @if($isAdminRoute)
+        <div class="w-full">
+            @include('partials.navigation-admin')
+        </div>
+    @else
+        {{-- ── Step bar ── --}}
+        <div class="z-40 bg-transparent">
+            <div class="max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 mt-8 pt-4 pb-12 sm:pb-16">
+                @if(request()->routeIs('flights.search'))
+                    @include('partials.navigation-flight')
                 @endif
 
+                <div class="p-3 sm:p-4">
+                    <div class="flex flex-col relative">
+                        @include('partials.form-wizard')
+                        {{ $slot }}
+                    </div>
+                </div>
             </div>
         </div>
-            
-            
-
-        </div>
-    </div>
+    @endif
     </div>
 
 		    <script>
