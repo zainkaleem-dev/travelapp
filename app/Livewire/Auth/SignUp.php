@@ -56,6 +56,7 @@ class SignUp extends Component
             'last_name' => $this->last_name,
             'email' => $this->email,
             'password' => bcrypt($this->password),
+            'has_set_password' => true,
         ]);
 
         // Keep user_personal_infos in sync for newly created accounts.

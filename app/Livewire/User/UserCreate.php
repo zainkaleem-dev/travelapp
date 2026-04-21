@@ -6,6 +6,8 @@ use App\Models\Branch;
 use App\Models\Company;
 use App\Models\User;
 use App\Support\TenantContext;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -105,6 +107,7 @@ class UserCreate extends Component
         }
 
         $validated = $this->validate();
+        $plainPassword = $validated['password'];
 
         $user = User::query()->create([
             'first_name' => $validated['first_name'],
@@ -114,8 +117,15 @@ class UserCreate extends Component
             'password' => Hash::make($validated['password']),
             'company_id' => $this->company_id,
             'branch_id' => $validated['branch_id'],
-            'email_verified_at' => now(),
+            'email_verified_at' => null,
+            'has_set_password' => false,
         ]);
+
+        Cache::put(
+            "pending_user_password:{$user->id}",
+            Crypt::encryptString($plainPassword),
+            now()->addDays(7)
+        );
 
         if ($this->company_id) {
             setPermissionsTeamId($this->company_id);

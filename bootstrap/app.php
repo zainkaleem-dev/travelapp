@@ -27,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'user.access' => \App\Http\Middleware\EnsureUser::class,
             'anyadmin' => \App\Http\Middleware\EnsureAnyAdmin::class,
             'feature.access' => \App\Http\Middleware\EnsureFeatureEnabled::class,
+            'password.set' => \App\Http\Middleware\EnsurePasswordIsSet::class,
         ]); 
     }) 
     ->withExceptions(function (Exceptions $exceptions) {

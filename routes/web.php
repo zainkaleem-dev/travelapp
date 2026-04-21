@@ -13,6 +13,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\SignUp;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Auth\PasswordSetup;
 use App\Livewire\Profile\Profile;
 use App\Livewire\Settings\Setting;
 use App\Livewire\Hotel\Hotel;
@@ -75,6 +76,9 @@ Route::get('/trip-type/{type}', function (Request $request, string $type) {
 Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();
+        if (!$user->has_set_password && !$user->hasRole('Super Admin')) {
+            return redirect()->route('password.setup');
+        }
         // 1. Global Super Admin landing
         if ($user->can('Manage Global System')) {
             return redirect()->route('companies.index');
@@ -158,6 +162,10 @@ Route::get('/auth/facebook', fn() => 'Facebook OAuth redirect')->name('auth.face
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/password-setup', PasswordSetup::class)->name('password.setup');
+});
+
+Route::middleware(['auth', 'password.set'])->group(function () {
     Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile');
 

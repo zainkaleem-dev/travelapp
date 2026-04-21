@@ -81,6 +81,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'status',
+        'has_set_password',
     ];
 
     public function getDisplayNameAttribute(): string
@@ -112,6 +113,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'has_set_password' => 'boolean',
         ];
     }
 

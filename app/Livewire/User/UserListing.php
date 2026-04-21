@@ -3,8 +3,11 @@
 namespace App\Livewire\User;
 
 use App\Models\User;
+use App\Notifications\UserAccountVerifiedNotification;
 use App\Services\PaginationService;
 use App\Support\TenantContext;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -70,7 +73,17 @@ class UserListing extends Component
             ->withoutRole('Super Admin')
             ->findOrFail($userId);
 
+        $encryptedPassword = Cache::get("pending_user_password:{$user->id}");
+        if (!$encryptedPassword) {
+            session()->flash('error', "Credentials for '{$user->display_name}' are unavailable. Recreate the user or reset password first.");
+            return;
+        }
+
+        $plainPassword = Crypt::decryptString($encryptedPassword);
+
         $user->markEmailAsVerified();
+        $user->notifyNow(new UserAccountVerifiedNotification($user->email, $plainPassword));
+        Cache::forget("pending_user_password:{$user->id}");
         session()->flash('status', "User '{$user->display_name}' verified successfully.");
     }
 

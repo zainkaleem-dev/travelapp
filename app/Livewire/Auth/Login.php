@@ -86,6 +86,11 @@ class Login extends Component
         Auth::login($user, $this->remember);
         request()->session()->regenerate();
 
+        if (!$user->has_set_password && !$user->hasRole('Super Admin')) {
+            $this->redirect(route('password.setup'));
+            return;
+        }
+
         // Set the multi-tenant context before checking roles for redirection
         setPermissionsTeamId($user->company_id);
 
