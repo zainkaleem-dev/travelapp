@@ -91,7 +91,7 @@
                                 @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
                                     <span
-                                        x-text="selected === '' ? 'Select type...' : (selected === 'TMC' ? 'TMC (Travel Management)' : 'Corporate Client')"></span>
+                                        x-text="selected === '' ? 'Select type...' : (selected === 'TMC' ? 'TMC' : 'Corporate')"></span>
                                     <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
                                         :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -106,12 +106,10 @@
                                         type...</button>
                                     <button type="button" class="admin-menu-item"
                                         :class="{ 'is-active': selected === 'TMC' }"
-                                        @click="selected = 'TMC'; open = false; $wire.set('company_type', 'TMC')">TMC
-                                        (Travel Management)</button>
+                                        @click="selected = 'TMC'; open = false; $wire.set('company_type', 'TMC')">TMC</button>
                                     <button type="button" class="admin-menu-item"
                                         :class="{ 'is-active': selected === 'Corporate' }"
-                                        @click="selected = 'Corporate'; open = false; $wire.set('company_type', 'Corporate')">Corporate
-                                        Client</button>
+                                        @click="selected = 'Corporate'; open = false; $wire.set('company_type', 'Corporate')">Corporate</button>
                                 </div>
                             </div>
                             @error('company_type') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
