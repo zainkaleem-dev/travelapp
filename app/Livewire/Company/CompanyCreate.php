@@ -3,6 +3,7 @@
 namespace App\Livewire\Company;
 
 use App\Models\Company;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -21,6 +22,7 @@ class CompanyCreate extends Component
     public ?string $legal_name = null;
     public ?string $registration_number = null;
     public $company_logo = null;
+    public array $attachments = [];
     public ?int $founded_year = null;
     public ?string $description = null;
 
@@ -42,6 +44,8 @@ class CompanyCreate extends Component
         return [
             'company_name' => ['required', 'string', 'max:255', 'min:3'],
             'company_logo' => ['required', 'image', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
+            'attachments' => ['nullable', 'array'],
+            'attachments.*' => ['file', 'max:2048'],
             'slug' => ['required', 'string', 'max:255', 'unique:companies,slug', 'alpha_dash'],
             'company_type' => ['required', Rule::in(['TMC', 'Corporate'])],
             'registration_number' => ['required', 'string', 'max:50', 'unique:companies,registration_number'],
@@ -100,7 +104,7 @@ class CompanyCreate extends Component
             $logoPath = $this->company_logo->storePublicly('company-logos', 'public');
         }
 
-        Company::query()->create([
+        $company = Company::query()->create([
             'name' => $validated['company_name'],
             'slug' => $validated['slug'],
             'company_type' => $validated['company_type'],
@@ -115,6 +119,33 @@ class CompanyCreate extends Component
                 'logo_path' => $logoPath,
             ],
         ]);
+
+        if ($this->company_logo instanceof UploadedFile && $logoPath) {
+            $company->attachments()->create([
+                'disk' => 'public',
+                'path' => $logoPath,
+                'original_name' => $this->company_logo->getClientOriginalName(),
+                'mime_type' => $this->company_logo->getClientMimeType(),
+                'size' => $this->company_logo->getSize(),
+                'uploaded_by' => auth()->id(),
+            ]);
+        }
+
+        foreach ($this->attachments as $attachment) {
+            if (!$attachment instanceof UploadedFile) {
+                continue;
+            }
+
+            $path = $attachment->storePublicly('company-attachments', 'public');
+            $company->attachments()->create([
+                'disk' => 'public',
+                'path' => $path,
+                'original_name' => $attachment->getClientOriginalName(),
+                'mime_type' => $attachment->getClientMimeType(),
+                'size' => $attachment->getSize(),
+                'uploaded_by' => auth()->id(),
+            ]);
+        }
 
         session()->flash('status', 'Company created successfully.');
         return $this->redirect(route('companies.index'));

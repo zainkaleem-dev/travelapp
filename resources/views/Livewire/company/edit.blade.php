@@ -184,6 +184,52 @@
                                 {{ $message }}
                             </p> @enderror
                         </div>
+
+                        <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="field-label">Add Attachment</label>
+                                <input type="file" wire:model="attachments" class="input-field !pl-3" multiple>
+                                <p class="mt-1 text-[11px] text-gray-500">Maximum file size: 2MB each.</p>
+                                @error('attachments') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
+                                </p> @enderror
+                                @error('attachments.*') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
+                                </p> @enderror
+                            </div>
+
+                            <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <label class="field-label">Uploaded Files</label>
+                                <button type="button" class="input-field flex items-center justify-between text-left !pl-3" @click="open = !open">
+                                    <span>{{ $uploadedAttachments->count() }} file(s) uploaded</span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel max-h-64 overflow-y-auto">
+                                    @forelse($uploadedAttachments as $uploadedAttachment)
+                                        <div class="px-3 py-2 border-b last:border-b-0 border-gray-100">
+                                            <p class="text-xs font-semibold text-gray-800 truncate">{{ $uploadedAttachment->original_name }}</p>
+                                            <p class="text-[11px] text-gray-500 mb-2">{{ number_format(($uploadedAttachment->size ?? 0) / 1024, 1) }} KB</p>
+                                            <div class="flex items-center gap-2">
+                                                <button type="button"
+                                                    wire:click="downloadAttachment({{ $uploadedAttachment->id }})"
+                                                    class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-gray-700 hover:bg-gray-50">
+                                                    Download
+                                                </button>
+                                                <button type="button"
+                                                    wire:click="removeAttachment({{ $uploadedAttachment->id }})"
+                                                    class="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-600 hover:bg-red-100">
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="px-3 py-2 text-xs text-gray-500">No attachments uploaded yet.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

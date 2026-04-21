@@ -2,7 +2,10 @@
 
 namespace App\Livewire\Company;
 
+use App\Models\Attachment;
 use App\Models\Company;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -25,6 +28,7 @@ class CompanyEdit extends Component
     public ?string $legal_name = null;
     public ?string $registration_number = null;
     public $company_logo = null;
+    public array $attachments = [];
     public ?string $existing_logo_path = null;
     public ?int $founded_year = null;
     public ?string $description = null;
@@ -86,11 +90,41 @@ class CompanyEdit extends Component
         $this->existing_logo_path = null;
     }
 
+    public function removeAttachment(int $attachmentId): void
+    {
+        $attachment = $this->company
+            ->attachments()
+            ->whereKey($attachmentId)
+            ->first();
+
+        if (!$attachment instanceof Attachment) {
+            return;
+        }
+
+        Storage::disk($attachment->disk)->delete($attachment->path);
+        $attachment->delete();
+    }
+
+    public function downloadAttachment(int $attachmentId)
+    {
+        $attachment = $this->company
+            ->attachments()
+            ->whereKey($attachmentId)
+            ->firstOrFail();
+
+        return Storage::disk($attachment->disk)->download(
+            $attachment->path,
+            $attachment->original_name
+        );
+    }
+
     protected function rules(): array
     {
         return [
             'company_name' => ['required', 'string', 'max:255', 'min:3'],
             'company_logo' => [($this->existing_logo_path ? 'nullable' : 'required'), 'image', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
+            'attachments' => ['nullable', 'array'],
+            'attachments.*' => ['file', 'max:2048'],
             'slug' => ['required', 'string', 'max:255', Rule::unique('companies', 'slug')->ignore($this->companyId), 'alpha_dash'],
             'company_type' => ['required', Rule::in(['TMC', 'Corporate'])],
             'registration_number' => ['required', 'string', 'max:50', Rule::unique('companies', 'registration_number')->ignore($this->companyId)],
@@ -149,6 +183,34 @@ class CompanyEdit extends Component
                     'logo_path' => $logoPath,
                 ]),
             ]);
+
+            if ($this->company_logo instanceof UploadedFile && $logoPath) {
+                $this->company->attachments()->create([
+                    'disk' => 'public',
+                    'path' => $logoPath,
+                    'original_name' => $this->company_logo->getClientOriginalName(),
+                    'mime_type' => $this->company_logo->getClientMimeType(),
+                    'size' => $this->company_logo->getSize(),
+                    'uploaded_by' => auth()->id(),
+                ]);
+            }
+
+            foreach ($this->attachments as $attachment) {
+                if (!$attachment instanceof UploadedFile) {
+                    continue;
+                }
+
+                $path = $attachment->storePublicly('company-attachments', 'public');
+                $this->company->attachments()->create([
+                    'disk' => 'public',
+                    'path' => $path,
+                    'original_name' => $attachment->getClientOriginalName(),
+                    'mime_type' => $attachment->getClientMimeType(),
+                    'size' => $attachment->getSize(),
+                    'uploaded_by' => auth()->id(),
+                ]);
+            }
+
         });
 
         session()->flash('status', 'Company updated successfully.');
@@ -171,6 +233,7 @@ class CompanyEdit extends Component
 
         return view('livewire.company.edit', [
             'companies' => $companies,
+            'uploadedAttachments' => $this->company->attachments()->latest()->get(),
         ]);
     }
 
