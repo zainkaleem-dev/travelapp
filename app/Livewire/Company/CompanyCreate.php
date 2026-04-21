@@ -20,7 +20,6 @@ class CompanyCreate extends Component
     public ?string $company_type = null;
     public ?string $legal_name = null;
     public ?string $registration_number = null;
-    public ?string $tax_number = null;
     public $company_logo = null;
     public ?int $founded_year = null;
     public ?string $description = null;
@@ -52,7 +51,6 @@ class CompanyCreate extends Component
 
             // Other fields
             'legal_name' => ['nullable', 'string', 'max:255'],
-            'tax_number' => ['nullable', 'string', 'max:50'],
             'description' => ['nullable', 'string', 'max:1000'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
@@ -108,7 +106,6 @@ class CompanyCreate extends Component
             'company_type' => $validated['company_type'],
             'legal_name' => $validated['legal_name'],
             'registration_number' => $validated['registration_number'],
-            'tax_number' => $validated['tax_number'],
             'founded_year' => $validated['founded_year'],
             'description' => $validated['description'],
             'status' => $validated['status'],

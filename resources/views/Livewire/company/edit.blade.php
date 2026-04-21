@@ -168,15 +168,6 @@
                         </div>
 
                         <div>
-                            <label class="field-label">Tax ID / VAT</label>
-                            <input type="text" wire:model="tax_number" class="input-field"
-                                placeholder="GB12345678">
-                            @error('tax_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
-                                {{ $message }}
-                            </p> @enderror
-                        </div>
-
-                        <div>
                             <label class="field-label">Founded Year <span class="text-red-500">*</span></label>
                             <input type="number" wire:model="founded_year" class="input-field" placeholder="2010"
                                 min="1900" max="{{ date('Y') }}">

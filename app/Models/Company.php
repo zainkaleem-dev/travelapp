@@ -17,7 +17,6 @@ class Company extends Model
         'slug',
         'legal_name',
         'registration_number',
-        'tax_number',
         'company_type',
         'founded_year',
         'description',

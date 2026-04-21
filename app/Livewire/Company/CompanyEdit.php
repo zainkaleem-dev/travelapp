@@ -4,6 +4,7 @@ namespace App\Livewire\Company;
 
 use App\Models\Company;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -23,7 +24,6 @@ class CompanyEdit extends Component
     public ?string $company_type = null;
     public ?string $legal_name = null;
     public ?string $registration_number = null;
-    public ?string $tax_number = null;
     public $company_logo = null;
     public ?string $existing_logo_path = null;
     public ?int $founded_year = null;
@@ -63,7 +63,6 @@ class CompanyEdit extends Component
         $this->company_type = $this->company->company_type;
         $this->legal_name = $this->company->legal_name;
         $this->registration_number = $this->company->registration_number;
-        $this->tax_number = $this->company->tax_number;
         $this->existing_logo_path = $this->company->settings['logo_path'] ?? null;
         $this->founded_year = $this->company->founded_year;
         $this->description = $this->company->description;
@@ -77,6 +76,8 @@ class CompanyEdit extends Component
         if (empty($this->slug)) {
             $this->slug = str($value)->slug()->toString();
         }
+
+        $this->registration_number = $this->generateRegistrationNumber($value);
     }
 
     public function removeLogo(): void
@@ -92,14 +93,13 @@ class CompanyEdit extends Component
             'company_logo' => [($this->existing_logo_path ? 'nullable' : 'required'), 'image', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
             'slug' => ['required', 'string', 'max:255', Rule::unique('companies', 'slug')->ignore($this->companyId), 'alpha_dash'],
             'company_type' => ['required', Rule::in(['TMC', 'Corporate'])],
-            'registration_number' => ['required', 'string', 'max:50'],
+            'registration_number' => ['required', 'string', 'max:50', Rule::unique('companies', 'registration_number')->ignore($this->companyId)],
             'founded_year' => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
             'status' => ['required', Rule::in(['active', 'inactive'])],
             'parent_id' => ['nullable', 'integer', 'exists:companies,id', 'different:companyId'],
 
             // Other fields
             'legal_name' => ['nullable', 'string', 'max:255'],
-            'tax_number' => ['nullable', 'string', 'max:50'],
             'description' => ['nullable', 'string', 'max:1000'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
@@ -140,7 +140,6 @@ class CompanyEdit extends Component
                 'company_type' => $validated['company_type'],
                 'legal_name' => $validated['legal_name'],
                 'registration_number' => $validated['registration_number'],
-                'tax_number' => $validated['tax_number'],
                 'founded_year' => $validated['founded_year'],
                 'description' => $validated['description'],
                 'status' => $validated['status'],
@@ -183,5 +182,26 @@ class CompanyEdit extends Component
             $ids = array_merge($ids, $this->getDescendantIds($child));
         }
         return $ids;
+    }
+
+    private function generateRegistrationNumber(?string $companyName): string
+    {
+        $base = Str::of((string) $companyName)->trim()->slug('-')->toString();
+        if ($base === '') {
+            $base = 'organization';
+        }
+
+        $base = Str::limit($base, 45, '');
+
+        do {
+            $suffix = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+            $candidate = "{$base}-{$suffix}";
+        } while (
+            Company::where('registration_number', $candidate)
+                ->where('id', '!=', $this->companyId)
+                ->exists()
+        );
+
+        return $candidate;
     }
 }
