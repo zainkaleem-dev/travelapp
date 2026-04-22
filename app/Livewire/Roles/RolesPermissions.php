@@ -56,7 +56,7 @@ class RolesPermissions extends Component
         return $maxRank;
     }
 
-    public function mount(): void
+    public function mount(?int $id = null): void
     {
         $user = auth()->user();
         if (!$user) return;
@@ -84,8 +84,12 @@ class RolesPermissions extends Component
             ->orderBy('name')
             ->get();
 
-        // 3. Set initial context from session or default
-        $this->contextCompanyId = session('active_company_id');
+        // 3. Set initial context from route or session/default
+        if ($id !== null) {
+            $this->contextCompanyId = $id;
+        } else {
+            $this->contextCompanyId = session('active_company_id');
+        }
 
         $this->setViewMode('roles');
     }

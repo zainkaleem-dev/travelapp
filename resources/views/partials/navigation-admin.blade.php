@@ -2,9 +2,21 @@
     <div class="w-full md:w-72 md:min-h-screen md:sticky md:top-0 md:self-start flex-shrink-0 bg-white border-r border-gray-200 shadow-sm">
         <div class="p-4 md:py-6">
 
-            @php($isOrganizationAdmin = auth()->check() && auth()->user()->hasRole('Organization Admin'))
             @php($sidebarUser = auth()->user())
-            @php($sidebarRole = $sidebarUser?->getRoleNames()?->first() ?? 'User')
+            @php($isGlobalSuperAdmin = false)
+            @if($sidebarUser)
+                @php(
+                    $isGlobalSuperAdmin = \Illuminate\Support\Facades\DB::table('model_has_roles')
+                        ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                        ->where('model_has_roles.model_id', $sidebarUser->id)
+                        ->where('model_has_roles.model_type', \App\Models\User::class)
+                        ->where('roles.name', 'Super Admin')
+                        ->whereNull('model_has_roles.company_id')
+                        ->exists()
+                )
+            @endif
+            @php($isOrganizationAdmin = auth()->check() && !$isGlobalSuperAdmin && auth()->user()->hasRole('Organization Admin'))
+            @php($sidebarRole = $isGlobalSuperAdmin ? 'Super Admin' : ($sidebarUser?->getRoleNames()?->first() ?? 'User'))
             @php($firstName = trim((string) ($sidebarUser?->first_name ?? '')))
             @php($middleName = trim((string) ($sidebarUser?->middle_name ?? '')))
             @php($lastName = trim((string) ($sidebarUser?->last_name ?? '')))

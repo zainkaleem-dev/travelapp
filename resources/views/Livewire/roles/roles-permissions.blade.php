@@ -1,5 +1,11 @@
 <div>
     <div class="px-1 py-1 w-full">
+        @if(request()->routeIs('companies.roles-permissions'))
+            <div class="mb-4 overflow-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
+                @include('partials.navigation-company', ['companyId' => $contextCompanyId, 'activeTab' => 'roles-permissions'])
+            </div>
+        @endif
+
         <div class="flex flex-col lg:flex-row gap-6 bg-transparent min-h-[calc(100vh-200px)]">
             
             {{-- Sidebar: Access Control (Super Admin sees Context, Company Admin sees their own) --}}

@@ -25,7 +25,6 @@
                     </div>
                 </div>
             </div>
-
             <div x-show="filtersOpen" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -261,6 +260,18 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-1">
+                                            @can('View Company')
+                                                <a href="{{ route('companies.show', $company->id) }}"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    title="View Profile">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M12 16.5a3 3 0 100-6 3 3 0 000 6z" />
+                                                    </svg>
+                                                </a>
+                                            @endcan
                                             @can('Edit Company')
                                                 <a href="{{ route('companies.edit', $company->id) }}"
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"

@@ -1,5 +1,11 @@
 <div>
     <div class="px-1 py-1 w-full">
+        @if(request()->routeIs('companies.features'))
+            <div class="mb-4 overflow-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
+                @include('partials.navigation-company', ['companyId' => $selectedCompanyId, 'activeTab' => 'feature-management'])
+            </div>
+        @endif
+
         <div class="flex flex-col lg:flex-row gap-6 bg-transparent min-h-[calc(100vh-200px)]">
 
             {{-- ── Sidebar: Company List ─────────────────────────────── --}}
