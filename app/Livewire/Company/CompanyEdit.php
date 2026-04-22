@@ -3,6 +3,7 @@
 namespace App\Livewire\Company;
 
 use App\Models\Attachment;
+use App\Models\Branch;
 use App\Models\Company;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -38,24 +39,25 @@ class CompanyEdit extends Component
     public string $status = 'active';
     public ?string $notes = null;
 
+    // Dynamic Branches
+    public bool $create_branch = true;
+    public array $branches = [];
+    public array $branches_to_delete = [];
+
     public function mount(int $id): void
     {
         $this->companyId = $id;
 
-        // 1. Resolve hierarchy for current admin
         $currentUser = auth()->user();
         $isSuperAdmin = $currentUser->hasRole('Super Admin');
         /** @var \App\Support\TenantContext $tenantContext */
         $tenantContext = app(\App\Support\TenantContext::class);
         $manageableHierarchy = $tenantContext->getManageableHierarchy($currentUser);
 
-        // 2. Resolve the company WITHOUT restrictive global scopes for existence check
-        // while maintaining security via explicit hierarchy validation.
         $this->company = Company::query()
             ->withoutGlobalScopes()
             ->findOrFail($id);
 
-        // 3. Security Check: Ensure the target company is within the admin's management hierarchy
         if (!$isSuperAdmin) {
             if (!in_array($this->company->id, $manageableHierarchy)) {
                 abort(403, 'You do not have permission to edit this organization (Access denied).');
@@ -73,6 +75,43 @@ class CompanyEdit extends Component
         $this->status = $this->company->status;
         $this->notes = $this->company->notes;
         $this->parent_id = $this->company->parent_id;
+
+        // Load existing branches
+        $this->branches = $this->company->branches()->orderBy('is_main', 'desc')->get()->toArray();
+        if (empty($this->branches)) {
+            $this->addBranch();
+        }
+    }
+
+    public function addBranch(): void
+    {
+        $this->branches[] = [
+            'name' => '',
+            'code' => '',
+            'slug' => '',
+            'email' => '',
+            'phone' => '',
+            'address_line_1' => '',
+            'city' => '',
+            'state' => '',
+            'country' => '',
+            'latitude' => '0',
+            'longitude' => '0',
+        ];
+    }
+
+    public function removeBranch(int $index): void
+    {
+        if (isset($this->branches[$index]['id'])) {
+            $this->branches_to_delete[] = $this->branches[$index]['id'];
+        }
+
+        unset($this->branches[$index]);
+        $this->branches = array_values($this->branches);
+
+        if (empty($this->branches)) {
+            $this->addBranch();
+        }
     }
 
     public function updatedCompanyName($value): void
@@ -80,8 +119,25 @@ class CompanyEdit extends Component
         if (empty($this->slug)) {
             $this->slug = str($value)->slug()->toString();
         }
-
         $this->registration_number = $this->generateRegistrationNumber($value);
+    }
+
+    public function updatedBranches($value, $key): void
+    {
+        $parts = explode('.', $key);
+        if (count($parts) < 2) return;
+
+        $index = (int) $parts[0];
+        $field = $parts[1];
+
+        if ($field === 'name') {
+            if (empty($this->branches[$index]['slug'])) {
+                $this->branches[$index]['slug'] = str($value)->slug()->toString();
+            }
+            if (empty($this->branches[$index]['code'])) {
+                $this->branches[$index]['code'] = strtoupper(substr(str($value)->slug('')->toString(), 0, 3)) . rand(100, 999);
+            }
+        }
     }
 
     public function removeLogo(): void
@@ -92,35 +148,21 @@ class CompanyEdit extends Component
 
     public function removeAttachment(int $attachmentId): void
     {
-        $attachment = $this->company
-            ->attachments()
-            ->whereKey($attachmentId)
-            ->first();
-
-        if (!$attachment instanceof Attachment) {
-            return;
-        }
-
+        $attachment = $this->company->attachments()->whereKey($attachmentId)->first();
+        if (!$attachment instanceof Attachment) return;
         Storage::disk($attachment->disk)->delete($attachment->path);
         $attachment->delete();
     }
 
     public function downloadAttachment(int $attachmentId)
     {
-        $attachment = $this->company
-            ->attachments()
-            ->whereKey($attachmentId)
-            ->firstOrFail();
-
-        return Storage::disk($attachment->disk)->download(
-            $attachment->path,
-            $attachment->original_name
-        );
+        $attachment = $this->company->attachments()->whereKey($attachmentId)->firstOrFail();
+        return Storage::disk($attachment->disk)->download($attachment->path, $attachment->original_name);
     }
 
     protected function rules(): array
     {
-        return [
+        $rules = [
             'company_name' => ['required', 'string', 'max:255', 'min:3'],
             'company_logo' => [($this->existing_logo_path ? 'nullable' : 'required'), 'image', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
             'attachments' => ['nullable', 'array'],
@@ -131,12 +173,29 @@ class CompanyEdit extends Component
             'founded_year' => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
             'status' => ['required', Rule::in(['active', 'inactive'])],
             'parent_id' => ['nullable', 'integer', 'exists:companies,id', 'different:companyId'],
-
-            // Other fields
             'legal_name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
+
+        if ($this->create_branch) {
+            foreach ($this->branches as $index => $branch) {
+                $branchId = $branch['id'] ?? null;
+                $rules["branches.{$index}.name"] = ['required', 'string', 'max:255'];
+                $rules["branches.{$index}.code"] = ['required', 'string', 'max:50', Rule::unique('branches', 'code')->ignore($branchId)];
+                $rules["branches.{$index}.slug"] = ['required', 'string', 'max:255', Rule::unique('branches', 'slug')->ignore($branchId)];
+                $rules["branches.{$index}.email"] = ['required', 'email', 'max:255'];
+                $rules["branches.{$index}.phone"] = ['required', 'string', 'max:50'];
+                $rules["branches.{$index}.address_line_1"] = ['required', 'string', 'max:255'];
+                $rules["branches.{$index}.city"] = ['required', 'string', 'max:255'];
+                $rules["branches.{$index}.state"] = ['required', 'string', 'max:255'];
+                $rules["branches.{$index}.country"] = ['required', 'string', 'max:255'];
+                $rules["branches.{$index}.latitude"] = ['numeric'];
+                $rules["branches.{$index}.longitude"] = ['numeric'];
+            }
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -153,6 +212,10 @@ class CompanyEdit extends Component
             'founded_year.integer' => 'Please enter a valid year (e.g., 2024).',
             'founded_year.max' => 'The founded year cannot be in the future.',
             'status.required' => 'You must select a status for the company.',
+            'branches.*.name.required' => 'Branch name is required.',
+            'branches.*.code.required' => 'Branch code is required.',
+            'branches.*.code.unique' => 'This branch code is already in use.',
+            'branches.*.email.required' => 'Branch email is required.',
         ];
     }
 
@@ -196,10 +259,7 @@ class CompanyEdit extends Component
             }
 
             foreach ($this->attachments as $attachment) {
-                if (!$attachment instanceof UploadedFile) {
-                    continue;
-                }
-
+                if (!$attachment instanceof UploadedFile) continue;
                 $path = $attachment->storePublicly('company-attachments', 'public');
                 $this->company->attachments()->create([
                     'disk' => 'public',
@@ -211,24 +271,37 @@ class CompanyEdit extends Component
                 ]);
             }
 
+            // Sync Branches
+            if ($this->create_branch) {
+                foreach ($this->branches as $index => $branchData) {
+                    $id = $branchData['id'] ?? null;
+                    $this->company->branches()->updateOrCreate(
+                        ['id' => $id],
+                        array_merge($branchData, [
+                            'company_id' => $this->company->id,
+                            'is_main' => ($index === 0),
+                            'status' => 'active',
+                        ])
+                    );
+                }
+
+                if (!empty($this->branches_to_delete)) {
+                    $this->company->branches()->whereIn('id', $this->branches_to_delete)->delete();
+                }
+            }
         });
 
-        session()->flash('status', 'Company updated successfully.');
+        session()->flash('status', 'Company and branches updated successfully.');
         return redirect()->route('companies.index');
     }
 
     public function render()
     {
         $companies = collect();
-
         if (auth()->user()->can('Manage Global System')) {
-            // Recursively get all descendant IDs to exclude from the parent list to prevent cycles
             $descendantIds = $this->getDescendantIds($this->company);
             $excludeIds = array_merge([$this->companyId], $descendantIds);
-
-            $companies = Company::whereNotIn('id', $excludeIds)
-                ->orderBy('name')
-                ->get(['id', 'name']);
+            $companies = Company::whereNotIn('id', $excludeIds)->orderBy('name')->get(['id', 'name']);
         }
 
         return view('livewire.company.edit', [
@@ -250,21 +323,12 @@ class CompanyEdit extends Component
     private function generateRegistrationNumber(?string $companyName): string
     {
         $base = Str::of((string) $companyName)->trim()->slug('-')->toString();
-        if ($base === '') {
-            $base = 'organization';
-        }
-
+        if ($base === '') $base = 'organization';
         $base = Str::limit($base, 45, '');
-
         do {
             $suffix = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
             $candidate = "{$base}-{$suffix}";
-        } while (
-            Company::where('registration_number', $candidate)
-                ->where('id', '!=', $this->companyId)
-                ->exists()
-        );
-
+        } while (Company::where('registration_number', $candidate)->where('id', '!=', $this->companyId)->exists());
         return $candidate;
     }
 }

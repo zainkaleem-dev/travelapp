@@ -233,7 +233,122 @@
                     </div>
                 </div>
 
-                <!-- Section 2: Internal Notes & Status -->
+                <!-- Section 2: Branches (Dynamic Repeater) -->
+                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Branches</h2>
+                            <span class="px-2 py-0.5 rounded-full bg-[#2ab4c0]/10 text-[10px] font-bold text-[#2ab4c0] uppercase tracking-tight">Management</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" wire:model.live="create_branch" class="sr-only peer">
+                                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2ab4c0]"></div>
+                                <span class="ml-3 text-xs font-bold text-gray-700">Manage Branching</span>
+                            </label>
+                            @if($create_branch)
+                                <button type="button" wire:click="addBranch" class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white border border-gray-200 px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    Add Another Branch
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+
+                    @if($create_branch)
+                        <div class="space-y-6">
+                            @foreach($branches as $index => $branch)
+                                <div class="relative p-6 rounded-2xl border border-gray-100 bg-white shadow-sm animate-in fade-in slide-in-from-top-1 duration-300" wire:key="branch-{{ $index }}">
+                                    @if($index > 0)
+                                        <button type="button" wire:click="removeBranch({{ $index }})" class="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-red-500 transition-colors">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    @endif
+
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <span class="w-6 h-6 rounded-full bg-gray-50 flex items-center justify-center text-[10px] font-black text-gray-400">{{ $index + 1 }}</span>
+                                        <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest">
+                                            @if($index === 0) Main Branch @else Branch Details @endif
+                                        </h3>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div class="md:col-span-2">
+                                            <label class="field-label">Branch Name <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.live.debounce.500ms="branches.{{ $index }}.name" class="input-field" placeholder="Headquarters">
+                                            @error('branches.'.$index.'.name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Branch Code <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="branches.{{ $index }}.code" class="input-field uppercase font-mono" placeholder="HQ001">
+                                            @error('branches.'.$index.'.code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Branch Slug <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="branches.{{ $index }}.slug" class="input-field font-mono" placeholder="headquarters">
+                                            @error('branches.'.$index.'.slug') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Contact Email <span class="text-red-500">*</span></label>
+                                            <input type="email" wire:model="branches.{{ $index }}.email" class="input-field" placeholder="hq@acme.com">
+                                            @error('branches.'.$index.'.email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Contact Phone <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="branches.{{ $index }}.phone" class="input-field" placeholder="+123456789">
+                                            @error('branches.'.$index.'.phone') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div class="md:col-span-2">
+                                            <label class="field-label">Address Line 1 <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="branches.{{ $index }}.address_line_1" class="input-field" placeholder="123 Business St">
+                                            @error('branches.'.$index.'.address_line_1') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">City <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="branches.{{ $index }}.city" class="input-field" placeholder="London">
+                                            @error('branches.'.$index.'.city') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">State/Province <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="branches.{{ $index }}.state" class="input-field" placeholder="Greater London">
+                                            @error('branches.'.$index.'.state') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Country <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="branches.{{ $index }}.country" class="input-field" placeholder="United Kingdom">
+                                            @error('branches.'.$index.'.country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <button type="button" wire:click="addBranch" class="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400 hover:text-[#2ab4c0] hover:border-[#2ab4c0] hover:bg-[#f2feff] transition-all group">
+                                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                <span class="text-xs font-black uppercase tracking-widest">Add Another Branch</span>
+                            </button>
+                        </div>
+                    @else
+                        <div class="text-center py-8">
+                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Branch management is disabled</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Section 3: Internal Notes & Status -->
                 <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
