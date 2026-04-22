@@ -93,6 +93,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return trim(implode(' ', array_values(array_filter([$first, $middle, $last], fn($v) => $v !== ''))));
     }
 
+    public function getNameAttribute(): string
+    {
+        return $this->display_name;
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
