@@ -142,7 +142,7 @@
 
             <div class="p-6">
                 @if (session('status'))
-                    <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    <div class="mb-6   rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
                         {{ session('status') }}
                     </div>
                 @endif
@@ -342,8 +342,7 @@
                                                 </a>
                                             @endcan
                                             <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
-                                                data-action="toggleActive"
-                                                data-args='[{{ $branch->id }}]'
+                                                data-action="toggleActive" data-args='[{{ $branch->id }}]'
                                                 data-confirm-title="Change branch status?"
                                                 data-done-title="Branch status updated"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
@@ -362,12 +361,10 @@
                                             </button>
                                             @can('Delete Branch')
                                                 <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
-                                                    data-action="deleteBranch"
-                                                    data-args='[{{ $branch->id }}]'
+                                                    data-action="deleteBranch" data-args='[{{ $branch->id }}]'
                                                     data-confirm-title="Are you sure?"
                                                     data-confirm-text="This will delete the branch and its related data."
-                                                    data-confirm-button-text="Yes, delete it"
-                                                    data-done-title="Deleted!"
+                                                    data-confirm-button-text="Yes, delete it" data-done-title="Deleted!"
                                                     data-done-text="Branch has been deleted."
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete Branch">
@@ -418,7 +415,7 @@
                                     {{-- Page Numbers --}}
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                                     <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
-                                                                                                                                                                                                                                                                                                                {{ $page === $paginationMeta['current_page']
+                                                                                                                                                                                                                                                                                                                                        {{ $page === $paginationMeta['current_page']
                                         ? 'bg-[#2ab4c0] text-white'
                                         : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
                                                         {{ $page }}
