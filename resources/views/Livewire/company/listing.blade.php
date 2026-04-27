@@ -158,7 +158,7 @@
                                 <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('name')">
                                     <div class="flex items-center gap-2">
-                                        <span>Company</span>
+                                        <span>Organization</span>
                                         <div
                                             class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-40' }}">
                                             <svg class="w-2.5 h-2.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
