@@ -127,7 +127,7 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <input type="text" class="input-field pl-10" wire:model.live.debounce.300ms="search"
-                                placeholder="Search companies by name, slug, or type..." />
+                                placeholder="Search organizations by name, slug, or type..." />
                         </div>
                     </div>
                 </div>
