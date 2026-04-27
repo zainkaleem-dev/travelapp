@@ -350,7 +350,7 @@
                             <div class="text-sm text-gray-600">
                                 Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
                                 <span class="font-semibold">{{ $paginationMeta['to'] ?? 0 }}</span> of
-                                <span class="font-semibold">{{ $paginationMeta['total'] }}</span> companies
+                                <span class="font-semibold">{{ $paginationMeta['total'] }}</span> organizations
                             </div>
                             @if ($paginationMeta['last_page'] > 1)
                                 <div class="flex items-center gap-2">

@@ -30,7 +30,7 @@
                         {{-- Context Selector (Visible to Super Admin or any Admin with manageable companies) --}}
                         @if($isSuperAdmin || count($companies) > 0)
                         <div class="mb-4">
-                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Organization Context</label>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Company Context</label>
                             <div class="relative" x-data="{ open: false, selected: @js((string) ($contextCompanyId ?? '')), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn w-full" @click="open = !open">
                                     <span x-text="selected === '' ? 'Global System' : (labels[selected] ?? 'Global System')"></span>
@@ -218,8 +218,8 @@
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                                 </div>
                                                 <div>
-                                                    <h4 class="text-sm font-bold {{ in_array($permission->name, $currentRolePermissions) ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ ucwords(str_replace('.', ' ', str_replace('Company', 'Organization', $permission->name))) }}</h4>
-                                                    <p class="text-[10px] {{ in_array($permission->name, $currentRolePermissions) ? 'text-[#2ab4c0]' : 'text-gray-400' }} uppercase font-black tracking-widest mt-0.5 transition-colors">{{ str_replace('Company', 'Organization', $permission->name) }}</p>
+                                                    <h4 class="text-sm font-bold {{ in_array($permission->name, $currentRolePermissions) ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ ucwords(str_replace('.', ' ', $permission->name)) }}</h4>
+                                                    <p class="text-[10px] {{ in_array($permission->name, $currentRolePermissions) ? 'text-[#2ab4c0]' : 'text-gray-400' }} uppercase font-black tracking-widest mt-0.5 transition-colors">{{ $permission->name }}</p>
                                                 </div>
                                             </div>
 
