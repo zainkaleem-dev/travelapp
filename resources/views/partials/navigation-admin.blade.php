@@ -466,6 +466,7 @@
     </div>
 
     <div class="flex-1 min-w-0 min-h-screen p-3 sm:p-4 md:p-6">
+        @include('partials.page-flow')
         {{ $slot }}
     </div>
 </div>
