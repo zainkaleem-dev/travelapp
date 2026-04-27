@@ -233,6 +233,119 @@
                     </div>
                 </div>
 
+                <!-- Section 2: Branches (Dynamic Repeater) -->
+                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Branches</h2>
+                            <span class="inline-flex items-center rounded-full bg-[#2ab4c0]/10 px-2.5 py-0.5 text-[10px] font-black text-[#1f8f98] uppercase tracking-widest">
+                                Dynamic
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center cursor-pointer select-none">
+                                <div class="relative">
+                                    <input type="checkbox" wire:model="create_branch" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-[#2ab4c0] transition-colors"></div>
+                                    <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+                                </div>
+                                <span class="ml-3 text-xs font-bold text-gray-700">Enable Branching</span>
+                            </label>
+
+                            <button type="button" wire:click="addBranch"
+                                class="inline-flex items-center gap-2 rounded-lg bg-white border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 shadow-sm">
+                                <span class="text-lg leading-none">+</span>
+                                Add Another Branch
+                            </button>
+                        </div>
+                    </div>
+
+                    @if ($create_branch)
+                        <div class="space-y-6">
+                            @foreach ($branches as $index => $branch)
+                                <div class="rounded-2xl border border-gray-200 bg-white p-5">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs font-black text-gray-700">
+                                                {{ $index + 1 }}
+                                            </div>
+                                            <div class="text-xs font-black uppercase tracking-widest text-gray-700">
+                                                {{ $index === 0 ? 'Main Branch' : 'Branch' }}
+                                            </div>
+                                        </div>
+                                        @if (count($branches) > 1)
+                                            <button type="button" wire:click="removeBranch({{ $index }})"
+                                                class="text-xs font-bold text-red-500 hover:text-red-600">
+                                                Remove
+                                            </button>
+                                        @endif
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="md:col-span-1">
+                                            <label class="field-label">Branch Name <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.debounce.500ms="branches.{{ $index }}.name" class="input-field" placeholder="Headquarters">
+                                            @error("branches.$index.name") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div class="md:col-span-1">
+                                            <label class="field-label">Branch Code <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.debounce.500ms="branches.{{ $index }}.code" class="input-field" placeholder="HQ001">
+                                            @error("branches.$index.code") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Branch Slug <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.debounce.500ms="branches.{{ $index }}.slug" class="input-field" placeholder="headquarters">
+                                            @error("branches.$index.slug") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Contact Email <span class="text-red-500">*</span></label>
+                                            <input type="email" wire:model.debounce.500ms="branches.{{ $index }}.email" class="input-field" placeholder="hq@acme.com">
+                                            @error("branches.$index.email") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Contact Phone <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.debounce.500ms="branches.{{ $index }}.phone" class="input-field" placeholder="+123456789">
+                                            @error("branches.$index.phone") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Address Line 1 <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.debounce.500ms="branches.{{ $index }}.address_line_1" class="input-field" placeholder="123 Business St">
+                                            @error("branches.$index.address_line_1") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">City <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.debounce.500ms="branches.{{ $index }}.city" class="input-field" placeholder="London">
+                                            @error("branches.$index.city") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">State/Province <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.debounce.500ms="branches.{{ $index }}.state" class="input-field" placeholder="Greater London">
+                                            @error("branches.$index.state") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+
+                                        <div>
+                                            <label class="field-label">Country <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.debounce.500ms="branches.{{ $index }}.country" class="input-field" placeholder="United Kingdom">
+                                            @error("branches.$index.country") <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-8">
+                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Branching is disabled</p>
+                        </div>
+                    @endif
+                </div>
+
                 <!-- Section 2: Internal Notes & Status -->
                 <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
