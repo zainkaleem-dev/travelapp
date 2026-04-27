@@ -184,6 +184,52 @@ Route::middleware(['auth', 'password.set'])->group(function () {
 
     Route::middleware(['superadmin'])->group(function () {
         Route::get('/companies', CompanyListing::class)->name('companies.index')->middleware('can:View Company');
+        Route::get('/companies/{company}/context', function (\App\Models\Company $company) {
+            $user = auth()->user();
+            abort_unless($user, 401);
+
+            /** @var \App\Support\TenantContext $tenantContext */
+            $tenantContext = app(\App\Support\TenantContext::class);
+            $manageableIds = $tenantContext->getManageableHierarchy($user);
+            abort_unless(in_array($company->id, $manageableIds, true), 403);
+
+            session(['active_company_id' => $company->id]);
+
+            return redirect()->route('companies.show', $company->id);
+        })->name('companies.context');
+
+        Route::get('/companies/{company}/login-as-admin', function (\App\Models\Company $company) {
+            $user = auth()->user();
+            abort_unless($user, 401);
+
+            /** @var \App\Support\TenantContext $tenantContext */
+            $tenantContext = app(\App\Support\TenantContext::class);
+            $manageableIds = $tenantContext->getManageableHierarchy($user);
+            abort_unless(in_array($company->id, $manageableIds, true), 403);
+
+            // Prefer Organization Admin for this company, fallback to Company Admin.
+            $targetUserId = \Illuminate\Support\Facades\DB::table('users')
+                ->join('model_has_roles', function ($join) use ($company) {
+                    $join->on('users.id', '=', 'model_has_roles.model_id')
+                        ->where('model_has_roles.model_type', '=', \App\Models\User::class)
+                        ->where('model_has_roles.company_id', '=', $company->id);
+                })
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('users.company_id', $company->id)
+                ->whereIn('roles.name', ['Organization Admin', 'Company Admin'])
+                ->orderByRaw("FIELD(roles.name, 'Organization Admin', 'Company Admin')")
+                ->select('users.id')
+                ->value('users.id');
+
+            if (!$targetUserId) {
+                return redirect()->back()->with('error', 'No Organization Admin user found for this organization.');
+            }
+
+            // Set context for subsequent feature/permission checks while impersonating.
+            session(['active_company_id' => $company->id]);
+
+            return redirect()->route('impersonate.take', (int) $targetUserId);
+        })->name('companies.login_as_admin');
         Route::get('/branches', BranchListing::class)->name('branches.index')->middleware('can:View Branch');
         Route::get('/branches/create', BranchCreate::class)->name('branches.create')->middleware('can:Create Branch');
         Route::get('/branches/{id}/edit', BranchEdit::class)->name('branches.edit')->middleware('can:Edit Branch');
