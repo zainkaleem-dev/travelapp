@@ -52,9 +52,9 @@ class FeaturesListing extends Component
 
         // ── Admin Modules ────────────────────────────────────────────
         'companies-module' => [
-            'label' => 'Companies',
+            'label' => 'Organizations',
             'icon' => 'office-building',
-            'description' => 'Company creation and management access.',
+            'description' => 'Organization creation and management access.',
             'type' => 'toggle',
         ],
         'branches-module' => [
@@ -78,15 +78,15 @@ class FeaturesListing extends Component
         'feature-management-module' => [
             'label' => 'Feature Management',
             'icon' => 'cog',
-            'description' => 'Control which features are enabled per company.',
+            'description' => 'Control which features are enabled per organization.',
             'type' => 'toggle',
         ],
 
         // ── Quantity Limits ──────────────────────────────────────────
         'companies-quantity' => [
-            'label' => 'Max Companies',
+            'label' => 'Max Organizations',
             'icon' => 'hash',
-            'description' => 'Maximum number of companies allowed in the system.',
+            'description' => 'Maximum number of organizations allowed in the system.',
             'type' => 'quantity',
         ],
         'branches-quantity' => [

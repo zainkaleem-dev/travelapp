@@ -4,7 +4,7 @@
             <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <h1 class="text-2xl font-black text-gray-900 tracking-tight">Companies</h1>
+                        <h1 class="text-2xl font-black text-gray-900 tracking-tight">Organizations</h1>
                     </div>
                     <div class="flex items-center gap-3">
                         <button @click="filtersOpen = !filtersOpen"
@@ -296,10 +296,10 @@
                                             @endcan
                                             <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
                                                 data-action="toggleActive" data-args='[{{ $company->id }}]'
-                                                data-confirm-title="Change company status?"
-                                                data-confirm-text="Are you sure you want to change the active status of this company?"
+                                                data-confirm-title="Change organization status?"
+                                                data-confirm-text="Are you sure you want to change the active status of this organization?"
                                                 data-confirm-button-text="Yes, change it" data-done-title="Updated!"
-                                                data-done-text="Company status has been updated."
+                                                data-done-text="Organization status has been updated."
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
                                                 title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                                 @if ($company->status === 'active')
@@ -318,11 +318,11 @@
                                                 <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
                                                     data-action="deleteCompany" data-args='[{{ $company->id }}]'
                                                     data-confirm-title="Are you sure?"
-                                                    data-confirm-text="This will delete the company and its related data."
+                                                    data-confirm-text="This will delete the organization and its related data."
                                                     data-confirm-button-text="Yes, delete it" data-done-title="Deleted!"
-                                                    data-done-text="Company has been deleted."
+                                                    data-done-text="Organization has been deleted."
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
-                                                    title="Delete Company">
+                                                    title="Delete Organization">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -335,7 +335,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                                        No companies found.
+                                        No organizations found.
                                     </td>
                                 </tr>
                             @endforelse
