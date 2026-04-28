@@ -24,6 +24,14 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="px-6 py-4">
+                <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                    {{ session('error') }}
+                </div>
+            </div>
+        @endif
+
         <div class="p-6">
             <form wire:submit.prevent="save" class="space-y-8">
                 <!-- Section 1: Identity & Type -->

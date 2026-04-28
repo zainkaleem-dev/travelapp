@@ -221,7 +221,14 @@ class CompanyEdit extends Component
             ->whereKey($attachmentId)
             ->firstOrFail();
 
-        return Storage::disk($attachment->disk)->download(
+        $disk = Storage::disk($attachment->disk);
+
+        if (!$disk->exists($attachment->path)) {
+            session()->flash('error', "Unable to retrieve the file_size for file at location: {$attachment->path}.");
+            return null;
+        }
+
+        return $disk->download(
             $attachment->path,
             $attachment->original_name
         );

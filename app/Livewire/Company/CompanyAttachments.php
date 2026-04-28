@@ -39,7 +39,7 @@ class CompanyAttachments extends Component
             ->toArray();
     }
 
-    public function renameAndDownloadAttachment(int $attachmentId)
+    public function renameAttachment(int $attachmentId): void
     {
         $attachment = $this->company
             ->attachments()
@@ -51,7 +51,7 @@ class CompanyAttachments extends Component
 
         if ($requestedName === '') {
             $this->addError("downloadNames.{$attachmentId}", 'Please enter a valid file name.');
-            return null;
+            return;
         }
 
         $currentExtension = pathinfo($attachment->original_name, PATHINFO_EXTENSION);
@@ -77,6 +77,12 @@ class CompanyAttachments extends Component
         $extensionSuffix = $currentExtension !== '' ? '.' . $currentExtension : '';
 
         $disk = Storage::disk($attachment->disk);
+
+        if (!$disk->exists($attachment->path)) {
+            $this->addError("downloadNames.{$attachmentId}", 'File not found in storage.');
+            return;
+        }
+
         $newPath = ($directory !== '' ? $directory . '/' : '') . $safeStorageBase . $extensionSuffix;
 
         if ($newPath !== $attachment->path) {
@@ -100,11 +106,24 @@ class CompanyAttachments extends Component
         ]);
 
         $this->downloadNames[$attachmentId] = $finalDownloadName;
+        session()->flash('status', 'Attachment renamed successfully.');
+    }
 
-        return $disk->download(
-            $attachment->path,
-            $attachment->original_name
-        );
+    public function downloadAttachment(int $attachmentId)
+    {
+        $attachment = $this->company
+            ->attachments()
+            ->whereKey($attachmentId)
+            ->firstOrFail();
+
+        $disk = Storage::disk($attachment->disk);
+
+        if (!$disk->exists($attachment->path)) {
+            session()->flash('error', "Unable to retrieve the file_size for file at location: {$attachment->path}.");
+            return null;
+        }
+
+        return $disk->download($attachment->path, $attachment->original_name);
     }
 
     public function render()

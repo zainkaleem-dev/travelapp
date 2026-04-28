@@ -1,22 +1,14 @@
-<div class="max-w-6xl px-1 py-1">
-    <div class="overflow-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
+@php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
+<div class="w-full px-1 py-1">
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-            <div class="flex items-start justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Organization User and Roles</h1>
-                    <p class="text-sm text-gray-500 mt-1">Manage user role assignment and notes for {{ $company->name }}</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('companies.show', $companyId) }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                        Back to Profile
-                    </a>
-                </div>
-            </div>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $isSuperAdmin ? 'Organization User and Roles' : 'Partner User and Roles' }}</h1>
         </div>
 
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'users-roles'])
+    </div>
 
+    <div class="mt-4 overflow-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="p-6">
             @if (session('status'))
                 <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
@@ -82,7 +74,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">No users found for this organization.</td>
+                                    <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">No users found for this {{ $isSuperAdmin ? 'organization' : 'partner' }}.</td>
                                 </tr>
                             @endforelse
                         </tbody>

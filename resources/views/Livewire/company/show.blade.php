@@ -1,22 +1,14 @@
-<div class="max-w-6xl px-1 py-1">
+@php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
+<div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-            <div class="flex items-start justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Organization Profile</h1>
-                    <p class="text-sm text-gray-500 mt-1">Viewing {{ $company->name }} profile</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('companies.index') }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                        Back
-                    </a>
-                </div>
-            </div>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $isSuperAdmin ? 'Organization Profile' : 'Partner Profile' }}</h1>
         </div>
 
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'general'])
+    </div>
 
+    <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="p-6 space-y-8">
             <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
                 <div class="flex items-center justify-between mb-6">
@@ -38,7 +30,7 @@
                                 @endif
                             </div>
                             <div class="flex-1">
-                                <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">Organization
+                                <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ $isSuperAdmin ? 'Organization' : 'Partner' }}
                                     logo</label>
                                 <p class="text-[11px] text-gray-500">Read-only profile view.</p>
                             </div>
@@ -46,7 +38,7 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <label class="field-label">Organization Name</label>
+                        <label class="field-label">{{ $isSuperAdmin ? 'Organization Name' : 'Partner Name' }}</label>
                         <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company_name }}" readonly>
                     </div>
 
@@ -56,13 +48,13 @@
                     </div>
 
                     <div>
-                        <label class="field-label">Organization Type</label>
+                        <label class="field-label">{{ $isSuperAdmin ? 'Organization Type' : 'Partner Type' }}</label>
                         <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company_type ?: '--' }}" readonly>
                     </div>
 
                     <div>
-                        <label class="field-label">Parent Organization</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $parentCompanyName ?: 'None (Root Organization)' }}" readonly>
+                        <label class="field-label">{{ $isSuperAdmin ? 'Parent Organization' : 'Parent Partner' }}</label>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $parentCompanyName ?: ($isSuperAdmin ? 'None (Root Organization)' : 'None (Root Partner)') }}" readonly>
                     </div>
 
                     <div>
