@@ -689,6 +689,7 @@
             'roles.*',
             'features*',
             'admin.trip-purpose*',
+            'admin.integrations-api*',
             'admin.audit-logs*'
         ]);
     @endphp

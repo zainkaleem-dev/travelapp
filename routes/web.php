@@ -45,6 +45,7 @@ use App\Livewire\Admin\AuditLogView;
 use App\Livewire\Admin\TripPurpose;
 use App\Livewire\Admin\TripPurposeEdit;
 use App\Livewire\Admin\TripPurposeView;
+use App\Livewire\Admin\IntegrationsApi;
 use App\Livewire\Roles\RolesPermissions;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
@@ -263,6 +264,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/trip-purpose', TripPurpose::class)->name('admin.trip-purpose')->middleware('can:Manage Global System');
         Route::get('/trip-purpose/{tripPurpose}', TripPurposeView::class)->name('admin.trip-purpose.view')->middleware('can:Manage Global System');
         Route::get('/trip-purpose/{tripPurpose}/edit', TripPurposeEdit::class)->name('admin.trip-purpose.edit')->middleware('can:Manage Global System');
+        Route::get('/integrations-api', IntegrationsApi::class)->name('admin.integrations-api')->middleware('can:Manage Global System');
         Route::get('/audit-logs', AuditLogs::class)->name('admin.audit-logs')->middleware('can:Manage Global System');
         Route::get('/audit-logs/{activityLog}', AuditLogView::class)->name('admin.audit-logs.view')->middleware('can:Manage Global System');
 
