@@ -112,7 +112,7 @@ class CompanyCreate extends Component
             'company_name' => ['required', 'string', 'max:255', 'min:3'],
             'company_logo' => ['required', 'image', 'max:2048', 'mimes:jpg,jpeg,png,svg'],
             'attachments' => ['nullable', 'array'],
-            'attachments.*' => ['file', 'max:2048'],
+            'attachments.*' => ['file', 'max:20480'],
             'slug' => ['required', 'string', 'max:255', 'unique:companies,slug', 'alpha_dash'],
             'company_type' => ['required', Rule::in(['TMC', 'Corporate'])],
             'registration_number' => ['required', 'string', 'max:50', 'unique:companies,registration_number'],

@@ -150,7 +150,7 @@
                         <div class="md:col-span-3">
                             <label class="field-label">Add Attachment</label>
                             <input type="file" wire:model="attachments" class="input-field !pl-3" multiple>
-                            <p class="mt-1 text-[11px] text-gray-500">Maximum file size: 2MB each.</p>
+                            <p class="mt-1 text-[11px] text-gray-500">Maximum file size: 20MB each.</p>
                             @error('attachments') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
                             </p> @enderror
                             @error('attachments.*') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
