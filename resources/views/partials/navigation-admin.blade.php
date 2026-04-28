@@ -388,7 +388,7 @@
                 @endif
 
 
-                @featureOrAdmin('branches-module')
+                <!-- @featureOrAdmin('branches-module')
                 @can('View Branch')
                     <a href="{{ route('branches.index') }}"
                         class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('branches.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
@@ -400,7 +400,7 @@
                         Branches
                     </a>
                 @endcan
-                @endfeatureOrAdmin
+                @endfeatureOrAdmin -->
 
                 @featureOrAdmin('users-module')
                 @can('View Users')
@@ -416,7 +416,7 @@
                 @endcan
                 @endfeatureOrAdmin
 
-                @featureOrAdmin('roles-permissions-module')
+                <!-- @featureOrAdmin('roles-permissions-module')
                 @can('Manage Roles and Permissions')
                     <a href="{{ route('roles.index') }}"
                         class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('roles.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
@@ -443,9 +443,9 @@
                         Feature Management
                     </a>
                 @endcan
-                @endfeatureOrAdmin
+                @endfeatureOrAdmin -->
 
-                <div class="h-px bg-gray-100 my-1"></div>
+                <!-- <div class="h-px bg-gray-100 my-1"></div>
 
                 @featureOrAdmin('flights-module')
                 <a href="{{ route('flights.search') }}"
@@ -457,7 +457,7 @@
                     </svg>
                     Book Trip
                 </a>
-                @endfeatureOrAdmin
+                @endfeatureOrAdmin -->
 
 
 
