@@ -1,10 +1,11 @@
+@php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
 <div x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <h1 class="text-2xl font-black text-gray-900 tracking-tight">Organizations</h1>
+                        <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $isSuperAdmin ? 'Organizations' : 'Partner List' }}</h1>
                     </div>
                     <div class="flex items-center gap-3">
                         <button @click="filtersOpen = !filtersOpen"
@@ -19,7 +20,7 @@
                         @can('Create Company')
                             <a href="{{ route('companies.create') }}"
                                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                                Add Organization
+                                {{ $isSuperAdmin ? 'Add Organization' : 'Add Partner' }}
                             </a>
                         @endcan
                     </div>
@@ -158,7 +159,7 @@
                                 <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('name')">
                                     <div class="flex items-center gap-2">
-                                        <span>Organization</span>
+                                        <span>{{ $isSuperAdmin ? 'Organization' : 'Partner' }}</span>
                                         <div
                                             class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-40' }}">
                                             <svg class="w-2.5 h-2.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
@@ -369,7 +370,7 @@
                             <div class="text-sm text-gray-600">
                                 Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
                                 <span class="font-semibold">{{ $paginationMeta['to'] ?? 0 }}</span> of
-                                <span class="font-semibold">{{ $paginationMeta['total'] }}</span> organizations
+                                <span class="font-semibold">{{ $paginationMeta['total'] }}</span> {{ $isSuperAdmin ? 'organizations' : 'partners' }}
                             </div>
                             @if ($paginationMeta['last_page'] > 1)
                                 <div class="flex items-center gap-2">

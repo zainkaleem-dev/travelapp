@@ -1,9 +1,10 @@
+@php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
 <div class="max-w-6xl px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Edit Organization</h1>
+                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $isSuperAdmin ? 'Edit Organization' : 'Edit Partner' }}</h1>
                     <p class="text-sm text-gray-500 mt-1">Refining {{ $company->name }} profile</p>
                 </div>
                 <div class="flex items-center gap-3">
@@ -52,7 +53,7 @@
                                 </div>
                                 <div class="flex-1">
                                     <label
-                                        class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">Organization
+                                        class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ $isSuperAdmin ? 'Organization' : 'Partner' }}
                                         logo <span class="text-red-500">*</span></label>
                                     <p class="text-[11px] text-gray-500 mb-2">JPG, PNG or SVG. Max 2MB.</p>
                                     <div class="flex items-center gap-3">
@@ -76,7 +77,7 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="field-label">Organization Name <span class="text-red-500">*</span></label>
+                            <label class="field-label">{{ $isSuperAdmin ? 'Organization Name' : 'Partner Name' }} <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.debounce.500ms="company_name" class="input-field"
                                 placeholder="Acme Travel Services">
                             @error('company_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">

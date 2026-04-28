@@ -1,45 +1,47 @@
 @php
     $routeName = request()->route()?->getName() ?? '';
+    $isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System');
+    $companyListCrumb = $isSuperAdmin ? 'Organizations' : 'Partner List';
 
     $pageTitle = 'Page';
     $crumbs = [];
 
     switch (true) {
         case request()->routeIs('companies.index'):
-            $pageTitle = 'Organizations';
-            $crumbs = ['Organizations'];
+            $pageTitle = $companyListCrumb;
+            $crumbs = [$companyListCrumb];
             break;
         case request()->routeIs('companies.create'):
-            $pageTitle = 'Add Organization';
-            $crumbs = ['Organizations', 'Add Organization'];
+            $pageTitle = $isSuperAdmin ? 'Add Organization' : 'Add Partner';
+            $crumbs = [$companyListCrumb, $isSuperAdmin ? 'Add Organization' : 'Add Partner'];
             break;
         case request()->routeIs('companies.show'):
             $pageTitle = 'Organization Profile';
-            $crumbs = ['Organizations', 'Organization Profile'];
+            $crumbs = [$companyListCrumb, 'Organization Profile'];
             break;
         case request()->routeIs('companies.edit'):
-            $pageTitle = 'Edit Organization';
-            $crumbs = ['Organizations', 'Edit Organization'];
+            $pageTitle = $isSuperAdmin ? 'Edit Organization' : 'Edit Partner';
+            $crumbs = [$companyListCrumb, $isSuperAdmin ? 'Edit Organization' : 'Edit Partner'];
             break;
         case request()->routeIs('companies.attachments'):
             $pageTitle = 'Organization Attachments';
-            $crumbs = ['Organizations', 'Attachments'];
+            $crumbs = [$companyListCrumb, 'Attachments'];
             break;
         case request()->routeIs('companies.branches'):
             $pageTitle = 'Organization Branches';
-            $crumbs = ['Organizations', 'Branches'];
+            $crumbs = [$companyListCrumb, 'Branches'];
             break;
         case request()->routeIs('companies.user-roles'):
             $pageTitle = 'User and Roles';
-            $crumbs = ['Organizations', 'User and Roles'];
+            $crumbs = [$companyListCrumb, 'User and Roles'];
             break;
         case request()->routeIs('companies.features'):
             $pageTitle = 'Feature Management';
-            $crumbs = ['Organizations', 'Feature Management'];
+            $crumbs = [$companyListCrumb, 'Feature Management'];
             break;
         case request()->routeIs('companies.roles-permissions'):
             $pageTitle = 'Roles Permissions';
-            $crumbs = ['Organizations', 'Roles Permissions'];
+            $crumbs = [$companyListCrumb, 'Roles Permissions'];
             break;
         case request()->routeIs('branches.index'):
             $pageTitle = 'Branches';
