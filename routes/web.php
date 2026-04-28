@@ -40,6 +40,7 @@ use App\Livewire\Branch\BranchListing;
 use App\Livewire\Branch\BranchCreate;
 use App\Livewire\Branch\BranchEdit;
 use App\Livewire\Admin\Features\FeaturesListing;
+use App\Livewire\Admin\TripPurpose;
 use App\Livewire\Roles\RolesPermissions;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
@@ -248,6 +249,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/users/create', UserCreate::class)->name('users.create')->middleware('can:Create User');
         Route::get('/users/{id}/edit', UserEdit::class)->name('users.edit')->middleware('can:Edit User');
         Route::get('/roles-permissions', RolesPermissions::class)->name('roles.index')->middleware('can:Manage Roles and Permissions');
+        Route::get('/trip-purpose', TripPurpose::class)->name('admin.trip-purpose')->middleware('can:Manage Global System');
 
         // Impersonation
         Route::get('/impersonate/take/{user}', [\App\Http\Controllers\ImpersonateController::class, 'take'])->name('impersonate.take');

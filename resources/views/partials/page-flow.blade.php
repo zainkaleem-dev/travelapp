@@ -79,6 +79,10 @@
             $pageTitle = 'Feature Management';
             $crumbs = ['Feature Management'];
             break;
+        case request()->routeIs('admin.trip-purpose'):
+            $pageTitle = 'Trip Purpose';
+            $crumbs = ['Trip Purpose'];
+            break;
         default:
             $pageTitle = str($routeName !== '' ? $routeName : 'Page')
                 ->replace(['.', '-'], ' ')

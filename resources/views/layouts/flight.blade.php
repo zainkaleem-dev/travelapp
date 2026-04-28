@@ -687,7 +687,8 @@
             'branches.*',
             'users.*',
             'roles.*',
-            'features*'
+            'features*',
+            'admin.trip-purpose'
         ]);
     @endphp
     {{-- ── Navbar ── --}}
