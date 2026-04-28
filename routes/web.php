@@ -30,6 +30,7 @@ use App\Livewire\Company\CompanyShow;
 use App\Livewire\Company\CompanyAttachments;
 use App\Livewire\Company\CompanyBranches;
 use App\Livewire\Company\CompanyUserRoles;
+use App\Livewire\Company\CompanyBillingEntity;
 use App\Livewire\User\UserListing;
 use App\Livewire\User\UserCreate;
 use App\Livewire\User\UserEdit;
@@ -239,6 +240,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/companies/{id}/branches', CompanyBranches::class)->name('companies.branches')->middleware('can:View Company');
         Route::get('/companies/{id}/user-roles', CompanyUserRoles::class)->name('companies.user-roles')->middleware('can:View Company');
         Route::get('/companies/{id}/roles-permissions', RolesPermissions::class)->name('companies.roles-permissions')->middleware('can:Manage Roles and Permissions');
+        Route::get('/companies/{id}/billing-entity', CompanyBillingEntity::class)->name('companies.billing-entity')->middleware('can:View Company');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit')->middleware('can:Edit Company');
         Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features')->middleware('can:Manage Features');
         Route::get('/features', FeaturesListing::class)->name('features')->middleware('can:Manage Features');

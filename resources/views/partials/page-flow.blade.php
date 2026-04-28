@@ -43,6 +43,10 @@
             $pageTitle = 'Roles Permissions';
             $crumbs = [$companyListCrumb, 'Roles Permissions'];
             break;
+        case request()->routeIs('companies.billing-entity'):
+            $pageTitle = 'Billing Entity';
+            $crumbs = [$companyListCrumb, 'Billing Entity'];
+            break;
         case request()->routeIs('branches.index'):
             $pageTitle = 'Branches';
             $crumbs = ['Branches'];
