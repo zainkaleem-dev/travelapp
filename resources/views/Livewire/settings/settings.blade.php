@@ -21,10 +21,9 @@
                         wire:model.defer="trip_type"
                         class="w-full rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm text-gray-800 shadow-sm focus:border-[#2ab4c0] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/25">
                         <option value="">Select…</option>
-                        <option value="business_trip">Business trip</option>
-                        <option value="personal_trip">Personal trip</option>
-                        <option value="annual_trip">Annual trip</option>
-                        <option value="guest">Guest</option>
+                        @foreach($tripPurposeOptions as $purposeKey => $purposeLabel)
+                            <option value="{{ $purposeKey }}">{{ $purposeLabel }}</option>
+                        @endforeach
                     </select>
                     @error('trip_type')
                         <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>

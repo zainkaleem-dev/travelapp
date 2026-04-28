@@ -4,6 +4,7 @@ namespace App\Livewire\Settings;
 
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -22,14 +23,16 @@ class Setting extends Component
             return;
         }
 
-        $row = UserSetting::query()->where('user_id', $user->id)->first();
+        $row = UserSetting::query()->first();
         $this->trip_type = session('trip_type', $row?->trip_type);
     }
 
     protected function rules(): array
     {
+        $allowedTripTypes = array_keys(UserSetting::tripTypeOptions());
+
         return [
-            'trip_type' => 'nullable|in:business_trip,personal_trip,annual_trip,guest',
+            'trip_type' => ['nullable', Rule::in($allowedTripTypes)],
         ];
     }
 
@@ -43,7 +46,7 @@ class Setting extends Component
             return;
         }
 
-        $settings = UserSetting::query()->firstOrNew(['user_id' => $user->id]);
+        $settings = UserSetting::query()->firstOrNew();
         $settings->trip_type = $this->trip_type;
         $settings->save();
         session()->put('trip_type', $this->trip_type);
@@ -54,6 +57,8 @@ class Setting extends Component
 
     public function render()
     {
-        return view('livewire.settings.settings');
+        return view('livewire.settings.settings', [
+            'tripPurposeOptions' => UserSetting::tripTypeOptions(),
+        ]);
     }
 }

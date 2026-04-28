@@ -134,11 +134,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(UserFamilyInfo::class);
     }
 
-    public function userSetting(): HasOne
-    {
-        return $this->hasOne(UserSetting::class, 'user_id');
-    }
-
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');

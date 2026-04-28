@@ -135,7 +135,7 @@ class FlightSearch extends Component
             return;
         }
 
-        $key = UserSetting::query()->where('user_id', $user->id)->value('trip_type');
+        $key = UserSetting::query()->value('trip_type');
         $this->savedTripPurposeLabel = UserSetting::tripTypeLabel($key);
     }
 

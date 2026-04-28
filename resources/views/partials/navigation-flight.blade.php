@@ -1,12 +1,11 @@
 @php
-    $tripPurposeOptions = \App\Models\UserSetting::TRIP_TYPE_LABELS;
+    $tripPurposeOptions = \App\Models\UserSetting::tripTypeOptions();
     $tripPurposeKey = session('trip_type');
     $tripPurposeLabel = '--';
 
     if (auth()->check()) {
         if (!$tripPurposeKey) {
             $tripPurposeKey = \App\Models\UserSetting::query()
-                ->where('user_id', auth()->id())
                 ->value('trip_type');
         }
         $tripPurposeLabel = \App\Models\UserSetting::tripTypeLabel($tripPurposeKey) ?? '--';
