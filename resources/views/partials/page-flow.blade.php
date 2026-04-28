@@ -79,9 +79,13 @@
             $pageTitle = 'Feature Management';
             $crumbs = ['Feature Management'];
             break;
-        case request()->routeIs('admin.trip-purpose'):
+        case request()->routeIs('admin.trip-purpose*'):
             $pageTitle = 'Trip Purpose';
             $crumbs = ['Trip Purpose'];
+            break;
+        case request()->routeIs('admin.audit-logs*'):
+            $pageTitle = 'Audit Logs';
+            $crumbs = ['Audit Logs'];
             break;
         default:
             $pageTitle = str($routeName !== '' ? $routeName : 'Page')

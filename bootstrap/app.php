@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\SetTenantContext::class,
             \App\Http\Middleware\SetLocale::class,
             \App\Http\Middleware\SetCurrency::class,
+            \App\Http\Middleware\LogUserActivity::class,
         ]);
 
         $middleware->alias([ 

@@ -26,7 +26,6 @@
                     <thead class="bg-[#2ab4c0]">
                         <tr>
                             <th class="px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wide">Trip Purpose</th>
-                            <th class="px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wide">Code</th>
                             <th class="px-4 py-3 text-right text-xs font-bold text-white uppercase tracking-wide">Actions</th>
                         </tr>
                     </thead>
@@ -34,7 +33,6 @@
                         @forelse($tripPurposes as $purpose)
                             <tr class="border-t border-gray-100">
                                 <td class="px-4 py-3 text-gray-900">{{ $purpose->label }}</td>
-                                <td class="px-4 py-3 font-mono text-xs text-gray-700">{{ $purpose->key }}</td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.trip-purpose.view', $purpose->id) }}"
@@ -74,7 +72,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-4 py-8 text-center text-sm text-gray-500">No trip purposes found.</td>
+                                <td colspan="2" class="px-4 py-8 text-center text-sm text-gray-500">No trip purposes found.</td>
                             </tr>
                         @endforelse
                     </tbody>
