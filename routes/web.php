@@ -70,6 +70,13 @@ Route::get('/trip-type/{type}', function (Request $request, string $type) {
 
     $request->session()->put('trip_type', $type);
 
+    if (auth()->check()) {
+        \App\Models\UserSetting::query()->updateOrCreate(
+            ['user_id' => auth()->id()],
+            ['trip_type' => $type]
+        );
+    }
+
     return redirect()->back();
 })->name('trip.type.switch');
 /*

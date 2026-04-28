@@ -23,7 +23,7 @@ class Setting extends Component
         }
 
         $row = UserSetting::query()->where('user_id', $user->id)->first();
-        $this->trip_type = $row?->trip_type;
+        $this->trip_type = session('trip_type', $row?->trip_type);
     }
 
     protected function rules(): array
@@ -46,6 +46,7 @@ class Setting extends Component
         $settings = UserSetting::query()->firstOrNew(['user_id' => $user->id]);
         $settings->trip_type = $this->trip_type;
         $settings->save();
+        session()->put('trip_type', $this->trip_type);
 
         $this->saveMessage = 'Settings saved.';
         $this->dispatch('user-settings-updated');
