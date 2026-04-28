@@ -48,6 +48,11 @@ class AuditLogView extends Component
 
         $activity = (array) ($this->activityLog->activity ?? []);
 
+        $nested = $this->extractLivewireSnapshotData($activity);
+        if ($nested !== null) {
+            return $nested;
+        }
+
         return $activity['before_state']
             ?? $activity['previous_state']
             ?? null;
@@ -61,9 +66,120 @@ class AuditLogView extends Component
 
         $activity = (array) ($this->activityLog->activity ?? []);
 
+        $livewireAfter = $this->buildLivewireAfterState($activity);
+        if ($livewireAfter !== null) {
+            return $livewireAfter;
+        }
+
         return $activity['after_state']
             ?? $activity['new_state']
             ?? null;
+    }
+
+    public function detailedMessage(): string
+    {
+        $activity = (array) ($this->activityLog->activity ?? []);
+        $user = $this->actorLabel();
+        $page = $this->activityLog->page ?: ($activity['route_name'] ?? 'Unknown Page');
+        $action = $this->activityLog->action_name ?: $this->inferActionNameFromActivity($activity);
+
+        $parts = [];
+        $parts[] = "{$user} {$action} on {$page}.";
+
+        $input = $activity['input'] ?? null;
+        if (is_array($input) && isset($input['components'][0])) {
+            $component = $input['components'][0];
+            $componentName = $this->extractComponentName($component);
+            if ($componentName) {
+                $parts[] = "Component: {$componentName}.";
+            }
+
+            if (!empty($component['calls'][0]['method'])) {
+                $parts[] = "Triggered method: {$component['calls'][0]['method']}.";
+            }
+
+            if (!empty($component['updates']) && is_array($component['updates'])) {
+                $updatedFields = implode(', ', array_keys($component['updates']));
+                $parts[] = "Updated fields: {$updatedFields}.";
+            }
+        }
+
+        return implode(' ', $parts);
+    }
+
+    private function extractLivewireSnapshotData(array $activity): ?array
+    {
+        $component = $activity['input']['components'][0] ?? null;
+        if (!is_array($component)) {
+            return null;
+        }
+
+        $snapshotRaw = $component['snapshot'] ?? null;
+        if (!is_string($snapshotRaw) || $snapshotRaw === '') {
+            return null;
+        }
+
+        $snapshot = json_decode($snapshotRaw, true);
+        if (!is_array($snapshot)) {
+            return null;
+        }
+
+        return isset($snapshot['data']) && is_array($snapshot['data'])
+            ? $snapshot['data']
+            : null;
+    }
+
+    private function buildLivewireAfterState(array $activity): ?array
+    {
+        $before = $this->extractLivewireSnapshotData($activity);
+        if (!is_array($before)) {
+            return null;
+        }
+
+        $component = $activity['input']['components'][0] ?? null;
+        if (!is_array($component)) {
+            return null;
+        }
+
+        $updates = $component['updates'] ?? null;
+        if (!is_array($updates) || $updates === []) {
+            return $before;
+        }
+
+        $after = $before;
+        foreach ($updates as $field => $value) {
+            $after[$field] = $value;
+        }
+
+        return $after;
+    }
+
+    private function extractComponentName(array $component): ?string
+    {
+        $snapshotRaw = $component['snapshot'] ?? null;
+        if (!is_string($snapshotRaw) || $snapshotRaw === '') {
+            return null;
+        }
+
+        $snapshot = json_decode($snapshotRaw, true);
+        if (!is_array($snapshot)) {
+            return null;
+        }
+
+        return $snapshot['memo']['name'] ?? null;
+    }
+
+    private function inferActionNameFromActivity(array $activity): string
+    {
+        $method = strtoupper((string) ($activity['method'] ?? ''));
+
+        return match ($method) {
+            'GET' => 'viewed',
+            'POST' => 'submitted changes',
+            'PUT', 'PATCH' => 'updated data',
+            'DELETE' => 'deleted data',
+            default => 'performed an action',
+        };
     }
 }
 

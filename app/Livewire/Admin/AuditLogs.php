@@ -12,6 +12,69 @@ class AuditLogs extends Component
 {
     use WithPagination;
 
+    public int $perPage = 20;
+    public bool $selectionMode = false;
+    public array $selectedLogIds = [];
+
+    public function deleteLog(int $logId): void
+    {
+        ActivityLog::query()->whereKey($logId)->delete();
+    }
+
+    public function startBulkDeleteMode(int $logId): void
+    {
+        $this->selectionMode = true;
+
+        if (!in_array($logId, $this->selectedLogIds, true)) {
+            $this->selectedLogIds[] = $logId;
+        }
+    }
+
+    public function toggleSelected(int $logId): void
+    {
+        if (in_array($logId, $this->selectedLogIds, true)) {
+            $this->selectedLogIds = array_values(array_filter(
+                $this->selectedLogIds,
+                fn ($id) => (int) $id !== $logId
+            ));
+
+            return;
+        }
+
+        $this->selectedLogIds[] = $logId;
+    }
+
+    public function selectAllVisible(): void
+    {
+        $ids = ActivityLog::query()
+            ->latest('id')
+            ->forPage($this->getPage(), $this->perPage)
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        $this->selectedLogIds = $ids;
+    }
+
+    public function clearSelection(): void
+    {
+        $this->selectedLogIds = [];
+        $this->selectionMode = false;
+    }
+
+    public function deleteSelectedLogs(): void
+    {
+        if ($this->selectedLogIds === []) {
+            return;
+        }
+
+        ActivityLog::query()
+            ->whereIn('id', $this->selectedLogIds)
+            ->delete();
+
+        $this->clearSelection();
+    }
+
     public function actorLabel(ActivityLog $log): string
     {
         $activity = (array) ($log->activity ?? []);
@@ -160,7 +223,7 @@ class AuditLogs extends Component
     public function render()
     {
         return view('livewire.admin.audit-logs', [
-            'logs' => ActivityLog::query()->with('user')->latest('id')->paginate(20),
+            'logs' => ActivityLog::query()->with('user')->latest('id')->paginate($this->perPage),
         ]);
     }
 }

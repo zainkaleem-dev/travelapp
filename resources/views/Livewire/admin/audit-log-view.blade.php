@@ -32,6 +32,11 @@
                 </div>
 
                 <div class="rounded-xl border border-gray-200 bg-white p-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Detailed Message</p>
+                    <p class="text-sm text-gray-800 leading-6">{{ $this->detailedMessage() }}</p>
+                </div>
+
+                <div class="rounded-xl border border-gray-200 bg-white p-4">
                     <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Before State</p>
                     <pre class="text-xs text-gray-700 whitespace-pre-wrap break-words">{{ json_encode($this->beforeState(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
                 </div>
