@@ -161,6 +161,8 @@
                         <div>
                             <label class="field-label">Registration No. <span class="text-red-500">*</span></label>
                             <input type="text" wire:model="registration_number" class="input-field"
+                                readonly 
+                                disabled
                                 placeholder="12345-678">
                             @error('registration_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
