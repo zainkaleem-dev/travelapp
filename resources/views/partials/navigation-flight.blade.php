@@ -1,22 +1,34 @@
 @php
-    $tripPurposeKey = null;
+    $tripPurposeOptions = \App\Models\UserSetting::TRIP_TYPE_LABELS;
+    $tripPurposeKey = session('trip_type');
     $tripPurposeLabel = '--';
 
     if (auth()->check()) {
-        $tripPurposeKey = \App\Models\UserSetting::query()
-            ->where('user_id', auth()->id())
-            ->value('trip_type');
+        if (!$tripPurposeKey) {
+            $tripPurposeKey = \App\Models\UserSetting::query()
+                ->where('user_id', auth()->id())
+                ->value('trip_type');
+        }
         $tripPurposeLabel = \App\Models\UserSetting::tripTypeLabel($tripPurposeKey) ?? '--';
     }
 @endphp
 
-{{-- ── Trip Type Bar (flight search only, read-only) ── --}}
+{{-- ── Trip Type Bar (flight purpose picker) ── --}}
 <div class="max-w-[960px] mx-auto">
-    <div class="flex items-center gap-3 bg-white border border-b border-gray-200 rounded-t-xl px-4 py-2.5">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white border border-b border-gray-200 rounded-t-xl px-4 py-2.5">
         <div
             class="inline-flex max-w-full items-center gap-2 rounded-xl border border-[#2ab4c0]/45 bg-[#eaf9fb] px-3 py-1.5 shadow-[0_2px_10px_rgba(42,180,192,0.18)] ring-1 ring-[#2ab4c0]/15">
             <span class="text-[10px] font-bold uppercase tracking-wider text-[#4b5563]">Trip purpose</span>
             <span class="text-xs font-semibold text-[#1f9aa6]">{{ $tripPurposeLabel }}</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+            @foreach($tripPurposeOptions as $purposeKey => $purposeLabel)
+                <a href="{{ route('trip.type.switch', $purposeKey) }}"
+                    class="inline-flex items-center rounded-lg border px-3 py-1.5 text-[11px] font-semibold transition-colors {{ $tripPurposeKey === $purposeKey ? 'border-[#2ab4c0] bg-[#2ab4c0] text-white' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50' }}">
+                    {{ $purposeLabel }}
+                </a>
+            @endforeach
         </div>
     </div>
 </div>
