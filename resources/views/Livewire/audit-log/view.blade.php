@@ -32,7 +32,14 @@
                 </div>
 
                 <div class="rounded-xl border border-gray-200 bg-white p-4">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Detailed Message</p>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Action Page</p>
+                    <p class="text-sm text-gray-900">
+                        {{ collect(explode(' -> ', $this->breadcrumbPath()))->last() }}
+                    </p>
+                </div>
+
+                <div class="rounded-xl border border-gray-200 bg-white p-4">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Action Detail</p>
                     <p class="text-sm text-gray-800 leading-6">{{ $this->detailedMessage() }}</p>
                 </div>
 
@@ -45,6 +52,8 @@
                     <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">After State</p>
                     <pre class="text-xs text-gray-700 whitespace-pre-wrap break-words">{{ json_encode($this->afterState(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
                 </div>
+
+
 
                 <div class="rounded-xl border border-gray-200 bg-white p-4">
                     <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Raw Activity</p>

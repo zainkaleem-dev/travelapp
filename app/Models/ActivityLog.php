@@ -18,15 +18,88 @@ class ActivityLog extends Model
         'activity',
         'page',
         'action_name',
-        'before_state',
-        'after_state',
     ];
 
     protected $casts = [
         'activity' => 'array',
-        'before_state' => 'array',
-        'after_state' => 'array',
     ];
+
+    public function beforeState(): mixed
+    {
+        $activity = (array) ($this->activity ?? []);
+
+        // Try to extract from nested Livewire snapshot if available
+        $nested = $this->extractLivewireSnapshotData($activity);
+        if ($nested !== null) {
+            return $nested;
+        }
+
+        return $activity['before_state']
+            ?? $activity['previous_state']
+            ?? null;
+    }
+
+    public function afterState(): mixed
+    {
+        $activity = (array) ($this->activity ?? []);
+
+        // Try to build after state from Livewire updates
+        $livewireAfter = $this->buildLivewireAfterState($activity);
+        if ($livewireAfter !== null) {
+            return $livewireAfter;
+        }
+
+        return $activity['after_state']
+            ?? $activity['new_state']
+            ?? null;
+    }
+
+    private function extractLivewireSnapshotData(array $activity): ?array
+    {
+        $component = $activity['input']['components'][0] ?? null;
+        if (!is_array($component)) {
+            return null;
+        }
+
+        $snapshotRaw = $component['snapshot'] ?? null;
+        if (!is_string($snapshotRaw) || $snapshotRaw === '') {
+            return null;
+        }
+
+        $snapshot = json_decode($snapshotRaw, true);
+        if (!is_array($snapshot)) {
+            return null;
+        }
+
+        return isset($snapshot['data']) && is_array($snapshot['data'])
+            ? $snapshot['data']
+            : null;
+    }
+
+    private function buildLivewireAfterState(array $activity): ?array
+    {
+        $before = $this->extractLivewireSnapshotData($activity);
+        if (!is_array($before)) {
+            return null;
+        }
+
+        $component = $activity['input']['components'][0] ?? null;
+        if (!is_array($component)) {
+            return null;
+        }
+
+        $updates = $component['updates'] ?? null;
+        if (!is_array($updates) || $updates === []) {
+            return $before;
+        }
+
+        $after = $before;
+        foreach ($updates as $field => $value) {
+            $after[$field] = $value;
+        }
+
+        return $after;
+    }
 
     public function company(): BelongsTo
     {

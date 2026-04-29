@@ -13,8 +13,26 @@ class AuditLogs extends Component
     use WithPagination;
 
     public int $perPage = 20;
+    public string $search = '';
+    public string $actionFilter = '';
     public bool $selectionMode = false;
     public array $selectedLogIds = [];
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'actionFilter' => ['except' => ''],
+        'perPage' => ['except' => 20],
+    ];
+
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedActionFilter(): void
+    {
+        $this->resetPage();
+    }
 
     public function deleteLog(int $logId): void
     {
@@ -100,8 +118,9 @@ class AuditLogs extends Component
     {
         $page = $log->page ?: ((array) ($log->activity ?? []))['route_name'] ?? 'unknown page';
         $action = $log->action_name ?: 'performed';
-        $before = $log->before_state;
-        $after = $log->after_state;
+        
+        $before = $log->beforeState();
+        $after = $log->afterState();
 
         $entityName = $this->inferEntityName($before, $after);
         $pageLabel = $this->formatPageLabel($page);
@@ -222,9 +241,26 @@ class AuditLogs extends Component
 
     public function render()
     {
+        $query = ActivityLog::query()
+            ->with('user')
+            ->latest('id');
+
+        if ($this->search) {
+            $query->where(function($q) {
+                $q->where('page', 'like', '%' . $this->search . '%')
+                  ->orWhere('action_name', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('user', function($uq) {
+                      $uq->where('name', 'like', '%' . $this->search . '%');
+                  });
+            });
+        }
+
+        if ($this->actionFilter) {
+            $query->where('action_name', $this->actionFilter);
+        }
+
         return view('livewire.audit-log.index', [
-            'logs' => ActivityLog::query()->with('user')->latest('id')->paginate($this->perPage),
+            'logs' => $query->paginate($this->perPage),
         ]);
     }
 }
-

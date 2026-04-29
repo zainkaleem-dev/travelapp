@@ -35,6 +35,54 @@ class AuditLogView extends Component
         return $actorName ?: 'Unknown User';
     }
 
+    public function url(): ?string
+    {
+        $activity = (array) ($this->activityLog->activity ?? []);
+        return $activity['full_url'] 
+            ?? $activity['url'] 
+            ?? ($this->activityLog->page ? url($this->activityLog->page) : null);
+    }
+
+    public function breadcrumbPath(): string
+    {
+        $url = $this->url();
+        if (!$url) return 'Unknown Path';
+
+        $path = parse_url($url, PHP_URL_PATH);
+        $segments = explode('/', trim($path, '/'));
+        
+        $map = [
+            'admin' => 'Dashboard',
+            'countries-and-cities' => 'Countries & Cities',
+            'trip-purpose' => 'Trip Purposes',
+            'airports' => 'Airports',
+            'create' => 'Add New',
+            'edit' => 'Edit',
+            'view' => 'View Details',
+            'companies' => 'Companies',
+            'branches' => 'Branches',
+            'users' => 'Users',
+            'roles' => 'Roles & Permissions',
+            'audit-logs' => 'Audit Logs',
+            'country' => 'Country',
+            'city' => 'City'
+        ];
+
+        $formattedSegments = [];
+        foreach ($segments as $segment) {
+            if (is_numeric($segment) || $segment === 'livewire' || $segment === 'update') continue;
+            
+            $lower = strtolower($segment);
+            if (isset($map[$lower])) {
+                $formattedSegments[] = $map[$lower];
+            } else {
+                $formattedSegments[] = ucwords(str_replace(['-', '_'], ' ', $segment));
+            }
+        }
+
+        return implode(' -> ', array_unique($formattedSegments));
+    }
+
     public function render()
     {
         return view('livewire.audit-log.view');
@@ -42,38 +90,12 @@ class AuditLogView extends Component
 
     public function beforeState(): mixed
     {
-        if ($this->activityLog->before_state !== null) {
-            return $this->activityLog->before_state;
-        }
-
-        $activity = (array) ($this->activityLog->activity ?? []);
-
-        $nested = $this->extractLivewireSnapshotData($activity);
-        if ($nested !== null) {
-            return $nested;
-        }
-
-        return $activity['before_state']
-            ?? $activity['previous_state']
-            ?? null;
+        return $this->activityLog->beforeState();
     }
 
     public function afterState(): mixed
     {
-        if ($this->activityLog->after_state !== null) {
-            return $this->activityLog->after_state;
-        }
-
-        $activity = (array) ($this->activityLog->activity ?? []);
-
-        $livewireAfter = $this->buildLivewireAfterState($activity);
-        if ($livewireAfter !== null) {
-            return $livewireAfter;
-        }
-
-        return $activity['after_state']
-            ?? $activity['new_state']
-            ?? null;
+        return $this->activityLog->afterState();
     }
 
     public function detailedMessage(): string
@@ -107,53 +129,6 @@ class AuditLogView extends Component
         return implode(' ', $parts);
     }
 
-    private function extractLivewireSnapshotData(array $activity): ?array
-    {
-        $component = $activity['input']['components'][0] ?? null;
-        if (!is_array($component)) {
-            return null;
-        }
-
-        $snapshotRaw = $component['snapshot'] ?? null;
-        if (!is_string($snapshotRaw) || $snapshotRaw === '') {
-            return null;
-        }
-
-        $snapshot = json_decode($snapshotRaw, true);
-        if (!is_array($snapshot)) {
-            return null;
-        }
-
-        return isset($snapshot['data']) && is_array($snapshot['data'])
-            ? $snapshot['data']
-            : null;
-    }
-
-    private function buildLivewireAfterState(array $activity): ?array
-    {
-        $before = $this->extractLivewireSnapshotData($activity);
-        if (!is_array($before)) {
-            return null;
-        }
-
-        $component = $activity['input']['components'][0] ?? null;
-        if (!is_array($component)) {
-            return null;
-        }
-
-        $updates = $component['updates'] ?? null;
-        if (!is_array($updates) || $updates === []) {
-            return $before;
-        }
-
-        $after = $before;
-        foreach ($updates as $field => $value) {
-            $after[$field] = $value;
-        }
-
-        return $after;
-    }
-
     private function extractComponentName(array $component): ?string
     {
         $snapshotRaw = $component['snapshot'] ?? null;
@@ -182,4 +157,3 @@ class AuditLogView extends Component
         };
     }
 }
-
