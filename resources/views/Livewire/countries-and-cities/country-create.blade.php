@@ -15,7 +15,7 @@
                 <div class="rounded-xl border border-gray-200 bg-white p-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Country Code (ISO 2)</label>
+                            <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Country Code</label>
                             <input type="text" wire:model.defer="country_code" placeholder="US"
                                 class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#2ab4c0] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/25">
                             @error('country_code') <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p> @enderror

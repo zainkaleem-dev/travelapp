@@ -102,26 +102,26 @@ Route::get('/', function () {
         }
         // 1. Global Super Admin landing
         if ($user->can('Manage Global System')) {
-            return redirect()->route('companies.index');
+            return redirect()->route('dashboard');
         }
 
         // 2. Tenant Admin landing (Organization/Company Admins)
         if ($user->can('View Users')) {
-            return redirect()->route('users.index');
+            return redirect()->route('dashboard');
         }
 
         if ($user->can('View Branch')) {
-            return redirect()->route('branches.index');
+            return redirect()->route('dashboard');
         }
 
         if ($user->can('View Company')) {
-            return redirect()->route('companies.index');
+            return redirect()->route('dashboard');
         }
         if ($user->can('Manage Roles And Permissions')) {
-            return redirect()->route('roles.index');
+            return redirect()->route('dashboard');
         }
         if ($user->can('Manage Features')) {
-            return redirect()->route('features.index');
+            return redirect()->route('dashboard');
         }
 
         // 3. Agent/User landing

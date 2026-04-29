@@ -128,7 +128,7 @@
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <input type="text" class="input-field pl-10" wire:model.live.debounce.300ms="search"
-                                placeholder="Search organizations by name, slug, or type..." />
+                                placeholder="Search {{ $isSuperAdmin ? 'organizations' : 'partners' }} by name, slug, or type..." />
                         </div>
                     </div>
                 </div>
@@ -355,7 +355,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="px-6 py-10 text-center text-gray-500">
-                                        No organizations found.
+                                        No {{ $isSuperAdmin ? 'organizations' : 'partners' }} found.
                                     </td>
                                 </tr>
                             @endforelse

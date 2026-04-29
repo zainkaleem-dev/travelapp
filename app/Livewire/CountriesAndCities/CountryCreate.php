@@ -16,7 +16,7 @@ class CountryCreate extends Component
     protected function rules(): array
     {
         return [
-            'country_code' => ['required', 'string', 'size:2', 'unique:countries,code'],
+            'country_code' => ['required', 'string', 'max:255', 'unique:countries,code'],
             'country_name' => ['required', 'string', 'max:100'],
             'country_dial_code' => ['nullable', 'string', 'max:10'],
         ];

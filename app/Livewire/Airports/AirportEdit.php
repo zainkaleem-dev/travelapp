@@ -30,8 +30,8 @@ class AirportEdit extends Component
         return [
             'city_id' => ['required', 'exists:cities,id'],
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['required', 'string', 'size:3'],
-            'icao_code' => ['nullable', 'string', 'size:4'],
+            'code' => ['required', 'string', 'max:255'],
+            'icao_code' => ['nullable', 'string', 'max:255'],
         ];
     }
 

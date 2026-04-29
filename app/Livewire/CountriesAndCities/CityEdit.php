@@ -28,7 +28,7 @@ class CityEdit extends Component
         return [
             'country_id' => ['required', 'exists:countries,id'],
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['nullable', 'string', 'max:10'],
+            'code' => ['nullable', 'string', 'max:255'],
         ];
     }
 

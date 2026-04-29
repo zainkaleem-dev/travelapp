@@ -100,7 +100,7 @@ class Login extends Component
         }
 
         if ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin') || $user->hasRole('Branch Admin')) {
-            $this->redirect(route('companies.index'));
+            $this->redirect(route('dashboard'));
             return;
         }
 

@@ -26,7 +26,7 @@ class CountryEdit extends Component
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['nullable', 'string', 'max:10'],
+            'code' => ['nullable', 'string', 'max:255'],
             'dial_code' => ['nullable', 'string', 'max:20'],
         ];
     }

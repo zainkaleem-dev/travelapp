@@ -20,8 +20,8 @@ class AirportCreate extends Component
         return [
             'city_id' => ['required', 'exists:cities,id'],
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['required', 'string', 'size:3', 'unique:airports,code'],
-            'icao_code' => ['nullable', 'string', 'size:4', 'unique:airports,icao_code'],
+            'code' => ['required', 'string', 'max:255', 'unique:airports,code'],
+            'icao_code' => ['nullable', 'string', 'max:255', 'unique:airports,icao_code'],
         ];
     }
 

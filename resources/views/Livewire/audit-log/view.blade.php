@@ -22,10 +22,6 @@
                         <p class="mt-1 text-sm font-semibold text-gray-900">{{ $activityLog->created_at?->format('Y-m-d H:i:s') }}</p>
                     </div>
                     <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Page</p>
-                        <p class="mt-1 text-sm font-semibold text-gray-900">{{ $activityLog->page ?: '-' }}</p>
-                    </div>
-                    <div>
                         <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Action</p>
                         <p class="mt-1 text-sm font-semibold text-gray-900">{{ $activityLog->action_name ?: '-' }}</p>
                     </div>
@@ -34,7 +30,7 @@
                 <div class="rounded-xl border border-gray-200 bg-white p-4">
                     <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Action Page</p>
                     <p class="text-sm text-gray-900">
-                        {{ collect(explode(' -> ', $this->breadcrumbPath()))->last() }}
+                        {{ $this->pageName() }}
                     </p>
                 </div>
 
@@ -43,21 +39,34 @@
                     <p class="text-sm text-gray-800 leading-6">{{ $this->detailedMessage() }}</p>
                 </div>
 
-                <div class="rounded-xl border border-gray-200 bg-white p-4">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Before State</p>
-                    <pre class="text-xs text-gray-700 whitespace-pre-wrap break-words">{{ json_encode($this->beforeState(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="rounded-xl border border-gray-200 bg-white p-4">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-50">Before State</p>
+                        <div class="space-y-3">
+                            @forelse($this->beforeState() as $label => $value)
+                                <div class="flex justify-between items-start gap-4">
+                                    <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-tight">{{ $label }}</span>
+                                    <span class="text-sm text-gray-800 font-medium text-right">{{ $value }}</span>
+                                </div>
+                            @empty
+                                <p class="text-xs text-gray-400 italic">No previous data captured.</p>
+                            @endforelse
+                        </div>
+                    </div>
 
-                <div class="rounded-xl border border-gray-200 bg-white p-4">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">After State</p>
-                    <pre class="text-xs text-gray-700 whitespace-pre-wrap break-words">{{ json_encode($this->afterState(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
-                </div>
-
-
-
-                <div class="rounded-xl border border-gray-200 bg-white p-4">
-                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Raw Activity</p>
-                    <pre class="text-xs text-gray-700 whitespace-pre-wrap break-words">{{ json_encode($activityLog->activity, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+                    <div class="rounded-xl border border-gray-200 bg-white p-4">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-4 pb-2 border-b border-gray-50">After State</p>
+                        <div class="space-y-3">
+                            @forelse($this->afterState() as $label => $value)
+                                <div class="flex justify-between items-start gap-4">
+                                    <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-tight">{{ $label }}</span>
+                                    <span class="text-sm text-[#2ab4c0] font-bold text-right">{{ $value }}</span>
+                                </div>
+                            @empty
+                                <p class="text-xs text-gray-400 italic">No new data captured.</p>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
