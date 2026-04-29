@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\TripPurpose;
 
 use App\Models\TripPurpose as TripPurposeModel;
 use App\Models\UserSetting;
@@ -187,7 +187,7 @@ class TripPurpose extends Component
     {
         $hasTripPurposeTable = Schema::hasTable('trip_purposes');
 
-        return view('livewire.admin.trip-purpose', [
+        return view('livewire.trip-purpose.index', [
             'tripPurposeOptions' => UserSetting::tripTypeOptions(),
             'tripPurposes' => $hasTripPurposeTable
                 ? TripPurposeModel::query()->orderBy('id')->get()

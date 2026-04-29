@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\TripPurpose;
 
 use App\Models\TripPurpose;
 use Livewire\Attributes\Layout;
@@ -18,7 +18,7 @@ class TripPurposeView extends Component
 
     public function render()
     {
-        return view('livewire.admin.trip-purpose-view');
+        return view('livewire.trip-purpose.view');
     }
 }
 

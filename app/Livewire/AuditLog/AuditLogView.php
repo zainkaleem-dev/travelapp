@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\AuditLog;
 
 use App\Models\ActivityLog;
 use Livewire\Attributes\Layout;
@@ -37,7 +37,7 @@ class AuditLogView extends Component
 
     public function render()
     {
-        return view('livewire.admin.audit-log-view');
+        return view('livewire.audit-log.view');
     }
 
     public function beforeState(): mixed

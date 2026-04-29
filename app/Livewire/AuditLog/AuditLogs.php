@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\AuditLog;
 
 use App\Models\ActivityLog;
 use Livewire\Attributes\Layout;
@@ -222,7 +222,7 @@ class AuditLogs extends Component
 
     public function render()
     {
-        return view('livewire.admin.audit-logs', [
+        return view('livewire.audit-log.index', [
             'logs' => ActivityLog::query()->with('user')->latest('id')->paginate($this->perPage),
         ]);
     }

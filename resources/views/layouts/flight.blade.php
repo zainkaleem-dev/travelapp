@@ -690,7 +690,9 @@
             'features*',
             'admin.trip-purpose*',
             'admin.integrations-api*',
-            'admin.audit-logs*'
+            'admin.audit-logs*',
+            'admin.countries-and-cities*',
+            'admin.airports*'
         ]);
     @endphp
     {{-- ── Navbar ── --}}

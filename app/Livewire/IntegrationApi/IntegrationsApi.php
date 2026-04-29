@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\IntegrationApi;
 
 use App\Support\EnvEditor;
 use Illuminate\Support\Facades\Auth;
@@ -121,6 +121,6 @@ class IntegrationsApi extends Component
 
     public function render()
     {
-        return view('livewire.admin.integrations-api');
+        return view('livewire.integrationapi.index');
     }
 }

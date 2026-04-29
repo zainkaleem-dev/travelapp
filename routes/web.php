@@ -40,13 +40,15 @@ use App\Livewire\Branch\BranchListing;
 use App\Livewire\Branch\BranchCreate;
 use App\Livewire\Branch\BranchEdit;
 use App\Livewire\Admin\Features\FeaturesListing;
-use App\Livewire\Admin\AuditLogs;
-use App\Livewire\Admin\AuditLogView;
-use App\Livewire\Admin\TripPurpose;
-use App\Livewire\Admin\TripPurposeEdit;
-use App\Livewire\Admin\TripPurposeView;
-use App\Livewire\Admin\IntegrationsApi;
+use App\Livewire\AuditLog\AuditLogs;
+use App\Livewire\AuditLog\AuditLogView;
+use App\Livewire\TripPurpose\TripPurpose;
+use App\Livewire\TripPurpose\TripPurposeEdit;
+use App\Livewire\TripPurpose\TripPurposeView;
+use App\Livewire\IntegrationApi\IntegrationsApi;
 use App\Livewire\Roles\RolesPermissions;
+use App\Livewire\CountriesAndCities\CountriesAndCities;
+use App\Livewire\Airports\Airports;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
     $locale = strtolower($locale);
@@ -267,6 +269,8 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/integrations-api', IntegrationsApi::class)->name('admin.integrations-api')->middleware('can:Manage Global System');
         Route::get('/audit-logs', AuditLogs::class)->name('admin.audit-logs')->middleware('can:Manage Global System');
         Route::get('/audit-logs/{activityLog}', AuditLogView::class)->name('admin.audit-logs.view')->middleware('can:Manage Global System');
+        Route::get('/countries-and-cities', CountriesAndCities::class)->name('admin.countries-and-cities')->middleware('can:Manage Global System');
+        Route::get('/airports', Airports::class)->name('admin.airports')->middleware('can:Manage Global System');
 
         // Impersonation
         Route::get('/impersonate/take/{user}', [\App\Http\Controllers\ImpersonateController::class, 'take'])->name('impersonate.take');

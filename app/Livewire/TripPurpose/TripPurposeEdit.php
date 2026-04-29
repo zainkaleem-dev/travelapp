@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\TripPurpose;
 
 use App\Models\TripPurpose;
 use Illuminate\Support\Str;
@@ -59,7 +59,7 @@ class TripPurposeEdit extends Component
 
     public function render()
     {
-        return view('livewire.admin.trip-purpose-edit');
+        return view('livewire.trip-purpose.edit');
     }
 }
 
