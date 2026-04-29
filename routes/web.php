@@ -265,13 +265,23 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/users/{id}/edit', UserEdit::class)->name('users.edit')->middleware('can:Edit User');
         Route::get('/roles-permissions', RolesPermissions::class)->name('roles.index')->middleware('can:Manage Roles and Permissions');
         Route::get('/trip-purpose', TripPurpose::class)->name('admin.trip-purpose')->middleware('can:Manage Global System');
+        Route::get('/trip-purpose/create', \App\Livewire\TripPurpose\TripPurposeCreate::class)->name('admin.trip-purpose.create')->middleware('can:Manage Global System');
         Route::get('/trip-purpose/{tripPurpose}', TripPurposeView::class)->name('admin.trip-purpose.view')->middleware('can:Manage Global System');
         Route::get('/trip-purpose/{tripPurpose}/edit', TripPurposeEdit::class)->name('admin.trip-purpose.edit')->middleware('can:Manage Global System');
         Route::get('/integrations-api', IntegrationsApi::class)->name('admin.integrations-api')->middleware('can:Manage Global System');
         Route::get('/audit-logs', AuditLogs::class)->name('admin.audit-logs')->middleware('can:Manage Global System');
         Route::get('/audit-logs/{activityLog}', AuditLogView::class)->name('admin.audit-logs.view')->middleware('can:Manage Global System');
         Route::get('/countries-and-cities', CountriesAndCities::class)->name('admin.countries-and-cities')->middleware('can:Manage Global System');
+        Route::get('/countries-and-cities/country/create', \App\Livewire\CountriesAndCities\CountryCreate::class)->name('admin.countries.create')->middleware('can:Manage Global System');
+        Route::get('/countries-and-cities/country/{country}', \App\Livewire\CountriesAndCities\CountryView::class)->name('admin.countries.view')->middleware('can:Manage Global System');
+        Route::get('/countries-and-cities/country/{country}/edit', \App\Livewire\CountriesAndCities\CountryEdit::class)->name('admin.countries.edit')->middleware('can:Manage Global System');
+        Route::get('/countries-and-cities/city/create', \App\Livewire\CountriesAndCities\CityCreate::class)->name('admin.cities.create')->middleware('can:Manage Global System');
+        Route::get('/countries-and-cities/city/{city}', \App\Livewire\CountriesAndCities\CityView::class)->name('admin.cities.view')->middleware('can:Manage Global System');
+        Route::get('/countries-and-cities/city/{city}/edit', \App\Livewire\CountriesAndCities\CityEdit::class)->name('admin.cities.edit')->middleware('can:Manage Global System');
         Route::get('/airports', Airports::class)->name('admin.airports')->middleware('can:Manage Global System');
+        Route::get('/airports/create', \App\Livewire\Airports\AirportCreate::class)->name('admin.airports.create')->middleware('can:Manage Global System');
+        Route::get('/airports/{airport}', \App\Livewire\Airports\AirportView::class)->name('admin.airports.view')->middleware('can:Manage Global System');
+        Route::get('/airports/{airport}/edit', \App\Livewire\Airports\AirportEdit::class)->name('admin.airports.edit')->middleware('can:Manage Global System');
 
         // Impersonation
         Route::get('/impersonate/take/{user}', [\App\Http\Controllers\ImpersonateController::class, 'take'])->name('impersonate.take');

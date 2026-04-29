@@ -692,6 +692,8 @@
             'admin.integrations-api*',
             'admin.audit-logs*',
             'admin.countries-and-cities*',
+            'admin.countries.*',
+            'admin.cities.*',
             'admin.airports*',
             'dashboard'
         ]);

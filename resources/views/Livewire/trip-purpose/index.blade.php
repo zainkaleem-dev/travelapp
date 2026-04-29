@@ -6,11 +6,10 @@
                     <div>
                         <h1 class="text-2xl font-black text-gray-900 tracking-tight">Trips</h1>
                     </div>
-                    <button type="button"
-                        wire:click="openCreateForm"
+                    <a href="{{ route('admin.trip-purpose.create') }}"
                         class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                         Add Trip
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -81,59 +80,5 @@
             </div>
         </div>
     </div>
-
-    @if($showPurposeForm)
-        <div class="fixed inset-0 z-[999] flex items-center justify-center p-4" role="dialog" aria-modal="true">
-            <div class="absolute inset-0 bg-black/40" wire:click="cancelEdit"></div>
-            <div class="relative z-[1000] w-full max-w-2xl rounded-2xl border border-gray-200 bg-white shadow-xl">
-                <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                    <h3 class="text-sm font-bold text-gray-900">{{ $editingPurposeId ? 'Edit Trip' : 'Add Trip' }}</h3>
-                    <button type="button" wire:click="cancelEdit" class="text-gray-400 hover:text-gray-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Trip Purpose</label>
-                            <input type="text"
-                                wire:model.defer="purpose_label"
-                                placeholder="Business trip"
-                                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#2ab4c0] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/25">
-                            @error('purpose_label')
-                                <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Code</label>
-                            <input type="text"
-                                wire:model.defer="purpose_key"
-                                placeholder="business_trip"
-                                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#2ab4c0] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/25">
-                            @error('purpose_key')
-                                <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="mt-4 flex items-center justify-end gap-2">
-                        <button type="button"
-                            wire:click="cancelEdit"
-                            class="inline-flex items-center rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                            Cancel
-                        </button>
-                        <button type="button"
-                            wire:click="savePurpose"
-                            class="inline-flex items-center rounded-xl bg-gradient-to-r from-[#2ab4c0] to-[#239ea9] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#2ab4c0]/20 transition hover:brightness-105">
-                            {{ $editingPurposeId ? 'Update Trip' : 'Save Trip' }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
 </div>
 
