@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Livewire\Dashboard\Dashboard;
 use App\Livewire\Flightsearch\FlightSearch;
 use App\Livewire\Flightslist\FlightList;
 use App\Livewire\Passengerdetail\PassengerDetail;
@@ -186,7 +187,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'password.set'])->group(function () {
-    Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile');
 
     Route::get('/profile/family/create', FamilyCreate::class)->name('family.create');

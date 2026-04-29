@@ -692,7 +692,8 @@
             'admin.integrations-api*',
             'admin.audit-logs*',
             'admin.countries-and-cities*',
-            'admin.airports*'
+            'admin.airports*',
+            'dashboard'
         ]);
     @endphp
     {{-- ── Navbar ── --}}
