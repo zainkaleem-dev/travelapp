@@ -13,6 +13,9 @@
                 </div>
             </div>
 
+            </div>
+
+        <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div class="p-6 space-y-6">
             @if (session('status'))
                 <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">

@@ -102,7 +102,9 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 @if($selectionMode)
                     <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
