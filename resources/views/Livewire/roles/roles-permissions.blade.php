@@ -1,6 +1,6 @@
 <div>
     <div class="px-1 py-1 w-full">
-        @if(request()->routeIs('companies.roles-permissions'))
+        @if($isCompanyRoute)
             <div class="mb-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
                 <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                     <h1 class="text-2xl font-black text-gray-900 tracking-tight">Roles Permissions</h1>

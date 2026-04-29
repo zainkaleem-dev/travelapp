@@ -1,5 +1,5 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
-<div class="max-w-6xl px-1 py-1">
+<div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">

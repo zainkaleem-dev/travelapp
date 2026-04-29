@@ -20,6 +20,7 @@ class RolesPermissions extends Component
     public $isSuperAdmin = false;
     public $contextCompanyId = null; // Filter roles by this company
     public $companies = [];          // List of companies for the selector
+    public $isCompanyRoute = false; // Whether we are on the companies.roles-permissions route
 
     // User Assignment Mode Properties
     public $viewMode = 'roles'; // 'roles' or 'users'
@@ -87,6 +88,7 @@ class RolesPermissions extends Component
         // 3. Set initial context from route or session/default
         if ($id !== null) {
             $this->contextCompanyId = $id;
+            $this->isCompanyRoute = true;
         } else {
             $this->contextCompanyId = session('active_company_id');
         }
