@@ -17,12 +17,15 @@ class DummyOrganizationSeeder extends Seeder
     public function run(): void
     {
         // 1. Create a dummy organization (company)
-        $company = Company::firstOrCreate(
+        $company = Company::updateOrCreate(
             ['slug' => 'demo-organization'],
             [
                 'name' => 'Demo Organization',
                 'legal_name' => 'Demo Organization LLC',
-                'status' => 1,
+                'registration_number' => 'DO-001',
+                'company_type' => 'Corporate',
+                'founded_year' => 2022,
+                'status' => 'active',
             ]
         );
 
@@ -34,7 +37,7 @@ class DummyOrganizationSeeder extends Seeder
                 'name' => 'Headquarters',
                 'code' => 'HQ-01',
                 'is_main' => true,
-                'status' => 1,
+                'status' => 'active',
             ]
         );
 
@@ -48,7 +51,7 @@ class DummyOrganizationSeeder extends Seeder
                 'company_id' => $company->id,
                 'branch_id' => $branch->id,
                 'email_verified_at' => Carbon::now(),
-                'status' => 1,
+                'status' => 'active',
             ]
         );
 

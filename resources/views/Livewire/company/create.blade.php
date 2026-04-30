@@ -110,16 +110,17 @@
                                     </svg>
                                 </button>
                                 <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item"
-                                        :class="{ 'is-active': selected === '' }"
-                                        @click="selected = ''; open = false; $wire.set('company_type', '')">Select
-                                        type...</button>
-                                    <button type="button" class="admin-menu-item"
-                                        :class="{ 'is-active': selected === 'TMC' }"
-                                        @click="selected = 'TMC'; open = false; $wire.set('company_type', 'TMC')">TMC</button>
-                                    <button type="button" class="admin-menu-item"
-                                        :class="{ 'is-active': selected === 'Corporate' }"
-                                        @click="selected = 'Corporate'; open = false; $wire.set('company_type', 'Corporate')">Corporate</button>
+                                    @if(count($allowed_types) > 1)
+                                        <button type="button" class="admin-menu-item"
+                                            :class="{ 'is-active': selected === '' }"
+                                            @click="selected = ''; open = false; $wire.set('company_type', '')">Select
+                                            type...</button>
+                                    @endif
+                                    @foreach($allowed_types as $type)
+                                        <button type="button" class="admin-menu-item"
+                                            :class="{ 'is-active': selected === '{{ $type }}' }"
+                                            @click="selected = '{{ $type }}'; open = false; $wire.set('company_type', '{{ $type }}')">{{ $type }}</button>
+                                    @endforeach
                                 </div>
                             </div>
                             @error('company_type') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">

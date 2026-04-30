@@ -33,6 +33,26 @@ class CompanyCreate extends Component
     public string $status = 'active';
     public ?string $notes = null;
 
+    public array $allowed_types = [];
+
+    public function mount()
+    {
+        if (auth()->user()->can('Manage Global System')) {
+            $this->allowed_types = ['TMC', 'Corporate'];
+        } else {
+            $myCompany = auth()->user()->company;
+            if ($myCompany?->company_type === 'Corporate') {
+                $this->allowed_types = ['TMC'];
+                $this->company_type = 'TMC';
+            } elseif ($myCompany?->company_type === 'TMC') {
+                $this->allowed_types = ['Corporate'];
+                $this->company_type = 'Corporate';
+            } else {
+                $this->allowed_types = ['TMC', 'Corporate'];
+            }
+        }
+    }
+
 
     public function updatedCompanyName($value): void
     {
@@ -58,7 +78,7 @@ class CompanyCreate extends Component
             'attachments' => ['nullable', 'array'],
             'attachments.*' => ['file', 'max:20480'],
             'slug' => ['required', 'string', 'max:255', 'unique:companies,slug', 'alpha_dash'],
-            'company_type' => ['required', Rule::in(['TMC', 'Corporate'])],
+            'company_type' => ['required', Rule::in($this->allowed_types)],
             'registration_number' => ['required', 'string', 'max:50', 'unique:companies,registration_number'],
             'founded_year' => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
             'status' => ['required', Rule::in(['active', 'inactive'])],
