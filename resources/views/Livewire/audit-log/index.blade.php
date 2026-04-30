@@ -3,7 +3,7 @@
         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
-                    <h1 class="text-[26px] font-black text-gray-900 tracking-tight">Audit Logs</h1>
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Audit Logs</h1>
                     <button @click="filtersOpen = !filtersOpen"
                         class="inline-flex items-center justify-center rounded-lg border border-gray-200 p-2 transition-colors"
                         :class="filtersOpen ? 'bg-[#2ab4c0]/10 text-[#2ab4c0] border-[#2ab4c0]/30' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'"
@@ -19,7 +19,7 @@
             <div x-show="filtersOpen" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
-                class="px-6 py-4 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+                class="px-6 py-3 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-wrap items-center gap-3">
                         <!-- Action Filter -->
@@ -95,7 +95,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
-                            <input type="text" class="w-full rounded-xl border border-gray-200 bg-white pl-10 pr-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#2ab4c0] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/25 transition-all" 
+                            <input type="text" class="input-field pl-10" 
                                 wire:model.live.debounce.300ms="search"
                                 placeholder="Search by user name, page, or action..." />
                         </div>
@@ -149,10 +149,10 @@
                                     <th class="px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wide">Select</th>
                                 @endif
 --}}
-                                <th class="px-4 py-2.5 text-left text-xs font-bold text-white uppercase tracking-wide">User</th>
-                                <th class="px-4 py-2.5 text-left text-xs font-bold text-white uppercase tracking-wide">Message</th>
-                                <th class="px-4 py-2.5 text-left text-xs font-bold text-white uppercase tracking-wide">Timestamp</th>
-                                <th class="px-4 py-2.5 text-right text-xs font-bold text-white uppercase tracking-wide">Actions</th>
+                                <th class="px-4 py-2 text-left text-[11px] font-bold text-white uppercase tracking-wide">User</th>
+                                <th class="px-4 py-2 text-left text-[11px] font-bold text-white uppercase tracking-wide">Message</th>
+                                <th class="px-4 py-2 text-left text-[11px] font-bold text-white uppercase tracking-wide">Timestamp</th>
+                                <th class="px-4 py-2 text-right text-[11px] font-bold text-white uppercase tracking-wide">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -168,10 +168,10 @@
                                         </td>
                                     @endif
 --}}
-                                    <td class="px-4 py-3 text-gray-900 font-semibold">{{ $this->actorLabel($log) }}</td>
-                                    <td class="px-4 py-3 text-gray-700">{{ $this->activityMessage($log) }}</td>
-                                    <td class="px-4 py-3 text-gray-700 whitespace-nowrap">{{ $log->created_at?->format('d/m/Y (H:i:s)') }}</td>
-                                    <td class="px-4 py-3">
+                                    <td class="px-4 py-2 text-[11px] text-gray-900 font-semibold">{{ $this->actorLabel($log) }}</td>
+                                    <td class="px-4 py-2 text-[11px] text-gray-700">{{ $this->activityMessage($log) }}</td>
+                                    <td class="px-4 py-2 text-[11px] text-gray-700 whitespace-nowrap">{{ $log->created_at?->format('d/m/Y (H:i:s)') }}</td>
+                                    <td class="px-4 py-2">
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('admin.audit-logs.view', $log->id) }}"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
@@ -214,7 +214,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">No audit logs found.</td>
+                                    <td colspan="4" class="px-4 py-6 text-center text-[11px] text-gray-500">No audit logs found.</td>
                                 </tr>
                             @endforelse
                         </tbody>

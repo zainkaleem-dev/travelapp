@@ -2,10 +2,10 @@
 <div x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-            <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+            <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $isSuperAdmin ? 'Organizations' : 'Partner List' }}</h1>
+                        <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $isSuperAdmin ? 'Organizations' : 'Partner List' }}</h1>
                     </div>
                     <div class="flex items-center gap-3">
                         <button @click="filtersOpen = !filtersOpen"
@@ -19,7 +19,7 @@
                         </button>
                         @can('Create Company')
                             <a href="{{ route('companies.create') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                                 {{ $isSuperAdmin ? 'Add Organization' : 'Add Partner' }}
                             </a>
                         @endcan
@@ -29,7 +29,7 @@
             <div x-show="filtersOpen" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
-                class="px-6 py-4 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+                class="px-6 py-3 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex flex-col gap-4">
                     <!-- Top Filter Row -->
                     <div class="flex flex-wrap items-center gap-3">
@@ -156,10 +156,10 @@
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
                                 <th
-                                    class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide rounded-ss-2xl">
+                                    class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-ss-2xl">
                                     Logo
                                 </th>
-                                <th class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('name')">
                                     <div class="flex items-center gap-2">
                                         <span>{{ $isSuperAdmin ? 'Organization' : 'Partner' }}</span>
@@ -180,7 +180,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('company_type')">
                                     <div class="flex items-center gap-2">
                                         <span>Type</span>
@@ -201,7 +201,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('status')">
                                     <div class="flex items-center gap-2">
                                         <span>Status</span>
@@ -222,7 +222,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('created_at')">
                                     <div class="flex items-center gap-2">
                                         <span>Added on</span>
@@ -244,7 +244,7 @@
                                     </div>
                                 </th>
                                 <th
-                                    class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide rounded-se-2xl">
+                                    class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-se-2xl">
                                     Actions
                                 </th>
                             </tr>
@@ -254,46 +254,46 @@
                                 <tr
                                     class="border-b border-gray-200 transition-colors cursor-pointer {{ $company->status === 'active' ? 'hover:bg-blue-50' : 'bg-gray-100' }}"
                                     onclick="window.location='{{ route('companies.show', $company->id) }}'">
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-2">
                                         <div
-                                            class="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                                            class="w-8 h-8 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
                                             @if ($company->settings['logo_path'] ?? null)
                                                 <img src="{{ asset('storage/' . $company->settings['logo_path']) }}"
                                                     alt="{{ $company->name }} logo" class="w-full h-full object-contain p-1">
                                             @else
-                                                <span class="text-xs font-black text-gray-500">
+                                                <span class="text-[10px] font-black text-gray-500">
                                                     {{ strtoupper(mb_substr((string) $company->name, 0, 2)) }}
                                                 </span>
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-2">
                                         <a href="{{ route('companies.show', $company->id) }}"
-                                            class="text-sm font-semibold text-gray-900 hover:underline"
+                                            class="text-xs font-semibold text-gray-900 hover:underline"
                                             onclick="event.stopPropagation()">
                                             {{ $company->name }}
                                         </a>
-                                        <div class="text-[10px] text-gray-400 uppercase tracking-tight">{{ $company->slug }}
+                                        <div class="text-[9px] text-gray-400 uppercase tracking-tight">{{ $company->slug }}
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-2">
                                         <span
-                                            class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2.5 py-0.5 text-xs font-bold text-[#1f8f98]">
+                                            class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2 py-0.5 text-[11px] font-bold text-[#1f8f98]">
                                             {{ $company->company_type }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-2">
                                         <span
-                                            class="inline-flex items-center rounded-md {{ $company->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
+                                            class="inline-flex items-center rounded-md {{ $company->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2 py-0.5 text-[11px] font-semibold">
                                             {{ ucfirst($company->status) }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <span class="text-xs text-gray-600 font-medium">
+                                    <td class="px-6 py-2">
+                                        <span class="text-[11px] text-gray-600 font-medium">
                                             {{ $company->created_at->format('d/m/Y') }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <td class="px-6 py-2" onclick="event.stopPropagation()">
                                             @if($isSuperAdmin)
                                                 @can('View Company')
                                                     <a href="{{ route('companies.show', $company->id) }}"

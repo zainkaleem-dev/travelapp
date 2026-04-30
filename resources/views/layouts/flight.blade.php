@@ -140,7 +140,7 @@
             padding: 9px 12px;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            font-size: 12px;
+            font-size: 11px;
             color: #1e293b;
             background: #f8fafc;
             transition: all 0.15s ease;
@@ -204,7 +204,7 @@
             background: #fff;
             border-radius: 9999px;
             padding: 6px 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #374151;
             line-height: 1.25rem;
@@ -240,7 +240,7 @@
             width: 100%;
             text-align: left;
             padding: 10px 14px;
-            font-size: 12px;
+            font-size: 11px;
             color: #374151;
             background: #fff;
             transition: background-color .12s;
