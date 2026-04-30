@@ -1,8 +1,8 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
 <div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $company->name }} Attachments</h1>
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+            <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Attachments</h1>
         </div>
 
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'attachments'])
@@ -35,7 +35,7 @@
                             
                             <div class="flex-1 min-w-0" x-data="{ editing: false, newName: @entangle('downloadNames.'.$uploadedAttachment->id) }">
                                 <div class="flex items-center gap-2" x-show="!editing">
-                                    <p class="text-sm font-bold text-gray-900 truncate tracking-tight">{{ $uploadedAttachment->original_name }}</p>
+                                    <p class="text-[11px] font-bold text-gray-900 truncate tracking-tight">{{ $uploadedAttachment->original_name }}</p>
                                     <button type="button" @click="editing = true" class="text-gray-400 hover:text-[#2ab4c0]">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -43,7 +43,7 @@
                                     </button>
                                 </div>
                                 <div class="flex items-center gap-2" x-show="editing" @click.outside="editing = false">
-                                    <input type="text" x-model="newName" class="text-sm font-bold text-gray-900 border-b border-[#2ab4c0] bg-transparent focus:outline-none py-0 px-0" 
+                                    <input type="text" x-model="newName" class="text-[11px] font-bold text-gray-900 border-b border-[#2ab4c0] bg-transparent focus:outline-none py-0 px-0" 
                                         @keydown.enter.prevent="$wire.renameAttachment({{ $uploadedAttachment->id }}); editing = false">
                                     <button type="button" @click="$wire.renameAttachment({{ $uploadedAttachment->id }}); editing = false" class="text-[#2ab4c0]">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
@@ -68,7 +68,7 @@
                             <svg class="w-12 h-12 text-gray-200 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                             </svg>
-                            <p class="text-sm text-gray-500 font-medium">No attachments uploaded yet.</p>
+                            <p class="text-[11px] text-gray-500 font-medium">No attachments uploaded yet.</p>
                         </div>
                     @endforelse
                 </div>

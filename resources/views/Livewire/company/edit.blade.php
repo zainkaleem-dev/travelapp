@@ -1,15 +1,15 @@
 <div class="w-full px-1 py-1 flex flex-col gap-6">
     <!-- Header & Navigation Container -->
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Edit {{ $company_name }}</h1>
-                    <p class="text-sm text-gray-500 mt-1">Refining {{ $company->name }} profile</p>
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Edit {{ $company_name }}</h1>
+                    <p class="text-[11px] text-gray-500 mt-1">Refining {{ $company->name }} profile</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <a href="{{ route('companies.index') }}"
-                        class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
                         Back
                     </a>
                 </div>
@@ -385,11 +385,11 @@
 
                 <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                     <button type="button" onclick="history.back()"
-                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                         Cancel
                     </button>
                     <button type="submit"
-                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                         Save Changes
                     </button>
                 </div>

@@ -1,8 +1,8 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
 <div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $company->name }} Branches</h1>
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+            <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Branches</h1>
         </div>
 
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'branches'])
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-500">
+                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3 text-[11px] text-gray-500">
                         No branches found for this {{ $isSuperAdmin ? 'organization' : 'partner' }}.
                     </div>
                 @endforelse
