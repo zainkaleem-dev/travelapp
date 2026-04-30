@@ -1,10 +1,9 @@
-@php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
 <div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $isSuperAdmin ? 'Add Organization' : 'Add Partner' }}</h1>
+                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Add Organization' : 'Add Partner' }}</h1>
                 </div>
                 <a href="{{ route('companies.index') }}"
                     class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
@@ -49,13 +48,13 @@
                                         <img src="{{ $company_logo->temporaryUrl() }}" class="w-full h-full object-cover">
                                     @else
                                         <span class="text-lg font-black text-gray-500">
-                                            {{ $companyInitials }}
+                                            {{ $companyInitials ?? strtoupper(mb_substr((string) ($company_name ?? ''), 0, 2)) }}
                                         </span>
                                     @endif
                                 </div>
                                 <div class="flex-1">
                                     <label
-                                        class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ $isSuperAdmin ? 'Organization' : 'Partner' }}
+                                        class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization' : 'Partner' }}
                                         logo <span class="text-red-500">*</span></label>
                                     <p class="text-[11px] text-gray-500 mb-2">JPG, PNG or SVG. Max 2MB.</p>
                                     <div class="flex items-center gap-3">
@@ -78,7 +77,7 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="field-label">{{ $isSuperAdmin ? 'Organization Name' : 'Partner Name' }} <span class="text-red-500">*</span></label>
+                            <label class="field-label">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization Name' : 'Partner Name' }} <span class="text-red-500">*</span></label>
                             <input type="text" wire:model.blur="company_name" class="input-field"
                                 placeholder="Acme Travel Services">
                             @error('company_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
@@ -328,7 +327,7 @@
                 </button>
                 <button type="submit"
                     class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                    {{ $isSuperAdmin ? 'Create Organization' : 'Create Partner' }}
+                    {{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Create Organization' : 'Create Partner' }}
                 </button>
             </div>
         </form>

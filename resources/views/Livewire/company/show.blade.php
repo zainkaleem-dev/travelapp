@@ -1,8 +1,7 @@
-@php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
 <div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $isSuperAdmin ? 'Organization Profile' : 'Partner Profile' }}</h1>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization Profile' : 'Partner Profile' }}</h1>
         </div>
 
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'general'])
@@ -34,12 +33,12 @@
                                     <img src="{{ asset('storage/' . $existing_logo_path) }}" class="w-full h-full object-contain p-1">
                                 @else
                                     <span class="text-lg font-black text-gray-500">
-                                        {{ $companyInitials }}
+                                        {{ $companyInitials ?? strtoupper(mb_substr((string) ($company_name ?? ''), 0, 2)) }}
                                     </span>
                                 @endif
                             </div>
                             <div class="flex-1">
-                                <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ $isSuperAdmin ? 'Organization' : 'Partner' }}
+                                <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization' : 'Partner' }}
                                     logo</label>
                                 <p class="text-[11px] text-gray-500">Read-only profile view.</p>
                             </div>
@@ -47,7 +46,7 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <label class="field-label">{{ $isSuperAdmin ? 'Organization Name' : 'Partner Name' }}</label>
+                        <label class="field-label">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization Name' : 'Partner Name' }}</label>
                         <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company_name }}" readonly>
                     </div>
 
@@ -57,13 +56,13 @@
                     </div>
 
                     <div>
-                        <label class="field-label">{{ $isSuperAdmin ? 'Organization Type' : 'Partner Type' }}</label>
+                        <label class="field-label">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization Type' : 'Partner Type' }}</label>
                         <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company_type ?: '--' }}" readonly>
                     </div>
 
                     <div>
-                        <label class="field-label">{{ $isSuperAdmin ? 'Parent Organization' : 'Parent Partner' }}</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $parentCompanyName ?: ($isSuperAdmin ? 'None (Root Organization)' : 'None (Root Partner)') }}" readonly>
+                        <label class="field-label">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Parent Organization' : 'Parent Partner' }}</label>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $parentCompanyName ?: ((auth()->user()?->can('Manage Global System') ?? false) ? 'None (Root Organization)' : 'None (Root Partner)') }}" readonly>
                     </div>
 
                     <div>
