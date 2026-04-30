@@ -87,6 +87,7 @@
                         Reports
                     </a>
 
+                    @if(request()->route('id'))
                     <div class="h-px bg-gray-100 my-1"></div>
 
                     <div x-data="{ openPartner: false, openCorporate: false, openTmc: false, openCorpNotifications: false, openCorpIntegrations: false, openTmcServices: false, openTmcIntegrations: false }"
@@ -184,7 +185,7 @@
                                     </svg>
                                 </button>
                                 <div x-show="openCorpNotifications" x-cloak class="ml-3 flex flex-col gap-1">
-                                    <a href="#" class="admin-menu-item inline-flex items-center gap-1.5"><svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" /></svg>Mail Notifications</a>
+                                    <a href="#" class="admin-menu-item inline-flex items-center gap-1.5"><svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" /></svg>Mail Notifications</a>
                                     <a href="#" class="admin-menu-item inline-flex items-center gap-1.5"><svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M3 5h18v14H3z" /></svg>Message of the Day</a>
                                 </div>
 
@@ -273,6 +274,7 @@
                     </div>
 
                     <div class="h-px bg-gray-100 my-1"></div>
+                    @endif
                 @else
                     @featureOrAdmin('companies-module')
                     @can('View Company')
