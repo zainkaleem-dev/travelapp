@@ -1,5 +1,6 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
-<div class="w-full px-1 py-1">
+<div class="w-full px-1 py-1 flex flex-col gap-6">
+    <!-- Header & Navigation Container -->
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
@@ -15,9 +16,12 @@
         </div>
 
         @include('partials.navigation-company-edit', ['companyId' => $companyId, 'activeTab' => 'branches'])
+    </div>
 
+    <!-- Main Content Container -->
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         @if (session('status'))
-            <div class="px-6 py-4">
+            <div class="px-6 pt-6">
                 <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
                     {{ session('status') }}
                 </div>

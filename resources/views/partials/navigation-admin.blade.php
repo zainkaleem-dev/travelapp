@@ -24,10 +24,11 @@
             @php($middleInitial = $middleName !== '' ? strtoupper(mb_substr($middleName, 0, 1)) . '.' : '')
             @php($displayName = $sidebarUser?->name ?: 'User')
             
-            @php($activeCompanyId = request()->route('id'))
+            @php($activeCompanyId = request()->route('id') ?? (request()->routeIs('users.*') ? auth()->user()->company_id : null))
             @php($activeCompany = $activeCompanyId ? \App\Models\Company::find($activeCompanyId) : null)
-            @php($isTmcContext = $activeCompany?->company_type === 'TMC')
-            @php($isCorporateContext = $activeCompany?->company_type === 'Corporate')
+            @php($userCompanyType = auth()->user()->company?->company_type)
+            @php($isTmcContext = ($activeCompany?->company_type === 'TMC') || (request()->routeIs('users.*') && $userCompanyType === 'TMC'))
+            @php($isCorporateContext = ($activeCompany?->company_type === 'Corporate') || (request()->routeIs('users.*') && $userCompanyType === 'Corporate'))
 
             @if($firstName !== '' && $lastName !== '')
                 @if($middleName === '')
@@ -93,7 +94,7 @@
                         Reports
                     </a>
 
-                    @if(request()->route('id'))
+                    @if($activeCompanyId || request()->routeIs('users.*'))
                     <div class="h-px bg-gray-100 my-1"></div>
 
                     <div x-data="{ 
@@ -144,11 +145,23 @@
                             </button>
 
                             <div x-show="openCorporate" x-cloak class="ml-3 flex flex-col gap-1">
-                                <a href="{{ route('companies.edit', ['id' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 px-4 py-2 w-full rounded-lg {{ $isCorporateContext ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} transition-colors">
-                                    <svg class="w-3 h-3 {{ $isCorporateContext ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
+                                <a href="{{ route('companies.show', ['id' => $activeCompanyId]) }}" 
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('companies.show') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    <svg class="w-3 h-3 {{ request()->routeIs('companies.show') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
                                     Profile
                                 </a>
+
+                                @featureOrAdmin('users-module')
+                                @can('View Users')
+                                    <a href="{{ route('users.index') }}"
+                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                        <svg class="w-3 h-3 {{ request()->routeIs('users.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                        </svg>
+                                        Users
+                                    </a>
+                                @endcan
+                                @endfeatureOrAdmin
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5V4H2v16h5m10 0v-4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v4m10 0H7" /></svg>
                                     Manage TMC (Associate)
@@ -160,10 +173,6 @@
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" /></svg>
                                     Travel Policy
-                                </a>
-                                <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
-                                    <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 21v-2a4 4 0 0 0-8 0v2M9 7a4 4 0 1 1 8 0 4 4 0 0 1-8 0z" /></svg>
-                                    Employees (Users)
                                 </a>
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
@@ -244,11 +253,23 @@
                                 </svg>
                             </button>
                             <div x-show="openTmc" x-cloak class="ml-3 flex flex-col gap-1">
-                                <a href="{{ route('companies.edit', ['id' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 px-4 py-2 w-full rounded-lg {{ $isTmcContext ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} transition-colors">
-                                    <svg class="w-3 h-3 {{ $isTmcContext ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
+                                <a href="{{ route('companies.show', ['id' => $activeCompanyId]) }}" 
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('companies.show') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    <svg class="w-3 h-3 {{ request()->routeIs('companies.show') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
                                     Profile
                                 </a>
+
+                                @featureOrAdmin('users-module')
+                                @can('View Users')
+                                    <a href="{{ route('users.index') }}"
+                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                        <svg class="w-3 h-3 {{ request()->routeIs('users.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                        </svg>
+                                        Users
+                                    </a>
+                                @endcan
+                                @endfeatureOrAdmin
 
                                 <button type="button"
                                     class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
@@ -411,19 +432,6 @@
                 @endcan
                 @endfeatureOrAdmin -->
 
-                @featureOrAdmin('users-module')
-                @can('View Users')
-                    <a href="{{ route('users.index') }}"
-                        class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
-                        <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                        </svg>
-                        Users
-                    </a>
-                @endcan
-                @endfeatureOrAdmin
 
                 <!-- @featureOrAdmin('roles-permissions-module')
                 @can('Manage Roles and Permissions')
