@@ -15,13 +15,11 @@ class AuditLogs extends Component
     public int $perPage = 20;
     public string $search = '';
     public string $actionFilter = '';
-    // public bool $selectionMode = false;
-    // public array $selectedLogIds = [];
 
     protected $queryString = [
-        'search' => ['except' => ''],
+        'search'       => ['except' => ''],
         'actionFilter' => ['except' => ''],
-        'perPage' => ['except' => 20],
+        'perPage'      => ['except' => 20],
     ];
 
     public function updatedSearch(): void
@@ -39,65 +37,16 @@ class AuditLogs extends Component
         ActivityLog::query()->whereKey($logId)->delete();
     }
 
-    /*
-    public function startBulkDeleteMode(int $logId): void
-    {
-        $this->selectionMode = true;
+    // ─────────────────────────────────────────────────────────────────────────
+    // Display helpers
+    // ─────────────────────────────────────────────────────────────────────────
 
-        if (!in_array($logId, $this->selectedLogIds, true)) {
-            $this->selectedLogIds[] = $logId;
-        }
-    }
-
-    public function toggleSelected(int $logId): void
-    {
-        if (in_array($logId, $this->selectedLogIds, true)) {
-            $this->selectedLogIds = array_values(array_filter(
-                $this->selectedLogIds,
-                fn ($id) => (int) $id !== $logId
-            ));
-
-            return;
-        }
-
-        $this->selectedLogIds[] = $logId;
-    }
-
-    public function selectAllVisible(): void
-    {
-        $ids = ActivityLog::query()
-            ->latest('id')
-            ->forPage($this->getPage(), $this->perPage)
-            ->pluck('id')
-            ->map(fn ($id) => (int) $id)
-            ->all();
-
-        $this->selectedLogIds = $ids;
-    }
-
-    public function clearSelection(): void
-    {
-        $this->selectedLogIds = [];
-        $this->selectionMode = false;
-    }
-
-    public function deleteSelectedLogs(): void
-    {
-        if ($this->selectedLogIds === []) {
-            return;
-        }
-
-        ActivityLog::query()
-            ->whereIn('id', $this->selectedLogIds)
-            ->delete();
-
-        $this->clearSelection();
-    }
-    */
-
+    /**
+     * Returns a human-readable label for the actor who performed the action.
+     */
     public function actorLabel(ActivityLog $log): string
     {
-        $activity = (array) ($log->activity ?? []);
+        $activity  = (array) ($log->activity ?? []);
         $actorName = $activity['actor_name'] ?? null;
         $actorRole = $activity['actor_role'] ?? null;
 
@@ -106,91 +55,184 @@ class AuditLogs extends Component
         }
 
         if ($log->relationLoaded('user') && $log->user) {
-            return $log->user->name ?? $log->user->display_name ?? ('User #' . $log->user->id);
+            return $log->user->name
+                ?? $log->user->display_name
+                ?? ('User #' . $log->user->id);
         }
 
-        if ($actorName) {
-            return $actorName;
-        }
-
-        return 'Unknown User';
+        return $actorName ?: 'Unknown User';
     }
 
+    /**
+     * Returns a single-line summary for the audit log list view.
+     *
+     * Format examples:
+     *   "Viewed Companies."
+     *   "Created organization Acme Corp on Companies."
+     *   "Updated Companies: Status from "active" to "inactive"."
+     *   "Deleted a record from Trip Purposes."
+     */
     public function activityMessage(ActivityLog $log): string
     {
         $activity = (array) ($log->activity ?? []);
-        $rawPage = $log->page ?: ($activity['route_name'] ?? 'unknown page');
-        
-        $action = $log->action_name ?: 'performed';
-        $before = $log->beforeState();
-        $after = $log->afterState();
+        $action   = $log->action_name ?: 'performed';
+        $before   = $log->beforeState();
+        $after    = $log->afterState();
 
+        $pageLabel  = $this->formatPageLabel($log->page ?: ($activity['route_name'] ?? ''));
         $entityName = $this->inferEntityName($before, $after);
-        $pageLabel = $this->formatPageLabel($rawPage);
-        $changes = $this->summarizeChanges($before, $after);
 
-        $actionPast = $this->formatActionPast($action);
-
-        if ($action === 'viewed') {
-            return "Viewed {$pageLabel}.";
-        }
-
-        if ($action === 'created') {
-            if ($entityName !== null) {
-                return "Made {$entityName} on {$pageLabel}.";
-            }
-            return "Created a record on {$pageLabel}.";
-        }
-
-        if ($action === 'deleted') {
-            if ($entityName !== null) {
-                return "Deleted {$entityName} from {$pageLabel}.";
-            }
-            return "Deleted a record from {$pageLabel}.";
-        }
-
-        if ($action === 'updated') {
-            if ($changes !== '') {
-                return "Updated {$pageLabel}: {$changes}.";
-            }
-            return "Updated data on {$pageLabel}.";
-        }
-
-        if ($changes !== '') {
-            return "{$actionPast} action on {$pageLabel}: {$changes}.";
-        }
-
-        return "{$actionPast} action on {$pageLabel}.";
-    }
-
-    private function formatActionPast(string $action): string
-    {
         return match ($action) {
-            'viewed' => 'viewed',
-            'created' => 'created',
-            'updated' => 'updated',
-            'deleted' => 'deleted',
-            'toggled' => 'toggled',
-            'performed' => 'performed',
-            default => str_ends_with($action, 'ed') ? $action : "{$action}ed",
+            'viewed'  => "Viewed {$pageLabel}.",
+
+            'created' => $entityName !== null
+                ? "Created {$entityName} on {$pageLabel}."
+                : "Created a record on {$pageLabel}.",
+
+            'deleted' => $entityName !== null
+                ? "Deleted {$entityName} from {$pageLabel}."
+                : "Deleted a record from {$pageLabel}.",
+
+            'updated' => $this->buildUpdateMessage($pageLabel, $before, $after),
+
+            default   => ucfirst($action) . " on {$pageLabel}.",
         };
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Private helpers
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Builds a concise update message, optionally listing the first few changes.
+     */
+    private function buildUpdateMessage(string $pageLabel, mixed $before, mixed $after): string
+    {
+        $changes = $this->summarizeChanges(
+            is_array($before) ? $before : [],
+            is_array($after)  ? $after  : []
+        );
+
+        return $changes !== ''
+            ? "Updated {$pageLabel}: {$changes}."
+            : "Updated data on {$pageLabel}.";
+    }
+
+    /**
+     * Converts a raw route name or URL path into a readable label.
+     *
+     * Route-name examples:
+     *   "companies.index"           → "Companies"
+     *   "admin.trip-purpose.create" → "Trip Purpose"
+     *   "admin.audit-logs"          → "Audit Logs"
+     *
+     * Path examples:
+     *   "/companies/5/edit"         → "Companies"
+     *   "/trip-purpose"             → "Trip Purpose"
+     */
     private function formatPageLabel(string $page): string
     {
-        if (str_starts_with($page, '/')) {
-            $clean = str($page)->replace(['/admin/', '/'], ' ')->squish()->title()->toString();
-            return $clean ?: 'Dashboard';
+        if ($page === '') {
+            return 'Dashboard';
         }
 
+        // ── URL-path branch ───────────────────────────────────────────────────
+        if (str_starts_with($page, '/')) {
+            // Strip leading slash and split on "/"
+            $segments = explode('/', ltrim($page, '/'));
+
+            // Map well-known path segments to friendly names.
+            $segmentMap = [
+                'companies'           => 'Companies',
+                'branches'            => 'Branches',
+                'users'               => 'Users',
+                'roles-permissions'   => 'Roles & Permissions',
+                'audit-logs'          => 'Audit Logs',
+                'trip-purpose'        => 'Trip Purposes',
+                'airports'            => 'Airports',
+                'countries-and-cities'=> 'Countries & Cities',
+                'features'            => 'Features',
+                'integrations-api'    => 'Integrations',
+                'dashboard'           => 'Dashboard',
+                'profile'             => 'Profile',
+                'settings'            => 'Settings',
+            ];
+
+            foreach ($segments as $segment) {
+                $lower = strtolower($segment);
+                if (isset($segmentMap[$lower])) {
+                    return $segmentMap[$lower];
+                }
+                // Skip numeric IDs and generic admin segment
+                if ($lower === 'admin' || is_numeric($segment)) {
+                    continue;
+                }
+                if ($segment !== '') {
+                    // Convert slug to title case
+                    return str($segment)->replace(['-', '_'], ' ')->title()->toString();
+                }
+            }
+
+            return 'Dashboard';
+        }
+
+        // ── Route-name branch ─────────────────────────────────────────────────
+        $routeMap = [
+            'companies.index'          => 'Companies',
+            'companies.create'         => 'Companies',
+            'companies.edit'           => 'Companies',
+            'companies.show'           => 'Companies',
+            'companies.features'       => 'Features',
+            'companies.user-roles'     => 'Users & Roles',
+            'companies.branches'       => 'Branches',
+            'branches.index'           => 'Branches',
+            'branches.create'          => 'Branches',
+            'branches.edit'            => 'Branches',
+            'users.index'              => 'Users',
+            'users.create'             => 'Users',
+            'users.edit'               => 'Users',
+            'roles.index'              => 'Roles & Permissions',
+            'admin.audit-logs'         => 'Audit Logs',
+            'admin.audit-logs.view'    => 'Audit Logs',
+            'admin.trip-purpose'       => 'Trip Purposes',
+            'admin.trip-purpose.create'=> 'Trip Purposes',
+            'admin.trip-purpose.view'  => 'Trip Purposes',
+            'admin.trip-purpose.edit'  => 'Trip Purposes',
+            'admin.countries-and-cities'    => 'Countries & Cities',
+            'admin.countries.create'        => 'Countries & Cities',
+            'admin.countries.view'          => 'Countries & Cities',
+            'admin.countries.edit'          => 'Countries & Cities',
+            'admin.cities.create'           => 'Countries & Cities',
+            'admin.cities.view'             => 'Countries & Cities',
+            'admin.cities.edit'             => 'Countries & Cities',
+            'admin.airports'           => 'Airports',
+            'admin.airports.create'    => 'Airports',
+            'admin.airports.view'      => 'Airports',
+            'admin.airports.edit'      => 'Airports',
+            'admin.integrations-api'   => 'Integrations',
+            'dashboard'                => 'Dashboard',
+            'profile'                  => 'Profile',
+            'settings'                 => 'Settings',
+            'livewire.update'          => 'Dashboard', // fallback; real page from Referer
+        ];
+
+        if (isset($routeMap[$page])) {
+            return $routeMap[$page];
+        }
+
+        // Generic fallback: strip common prefixes and clean up
         return str($page)
-            ->replace(['admin.', 'index', '.', '-', '_', 'livewire', 'update'], ' ')
-            ->replace('Organizations', 'Company')
+            ->replace(['admin.', 'livewire.', 'livewire', 'update', '.index'], ' ')
+            ->replace(['.', '-', '_'], ' ')
             ->squish()
             ->title()
             ->toString() ?: 'Dashboard';
     }
 
+    /**
+     * Tries to find a human-readable name for the affected entity by checking
+     * common "name-like" keys in the before/after state.
+     */
     private function inferEntityName(?array $before, ?array $after): ?string
     {
         $state = $after ?: $before;
@@ -198,7 +240,7 @@ class AuditLogs extends Component
             return null;
         }
 
-        foreach (['name', 'label', 'title', 'company_name'] as $key) {
+        foreach (['name', 'label', 'title', 'company_name', 'city_name', 'country_name'] as $key) {
             if (!empty($state[$key]) && is_string($state[$key])) {
                 return $state[$key];
             }
@@ -207,18 +249,15 @@ class AuditLogs extends Component
         return null;
     }
 
-    private function summarizeChanges(?array $before, ?array $after): string
+    /**
+     * Generates a short human-readable diff between before and after state.
+     * Returns at most 3 changed fields to keep messages scannable.
+     */
+    private function summarizeChanges(array $before, array $after): string
     {
-        if (!is_array($before) || !is_array($after)) {
-            return '';
-        }
-
         $ignoredKeys = [
-            'updated_at',
-            'created_at',
-            'deleted_at',
-            'remember_token',
-            'password',
+            'updated_at', 'created_at', 'deleted_at',
+            'remember_token', 'password',
         ];
 
         $changes = [];
@@ -240,7 +279,10 @@ class AuditLogs extends Component
             );
         }
 
-        return implode(', ', array_slice($changes, 0, 3));
+        $visible = array_slice($changes, 0, 3);
+        $suffix  = count($changes) > 3 ? ', and more' : '';
+
+        return implode(', ', $visible) . $suffix;
     }
 
     private function stringifyValue(mixed $value): string
@@ -248,17 +290,18 @@ class AuditLogs extends Component
         if ($value === null || $value === '') {
             return '-';
         }
-
         if (is_bool($value)) {
             return $value ? 'true' : 'false';
         }
-
         if (is_scalar($value)) {
             return (string) $value;
         }
-
         return '[complex]';
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Render
+    // ─────────────────────────────────────────────────────────────────────────
 
     public function render()
     {
@@ -267,10 +310,10 @@ class AuditLogs extends Component
             ->latest('id');
 
         if ($this->search) {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->where('page', 'like', '%' . $this->search . '%')
                   ->orWhere('action_name', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('user', function($uq) {
+                  ->orWhereHas('user', function ($uq) {
                       $uq->where('name', 'like', '%' . $this->search . '%');
                   });
             });

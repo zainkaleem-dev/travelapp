@@ -16,9 +16,16 @@ class AuditLogView extends Component
         $this->activityLog = $activityLog->load('user');
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Public computed properties used in the Blade view
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Returns the actor's display label, including role for super-admins.
+     */
     public function actorLabel(): string
     {
-        $activity = (array) ($this->activityLog->activity ?? []);
+        $activity  = (array) ($this->activityLog->activity ?? []);
         $actorName = $activity['actor_name'] ?? null;
         $actorRole = $activity['actor_role'] ?? null;
 
@@ -35,254 +42,409 @@ class AuditLogView extends Component
         return $actorName ?: 'Unknown User';
     }
 
+    /**
+     * Resolves the canonical URL of the page where the action occurred.
+     * For Livewire requests the "real" page is the Referer, not the XHR URL.
+     */
     public function url(): ?string
     {
         $activity = (array) ($this->activityLog->activity ?? []);
-        
-        // Prioritize Referer for Livewire requests to get the actual page URL
+
+        // Livewire XHR — use the stored referer or the page path
         if (str_contains($activity['url'] ?? '', '/livewire/')) {
-            $referer = request()->headers->get('referer') ?? $activity['input']['_referer'] ?? null;
-            if ($referer) return $referer;
+            $referer = $activity['input']['_referer'] ?? null;
+            if ($referer) {
+                return $referer;
+            }
+            // Fall back to page field if it looks like a real path
+            if (!empty($this->activityLog->page) && str_starts_with($this->activityLog->page, '/')) {
+                return url($this->activityLog->page);
+            }
         }
 
-        return $activity['full_url'] 
-            ?? $activity['url'] 
+        return $activity['full_url']
+            ?? $activity['url']
             ?? ($this->activityLog->page ? url($this->activityLog->page) : null);
     }
 
+    /**
+     * Returns a breadcrumb-style representation of the action page path.
+     * Example: "Admin -> Companies -> Edit"
+     */
     public function breadcrumbPath(): string
     {
         $url = $this->url();
-        if (!$url) return 'Unknown Path';
+        if (!$url) {
+            return 'Unknown Path';
+        }
 
-        $path = parse_url($url, PHP_URL_PATH);
-        $segments = explode('/', trim($path, '/'));
-        
+        $path     = parse_url($url, PHP_URL_PATH);
+        $segments = explode('/', trim((string) $path, '/'));
+
         $map = [
-            'admin' => 'Admin',
-            'companies' => 'Organizations',
+            'admin'                => 'Admin',
+            'companies'            => 'Companies',
             'countries-and-cities' => 'Countries & Cities',
-            'trip-purpose' => 'Trip Purposes',
-            'airports' => 'Airports',
-            'create' => 'Add New',
-            'edit' => 'Edit',
-            'view' => 'View Details',
-            'branches' => 'Branches',
-            'users' => 'Users',
-            'roles' => 'Roles & Permissions',
-            'audit-logs' => 'Audit Logs',
-            'country' => 'Country',
-            'city' => 'City',
-            'listing' => 'Organizations'
+            'trip-purpose'         => 'Trip Purposes',
+            'airports'             => 'Airports',
+            'create'               => 'Add New',
+            'edit'                 => 'Edit',
+            'view'                 => 'View Details',
+            'branches'             => 'Branches',
+            'users'                => 'Users',
+            'roles-permissions'    => 'Roles & Permissions',
+            'audit-logs'           => 'Audit Logs',
+            'country'              => 'Country',
+            'city'                 => 'City',
+            'listing'              => 'Companies',
+            'features'             => 'Features',
+            'integrations-api'     => 'Integrations',
+            'settings'             => 'Settings',
+            'profile'              => 'Profile',
         ];
 
         $formattedSegments = [];
         foreach ($segments as $segment) {
-            if (is_numeric($segment) || $segment === 'livewire' || $segment === 'update') continue;
-            
-            $lower = strtolower($segment);
-            if (isset($map[$lower])) {
-                $formattedSegments[] = $map[$lower];
-            } else {
-                $formattedSegments[] = ucwords(str_replace(['-', '_'], ' ', $segment));
+            // Skip IDs, "livewire", "update"
+            if ($segment === '' || is_numeric($segment) || in_array($segment, ['livewire', 'update'], true)) {
+                continue;
             }
+
+            $lower = strtolower($segment);
+            $formattedSegments[] = $map[$lower]
+                ?? ucwords(str_replace(['-', '_'], ' ', $segment));
         }
 
-        if (count($formattedSegments) === 1 && $formattedSegments[0] === 'Admin') {
+        if (count($formattedSegments) === 0 || $formattedSegments === ['Admin']) {
             return 'Dashboard';
         }
 
-        return implode(' -> ', array_unique($formattedSegments));
+        return implode(' → ', array_unique($formattedSegments));
     }
 
+    /**
+     * Returns a short friendly name for the page where the action occurred.
+     * Used in the "Action Page" field of the detail view.
+     */
     public function pageName(): string
     {
         $activity = (array) ($this->activityLog->activity ?? []);
-        $rawPage = $this->activityLog->page ?: ($activity['route_name'] ?? '');
-        
-        // If it's a URL path, try to format it nicely
+        $rawPage  = $this->activityLog->page ?: ($activity['route_name'] ?? '');
+
+        // ── URL-path branch ───────────────────────────────────────────────────
         if (str_starts_with($rawPage, '/')) {
-            $path = $this->breadcrumbPath();
-            if ($path !== 'Unknown Path' && $path !== 'Dashboard') {
-                $segments = explode(' -> ', $path);
-                $last = collect($segments)->last();
-                
-                // Special case for Add/Edit to include the entity name
-                if (($last === 'Add New' || $last === 'Edit') && count($segments) > 1) {
-                    $prev = $segments[count($segments) - 2];
-                    if ($prev !== 'Admin') {
-                        return "{$last} " . str($prev)->singular()->title()->toString();
+            $crumb = $this->breadcrumbPath();
+            if ($crumb !== 'Unknown Path' && $crumb !== 'Dashboard') {
+                $segments = explode(' → ', $crumb);
+                $last     = collect($segments)->last();
+                $count    = count($segments);
+
+                // "Add New" or "Edit" → prepend the entity type for clarity
+                if (in_array($last, ['Add New', 'Edit'], true) && $count > 1) {
+                    $entity = $segments[$count - 2];
+                    if ($entity !== 'Admin') {
+                        return "{$last} " . str($entity)->singular()->title()->toString();
                     }
                 }
                 return (string) $last;
             }
-            
-            // Fallback for paths
+
             $clean = str($rawPage)->replace(['/admin/', '/'], ' ')->squish()->title()->toString();
             return $clean ?: 'Dashboard';
         }
 
+        // ── Route-name branch ─────────────────────────────────────────────────
         $routeMap = [
-            'companies.index' => 'Company',
-            'companies.create' => 'Add Company',
-            'companies.edit' => 'Edit Company',
-            'companies.features' => 'Company Features',
-            'companies.user-roles' => 'Company Users & Roles',
-            'admin.companies' => 'Company',
-            'admin.companies.index' => 'Company',
-            'admin.dashboard' => 'Dashboard',
-            'admin.audit-logs' => 'Audit Logs',
-            'admin.audit-logs.view' => 'Audit Log Details',
-            'livewire.update' => 'Dashboard', // Should be caught by path logic above if Referer was present
+            'companies.index'           => 'Companies',
+            'companies.create'          => 'Add Company',
+            'companies.edit'            => 'Edit Company',
+            'companies.show'            => 'Company Details',
+            'companies.features'        => 'Company Features',
+            'companies.user-roles'      => 'Company Users & Roles',
+            'companies.branches'        => 'Company Branches',
+            'branches.index'            => 'Branches',
+            'branches.create'           => 'Add Branch',
+            'branches.edit'             => 'Edit Branch',
+            'users.index'               => 'Users',
+            'users.create'              => 'Add User',
+            'users.edit'                => 'Edit User',
+            'roles.index'               => 'Roles & Permissions',
+            'admin.audit-logs'          => 'Audit Logs',
+            'admin.audit-logs.view'     => 'Audit Log Details',
+            'admin.trip-purpose'        => 'Trip Purposes',
+            'admin.trip-purpose.create' => 'Add Trip Purpose',
+            'admin.trip-purpose.view'   => 'Trip Purpose Details',
+            'admin.trip-purpose.edit'   => 'Edit Trip Purpose',
+            'admin.countries-and-cities'     => 'Countries & Cities',
+            'admin.countries.create'         => 'Add Country',
+            'admin.countries.view'           => 'Country Details',
+            'admin.countries.edit'           => 'Edit Country',
+            'admin.cities.create'            => 'Add City',
+            'admin.cities.view'              => 'City Details',
+            'admin.cities.edit'              => 'Edit City',
+            'admin.airports'            => 'Airports',
+            'admin.airports.create'     => 'Add Airport',
+            'admin.airports.view'       => 'Airport Details',
+            'admin.airports.edit'       => 'Edit Airport',
+            'admin.integrations-api'    => 'Integrations',
+            'dashboard'                 => 'Dashboard',
+            'profile'                   => 'Profile',
+            'settings'                  => 'Settings',
+            'livewire.update'           => 'Dashboard',
         ];
 
-        if (isset($routeMap[$rawPage])) return $routeMap[$rawPage];
+        if (isset($routeMap[$rawPage])) {
+            return $routeMap[$rawPage];
+        }
 
-        if ($rawPage) {
-            $clean = str($rawPage)->replace(['admin.', 'index', '.', '-', '_', 'livewire', 'update'], ' ')->squish()->title()->toString();
+        if ($rawPage !== '') {
+            $clean = str($rawPage)
+                ->replace(['admin.', 'livewire.', 'livewire', 'update', '.index'], ' ')
+                ->replace(['.', '-', '_'], ' ')
+                ->squish()
+                ->title()
+                ->toString();
             return $clean ?: 'Dashboard';
         }
 
         return 'Dashboard';
     }
 
-    public function render()
-    {
-        return view('livewire.audit-log.view');
-    }
-
+    /**
+     * Returns the cleaned before-state for display, excluding noisy/irrelevant keys.
+     */
     public function beforeState(): array
     {
         return $this->cleanState($this->activityLog->beforeState());
     }
 
+    /**
+     * Returns the cleaned after-state for display, excluding noisy/irrelevant keys.
+     */
     public function afterState(): array
     {
         return $this->cleanState($this->activityLog->afterState());
     }
 
+    /**
+     * Builds a detailed, prose-style description of what happened.
+     *
+     * Example outputs:
+     *   "John Doe (Super Admin) created organization "Acme Corp" on Companies at 2025-01-15 10:30:00."
+     *   "Jane Smith updated a Branch record on Branches. Changes: Status from "active" to "inactive"."
+     *   "John Doe deleted organization "Old Corp" from Companies at 2025-01-15 09:00:00."
+     */
+    public function detailedMessage(): string
+    {
+        $activity    = (array) ($this->activityLog->activity ?? []);
+        $user        = $this->actorLabel();
+        $page        = $this->pageName();
+        $timestamp   = $this->activityLog->created_at?->format('Y-m-d H:i:s') ?? '';
+        $action      = $this->resolveDisplayAction($activity);
+
+        $before      = $this->activityLog->beforeState();
+        $after       = $this->activityLog->afterState();
+        $entityName  = $this->inferEntityName($before, $after);
+        $entityType  = $this->inferEntityType();
+
+        // ── Build message ─────────────────────────────────────────────────────
+        $entityLabel = $entityName !== null
+            ? "{$entityType} \"{$entityName}\""
+            : "a {$entityType} record";
+
+        $parts = match ($action) {
+            'created' => [
+                "{$user} created {$entityLabel} on {$page} at {$timestamp}.",
+            ],
+            'deleted' => [
+                "{$user} deleted {$entityLabel} from {$page} at {$timestamp}.",
+            ],
+            'viewed' => [
+                "{$user} viewed {$page} at {$timestamp}.",
+            ],
+            'updated', 'toggled' => $this->buildUpdateParts($user, $entityLabel, $page, $timestamp, $activity),
+            default => [
+                "{$user} performed an action on {$page} at {$timestamp}.",
+            ],
+        };
+
+        return implode(' ', $parts);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Private helpers
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Resolves the display action, checking Livewire call methods for
+     * more precise signals when the stored action_name is generic.
+     */
+    private function resolveDisplayAction(array $activity): string
+    {
+        $action = $this->activityLog->action_name ?: 'performed';
+
+        // Inspect Livewire call methods for a more accurate label
+        $calls = $activity['input']['components'][0]['calls'] ?? [];
+        if (is_array($calls) && !empty($calls)) {
+            $method = strtolower((string) ($calls[0]['method'] ?? ''));
+            if (str_contains($method, 'delete') || str_contains($method, 'destroy') || str_contains($method, 'remove')) {
+                return 'deleted';
+            }
+            if (str_contains($method, 'save') || str_contains($method, 'store') || str_contains($method, 'create')) {
+                return 'created';
+            }
+            if (str_contains($method, 'update') || str_contains($method, 'edit')) {
+                return 'updated';
+            }
+            if (str_contains($method, 'toggle')) {
+                return 'toggled';
+            }
+        }
+
+        return $action;
+    }
+
+    /**
+     * Builds the message parts for an update/toggle action.
+     */
+    private function buildUpdateParts(
+        string $user,
+        string $entityLabel,
+        string $page,
+        string $timestamp,
+        array $activity
+    ): array {
+        $parts = ["{$user} updated {$entityLabel} on {$page} at {$timestamp}."];
+
+        // Prefer explicit Livewire updates for change detail
+        $updates = $activity['input']['components'][0]['updates'] ?? [];
+        if (is_array($updates) && !empty($updates)) {
+            $changes = [];
+            foreach ($updates as $field => $value) {
+                if (is_array($value) || is_object($value)) {
+                    continue;
+                }
+                $label     = str($field)->replace(['_', '-'], ' ')->title()->toString();
+                $changes[] = "set {$label} to \"{$value}\"";
+            }
+
+            if (!empty($changes)) {
+                $visible = array_slice($changes, 0, 3);
+                $suffix  = count($changes) > 3 ? ', and more' : '';
+                $parts[] = 'Changes: ' . implode(', ', $visible) . $suffix . '.';
+            }
+            return $parts;
+        }
+
+        // Fall back to before/after diff
+        $before = $this->activityLog->beforeState();
+        $after  = $this->activityLog->afterState();
+        if (is_array($before) && is_array($after)) {
+            $diff = $this->diffChanges($before, $after);
+            if ($diff !== '') {
+                $parts[] = "Changes: {$diff}.";
+            }
+        }
+
+        return $parts;
+    }
+
+    /**
+     * Produces a short human-readable diff string between two state arrays.
+     */
+    private function diffChanges(array $before, array $after): string
+    {
+        $ignoredKeys = ['updated_at', 'created_at', 'deleted_at', 'remember_token', 'password'];
+        $changes     = [];
+
+        foreach ($after as $key => $afterValue) {
+            if (in_array($key, $ignoredKeys, true)) {
+                continue;
+            }
+            $beforeValue = $before[$key] ?? null;
+            if ($beforeValue === $afterValue) {
+                continue;
+            }
+            $label     = str($key)->replace('_', ' ')->title()->toString();
+            $changes[] = "{$label} from \"{$this->stringifyValue($beforeValue)}\" to \"{$this->stringifyValue($afterValue)}\"";
+        }
+
+        $visible = array_slice($changes, 0, 3);
+        $suffix  = count($changes) > 3 ? ', and more' : '';
+
+        return implode(', ', $visible) . $suffix;
+    }
+
+    /**
+     * Strips noise (system fields, complex values) from a state array for display.
+     */
     private function cleanState(mixed $state): array
     {
-        if (!is_array($state)) return [];
+        if (!is_array($state)) {
+            return [];
+        }
 
         $ignoredKeys = [
-            'id', 'created_at', 'updated_at', 'deleted_at', 
+            'id', 'created_at', 'updated_at', 'deleted_at',
             'password', 'remember_token', 'email_verified_at',
-            'components', 'snapshot', 'updates', 'calls'
+            'components', 'snapshot', 'updates', 'calls',
         ];
 
         $cleaned = [];
         foreach ($state as $key => $value) {
-            if (in_array($key, $ignoredKeys) || is_array($value) || is_object($value)) {
+            if (in_array($key, $ignoredKeys, true) || is_array($value) || is_object($value)) {
                 continue;
             }
-            
-            $label = str($key)->replace(['_', '-'], ' ')->title()->toString();
+            $label           = str($key)->replace(['_', '-'], ' ')->title()->toString();
             $cleaned[$label] = $value ?? '-';
         }
 
         return $cleaned;
     }
 
-    public function detailedMessage(): string
-    {
-        $activity = (array) ($this->activityLog->activity ?? []);
-        $user = $this->actorLabel();
-        $page = $this->pageName();
-        $action = $this->activityLog->action_name ?: $this->inferActionNameFromActivity($activity);
-
-        $before = $this->activityLog->beforeState();
-        $after = $this->activityLog->afterState();
-        $entityName = $this->inferEntityName($before, $after);
-        $entityType = $this->inferEntityType();
-
-        // Check for specific methods in Livewire calls to refine action name
-        $input = $activity['input'] ?? null;
-        if (is_array($input) && isset($input['components'][0])) {
-            $component = $input['components'][0];
-            if (!empty($component['calls'][0]['method'])) {
-                $methodName = strtolower($component['calls'][0]['method']);
-                if (str_contains($methodName, 'delete') || str_contains($methodName, 'destroy') || str_contains($methodName, 'remove')) {
-                    $action = 'deleted';
-                } elseif (str_contains($methodName, 'save') || str_contains($methodName, 'store')) {
-                    $action = 'created';
-                } elseif (str_contains($methodName, 'update')) {
-                    $action = 'updated';
-                } elseif (str_contains($methodName, 'toggle')) {
-                    $action = 'toggled';
-                }
-            }
-        }
-
-        $parts = [];
-        $actionPast = $this->formatActionPast($action);
-
-        if ($entityName) {
-            $parts[] = "{$user} made {$entityType} \"{$entityName}\" on {$page}.";
-        } else {
-            $parts[] = "{$user} made a {$entityType} record on {$page}.";
-        }
-
-        // Add context for updates
-        if ($action === 'updated' || $action === 'toggled') {
-            if (is_array($input) && isset($input['components'][0])) {
-                $component = $input['components'][0];
-                if (!empty($component['updates']) && is_array($component['updates'])) {
-                    $changes = [];
-                    foreach ($component['updates'] as $field => $value) {
-                        if (is_array($value) || is_object($value)) continue;
-                        $label = str($field)->replace(['_', '-'], ' ')->title()->toString();
-                        $changes[] = "set {$label} to \"{$value}\"";
-                    }
-                    
-                    if ($changes !== []) {
-                        $parts[] = "Changes included: " . implode(', ', array_slice($changes, 0, 3)) . (count($changes) > 3 ? '...' : '') . ".";
-                    }
-                }
-            }
-        }
-
-        return implode(' ', $parts);
-    }
-
-    private function formatActionPast(string $action): string
-    {
-        return match ($action) {
-            'viewed' => 'viewed',
-            'created' => 'created',
-            'updated' => 'updated',
-            'deleted' => 'deleted',
-            'toggled' => 'toggled',
-            'performed' => 'performed',
-            default => str_ends_with($action, 'ed') ? $action : "{$action}ed",
-        };
-    }
-
+    /**
+     * Infers a human-friendly entity type from the action page URL / route.
+     */
     private function inferEntityType(): string
     {
-        $url = strtolower($this->url() ?? '');
+        $url      = strtolower((string) ($this->url() ?? ''));
         $activity = (array) ($this->activityLog->activity ?? []);
-        $rawPage = strtolower($this->activityLog->page ?: ($activity['route_name'] ?? ''));
-        
-        if (str_contains($url, 'companies') || str_contains($rawPage, 'companies')) return 'Organization';
-        if (str_contains($url, 'branches') || str_contains($rawPage, 'branches')) return 'Branch';
-        if (str_contains($url, 'users') || str_contains($rawPage, 'users')) return 'User';
-        if (str_contains($url, 'airports') || str_contains($rawPage, 'airports')) return 'Airport';
-        if (str_contains($url, 'country') || str_contains($rawPage, 'country')) return 'Country';
-        if (str_contains($url, 'city') || str_contains($rawPage, 'city')) return 'City';
-        if (str_contains($url, 'trip-purpose') || str_contains($rawPage, 'trip-purpose')) return 'Trip Purpose';
-        if (str_contains($url, 'roles') || str_contains($rawPage, 'roles')) return 'Role';
-        
+        $rawPage  = strtolower($this->activityLog->page ?: ($activity['route_name'] ?? ''));
+
+        $checks = [
+            'companies'            => 'Organization',
+            'branches'             => 'Branch',
+            'users'                => 'User',
+            'airports'             => 'Airport',
+            'trip-purpose'         => 'Trip Purpose',
+            'countries-and-cities' => 'Country / City',
+            'country'              => 'Country',
+            'city'                 => 'City',
+            'roles'                => 'Role',
+            'features'             => 'Feature',
+            'integrations'         => 'Integration',
+        ];
+
+        foreach ($checks as $keyword => $label) {
+            if (str_contains($url, $keyword) || str_contains($rawPage, $keyword)) {
+                return $label;
+            }
+        }
+
         return 'record';
     }
 
+    /**
+     * Tries to find a human-readable entity name from the before/after state.
+     */
     private function inferEntityName(?array $before, ?array $after): ?string
     {
         $state = $after ?: $before;
-        if (!is_array($state)) return null;
+        if (!is_array($state)) {
+            return null;
+        }
 
-        $keys = ['name', 'label', 'title', 'company_name', 'city_name', 'country_name', 'code'];
-        foreach ($keys as $key) {
+        foreach (['name', 'label', 'title', 'company_name', 'city_name', 'country_name', 'code'] as $key) {
             if (!empty($state[$key]) && is_string($state[$key])) {
                 return $state[$key];
             }
@@ -291,16 +453,22 @@ class AuditLogView extends Component
         return null;
     }
 
-    private function inferActionNameFromActivity(array $activity): string
+    private function stringifyValue(mixed $value): string
     {
-        $method = strtoupper((string) ($activity['method'] ?? ''));
+        if ($value === null || $value === '') {
+            return '-';
+        }
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+        if (is_scalar($value)) {
+            return (string) $value;
+        }
+        return '[complex]';
+    }
 
-        return match ($method) {
-            'GET' => 'viewed',
-            'POST' => 'submitted changes',
-            'PUT', 'PATCH' => 'updated data',
-            'DELETE' => 'deleted data',
-            default => 'performed an action',
-        };
+    public function render()
+    {
+        return view('livewire.audit-log.view');
     }
 }
