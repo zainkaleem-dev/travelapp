@@ -12,6 +12,8 @@ class CountriesAndCities extends Component
 {
     public string $activeTab = 'countries'; // 'countries' or 'cities'
     public ?string $crudMessage = null;
+    public string $sortBy = 'name';
+    public string $sortDirection = 'asc';
 
     public function mount(): void
     {
@@ -24,6 +26,18 @@ class CountriesAndCities extends Component
     {
         $this->activeTab = $tab;
         $this->crudMessage = null;
+        $this->sortBy = 'name';
+        $this->sortDirection = 'asc';
+    }
+
+    public function sort(string $column): void
+    {
+        if ($this->sortBy === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $column;
+            $this->sortDirection = 'asc';
+        }
     }
 
     public function deleteCountry(int $id): void
@@ -41,8 +55,8 @@ class CountriesAndCities extends Component
     public function render()
     {
         return view('livewire.countries-and-cities.index', [
-            'countries' => Country::orderBy('name')->get(),
-            'cities' => City::with('country')->orderBy('name')->get(),
+            'countries' => Country::orderBy($this->sortBy, $this->sortDirection)->get(),
+            'cities' => City::with('country')->orderBy($this->sortBy, $this->sortDirection)->get(),
         ]);
     }
 }

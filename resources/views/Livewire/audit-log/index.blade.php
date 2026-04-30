@@ -1,9 +1,9 @@
 <div x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-            <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+            <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Audit Logs</h1>
+                    <h1 class="text-[26px] font-black text-gray-900 tracking-tight">Audit Logs</h1>
                     <button @click="filtersOpen = !filtersOpen"
                         class="inline-flex items-center justify-center rounded-lg border border-gray-200 p-2 transition-colors"
                         :class="filtersOpen ? 'bg-[#2ab4c0]/10 text-[#2ab4c0] border-[#2ab4c0]/30' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'"
@@ -149,10 +149,10 @@
                                     <th class="px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wide">Select</th>
                                 @endif
 --}}
-                                <th class="px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wide">User</th>
-                                <th class="px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wide">Message</th>
-                                <th class="px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wide">Timestamp</th>
-                                <th class="px-4 py-3 text-right text-xs font-bold text-white uppercase tracking-wide">Actions</th>
+                                <th class="px-4 py-2.5 text-left text-xs font-bold text-white uppercase tracking-wide">User</th>
+                                <th class="px-4 py-2.5 text-left text-xs font-bold text-white uppercase tracking-wide">Message</th>
+                                <th class="px-4 py-2.5 text-left text-xs font-bold text-white uppercase tracking-wide">Timestamp</th>
+                                <th class="px-4 py-2.5 text-right text-xs font-bold text-white uppercase tracking-wide">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -170,7 +170,7 @@
 --}}
                                     <td class="px-4 py-3 text-gray-900 font-semibold">{{ $this->actorLabel($log) }}</td>
                                     <td class="px-4 py-3 text-gray-700">{{ $this->activityMessage($log) }}</td>
-                                    <td class="px-4 py-3 text-gray-700 whitespace-nowrap">{{ $log->created_at?->format('Y-m-d H:i:s') }}</td>
+                                    <td class="px-4 py-3 text-gray-700 whitespace-nowrap">{{ $log->created_at?->format('d/m/Y (H:i:s)') }}</td>
                                     <td class="px-4 py-3">
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('admin.audit-logs.view', $log->id) }}"

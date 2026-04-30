@@ -156,22 +156,22 @@
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
                                 <th
-                                    class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide rounded-ss-2xl">
+                                    class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide rounded-ss-2xl">
                                     Logo
                                 </th>
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('name')">
                                     <div class="flex items-center gap-2">
                                         <span>{{ $isSuperAdmin ? 'Organization' : 'Partner' }}</span>
                                         <div
                                             class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-40' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -180,19 +180,19 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('company_type')">
                                     <div class="flex items-center gap-2">
                                         <span>Type</span>
                                         <div
                                             class="flex flex-col transition-opacity {{ $sortBy === 'company_type' ? 'opacity-100' : 'opacity-40' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'company_type' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-3.5 h-3.5 {{ $sortBy === 'company_type' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'company_type' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'company_type' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -201,19 +201,40 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('status')">
                                     <div class="flex items-center gap-2">
                                         <span>Status</span>
                                         <div
                                             class="flex flex-col transition-opacity {{ $sortBy === 'status' ? 'opacity-100' : 'opacity-40' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'status' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-3.5 h-3.5 {{ $sortBy === 'status' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'status' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'status' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
+                                                fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                    wire:click="sort('created_at')">
+                                    <div class="flex items-center gap-2">
+                                        <span>Added on</span>
+                                        <div
+                                            class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-40' }}">
+                                            <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
+                                                fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -223,7 +244,7 @@
                                     </div>
                                 </th>
                                 <th
-                                    class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide rounded-se-2xl">
+                                    class="px-6 py-2.5 text-start text-xs font-bold text-white uppercase tracking-wide rounded-se-2xl">
                                     Actions
                                 </th>
                             </tr>
@@ -265,6 +286,11 @@
                                         <span
                                             class="inline-flex items-center rounded-md {{ $company->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
                                             {{ ucfirst($company->status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-xs text-gray-600 font-medium">
+                                            {{ $company->created_at->format('d/m/Y') }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4" onclick="event.stopPropagation()">
@@ -392,7 +418,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                                    <td colspan="6" class="px-6 py-10 text-center text-gray-500">
                                         No {{ $isSuperAdmin ? 'organizations' : 'partners' }} found.
                                     </td>
                                 </tr>
