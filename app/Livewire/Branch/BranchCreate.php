@@ -45,8 +45,6 @@ class BranchCreate extends Component
     public ?string $country = null;
 
     // GPS & Others
-    public ?string $latitude = null;
-    public ?string $longitude = null;
     public ?string $notes = null;
 
     public function updatedName($value): void
@@ -93,8 +91,6 @@ class BranchCreate extends Component
             'postal_code' => ['nullable', 'string', 'max:50'],
             'country' => ['required', 'string', 'max:255'],
 
-            'latitude' => ['required', 'numeric', 'between:-90,90'],
-            'longitude' => ['required', 'numeric', 'between:-180,180'],
             'notes' => ['nullable', 'string'],
         ];
     }
@@ -107,9 +103,7 @@ class BranchCreate extends Component
             'address_line_1.required' => 'Please provide the physical address.',
             'city.required' => 'City is required.',
             'state.required' => 'State/Province is required.',
-            'country.required' => 'Country is required.',
-            'latitude.required' => 'GPS Latitude is necessary for mapping.',
-            'longitude.required' => 'GPS Longitude is necessary for mapping.',
+            'country.required' => 'Organization head office country is required.',
         ];
     }
 

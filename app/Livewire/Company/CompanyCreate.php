@@ -25,6 +25,7 @@ class CompanyCreate extends Component
     public ?string $registration_number = null;
     public $company_logo = null;
     public array $attachments = [];
+    public array $attachmentNames = []; // Map of index => custom name
     public ?int $founded_year = null;
     public ?string $description = null;
 
@@ -32,39 +33,6 @@ class CompanyCreate extends Component
     public string $status = 'active';
     public ?string $notes = null;
 
-    // Branch Section (Dynamic Repeater)
-    public bool $create_branch = true;
-    public array $branches = [];
-
-    public function mount(): void
-    {
-        $this->addBranch();
-    }
-
-    public function addBranch(): void
-    {
-        $this->branches[] = [
-            'name' => '',
-            'code' => '',
-            'slug' => '',
-            'email' => '',
-            'phone' => '',
-            'address_line_1' => '',
-            'city' => '',
-            'state' => '',
-            'country' => '',
-            'latitude' => '0',
-            'longitude' => '0',
-        ];
-    }
-
-    public function removeBranch(int $index): void
-    {
-        if (count($this->branches) > 1) {
-            unset($this->branches[$index]);
-            $this->branches = array_values($this->branches);
-        }
-    }
 
     public function updatedCompanyName($value): void
     {
@@ -81,30 +49,6 @@ class CompanyCreate extends Component
         $this->registration_number = $this->generateRegistrationNumber($value);
     }
 
-    public function updatedBranches($value, $key): void
-    {
-        $parts = explode('.', $key);
-        if (count($parts) < 2) return;
-
-        $index = (int) $parts[0];
-        $field = $parts[1];
-
-        if ($field === 'name') {
-            $this->updateBranchFields($index, $value);
-        }
-    }
-
-    private function updateBranchFields(int $index, string $name): void
-    {
-        if (isset($this->branches[$index])) {
-            if (empty($this->branches[$index]['slug'])) {
-                $this->branches[$index]['slug'] = str($name)->slug()->toString();
-            }
-            if (empty($this->branches[$index]['code'])) {
-                $this->branches[$index]['code'] = strtoupper(substr(str($name)->slug('')->toString(), 0, 3)) . rand(100, 999);
-            }
-        }
-    }
 
     protected function rules(): array
     {
@@ -123,19 +67,6 @@ class CompanyCreate extends Component
             'legal_name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'notes' => ['nullable', 'string', 'max:1000'],
-
-            // Dynamic Branch Validation
-            'branches.*.name' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.code' => [Rule::requiredIf($this->create_branch), 'string', 'max:50', 'unique:branches,code'],
-            'branches.*.slug' => [Rule::requiredIf($this->create_branch), 'string', 'max:255', 'unique:branches,slug'],
-            'branches.*.email' => [Rule::requiredIf($this->create_branch), 'email', 'max:255'],
-            'branches.*.phone' => [Rule::requiredIf($this->create_branch), 'string', 'max:50'],
-            'branches.*.address_line_1' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.city' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.state' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.country' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.latitude' => [Rule::requiredIf($this->create_branch), 'numeric'],
-            'branches.*.longitude' => [Rule::requiredIf($this->create_branch), 'numeric'],
         ];
     }
 
@@ -153,10 +84,6 @@ class CompanyCreate extends Component
             'founded_year.integer' => 'Please enter a valid year (e.g., 2024).',
             'founded_year.max' => 'The founded year cannot be in the future.',
             'status.required' => 'You must select a status for the company.',
-            'branches.*.name.required' => 'Branch name is required.',
-            'branches.*.code.required' => 'Branch code is required.',
-            'branches.*.code.unique' => 'This branch code is already in use.',
-            'branches.*.email.required' => 'Branch email is required.',
         ];
     }
 
@@ -211,40 +138,56 @@ class CompanyCreate extends Component
                 ]);
             }
 
-            foreach ($this->attachments as $attachment) {
+            foreach ($this->attachments as $index => $attachment) {
                 if (!$attachment instanceof UploadedFile) continue;
+                
+                $customName = $this->attachmentNames[$index] ?? $attachment->getClientOriginalName();
                 $path = $attachment->storePublicly('company-attachments', 'public');
+                
                 $company->attachments()->create([
                     'disk' => 'public',
                     'path' => $path,
-                    'original_name' => $attachment->getClientOriginalName(),
+                    'original_name' => $customName,
                     'mime_type' => $attachment->getClientMimeType(),
                     'size' => $attachment->getSize(),
                     'uploaded_by' => auth()->id(),
                 ]);
             }
 
-            // Dynamic Branches Creation
-            if ($this->create_branch) {
-                foreach ($this->branches as $index => $branchData) {
-                    Branch::query()->create(array_merge($branchData, [
-                        'company_id' => $company->id,
-                        'is_main' => ($index === 0),
-                        'status' => 'active',
-                    ]));
-                }
-            }
-
             return $company;
         });
 
-        session()->flash('status', 'Company and branches created successfully.');
-        return $this->redirect(route('companies.index'));
+        session()->flash('status', 'Company created successfully. You can now add branches.');
+        return $this->redirect(route('companies.create-branches', ['id' => $company->id]));
     }
 
     public function render()
     {
         return view('livewire.company.create');
+    }
+
+    public function removeAttachment(int $index): void
+    {
+        if (isset($this->attachments[$index])) {
+            unset($this->attachments[$index]);
+            unset($this->attachmentNames[$index]);
+            $this->attachments = array_values($this->attachments);
+            $this->attachmentNames = array_values($this->attachmentNames);
+        }
+    }
+
+    public function renameAttachment(int $index, string $newName): void
+    {
+        if (isset($this->attachments[$index])) {
+            $this->attachmentNames[$index] = $newName;
+        }
+    }
+
+    public function downloadAttachment(int $index)
+    {
+        if (isset($this->attachments[$index])) {
+            return response()->download($this->attachments[$index]->getRealPath(), $this->attachmentNames[$index] ?? $this->attachments[$index]->getClientOriginalName());
+        }
     }
 
     private function generateRegistrationNumber(?string $companyName): string

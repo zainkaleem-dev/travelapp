@@ -34,16 +34,12 @@ class Branch extends Model
         'state',
         'postal_code',
         'country',
-        'latitude',
-        'longitude',
         'settings',
         'notes',
     ];
 
     protected $casts = [
         'is_main' => 'boolean',
-        'latitude' => 'decimal:9',
-        'longitude' => 'decimal:9',
         'settings' => 'array',
     ];
 

@@ -15,6 +15,8 @@ class FeaturesListing extends Component
 {
     public string $search = '';
     public int $selectedCompanyId = 0;
+    public bool $isCompanyRoute = false;
+    public bool $isCompanyContext = false;
 
     /** @var array<string, array{label: string, icon: string, description: string}> */
     public array $definedFeatures = [
@@ -112,9 +114,12 @@ class FeaturesListing extends Component
         }
 
         // If in company context and no company selected, default to current tenant
-        if (request()->is('company*') && !$this->selectedCompanyId) {
+        $this->isCompanyContext = request()->is('company*');
+        if ($this->isCompanyContext && !$this->selectedCompanyId) {
             $this->selectedCompanyId = (int) ($tenantContext->companyId() ?? 0);
         }
+
+        $this->isCompanyRoute = request()->routeIs('companies.features');
     }
 
     protected function selectFirstCompany(): void
@@ -171,7 +176,7 @@ class FeaturesListing extends Component
 
     public function render(TenantContext $tenantContext)
     {
-        $isCompanyContext = request()->is('company*');
+        $isCompanyContext = $this->isCompanyContext;
         
         // Fetch companies for the sidebar 
         $sidebarCompanies = Company::query()

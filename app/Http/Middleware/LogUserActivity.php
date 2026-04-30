@@ -21,7 +21,7 @@ class LogUserActivity
             return $response;
         }
 
-        if (in_array($request->method(), ['HEAD', 'OPTIONS'], true)) {
+        if (in_array($request->method(), ['GET', 'HEAD', 'OPTIONS'], true)) {
             return $response;
         }
 

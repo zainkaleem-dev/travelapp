@@ -251,6 +251,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/branches/create', BranchCreate::class)->name('branches.create')->middleware('can:Create Branch');
         Route::get('/branches/{id}/edit', BranchEdit::class)->name('branches.edit')->middleware('can:Edit Branch');
         Route::get('/companies/create', CompanyCreate::class)->name('companies.create')->middleware('can:Create Company');
+        Route::get('/companies/create/{id}/branches', \App\Livewire\Company\CompanyCreateBranches::class)->name('companies.create-branches')->middleware('can:Create Company');
         Route::get('/companies/{id}', CompanyShow::class)->name('companies.show')->middleware('can:View Company');
         Route::get('/companies/{id}/attachments', CompanyAttachments::class)->name('companies.attachments')->middleware('can:View Company');
         Route::get('/companies/{id}/branches', CompanyBranches::class)->name('companies.branches')->middleware('can:View Company');
@@ -258,6 +259,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/companies/{id}/roles-permissions', RolesPermissions::class)->name('companies.roles-permissions')->middleware('can:Manage Roles and Permissions');
         Route::get('/companies/{id}/billing-entity', CompanyBillingEntity::class)->name('companies.billing-entity')->middleware('can:View Company');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit')->middleware('can:Edit Company');
+        Route::get('/companies/{id}/edit-branches', \App\Livewire\Company\CompanyEditBranches::class)->name('companies.edit-branches')->middleware('can:Edit Company');
         Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features')->middleware('can:Manage Features');
         Route::get('/features', FeaturesListing::class)->name('features')->middleware('can:Manage Features');
         Route::get('/users', UserListing::class)->name('users.index')->middleware('can:View Users');

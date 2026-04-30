@@ -26,22 +26,38 @@ class ActivityLog extends Model
 
     public function beforeState(): mixed
     {
+        if ($this->action_name === 'created') {
+            return null;
+        }
+
         $activity = (array) ($this->activity ?? []);
 
-        // Try to extract from nested Livewire snapshot if available
+        // Prefer explicitly stored before_state
+        if (array_key_exists('before_state', $activity)) {
+            return $activity['before_state'];
+        }
+
+        // Try to extract from nested Livewire snapshot if available (legacy or direct Livewire logs)
         $nested = $this->extractLivewireSnapshotData($activity);
         if ($nested !== null) {
             return $nested;
         }
 
-        return $activity['before_state']
-            ?? $activity['previous_state']
-            ?? null;
+        return $activity['previous_state'] ?? null;
     }
 
     public function afterState(): mixed
     {
+        if ($this->action_name === 'deleted') {
+            return null;
+        }
+
         $activity = (array) ($this->activity ?? []);
+
+        // Prefer explicitly stored after_state
+        if (array_key_exists('after_state', $activity)) {
+            return $activity['after_state'];
+        }
 
         // Try to build after state from Livewire updates
         $livewireAfter = $this->buildLivewireAfterState($activity);
@@ -49,9 +65,7 @@ class ActivityLog extends Model
             return $livewireAfter;
         }
 
-        return $activity['after_state']
-            ?? $activity['new_state']
-            ?? null;
+        return $activity['new_state'] ?? null;
     }
 
     private function extractLivewireSnapshotData(array $activity): ?array

@@ -39,8 +39,6 @@ class BranchEdit extends Component
     public ?string $country = null;
 
     // GPS & Others
-    public ?string $latitude = null;
-    public ?string $longitude = null;
     public ?string $notes = null;
 
     public function mount(int $id, \App\Support\TenantContext $tenantContext): void
@@ -85,8 +83,6 @@ class BranchEdit extends Component
         $this->postal_code = $this->branch->postal_code;
         $this->country = $this->branch->country;
 
-        $this->latitude = $this->branch->latitude;
-        $this->longitude = $this->branch->longitude;
         $this->notes = $this->branch->notes;
     }
 
@@ -135,8 +131,6 @@ class BranchEdit extends Component
             'postal_code' => ['nullable', 'string', 'max:50'],
             'country' => ['required', 'string', 'max:255'],
 
-            'latitude' => ['required', 'numeric', 'between:-90,90'],
-            'longitude' => ['required', 'numeric', 'between:-180,180'],
             'notes' => ['nullable', 'string'],
         ];
     }
@@ -150,8 +144,6 @@ class BranchEdit extends Component
             'city.required' => 'City is required.',
             'state.required' => 'State/Province is required.',
             'country.required' => 'Country is required.',
-            'latitude.required' => 'GPS Latitude is necessary for mapping.',
-            'longitude.required' => 'GPS Longitude is necessary for mapping.',
         ];
     }
 

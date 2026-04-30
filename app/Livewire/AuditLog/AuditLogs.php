@@ -15,8 +15,8 @@ class AuditLogs extends Component
     public int $perPage = 20;
     public string $search = '';
     public string $actionFilter = '';
-    public bool $selectionMode = false;
-    public array $selectedLogIds = [];
+    // public bool $selectionMode = false;
+    // public array $selectedLogIds = [];
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -39,6 +39,7 @@ class AuditLogs extends Component
         ActivityLog::query()->whereKey($logId)->delete();
     }
 
+    /*
     public function startBulkDeleteMode(int $logId): void
     {
         $this->selectionMode = true;
@@ -92,6 +93,7 @@ class AuditLogs extends Component
 
         $this->clearSelection();
     }
+    */
 
     public function actorLabel(ActivityLog $log): string
     {
@@ -116,15 +118,18 @@ class AuditLogs extends Component
 
     public function activityMessage(ActivityLog $log): string
     {
-        $page = $log->page ?: ((array) ($log->activity ?? []))['route_name'] ?? 'unknown page';
-        $action = $log->action_name ?: 'performed';
+        $activity = (array) ($log->activity ?? []);
+        $rawPage = $log->page ?: ($activity['route_name'] ?? 'unknown page');
         
+        $action = $log->action_name ?: 'performed';
         $before = $log->beforeState();
         $after = $log->afterState();
 
         $entityName = $this->inferEntityName($before, $after);
-        $pageLabel = $this->formatPageLabel($page);
+        $pageLabel = $this->formatPageLabel($rawPage);
         $changes = $this->summarizeChanges($before, $after);
+
+        $actionPast = $this->formatActionPast($action);
 
         if ($action === 'viewed') {
             return "Viewed {$pageLabel}.";
@@ -132,9 +137,8 @@ class AuditLogs extends Component
 
         if ($action === 'created') {
             if ($entityName !== null) {
-                return "Created {$entityName} on {$pageLabel}.";
+                return "Made {$entityName} on {$pageLabel}.";
             }
-
             return "Created a record on {$pageLabel}.";
         }
 
@@ -142,7 +146,6 @@ class AuditLogs extends Component
             if ($entityName !== null) {
                 return "Deleted {$entityName} from {$pageLabel}.";
             }
-
             return "Deleted a record from {$pageLabel}.";
         }
 
@@ -150,24 +153,42 @@ class AuditLogs extends Component
             if ($changes !== '') {
                 return "Updated {$pageLabel}: {$changes}.";
             }
-
             return "Updated data on {$pageLabel}.";
         }
 
         if ($changes !== '') {
-            return "Performed an action on {$pageLabel}: {$changes}.";
+            return "{$actionPast} action on {$pageLabel}: {$changes}.";
         }
 
-        return "Performed an action on {$pageLabel}.";
+        return "{$actionPast} action on {$pageLabel}.";
+    }
+
+    private function formatActionPast(string $action): string
+    {
+        return match ($action) {
+            'viewed' => 'viewed',
+            'created' => 'created',
+            'updated' => 'updated',
+            'deleted' => 'deleted',
+            'toggled' => 'toggled',
+            'performed' => 'performed',
+            default => str_ends_with($action, 'ed') ? $action : "{$action}ed",
+        };
     }
 
     private function formatPageLabel(string $page): string
     {
+        if (str_starts_with($page, '/')) {
+            $clean = str($page)->replace(['/admin/', '/'], ' ')->squish()->title()->toString();
+            return $clean ?: 'Dashboard';
+        }
+
         return str($page)
-            ->replace(['.', '-', '_'], ' ')
+            ->replace(['admin.', 'index', '.', '-', '_', 'livewire', 'update'], ' ')
+            ->replace('Organizations', 'Company')
             ->squish()
             ->title()
-            ->toString();
+            ->toString() ?: 'Dashboard';
     }
 
     private function inferEntityName(?array $before, ?array $after): ?string

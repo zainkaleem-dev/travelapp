@@ -12,6 +12,8 @@
             </div>
         </div>
 
+        @include('partials.navigation-company-create', ['companyId' => null, 'activeTab' => 'info'])
+
         @if (session('status'))
             <div class="px-6 py-4">
                 <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
@@ -94,7 +96,7 @@
                         </div>
 
                         <div>
-                            <label class="field-label">Organization Type <span class="text-red-500">*</span></label>
+                            <label class="field-label">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization Type' : 'Partner Type' }} <span class="text-red-500">*</span></label>
                             <div class="relative" x-data="{ open: false, selected: @js($company_type ?? '') }"
                                 @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
@@ -146,139 +148,94 @@
                         </div>
 
                         <div class="md:col-span-3">
-                            <label class="field-label">Organization Description</label>
+                            <label class="field-label">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization Description' : 'Partner Description' }}</label>
                             <textarea wire:model="description" rows="3" class="input-field pt-2"
-                                placeholder="Tell us more about this Organization..."></textarea>
+                                placeholder="Tell us more about this {{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization' : 'Partner' }}..."></textarea>
                             @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">
                                 {{ $message }}
                             </p> @enderror
                         </div>
 
                         <div class="md:col-span-3">
-                            <label class="field-label">Add Attachment</label>
-                            <input type="file" wire:model="attachments" class="input-field !pl-3" multiple>
-                            <p class="mt-1 text-[11px] text-gray-500">Maximum file size: 20MB each.</p>
-                            @error('attachments') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
-                            </p> @enderror
-                            @error('attachments.*') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}
-                            </p> @enderror
-                        </div>
-                    </div>
-                </div>
+                            <label class="field-label">Attachments</label>
+                            
+                            <!-- Upload Area -->
+                            <div 
+                                class="relative group cursor-pointer rounded-xl border-2 border-dashed border-gray-200 bg-white p-6 transition-all hover:border-[#2ab4c0] hover:bg-[#f2feff]/30"
+                                x-data="{ isUploading: false, progress: 0 }"
+                                x-on:livewire-upload-start="isUploading = true"
+                                x-on:livewire-upload-finish="isUploading = false"
+                                x-on:livewire-upload-error="isUploading = false"
+                                x-on:livewire-upload-progress="progress = $event.detail.progress"
+                            >
+                                <input type="file" wire:model="attachments" class="absolute inset-0 z-10 opacity-0 cursor-pointer" multiple>
+                                <div class="flex flex-col items-center justify-center text-center">
+                                    <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                        <svg class="w-6 h-6 text-gray-400 group-hover:text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-bold text-gray-900">Click or drag to upload</p>
+                                    <p class="text-[11px] text-gray-500 mt-1 uppercase tracking-tight">PDF, DOC, JPG or PNG (Max 20MB)</p>
+                                </div>
 
-                <!-- Section 2: Branches (Dynamic Repeater) -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center gap-3">
-                            <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Branches</h2>
-                            <span class="px-2 py-0.5 rounded-full bg-[#2ab4c0]/10 text-[10px] font-bold text-[#2ab4c0] uppercase tracking-tight">Dynamic</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" wire:model.live="create_branch" class="sr-only peer">
-                                <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2ab4c0]"></div>
-                                <span class="ml-3 text-xs font-bold text-gray-700">Enable Branching</span>
-                            </label>
-                            @if($create_branch)
-                                <button type="button" wire:click="addBranch" class="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white border border-gray-200 px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                    Add Another Branch
-                                </button>
+                                <!-- Upload Progress -->
+                                <div x-show="isUploading" class="mt-4">
+                                    <div class="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#2ab4c0] transition-all duration-300" :style="`width: ${progress}%` font-family: Inter, sans-serif;"></div>
+                                    </div>
+                                    <p class="text-[10px] font-bold text-[#2ab4c0] mt-2 uppercase text-center" x-text="`Uploading... ${progress}%`"></p>
+                                </div>
+                            </div>
+
+                            @error('attachments') <p class="mt-2 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            @error('attachments.*') <p class="mt-2 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+
+                            <!-- File List -->
+                            @if(count($attachments) > 0)
+                                <div class="mt-6 space-y-3">
+                                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Selected Files</h3>
+                                    @foreach($attachments as $index => $file)
+                                        <div class="group relative flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-white hover:border-[#2ab4c0] transition-all shadow-sm hover:shadow-md">
+                                            <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0 group-hover:bg-[#f2feff]">
+                                                <svg class="w-5 h-5 text-gray-400 group-hover:text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                            </div>
+                                            
+                                            <div class="flex-1 min-w-0" x-data="{ editing: false, newName: '{{ $attachmentNames[$index] ?? $file->getClientOriginalName() }}' }">
+                                                <div class="flex items-center gap-2" x-show="!editing">
+                                                    <p class="text-sm font-bold text-gray-900 truncate tracking-tight">{{ $attachmentNames[$index] ?? $file->getClientOriginalName() }}</p>
+                                                    <button type="button" @click="editing = true" class="text-gray-400 hover:text-[#2ab4c0]">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="flex items-center gap-2" x-show="editing" @click.outside="editing = false">
+                                                    <input type="text" x-model="newName" class="text-sm font-bold text-gray-900 border-b border-[#2ab4c0] bg-transparent focus:outline-none py-0 px-0" 
+                                                        @keydown.enter.prevent="$wire.renameAttachment({{ $index }}, newName); editing = false">
+                                                    <button type="button" @click="$wire.renameAttachment({{ $index }}, newName); editing = false" class="text-[#2ab4c0]">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                    </button>
+                                                </div>
+                                                <p class="text-[11px] text-gray-500 uppercase tracking-tight">{{ number_format($file->getSize() / 1024, 1) }} KB • {{ strtoupper($file->getClientOriginalExtension()) }}</p>
+                                            </div>
+
+                                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button type="button" wire:click="downloadAttachment({{ $index }})" class="p-2 text-gray-400 hover:text-[#2ab4c0] hover:bg-gray-50 rounded-lg transition-all" title="Download">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                                </button>
+                                                <button type="button" wire:click="removeAttachment({{ $index }})" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Remove">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             @endif
                         </div>
                     </div>
-
-                    @if($create_branch)
-                        <div class="space-y-6">
-                            @foreach($branches as $index => $branch)
-                                <div class="relative p-6 rounded-2xl border border-gray-100 bg-white shadow-sm animate-in fade-in slide-in-from-top-1 duration-300" wire:key="branch-{{ $index }}">
-                                    @if($index > 0)
-                                        <button type="button" wire:click="removeBranch({{ $index }})" class="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-red-500 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    @endif
-
-                                    <div class="flex items-center gap-2 mb-4">
-                                        <span class="w-6 h-6 rounded-full bg-gray-50 flex items-center justify-center text-[10px] font-black text-gray-400">{{ $index + 1 }}</span>
-                                        <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest">
-                                            @if($index === 0) Main Branch @else Branch Details @endif
-                                        </h3>
-                                    </div>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        <div class="md:col-span-2">
-                                            <label class="field-label">Branch Name <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model.live.debounce.500ms="branches.{{ $index }}.name" class="input-field" placeholder="Headquarters">
-                                            @error('branches.'.$index.'.name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-
-                                        <div>
-                                            <label class="field-label">Branch Code <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="branches.{{ $index }}.code" class="input-field uppercase font-mono" placeholder="HQ001">
-                                            @error('branches.'.$index.'.code') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-
-                                        <div>
-                                            <label class="field-label">Branch Slug <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="branches.{{ $index }}.slug" class="input-field font-mono" placeholder="headquarters">
-                                            @error('branches.'.$index.'.slug') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-
-                                        <div>
-                                            <label class="field-label">Contact Email <span class="text-red-500">*</span></label>
-                                            <input type="email" wire:model="branches.{{ $index }}.email" class="input-field" placeholder="hq@acme.com">
-                                            @error('branches.'.$index.'.email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-
-                                        <div>
-                                            <label class="field-label">Contact Phone <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="branches.{{ $index }}.phone" class="input-field" placeholder="+123456789">
-                                            @error('branches.'.$index.'.phone') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-
-                                        <div class="md:col-span-2">
-                                            <label class="field-label">Address Line 1 <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="branches.{{ $index }}.address_line_1" class="input-field" placeholder="123 Business St">
-                                            @error('branches.'.$index.'.address_line_1') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-
-                                        <div>
-                                            <label class="field-label">City <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="branches.{{ $index }}.city" class="input-field" placeholder="London">
-                                            @error('branches.'.$index.'.city') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-
-                                        <div>
-                                            <label class="field-label">State/Province <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="branches.{{ $index }}.state" class="input-field" placeholder="Greater London">
-                                            @error('branches.'.$index.'.state') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-
-                                        <div>
-                                            <label class="field-label">Country <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="branches.{{ $index }}.country" class="input-field" placeholder="United Kingdom">
-                                            @error('branches.'.$index.'.country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-
-                            <button type="button" wire:click="addBranch" class="w-full flex items-center justify-center gap-2 py-4 border-2 border-dashed border-gray-100 rounded-2xl text-gray-400 hover:text-[#2ab4c0] hover:border-[#2ab4c0] hover:bg-[#f2feff] transition-all group">
-                                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                                <span class="text-xs font-black uppercase tracking-widest">Add Another Branch</span>
-                            </button>
-                        </div>
-                    @else
-                        <div class="text-center py-8">
-                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Branching is disabled</p>
-                        </div>
-                    @endif
                 </div>
 
                 <!-- Section 3: Internal Notes & Status -->

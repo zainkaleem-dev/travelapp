@@ -24,6 +24,9 @@ class ActivityLogHelper
         $user = Auth::user();
         $isSuperAdmin = $user && $user->can('Manage Global System');
 
+        $activity['before_state'] = $beforeState;
+        $activity['after_state'] = $afterState;
+
         return ActivityLog::query()->create([
             'company_id' => $isSuperAdmin ? null : $companyId,
             'branch_id' => $isSuperAdmin ? null : $branchId,
@@ -31,8 +34,6 @@ class ActivityLogHelper
             'activity' => $activity,
             'page' => $page,
             'action_name' => $actionName,
-            'before_state' => $beforeState,
-            'after_state' => $afterState,
         ]);
     }
 
@@ -70,6 +71,15 @@ class ActivityLogHelper
         }
 
         $page = $routeName ?: '/' . ltrim($request->path(), '/');
+
+        // Handle Livewire requests to get the actual page path from the referer
+        if ($routeName === 'livewire.update' || str_contains($request->path(), 'livewire/update')) {
+            $referer = $request->headers->get('referer');
+            if ($referer) {
+                $page = parse_url($referer, PHP_URL_PATH) ?: $page;
+            }
+        }
+
         $actionName = self::resolveActionName($request->method());
 
         return self::storeJson(

@@ -100,33 +100,46 @@ class AuditLogView extends Component
         $activity = (array) ($this->activityLog->activity ?? []);
         $rawPage = $this->activityLog->page ?: ($activity['route_name'] ?? '');
         
+        // If it's a URL path, try to format it nicely
+        if (str_starts_with($rawPage, '/')) {
+            $path = $this->breadcrumbPath();
+            if ($path !== 'Unknown Path' && $path !== 'Dashboard') {
+                $segments = explode(' -> ', $path);
+                $last = collect($segments)->last();
+                
+                // Special case for Add/Edit to include the entity name
+                if (($last === 'Add New' || $last === 'Edit') && count($segments) > 1) {
+                    $prev = $segments[count($segments) - 2];
+                    if ($prev !== 'Admin') {
+                        return "{$last} " . str($prev)->singular()->title()->toString();
+                    }
+                }
+                return (string) $last;
+            }
+            
+            // Fallback for paths
+            $clean = str($rawPage)->replace(['/admin/', '/'], ' ')->squish()->title()->toString();
+            return $clean ?: 'Dashboard';
+        }
+
         $routeMap = [
-            'companies.index' => 'Organizations',
-            'companies.create' => 'Add Organization',
-            'companies.edit' => 'Edit Organization',
-            'admin.companies' => 'Organizations',
-            'admin.companies.index' => 'Organizations',
+            'companies.index' => 'Company',
+            'companies.create' => 'Add Company',
+            'companies.edit' => 'Edit Company',
+            'companies.features' => 'Company Features',
+            'companies.user-roles' => 'Company Users & Roles',
+            'admin.companies' => 'Company',
+            'admin.companies.index' => 'Company',
             'admin.dashboard' => 'Dashboard',
+            'admin.audit-logs' => 'Audit Logs',
+            'admin.audit-logs.view' => 'Audit Log Details',
+            'livewire.update' => 'Dashboard', // Should be caught by path logic above if Referer was present
         ];
 
         if (isset($routeMap[$rawPage])) return $routeMap[$rawPage];
 
-        $path = $this->breadcrumbPath();
-        if ($path !== 'Unknown Path' && $path !== 'Dashboard') {
-            $segments = explode(' -> ', $path);
-            $last = collect($segments)->last();
-            
-            if (($last === 'Add New' || $last === 'Edit') && count($segments) > 1) {
-                $prev = $segments[count($segments) - 2];
-                if ($prev !== 'Admin') {
-                    return "{$last} " . str($prev)->singular()->title()->toString();
-                }
-            }
-            return (string) $last;
-        }
-
         if ($rawPage) {
-            $clean = str($rawPage)->replace(['admin.', 'index', '.', '-', '_'], ' ')->squish()->title()->toString();
+            $clean = str($rawPage)->replace(['admin.', 'index', '.', '-', '_', 'livewire', 'update'], ' ')->squish()->title()->toString();
             return $clean ?: 'Dashboard';
         }
 
@@ -183,6 +196,7 @@ class AuditLogView extends Component
         $entityName = $this->inferEntityName($before, $after);
         $entityType = $this->inferEntityType();
 
+        // Check for specific methods in Livewire calls to refine action name
         $input = $activity['input'] ?? null;
         if (is_array($input) && isset($input['components'][0])) {
             $component = $input['components'][0];
@@ -194,34 +208,54 @@ class AuditLogView extends Component
                     $action = 'created';
                 } elseif (str_contains($methodName, 'update')) {
                     $action = 'updated';
+                } elseif (str_contains($methodName, 'toggle')) {
+                    $action = 'toggled';
                 }
             }
         }
 
         $parts = [];
+        $actionPast = $this->formatActionPast($action);
+
         if ($entityName) {
-            $parts[] = "{$user} {$action} {$entityType} \"{$entityName}\" on {$page}.";
+            $parts[] = "{$user} made {$entityType} \"{$entityName}\" on {$page}.";
         } else {
-            $parts[] = "{$user} {$action} a {$entityType} record on {$page}.";
+            $parts[] = "{$user} made a {$entityType} record on {$page}.";
         }
 
-        if (is_array($input) && isset($input['components'][0])) {
-            $component = $input['components'][0];
-            if (!empty($component['updates']) && is_array($component['updates'])) {
-                $changes = [];
-                foreach ($component['updates'] as $field => $value) {
-                    if (is_array($value) || is_object($value)) continue;
-                    $label = str($field)->replace(['_', '-'], ' ')->title()->toString();
-                    $changes[] = "set {$label} to \"{$value}\"";
-                }
-                
-                if ($changes !== []) {
-                    $parts[] = "Changes included: " . implode(', ', array_slice($changes, 0, 3)) . (count($changes) > 3 ? '...' : '') . ".";
+        // Add context for updates
+        if ($action === 'updated' || $action === 'toggled') {
+            if (is_array($input) && isset($input['components'][0])) {
+                $component = $input['components'][0];
+                if (!empty($component['updates']) && is_array($component['updates'])) {
+                    $changes = [];
+                    foreach ($component['updates'] as $field => $value) {
+                        if (is_array($value) || is_object($value)) continue;
+                        $label = str($field)->replace(['_', '-'], ' ')->title()->toString();
+                        $changes[] = "set {$label} to \"{$value}\"";
+                    }
+                    
+                    if ($changes !== []) {
+                        $parts[] = "Changes included: " . implode(', ', array_slice($changes, 0, 3)) . (count($changes) > 3 ? '...' : '') . ".";
+                    }
                 }
             }
         }
 
         return implode(' ', $parts);
+    }
+
+    private function formatActionPast(string $action): string
+    {
+        return match ($action) {
+            'viewed' => 'viewed',
+            'created' => 'created',
+            'updated' => 'updated',
+            'deleted' => 'deleted',
+            'toggled' => 'toggled',
+            'performed' => 'performed',
+            default => str_ends_with($action, 'ed') ? $action : "{$action}ed",
+        };
     }
 
     private function inferEntityType(): string

@@ -93,14 +93,6 @@
                                 <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->country }}" readonly>
                             </div>
 
-                            <div>
-                                <label class="field-label">Latitude</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700 font-mono" value="{{ $branch->latitude }}" readonly>
-                            </div>
-                            <div>
-                                <label class="field-label">Longitude</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700 font-mono" value="{{ $branch->longitude }}" readonly>
-                            </div>
                             <div class="md:col-span-3">
                                 <label class="field-label">Notes</label>
                                 <textarea rows="2" class="input-field pt-2 bg-gray-50 text-gray-700" readonly>{{ $branch->notes }}</textarea>

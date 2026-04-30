@@ -23,7 +23,7 @@
                     </div>
                     <div>
                         <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Action</p>
-                        <p class="mt-1 text-sm font-semibold text-gray-900">{{ $activityLog->action_name ?: '-' }}</p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900">{{ ucwords($activityLog->action_name ?: '-') }}</p>
                     </div>
                 </div>
 

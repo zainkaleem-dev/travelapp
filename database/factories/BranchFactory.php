@@ -32,8 +32,6 @@ class BranchFactory extends Factory
             'city' => $this->faker->city(),
             'country' => 'United Arab Emirates',
             'address_line_1' => $this->faker->streetAddress(),
-            'latitude' => $this->faker->latitude(),
-            'longitude' => $this->faker->longitude(),
         ];
     }
 }

@@ -35,8 +35,6 @@ class DummyOrganizationSeeder extends Seeder
                 'code' => 'HQ-01',
                 'is_main' => true,
                 'status' => 1,
-                'latitude' => 0.000000,
-                'longitude' => 0.000000,
             ]
         );
 

@@ -1,7 +1,7 @@
 <div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization Profile' : 'Partner Profile' }}</h1>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $company_name }} Profile</h1>
         </div>
 
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'general'])
@@ -38,7 +38,7 @@
                                 @endif
                             </div>
                             <div class="flex-1">
-                                <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization' : 'Partner' }}
+                                <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ $company_name }}
                                     logo</label>
                                 <p class="text-[11px] text-gray-500">Read-only profile view.</p>
                             </div>
@@ -76,7 +76,7 @@
                     </div>
 
                     <div class="md:col-span-3">
-                        <label class="field-label">Description</label>
+                        <label class="field-label">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Organization Description' : 'Partner Description' }}</label>
                         <textarea rows="3" class="input-field pt-2 bg-gray-50 text-gray-700" readonly>{{ $description }}</textarea>
                     </div>
 

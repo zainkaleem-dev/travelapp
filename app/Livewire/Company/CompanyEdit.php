@@ -31,6 +31,8 @@ class CompanyEdit extends Component
     public ?string $registration_number = null;
     public $company_logo = null;
     public array $attachments = [];
+    public array $attachmentNames = []; // Map of index => custom name for NEW attachments
+    public array $existingAttachmentNames = []; // Map of ID => custom name for EXISTING attachments
     public ?string $existing_logo_path = null;
     public ?int $founded_year = null;
     public ?string $description = null;
@@ -40,10 +42,6 @@ class CompanyEdit extends Component
     public string $status = 'active';
     public ?string $notes = null;
 
-    // Branch Section (Dynamic Repeater)
-    public bool $create_branch = true;
-    /** @var array<int, array<string, mixed>> */
-    public array $branches = [];
 
     public function mount(int $id): void
     {
@@ -81,107 +79,10 @@ class CompanyEdit extends Component
         $this->notes = $this->company->notes;
         $this->parent_id = $this->company->parent_id;
 
-        $this->loadBranches();
-    }
-
-    private function loadBranches(): void
-    {
-        $this->branches = Branch::query()
-            ->withoutGlobalScopes()
-            ->where('company_id', $this->company->id)
-            ->orderByDesc('is_main')
-            ->orderBy('id')
-            ->get()
-            ->map(fn (Branch $branch) => [
-                'id' => $branch->id,
-                'name' => $branch->name ?? '',
-                'code' => $branch->code ?? '',
-                'slug' => $branch->slug ?? '',
-                'email' => $branch->email ?? '',
-                'phone' => $branch->phone ?? '',
-                'address_line_1' => $branch->address_line_1 ?? '',
-                'city' => $branch->city ?? '',
-                'state' => $branch->state ?? '',
-                'country' => $branch->country ?? '',
-                'latitude' => (string) ($branch->latitude ?? '0'),
-                'longitude' => (string) ($branch->longitude ?? '0'),
-            ])
-            ->all();
-
-        if ($this->branches === []) {
-            $this->addBranch();
-        }
-    }
-
-    public function addBranch(): void
-    {
-        $this->branches[] = [
-            'id' => null,
-            'name' => '',
-            'code' => '',
-            'slug' => '',
-            'email' => '',
-            'phone' => '',
-            'address_line_1' => '',
-            'city' => '',
-            'state' => '',
-            'country' => '',
-            'latitude' => '0',
-            'longitude' => '0',
-        ];
-    }
-
-    public function removeBranch(int $index): void
-    {
-        if (!isset($this->branches[$index])) {
-            return;
-        }
-
-        if (count($this->branches) <= 1) {
-            return;
-        }
-
-        $branchId = $this->branches[$index]['id'] ?? null;
-        if ($branchId) {
-            Branch::query()
-                ->withoutGlobalScopes()
-                ->where('company_id', $this->company->id)
-                ->whereKey((int) $branchId)
-                ->delete();
-        }
-
-        unset($this->branches[$index]);
-        $this->branches = array_values($this->branches);
-    }
-
-    public function updatedBranches($value, $key): void
-    {
-        $parts = explode('.', (string) $key);
-        if (count($parts) < 2) {
-            return;
-        }
-
-        $index = (int) $parts[0];
-        $field = $parts[1];
-
-        if ($field === 'name') {
-            $this->updateBranchFields($index, (string) $value);
-        }
-    }
-
-    private function updateBranchFields(int $index, string $name): void
-    {
-        if (!isset($this->branches[$index])) {
-            return;
-        }
-
-        if (empty($this->branches[$index]['slug'])) {
-            $this->branches[$index]['slug'] = str($name)->slug()->toString();
-        }
-
-        if (empty($this->branches[$index]['code'])) {
-            $this->branches[$index]['code'] = strtoupper(substr(str($name)->slug('')->toString(), 0, 3)) . rand(100, 999);
-        }
+        $this->existingAttachmentNames = $this->company
+            ->attachments()
+            ->pluck('original_name', 'id')
+            ->toArray();
     }
 
     public function updatedCompanyName($value): void
@@ -212,6 +113,35 @@ class CompanyEdit extends Component
 
         Storage::disk($attachment->disk)->delete($attachment->path);
         $attachment->delete();
+        unset($this->existingAttachmentNames[$attachmentId]);
+    }
+
+    public function removeNewAttachment(int $index): void
+    {
+        if (isset($this->attachments[$index])) {
+            unset($this->attachments[$index]);
+            unset($this->attachmentNames[$index]);
+            $this->attachments = array_values($this->attachments);
+            $this->attachmentNames = array_values($this->attachmentNames);
+        }
+    }
+
+    public function renameAttachment(int $attachmentId, string $newName): void
+    {
+        $attachment = $this->company
+            ->attachments()
+            ->whereKey($attachmentId)
+            ->firstOrFail();
+
+        $attachment->update(['original_name' => $newName]);
+        $this->existingAttachmentNames[$attachmentId] = $newName;
+    }
+
+    public function renameNewAttachment(int $index, string $newName): void
+    {
+        if (isset($this->attachments[$index])) {
+            $this->attachmentNames[$index] = $newName;
+        }
     }
 
     public function downloadAttachment(int $attachmentId)
@@ -234,6 +164,13 @@ class CompanyEdit extends Component
         );
     }
 
+    public function downloadNewAttachment(int $index)
+    {
+        if (isset($this->attachments[$index])) {
+            return response()->download($this->attachments[$index]->getRealPath(), $this->attachmentNames[$index] ?? $this->attachments[$index]->getClientOriginalName());
+        }
+    }
+
     protected function rules(): array
     {
         return [
@@ -252,17 +189,6 @@ class CompanyEdit extends Component
             'legal_name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'notes' => ['nullable', 'string', 'max:1000'],
-
-            // Dynamic Branch Validation
-            'branches.*.name' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.code' => [Rule::requiredIf($this->create_branch), 'string', 'max:50'],
-            'branches.*.slug' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.email' => [Rule::requiredIf($this->create_branch), 'email', 'max:255'],
-            'branches.*.phone' => [Rule::requiredIf($this->create_branch), 'string', 'max:50'],
-            'branches.*.address_line_1' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.city' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.state' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
-            'branches.*.country' => [Rule::requiredIf($this->create_branch), 'string', 'max:255'],
         ];
     }
 
@@ -286,7 +212,6 @@ class CompanyEdit extends Component
     public function save()
     {
         $validated = $this->validate();
-        $this->validateBranchUniqueness();
 
         $logoPath = $this->existing_logo_path;
         if ($this->company_logo) {
@@ -312,38 +237,6 @@ class CompanyEdit extends Component
                 ]),
             ]);
 
-            if ($this->create_branch) {
-                foreach ($this->branches as $index => $branchData) {
-                    $branchId = $branchData['id'] ?? null;
-
-                    $payload = array_merge($branchData, [
-                        'company_id' => $this->company->id,
-                        'is_main' => ($index === 0),
-                        'status' => 'active',
-                    ]);
-                    unset($payload['id']);
-
-                    if ($branchId) {
-                        Branch::query()
-                            ->withoutGlobalScopes()
-                            ->where('company_id', $this->company->id)
-                            ->whereKey((int) $branchId)
-                            ->update($payload);
-                    } else {
-                        $created = Branch::query()->create($payload);
-                        $this->branches[$index]['id'] = $created->id;
-                    }
-                }
-
-                $mainId = $this->branches[0]['id'] ?? null;
-                if ($mainId) {
-                    Branch::query()
-                        ->withoutGlobalScopes()
-                        ->where('company_id', $this->company->id)
-                        ->whereKeyNot($mainId)
-                        ->update(['is_main' => false]);
-                }
-            }
 
             if ($this->company_logo instanceof UploadedFile && $logoPath) {
                 $this->company->attachments()->create([
@@ -356,16 +249,17 @@ class CompanyEdit extends Component
                 ]);
             }
 
-            foreach ($this->attachments as $attachment) {
+            foreach ($this->attachments as $index => $attachment) {
                 if (!$attachment instanceof UploadedFile) {
                     continue;
                 }
 
+                $customName = $this->attachmentNames[$index] ?? $attachment->getClientOriginalName();
                 $path = $attachment->storePublicly('company-attachments', 'public');
                 $this->company->attachments()->create([
                     'disk' => 'public',
                     'path' => $path,
-                    'original_name' => $attachment->getClientOriginalName(),
+                    'original_name' => $customName,
                     'mime_type' => $attachment->getClientMimeType(),
                     'size' => $attachment->getSize(),
                     'uploaded_by' => auth()->id(),
@@ -429,44 +323,4 @@ class CompanyEdit extends Component
         return $candidate;
     }
 
-    private function validateBranchUniqueness(): void
-    {
-        if (!$this->create_branch) {
-            return;
-        }
-
-        foreach ($this->branches as $index => $branch) {
-            $branchId = $branch['id'] ?? null;
-            $code = (string) ($branch['code'] ?? '');
-            $slug = (string) ($branch['slug'] ?? '');
-
-            if ($code !== '') {
-                $query = Branch::query()
-                    ->withoutGlobalScopes()
-                    ->where('code', $code);
-                if ($branchId) {
-                    $query->where('id', '!=', (int) $branchId);
-                }
-                if ($query->exists()) {
-                    throw ValidationException::withMessages([
-                        "branches.{$index}.code" => 'This branch code is already in use.',
-                    ]);
-                }
-            }
-
-            if ($slug !== '') {
-                $query = Branch::query()
-                    ->withoutGlobalScopes()
-                    ->where('slug', $slug);
-                if ($branchId) {
-                    $query->where('id', '!=', (int) $branchId);
-                }
-                if ($query->exists()) {
-                    throw ValidationException::withMessages([
-                        "branches.{$index}.slug" => 'This branch slug is already in use.',
-                    ]);
-                }
-            }
-        }
-    }
 }
