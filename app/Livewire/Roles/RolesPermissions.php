@@ -185,6 +185,12 @@ class RolesPermissions extends Component
             ->get();
     }
 
+    public function getActiveCompanyProperty()
+    {
+        $id = $this->getNormalizedCompanyId();
+        return $id ? \App\Models\Company::find($id) : null;
+    }
+
     public function getSidebarUsersProperty()
     {
         $tenantContext = app(\App\Support\TenantContext::class);

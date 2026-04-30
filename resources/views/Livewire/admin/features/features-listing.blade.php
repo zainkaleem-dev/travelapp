@@ -3,7 +3,7 @@
         @if($isCompanyRoute)
             <div class="mb-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
                 <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Feature Management</h1>
+                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $activeCompany->name ?? 'Feature Management' }}</h1>
                 </div>
                 @include('partials.navigation-company', ['companyId' => $selectedCompanyId, 'activeTab' => 'feature-management'])
             </div>

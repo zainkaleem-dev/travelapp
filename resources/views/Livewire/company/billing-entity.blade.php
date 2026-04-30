@@ -1,7 +1,7 @@
 <div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-            <h1 class="text-2xl font-black text-gray-900 tracking-tight">Billing Entity</h1>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $company->name }} Billing Entity</h1>
         </div>
 
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'billing-entity'])
