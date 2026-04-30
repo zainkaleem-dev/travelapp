@@ -23,6 +23,12 @@
             @php($firstInitial = $firstName !== '' ? strtoupper(mb_substr($firstName, 0, 1)) . '.' : '')
             @php($middleInitial = $middleName !== '' ? strtoupper(mb_substr($middleName, 0, 1)) . '.' : '')
             @php($displayName = $sidebarUser?->name ?: 'User')
+            
+            @php($activeCompanyId = request()->route('id'))
+            @php($activeCompany = $activeCompanyId ? \App\Models\Company::find($activeCompanyId) : null)
+            @php($isTmcContext = $activeCompany?->company_type === 'TMC')
+            @php($isCorporateContext = $activeCompany?->company_type === 'Corporate')
+
             @if($firstName !== '' && $lastName !== '')
                 @if($middleName === '')
                     @php($fullName = trim($firstName . ' ' . $lastName))
@@ -90,7 +96,15 @@
                     @if(request()->route('id'))
                     <div class="h-px bg-gray-100 my-1"></div>
 
-                    <div x-data="{ openPartner: false, openCorporate: false, openTmc: false, openCorpNotifications: false, openCorpIntegrations: false, openTmcServices: false, openTmcIntegrations: false }"
+                    <div x-data="{ 
+                            openPartner: @js((bool) $activeCompanyId), 
+                            openCorporate: @js((bool) $isCorporateContext), 
+                            openTmc: @js((bool) $isTmcContext), 
+                            openCorpNotifications: false, 
+                            openCorpIntegrations: false, 
+                            openTmcServices: false, 
+                            openTmcIntegrations: false 
+                        }"
                         class="flex flex-col gap-1">
                         <button type="button"
                             class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
@@ -113,7 +127,7 @@
                         <div x-show="openPartner" x-cloak class="ml-3 flex flex-col gap-1">
                             <button type="button"
                                 class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
-                                :class="openCorporate ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                :class="(openCorporate || @js($isCorporateContext)) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
                                 @click="openCorporate = !openCorporate">
                                 <span class="inline-flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -130,9 +144,10 @@
                             </button>
 
                             <div x-show="openCorporate" x-cloak class="ml-3 flex flex-col gap-1">
-                                <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
-                                    <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
-                                    Profile (Logo - Name - Billing Accounts)
+                                <a href="{{ route('companies.edit', ['id' => $activeCompanyId]) }}" 
+                                    class="admin-menu-item inline-flex items-center gap-1.5 px-4 py-2 w-full rounded-lg {{ $isCorporateContext ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} transition-colors">
+                                    <svg class="w-3 h-3 {{ $isCorporateContext ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
+                                    Profile
                                 </a>
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5V4H2v16h5m10 0v-4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v4m10 0H7" /></svg>
@@ -213,7 +228,7 @@
 
                             <button type="button"
                                 class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
-                                :class="openTmc ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                :class="(openTmc || @js($isTmcContext)) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
                                 @click="openTmc = !openTmc">
                                 <span class="inline-flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -229,7 +244,11 @@
                                 </svg>
                             </button>
                             <div x-show="openTmc" x-cloak class="ml-3 flex flex-col gap-1">
-                                <a href="#" class="admin-menu-item inline-flex items-center gap-1.5"><svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>Profile (Logo - Name - Billing Accounts)</a>
+                                <a href="{{ route('companies.edit', ['id' => $activeCompanyId]) }}" 
+                                    class="admin-menu-item inline-flex items-center gap-1.5 px-4 py-2 w-full rounded-lg {{ $isTmcContext ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} transition-colors">
+                                    <svg class="w-3 h-3 {{ $isTmcContext ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
+                                    Profile
+                                </a>
 
                                 <button type="button"
                                     class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
