@@ -1,11 +1,11 @@
 <div class="w-full">
     <div class="px-1 py-1 w-full">
         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-            <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+            <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">View Trip</h1>
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">View Trip</h1>
                     <a href="{{ route('admin.trip-purpose') }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
                         Back
                     </a>
                 </div>

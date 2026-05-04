@@ -105,8 +105,8 @@ class AuditLogView extends Component
 
         $formattedSegments = [];
         foreach ($segments as $segment) {
-            // Skip IDs, "livewire", "update"
-            if ($segment === '' || is_numeric($segment) || in_array($segment, ['livewire', 'update'], true)) {
+            // Skip IDs, "livewire", "update", "action"
+            if ($segment === '' || is_numeric($segment) || in_array($segment, ['livewire', 'update', 'action'], true)) {
                 continue;
             }
 
@@ -190,7 +190,7 @@ class AuditLogView extends Component
             'dashboard'                 => 'Dashboard',
             'profile'                   => 'Profile',
             'settings'                  => 'Settings',
-            'livewire.update'           => 'Dashboard',
+            'livewire.update'           => 'Action',
         ];
 
         if (isset($routeMap[$rawPage])) {
@@ -204,7 +204,7 @@ class AuditLogView extends Component
                 ->squish()
                 ->title()
                 ->toString();
-            return $clean ?: 'Dashboard';
+            return $clean ?: 'Action';
         }
 
         return 'Dashboard';
@@ -255,17 +255,17 @@ class AuditLogView extends Component
         $parts = match ($action) {
             'created' => [
                 "{$user} created {$entityLabel} on {$page} at {$timestamp}.",
+                !empty($after) ? "Initial state: " . $this->diffChanges([], $after) . "." : "",
             ],
             'deleted' => [
                 "{$user} deleted {$entityLabel} from {$page} at {$timestamp}.",
+                !empty($before) ? "Last known state: " . $this->diffChanges($before, []) . "." : "",
             ],
             'viewed' => [
                 "{$user} viewed {$page} at {$timestamp}.",
             ],
             'updated', 'toggled' => $this->buildUpdateParts($user, $entityLabel, $page, $timestamp, $activity),
-            default => [
-                "{$user} performed an action on {$page} at {$timestamp}.",
-            ],
+            default => $this->buildGenericParts($user, $page, $timestamp, $activity, $action),
         };
 
         return implode(' ', $parts);
@@ -305,6 +305,25 @@ class AuditLogView extends Component
     }
 
     /**
+     * Builds generic message parts, attempting to include the method name.
+     */
+    private function buildGenericParts(string $user, string $page, string $timestamp, array $activity, string $action): array
+    {
+        $method = null;
+        $calls  = $activity['input']['components'][0]['calls'] ?? [];
+        if (is_array($calls) && !empty($calls)) {
+            $method = $calls[0]['method'] ?? null;
+        }
+
+        if ($method) {
+            $friendlyMethod = str($method)->replace(['-', '_'], ' ')->title()->toString();
+            return ["{$user} performed action \"{$friendlyMethod}\" on {$page} at {$timestamp}."];
+        }
+
+        return ["{$user} performed a " . strtolower($action) . " action on {$page} at {$timestamp}."];
+    }
+
+    /**
      * Builds the message parts for an update/toggle action.
      */
     private function buildUpdateParts(
@@ -329,9 +348,7 @@ class AuditLogView extends Component
             }
 
             if (!empty($changes)) {
-                $visible = array_slice($changes, 0, 3);
-                $suffix  = count($changes) > 3 ? ', and more' : '';
-                $parts[] = 'Changes: ' . implode(', ', $visible) . $suffix . '.';
+                $parts[] = 'Changes: ' . implode(', ', $changes) . '.';
             }
             return $parts;
         }
@@ -350,29 +367,38 @@ class AuditLogView extends Component
     }
 
     /**
-     * Produces a short human-readable diff string between two state arrays.
+     * Produces a human-readable diff string between two state arrays.
      */
     private function diffChanges(array $before, array $after): string
     {
-        $ignoredKeys = ['updated_at', 'created_at', 'deleted_at', 'remember_token', 'password'];
+        $ignoredKeys = ['updated_at', 'created_at', 'deleted_at', 'remember_token', 'password', 'id'];
         $changes     = [];
+        $source      = !empty($after) ? $after : $before;
 
-        foreach ($after as $key => $afterValue) {
+        foreach ($source as $key => $value) {
             if (in_array($key, $ignoredKeys, true)) {
                 continue;
             }
+
             $beforeValue = $before[$key] ?? null;
-            if ($beforeValue === $afterValue) {
+            $afterValue  = $after[$key] ?? null;
+
+            if ($beforeValue === $afterValue && !empty($before) && !empty($after)) {
                 continue;
             }
-            $label     = str($key)->replace('_', ' ')->title()->toString();
-            $changes[] = "{$label} from \"{$this->stringifyValue($beforeValue)}\" to \"{$this->stringifyValue($afterValue)}\"";
+
+            $label = str($key)->replace('_', ' ')->title()->toString();
+
+            if (empty($before)) {
+                $changes[] = "{$label}: \"{$this->stringifyValue($afterValue)}\"";
+            } elseif (empty($after)) {
+                $changes[] = "{$label}: \"{$this->stringifyValue($beforeValue)}\"";
+            } else {
+                $changes[] = "{$label} from \"{$this->stringifyValue($beforeValue)}\" to \"{$this->stringifyValue($afterValue)}\"";
+            }
         }
 
-        $visible = array_slice($changes, 0, 3);
-        $suffix  = count($changes) > 3 ? ', and more' : '';
-
-        return implode(', ', $visible) . $suffix;
+        return implode(', ', $changes);
     }
 
     /**

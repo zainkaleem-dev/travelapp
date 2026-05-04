@@ -67,10 +67,10 @@ class AuditLogs extends Component
      * Returns a single-line summary for the audit log list view.
      *
      * Format examples:
-     *   "Viewed Companies."
-     *   "Created organization Acme Corp on Companies."
-     *   "Updated Companies: Status from "active" to "inactive"."
-     *   "Deleted a record from Trip Purposes."
+     *   "Viewed."
+     *   "Created organization Acme Corp."
+     *   "Updated: Status from \"active\" to \"inactive\"."
+     *   "Deleted a record."
      */
     public function activityMessage(ActivityLog $log): string
     {
@@ -79,24 +79,48 @@ class AuditLogs extends Component
         $before   = $log->beforeState();
         $after    = $log->afterState();
 
-        $pageLabel  = $this->formatPageLabel($log->page ?: ($activity['route_name'] ?? ''));
         $entityName = $this->inferEntityName($before, $after);
 
         return match ($action) {
-            'viewed'  => "Viewed {$pageLabel}.",
+            'viewed'  => "Viewed.",
 
             'created' => $entityName !== null
-                ? "Created {$entityName} on {$pageLabel}."
-                : "Created a record on {$pageLabel}.",
+                ? "Created {$entityName}: " . $this->summarizeChanges([], is_array($after) ? $after : [])
+                : "Created a record: " . $this->summarizeChanges([], is_array($after) ? $after : []),
 
             'deleted' => $entityName !== null
-                ? "Deleted {$entityName} from {$pageLabel}."
-                : "Deleted a record from {$pageLabel}.",
+                ? "Deleted {$entityName}: " . $this->summarizeChanges(is_array($before) ? $before : [], [])
+                : "Deleted a record: " . $this->summarizeChanges(is_array($before) ? $before : [], []),
 
-            'updated' => $this->buildUpdateMessage($pageLabel, $before, $after),
+            'updated' => $this->buildUpdateMessage($before, $after),
+            
+            'viewed'  => "Viewed page.",
 
-            default   => ucfirst($action) . " on {$pageLabel}.",
+            default   => $this->buildGenericMessage($log, $action),
         };
+    }
+
+    /**
+     * Builds a generic message for actions like "performed" or "viewed",
+     * attempting to extract more detail from Livewire calls.
+     */
+    private function buildGenericMessage(ActivityLog $log, string $action): string
+    {
+        $activity = (array) ($log->activity ?? []);
+        $method   = null;
+
+        // Try to find the method name in Livewire calls
+        $calls = $activity['input']['components'][0]['calls'] ?? [];
+        if (is_array($calls) && !empty($calls)) {
+            $method = $calls[0]['method'] ?? null;
+        }
+
+        if ($action === 'performed' && $method) {
+            $friendlyMethod = str($method)->replace(['-', '_'], ' ')->title()->toString();
+            return "Performed action: {$friendlyMethod}.";
+        }
+
+        return ucfirst($action) . ".";
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -104,9 +128,9 @@ class AuditLogs extends Component
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Builds a concise update message, optionally listing the first few changes.
+     * Builds a concise update message listing the changes.
      */
-    private function buildUpdateMessage(string $pageLabel, mixed $before, mixed $after): string
+    private function buildUpdateMessage(mixed $before, mixed $after): string
     {
         $changes = $this->summarizeChanges(
             is_array($before) ? $before : [],
@@ -114,26 +138,24 @@ class AuditLogs extends Component
         );
 
         return $changes !== ''
-            ? "Updated {$pageLabel}: {$changes}."
-            : "Updated data on {$pageLabel}.";
+            ? "Updated: {$changes}."
+            : "Updated data.";
     }
 
     /**
      * Converts a raw route name or URL path into a readable label.
-     *
-     * Route-name examples:
-     *   "companies.index"           → "Companies"
-     *   "admin.trip-purpose.create" → "Trip Purpose"
-     *   "admin.audit-logs"          → "Audit Logs"
-     *
-     * Path examples:
-     *   "/companies/5/edit"         → "Companies"
-     *   "/trip-purpose"             → "Trip Purpose"
      */
-    private function formatPageLabel(string $page): string
+    public function pageLabel(ActivityLog|string $log): string
     {
-        if ($page === '') {
-            return 'Dashboard';
+        if ($log instanceof ActivityLog) {
+            $activity = (array) ($log->activity ?? []);
+            $page = $log->page ?: ($activity['route_name'] ?? '');
+        } else {
+            $page = $log;
+        }
+
+        if ($page === '' || str_contains($page, 'livewire')) {
+            return 'Action';
         }
 
         // ── URL-path branch ───────────────────────────────────────────────────
@@ -164,7 +186,7 @@ class AuditLogs extends Component
                     return $segmentMap[$lower];
                 }
                 // Skip numeric IDs and generic admin segment
-                if ($lower === 'admin' || is_numeric($segment)) {
+                if ($lower === 'admin' || is_numeric($segment) || str_contains($lower, 'livewire')) {
                     continue;
                 }
                 if ($segment !== '') {
@@ -213,7 +235,7 @@ class AuditLogs extends Component
             'dashboard'                => 'Dashboard',
             'profile'                  => 'Profile',
             'settings'                 => 'Settings',
-            'livewire.update'          => 'Dashboard', // fallback; real page from Referer
+            'livewire.update'          => 'Action',
         ];
 
         if (isset($routeMap[$page])) {
@@ -226,7 +248,7 @@ class AuditLogs extends Component
             ->replace(['.', '-', '_'], ' ')
             ->squish()
             ->title()
-            ->toString() ?: 'Dashboard';
+            ->toString() ?: 'Action';
     }
 
     /**
@@ -250,39 +272,48 @@ class AuditLogs extends Component
     }
 
     /**
-     * Generates a short human-readable diff between before and after state.
-     * Returns at most 3 changed fields to keep messages scannable.
+     * Generates a human-readable diff between before and after state.
      */
     private function summarizeChanges(array $before, array $after): string
     {
         $ignoredKeys = [
             'updated_at', 'created_at', 'deleted_at',
-            'remember_token', 'password',
+            'remember_token', 'password', 'id',
         ];
 
         $changes = [];
-        foreach ($after as $key => $afterValue) {
+        $source  = !empty($after) ? $after : $before;
+
+        foreach ($source as $key => $value) {
             if (in_array($key, $ignoredKeys, true)) {
                 continue;
             }
 
             $beforeValue = $before[$key] ?? null;
-            if ($beforeValue === $afterValue) {
+            $afterValue  = $after[$key] ?? null;
+
+            if ($beforeValue === $afterValue && !empty($before) && !empty($after)) {
                 continue;
             }
 
-            $changes[] = sprintf(
-                '%s from "%s" to "%s"',
-                str($key)->replace('_', ' ')->title()->toString(),
-                $this->stringifyValue($beforeValue),
-                $this->stringifyValue($afterValue)
-            );
+            if (empty($before)) {
+                // Creation
+                $changes[] = sprintf('%s: "%s"', str($key)->replace('_', ' ')->title()->toString(), $this->stringifyValue($afterValue));
+            } elseif (empty($after)) {
+                // Deletion
+                $changes[] = sprintf('%s: "%s"', str($key)->replace('_', ' ')->title()->toString(), $this->stringifyValue($beforeValue));
+            } else {
+                // Update
+                $changes[] = sprintf(
+                    '%s from "%s" to "%s"',
+                    str($key)->replace('_', ' ')->title()->toString(),
+                    $this->stringifyValue($beforeValue),
+                    $this->stringifyValue($afterValue)
+                );
+            }
         }
 
-        $visible = array_slice($changes, 0, 3);
-        $suffix  = count($changes) > 3 ? ', and more' : '';
-
-        return implode(', ', $visible) . $suffix;
+        return trim(implode(', ', $changes), ', ');
     }
 
     private function stringifyValue(mixed $value): string

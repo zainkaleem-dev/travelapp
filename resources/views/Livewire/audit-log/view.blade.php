@@ -12,10 +12,18 @@
             </div>
 
             <div class="p-6 space-y-6">
-                <div class="rounded-xl border border-gray-200 bg-white p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="rounded-xl border border-gray-200 bg-white p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div>
                         <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">User</p>
                         <p class="mt-1 text-sm font-semibold text-gray-900">{{ $this->actorLabel() }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Organization</p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900">{{ $activityLog->company?->company_name ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Branch</p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900">{{ $activityLog->branch?->name ?? '-' }}</p>
                     </div>
                     <div>
                         <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Timestamp</p>

@@ -2,8 +2,8 @@
     <div class="px-1 py-1 w-full">
         @if($isCompanyRoute)
             <div class="mb-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $activeCompany->name ?? 'Feature Management' }}</h1>
+                <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $activeCompany->name ?? 'Feature Management' }}</h1>
                 </div>
                 @include('partials.navigation-company', ['companyId' => $selectedCompanyId, 'activeTab' => 'feature-management'])
             </div>
@@ -18,7 +18,7 @@
                     <div class="p-6 border-b border-gray-100 bg-[#f9faf6]">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-                            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Feature Management</h2>
+                            <h2 class="text-[11px] font-bold text-gray-800 uppercase tracking-wider">Feature Management</h2>
                         </div>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -46,12 +46,12 @@
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between gap-2">
-                                            <h3 class="text-[10px] font-bold text-gray-900 truncate">{{ $company->name }}</h3>
+                                            <h3 class="text-[11px] font-bold text-gray-900 truncate">{{ $company->name }}</h3>
                                             @if($companyStats[$company->id]['is_any_active'])
                                                 <div class="w-1 h-1 rounded-full bg-green-500 flex-shrink-0"></div>
                                             @endif
                                         </div>
-                                        <p class="text-[8px] text-gray-400 font-medium tracking-tight">
+                                        <p class="text-[10px] text-gray-400 font-medium tracking-tight">
                                             {{ $companyStats[$company->id]['active'] }}/{{ $companyStats[$company->id]['total'] }} modules active
                                         </p>
                                     </div>
@@ -79,8 +79,8 @@
                                     {{ substr($activeCompany->name, 0, 1) }}
                                 </div>
                                 <div>
-                                    <h2 class="text-xl font-black text-gray-900">{{ $activeCompany->name }}</h2>
-                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $activeCompany->slug }}</span>
+                                    <h2 class="text-[21px] font-black text-gray-900">{{ $activeCompany->name }}</h2>
+                                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{{ $activeCompany->slug }}</span>
                                 </div>
                             </div>
                             <div class="flex flex-col items-end gap-2 min-w-[160px]">
@@ -131,8 +131,8 @@
                                                             @endif
                                                         </div>
                                                         <div class="min-w-0">
-                                                            <p class="text-sm font-bold text-gray-900 truncate">{{ $feature['label'] }}</p>
-                                                            <p class="text-[11px] text-{{ $activeFeatures[$key] ? 'green-600' : 'gray-400' }} font-bold uppercase tracking-wide">
+                                                            <p class="text-[11px] font-bold text-gray-900 truncate">{{ $feature['label'] }}</p>
+                                                            <p class="text-[10px] text-{{ $activeFeatures[$key] ? 'green-600' : 'gray-400' }} font-bold uppercase tracking-wide">
                                                                 {{ $activeFeatures[$key] ? 'Active' : 'Inactive' }}
                                                             </p>
                                                         </div>
@@ -179,8 +179,8 @@
                                                             @endif
                                                         </div>
                                                         <div class="min-w-0">
-                                                            <p class="text-sm font-bold text-gray-900 truncate">{{ $feature['label'] }}</p>
-                                                            <p class="text-[11px] text-[#2ab4c0] font-bold uppercase tracking-wide">
+                                                            <p class="text-[11px] font-bold text-gray-900 truncate">{{ $feature['label'] }}</p>
+                                                            <p class="text-[10px] text-[#2ab4c0] font-bold uppercase tracking-wide">
                                                                 {{ $activeFeatures[$key] ? 'Enabled' : 'Disabled' }}
                                                             </p>
                                                         </div>
@@ -218,8 +218,8 @@
 
                                                     {{-- Label + current value --}}
                                                     <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-bold text-gray-900 leading-tight">{{ $feature['label'] }}</p>
-                                                        <p class="text-[11px] text-[#2ab4c0] font-black uppercase tracking-wider mt-1">
+                                                        <p class="text-[11px] font-bold text-gray-900 leading-tight">{{ $feature['label'] }}</p>
+                                                        <p class="text-[10px] text-[#2ab4c0] font-black uppercase tracking-wider mt-1">
                                                             Limit: <span x-text="qty"></span>
                                                         </p>
                                                     </div>
@@ -229,11 +229,11 @@
                                                     {{-- Stepper --}}
                                                     <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100">
                                                         <button type="button" @click="qty = Math.max(0, qty - 1)"
-                                                            class="w-6 h-6 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-sm">−</button>
+                                                            class="w-6 h-6 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-[11px]">−</button>
                                                         <input type="number" x-model.number="qty" min="0"
-                                                            class="input-field w-12 text-center text-[13px] font-black text-gray-800 !bg-transparent !border-0 p-0 focus:ring-0">
+                                                            class="input-field w-12 text-center text-[11px] font-black text-gray-800 !bg-transparent !border-0 p-0 focus:ring-0">
                                                         <button type="button" @click="qty = qty + 1"
-                                                            class="w-6 h-6 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-sm">+</button>
+                                                            class="w-6 h-6 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-[11px]">+</button>
                                                     </div>
 
                                                     <button type="button"

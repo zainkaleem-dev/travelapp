@@ -150,6 +150,7 @@
                                 @endif
 --}}
                                 <th class="px-4 py-2 text-left text-[11px] font-bold text-white uppercase tracking-wide">User</th>
+                                <th class="px-4 py-2 text-left text-[11px] font-bold text-white uppercase tracking-wide">Page</th>
                                 <th class="px-4 py-2 text-left text-[11px] font-bold text-white uppercase tracking-wide">Message</th>
                                 <th class="px-4 py-2 text-left text-[11px] font-bold text-white uppercase tracking-wide">Timestamp</th>
                                 <th class="px-4 py-2 text-right text-[11px] font-bold text-white uppercase tracking-wide">Actions</th>
@@ -169,6 +170,7 @@
                                     @endif
 --}}
                                     <td class="px-4 py-2 text-[11px] text-gray-900 font-semibold">{{ $this->actorLabel($log) }}</td>
+                                    <td class="px-4 py-2 text-[11px] text-gray-700 font-medium whitespace-nowrap">{{ $this->pageLabel($log) }}</td>
                                     <td class="px-4 py-2 text-[11px] text-gray-700">{{ $this->activityMessage($log) }}</td>
                                     <td class="px-4 py-2 text-[11px] text-gray-700 whitespace-nowrap">{{ $log->created_at?->format('d/m/Y (H:i:s)') }}</td>
                                     <td class="px-4 py-2">
@@ -214,7 +216,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-4 py-6 text-center text-[11px] text-gray-500">No audit logs found.</td>
+                                    <td colspan="5" class="px-4 py-6 text-center text-[11px] text-gray-500">No audit logs found.</td>
                                 </tr>
                             @endforelse
                         </tbody>

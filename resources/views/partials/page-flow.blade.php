@@ -2,7 +2,7 @@
     $routeName = request()->route()?->getName() ?? '';
     $isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System');
     $companyListCrumb = $isSuperAdmin ? 'Organizations' : 'Partner List';
-    $companyId = request()->route('id');
+    $companyId = request()->route('id') ?? request()->route('company');
 
     $pageTitle = 'Page';
     $crumbs = []; // Array of [label, url]

@@ -2,8 +2,8 @@
     <div class="px-1 py-1 w-full">
         @if($isCompanyRoute)
             <div class="mb-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ $this->activeCompany->name ?? 'Roles Permissions' }}</h1>
+                <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $this->activeCompany->name ?? 'Roles Permissions' }}</h1>
                 </div>
                 @include('partials.navigation-company', ['companyId' => $contextCompanyId, 'activeTab' => 'roles-permissions'])
             </div>
@@ -17,15 +17,15 @@
                     <div class="p-6 bg-[#f9faf6] border-b border-gray-100">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-2 h-2 rounded-full bg-[#2ab4c0] shadow-[0_0_8px_rgba(42,180,192,0.6)]"></div>
-                            <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Access Control</h2>
+                            <h2 class="text-[11px] font-bold text-gray-800 uppercase tracking-wider">Access Control</h2>
                         </div>
                         
                         {{-- Mode Selector --}}
                         <div class="flex bg-gray-100 p-1 rounded-xl mb-4 overflow-hidden">
-                            <button wire:click="setViewMode('roles')" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all {{ $viewMode === 'roles' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">
+                            <button wire:click="setViewMode('roles')" class="flex-1 py-1.5 text-[11px] font-bold rounded-lg transition-all {{ $viewMode === 'roles' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">
                                 Roles
                             </button>
-                            <button wire:click="setViewMode('users')" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all {{ $viewMode === 'users' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">
+                            <button wire:click="setViewMode('users')" class="flex-1 py-1.5 text-[11px] font-bold rounded-lg transition-all {{ $viewMode === 'users' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">
                                 Users
                             </button>
                         </div>
@@ -33,7 +33,7 @@
                         {{-- Context Selector (Visible to Super Admin or any Admin with manageable companies) --}}
                         @if($isSuperAdmin || count($companies) > 0)
                         <div class="mb-4">
-                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Company Context</label>
+                            <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Company Context</label>
                             <div class="relative" x-data="{ open: false, selected: @js((string) ($contextCompanyId ?? '')), labels: @js($companies->pluck('name', 'id')) }" @keydown.escape.window="open = false" @click.outside="open = false">
                                 <button type="button" class="admin-menu-btn w-full" @click="open = !open">
                                     <span x-text="selected === '' ? 'Global System' : (labels[selected] ?? 'Global System')"></span>
@@ -86,12 +86,12 @@
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center justify-between gap-2">
-                                                <h3 class="text-[10px] font-bold text-gray-900 truncate">{{ $role->name }}</h3>
+                                                <h3 class="text-[11px] font-bold text-gray-900 truncate">{{ $role->name }}</h3>
                                                 @if($selectedRoleId === $role->id)
                                                     <div class="w-1 h-1 rounded-full bg-[#2ab4c0]"></div>
                                                 @endif
                                             </div>
-                                            <p class="text-[8px] text-gray-500 font-medium tracking-tight">
+                                            <p class="text-[10px] text-gray-500 font-medium tracking-tight">
                                                 {{ $role->company ? $role->company->name : 'Global System' }}
                                             </p>
                                         </div>
@@ -116,12 +116,12 @@
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center justify-between gap-2">
-                                                <h3 class="text-[10px] font-bold text-gray-900 truncate">{{ $user->display_name ?? $user->first_name }}</h3>
+                                                <h3 class="text-[11px] font-bold text-gray-900 truncate">{{ $user->display_name ?? $user->first_name }}</h3>
                                                 @if($selectedUserId === $user->id)
                                                     <div class="w-1 h-1 rounded-full bg-[#2ab4c0]"></div>
                                                 @endif
                                             </div>
-                                            <p class="text-[8px] text-gray-500 font-medium truncate">
+                                            <p class="text-[10px] text-gray-500 font-medium truncate">
                                                 {{ $user->email }}
                                             </p>
                                         </div>
@@ -175,7 +175,7 @@
                                             </button>
                                         @endif
                                     </div>
-                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">
                                         @if($selectedRole)
                                             {{ $selectedRole->company ? $selectedRole->company->name : 'Global System Role' }}
                                         @else
@@ -186,7 +186,7 @@
                             </div>
 
                             <div class="flex items-center gap-3">
-                                <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-2xl text-[10px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
+                                <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-2xl text-[11px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
                                     {{ empty($contextCompanyId) || $contextCompanyId === 'global' ? 'Global Context' : (($selectedRole->company->name ?? 'Company') . ' Context') }}
                                 </div>
                             </div>
@@ -197,8 +197,8 @@
                             @if($selectedRole)
                                 <div class="flex items-center justify-between mb-8">
                                     <div>
-                                        <h3 class="text-xl font-black text-gray-900">Manage Permissions</h3>
-                                        <p class="text-xs text-gray-500 font-medium">Assigning capabilities to <span class="bg-[#2ab4c0]/10 text-[#2ab4c0] px-1.5 py-0.5 rounded-md font-bold">{{ $selectedRole->name }}</span></p>
+                                        <h3 class="text-[21px] font-black text-gray-900">Manage Permissions</h3>
+                                        <p class="text-[11px] text-gray-500 font-medium">Assigning capabilities to <span class="bg-[#2ab4c0]/10 text-[#2ab4c0] px-1.5 py-0.5 rounded-md font-bold">{{ $selectedRole->name }}</span></p>
                                     </div>
                                     <div class="flex items-center gap-4">
                                         <div class="relative w-64">
@@ -221,7 +221,7 @@
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                                 </div>
                                                 <div>
-                                                    <h4 class="text-sm font-bold {{ in_array($permission->name, $currentRolePermissions) ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ ucwords(str_replace('.', ' ', $permission->name)) }}</h4>
+                                                    <h4 class="text-[11px] font-bold {{ in_array($permission->name, $currentRolePermissions) ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ ucwords(str_replace('.', ' ', $permission->name)) }}</h4>
                                                     <p class="text-[10px] {{ in_array($permission->name, $currentRolePermissions) ? 'text-[#2ab4c0]' : 'text-gray-400' }} uppercase font-black tracking-widest mt-0.5 transition-colors">{{ $permission->name }}</p>
                                                 </div>
                                             </div>
@@ -259,7 +259,7 @@
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-3">
-                                            <h2 class="text-3xl font-black text-gray-900 tracking-tight">{{ $activeUser->display_name ?? $activeUser->first_name }}</h2>
+                                            <h2 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $activeUser->display_name ?? $activeUser->first_name }}</h2>
                                             @if($activeUser->id === auth()->id())
                                                 <div class="flex items-center gap-1.5 px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-lg text-[9px] font-black text-amber-700 uppercase tracking-wider">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -267,13 +267,13 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">{{ $activeUser->email }}</p>
+                                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">{{ $activeUser->email }}</p>
                                     </div>
                                 </div>
 
                                 @if($isSuperAdmin)
                                     <div class="flex items-center gap-3">
-                                        <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-2xl text-[10px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
+                                        <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-2xl text-[11px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
                                             {{ empty($contextCompanyId) || $contextCompanyId === 'global' ? 'Global Context' : (($companies->find($contextCompanyId)->name ?? 'Company') . ' Context') }}
                                         </div>
                                     </div>
@@ -283,8 +283,8 @@
                             <div class="flex-1 min-h-0 overflow-y-auto p-8 no-scrollbar">
                                 <div class="flex items-center justify-between mb-8">
                                     <div>
-                                        <h3 class="text-xl font-black text-gray-900">User Roles</h3>
-                                        <p class="text-xs text-gray-500 font-medium">Assign access roles to this user.</p>
+                                        <h3 class="text-[21px] font-black text-gray-900">User Roles</h3>
+                                        <p class="text-[11px] text-gray-500 font-medium">Assign access roles to this user.</p>
                                     </div>
                                 </div>
 
@@ -299,8 +299,8 @@
                                                         <svg class="w-5 h-5 text-gray-400 group-hover:text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                                     </div>
                                                     <div>
-                                                        <h4 class="text-sm font-bold {{ in_array($role->id, $currentUserRoleIds) ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
-                                                        <p class="text-[9px] text-gray-400 uppercase font-black tracking-widest mt-0.5">
+                                                        <h4 class="text-[11px] font-bold {{ in_array($role->id, $currentUserRoleIds) ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
+                                                        <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-0.5">
                                                             {{ in_array($role->id, $currentUserRoleIds) ? 'Assigned to User' : 'Not Assigned' }}
                                                         </p>
                                                     </div>

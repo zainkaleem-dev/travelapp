@@ -11,9 +11,33 @@ use Symfony\Component\HttpFoundation\Response;
 class LogUserActivity
 {
     /**
-     * HTTP methods that represent read-only requests — never logged.
+     * HTTP methods that represent metadata requests — never logged.
      */
-    private const SKIP_METHODS = ['GET', 'HEAD', 'OPTIONS'];
+    private const SKIP_METHODS = ['HEAD', 'OPTIONS'];
+
+    /**
+     * Route names or patterns that should never be logged (noise).
+     */
+    private const SKIP_ROUTES = [
+        'livewire.update', // Handled specially inside handle()
+        'livewire.js',
+        'livewire.preview',
+        'up', // Health check
+        'sanctum.csrf-cookie',
+        'ignition.*',
+        'debugbar.*',
+    ];
+
+    /**
+     * URL path fragments that should never be logged (noise).
+     */
+    private const SKIP_PATHS = [
+        'livewire/livewire.js',
+        'livewire/update',
+        '_debugbar',
+        'telescope',
+        'horizon',
+    ];
 
     /**
      * Livewire call-method keywords that map to a CRUD action.
@@ -38,8 +62,14 @@ class LogUserActivity
     public function handle(Request $request, Closure $next): Response
     {
         // ── 1. Capture before-state before the request is processed ──────────
-        $trackedModel = $this->resolveTrackedModel($request);
-        $beforeState  = $trackedModel?->attributesToArray();
+        //       Only attempt state tracking for data-changing methods.
+        $trackedModel = null;
+        $beforeState  = null;
+
+        if ($request->isMethod('POST') || $request->isMethod('PUT') || $request->isMethod('PATCH') || $request->isMethod('DELETE')) {
+            $trackedModel = $this->resolveTrackedModel($request);
+            $beforeState  = $trackedModel?->attributesToArray();
+        }
 
         $response = $next($request);
 
@@ -48,36 +78,35 @@ class LogUserActivity
             return $response;
         }
 
-        // ── 3. Skip read-only HTTP verbs ─────────────────────────────────────
+        // ── 3. Skip internal / noise requests ────────────────────────────────
+        if ($this->shouldSkip($request)) {
+            return $response;
+        }
+
+        // ── 4. Skip read-only HTTP verbs (except GET which we now log) ────────
         if (in_array($request->method(), self::SKIP_METHODS, true)) {
             return $response;
         }
 
-        // ── 4. For Livewire POST requests, only log genuine CRUD actions ──────
-        //       Plain Livewire polling / property sync without a meaningful call
-        //       is noise — skip it to avoid cluttering the audit trail.
+        // ── 5. For Livewire POST requests, only log meaningful actions ────────
+        $livewireAction = null;
         if ($this->isLivewireRequest($request)) {
             $livewireAction = $this->resolveLivewireAction($request);
 
-            // No recognisable CRUD action found → skip entirely.
+            // No recognisable action found (e.g. background polling with no changes) → skip.
             if ($livewireAction === null) {
                 return $response;
             }
         }
 
-        // ── 5. Store the log ──────────────────────────────────────────────────
+        // ── 6. Store the log ──────────────────────────────────────────────────
         try {
-            $afterState     = $this->resolveAfterState($trackedModel);
-            $livewireAction = $this->isLivewireRequest($request)
-                ? $this->resolveLivewireAction($request)
-                : null;
+            $afterState = $this->resolveAfterState($trackedModel);
 
             ActivityLogHelper::storeFromRequest(
                 $request,
                 [
-                    'status_code'    => $response->getStatusCode(),
-                    // Pass resolved Livewire action so the helper can override
-                    // the HTTP-verb-based action name when appropriate.
+                    'status_code'      => $response->getStatusCode(),
                     '_livewire_action' => $livewireAction,
                 ],
                 $beforeState,
@@ -89,6 +118,31 @@ class LogUserActivity
         }
 
         return $response;
+    }
+
+    /**
+     * Determines if the request should be ignored for audit logging.
+     */
+    private function shouldSkip(Request $request): bool
+    {
+        $routeName = $request->route()?->getName();
+        $path      = $request->path();
+
+        // Check exact or wildcard route matches.
+        foreach (self::SKIP_ROUTES as $skipRoute) {
+            if ($routeName === $skipRoute || ($routeName && str_contains($skipRoute, '*') && \Illuminate\Support\Str::is($skipRoute, $routeName))) {
+                return true;
+            }
+        }
+
+        // Check path fragments.
+        foreach (self::SKIP_PATHS as $skipPath) {
+            if (str_contains($path, $skipPath)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -128,6 +182,10 @@ class LogUserActivity
                     }
                 }
             }
+
+            // If there's a method call but no specific CRUD keyword matched,
+            // log it as a generic "performed" action (capturing "every click").
+            return 'performed';
         }
 
         // If there are property updates (but no matched call) treat as updated.
