@@ -341,8 +341,11 @@ class AuditLogs extends Component
             $query->where('action_name', $this->actionFilter);
         }
 
+        $paginator = $query->paginate($this->perPage);
+
         return view('livewire.audit-log.index', [
-            'logs' => $query->paginate($this->perPage),
+            'logs' => $paginator,
+            'paginationMeta' => app(\App\Services\PaginationService::class)->getPaginationMeta($paginator),
         ]);
     }
 }

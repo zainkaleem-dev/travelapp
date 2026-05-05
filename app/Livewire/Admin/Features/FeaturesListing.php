@@ -7,13 +7,22 @@ use App\Services\PaginationService;
 use App\Support\TenantContext;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Laravel\Pennant\Feature;
 use Illuminate\Support\Collection;
 
 #[Layout('layouts.flight')]
 class FeaturesListing extends Component
 {
+    use WithPagination;
+
     public string $search = '';
+    public int $perPage = 15;
+
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
     public int $selectedCompanyId = 0;
     public bool $isCompanyRoute = false;
     public bool $isCompanyContext = false;
@@ -174,12 +183,12 @@ class FeaturesListing extends Component
         return $this->selectedCompanyId ? Company::find($this->selectedCompanyId) : null;
     }
 
-    public function render(TenantContext $tenantContext)
+    public function render(TenantContext $tenantContext, PaginationService $paginationService)
     {
         $isCompanyContext = $this->isCompanyContext;
         
         // Fetch companies for the sidebar 
-        $sidebarCompanies = Company::query()
+        $paginatedCompanies = Company::query()
             ->where('id', '!=', auth()->user()->company_id)
             ->when($isCompanyContext, function ($q) use ($tenantContext) {
                 $q->where('id', $tenantContext->companyId());
@@ -188,7 +197,10 @@ class FeaturesListing extends Component
                 $q->where('name', 'like', '%' . $this->search . '%');
             })
             ->orderBy('name')
-            ->get();
+            ->paginate($this->perPage);
+
+        $sidebarCompanies = $paginatedCompanies->items();
+        $paginationMeta = $paginationService->getPaginationMeta($paginatedCompanies);
 
         // Calculate stats — only count toggle features for sidebar
         $toggleKeys = array_keys(array_filter($this->definedFeatures, fn($f) => ($f['type'] ?? 'toggle') === 'toggle'));
@@ -241,6 +253,7 @@ class FeaturesListing extends Component
 
         return view('livewire.admin.features.features-listing', [
             'sidebarCompanies' => $sidebarCompanies,
+            'paginationMeta' => $paginationMeta,
             'companyStats' => $companyStats,
             'activeCompany' => $activeCompany,
             'activeFeatures' => $activeFeatures,

@@ -223,9 +223,43 @@
                     </table>
                 </div>
 
-                @if($logs->hasPages())
-                    <div class="mt-4">
-                        {{ $logs->links() }}
+                <!-- Pagination Controls -->
+                @if ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0)
+                    <div class="mt-8 pt-6 border-t border-gray-50">
+                        <div class="flex items-center justify-between">
+                            <div class="text-[11px] text-gray-500 font-medium">
+                                Showing <span class="font-bold text-gray-900">{{ $paginationMeta['from'] ?? 0 }}</span> to
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['to'] ?? 0 }}</span> of
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['total'] }}</span> audit logs
+                            </div>
+                            @if ($paginationMeta['last_page'] > 1)
+                                <div class="flex items-center gap-1.5">
+                                    @if ($paginationMeta['current_page'] > 1)
+                                        <button wire:click="gotoPage({{ $paginationMeta['current_page'] - 1 }})"
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            Previous
+                                        </button>
+                                    @endif
+
+                                    @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
+                                        <button wire:click="gotoPage({{ $page }})" 
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                            {{ $page === $paginationMeta['current_page']
+                                                ? 'bg-[#2ab4c0] text-white shadow-md'
+                                                : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
+                                            {{ $page }}
+                                        </button>
+                                    @endfor
+
+                                    @if ($paginationMeta['has_more'])
+                                        <button wire:click="gotoPage({{ $paginationMeta['current_page'] + 1 }})"
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            Next
+                                        </button>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 @endif
             </div>
