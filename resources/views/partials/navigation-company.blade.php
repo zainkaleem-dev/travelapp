@@ -4,7 +4,7 @@
 @endphp
 
 <div class="px-6 pt-4 border-b border-gray-200 bg-white">
-    <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-[11px] font-semibold w-full">
+    <div class="flex items-center gap-0 overflow-x-auto custom-scrollbar pb-1 text-[11px] font-semibold w-full">
         <a href="{{ $companyNavId ? route('companies.show', $companyNavId) : '#' }}"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t {{ ($activeCompanyTab === 'general' || ($activeCompanyTab === null && request()->routeIs('companies.show'))) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"

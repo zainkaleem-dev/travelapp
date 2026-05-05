@@ -203,13 +203,30 @@
             accent-color: #6366f1;
         }
 
-        /* Remove NProgress busy cursor and hide the progress bar */
-        html.nprogress-busy {
-            cursor: default !important;
+        /* Custom styled scrollbar for horizontal navigation */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 4px;
         }
 
-        #nprogress {
-            display: none !important;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+            transition: background 0.2s ease;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #2ab4c0;
+        }
+
+        /* Support for Firefox */
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
         }
     </style>
 
