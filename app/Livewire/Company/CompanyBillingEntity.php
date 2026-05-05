@@ -3,6 +3,7 @@
 namespace App\Livewire\Company;
 
 use App\Models\Company;
+use App\Models\BillingDetail;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -11,6 +12,7 @@ class CompanyBillingEntity extends Component
 {
     public int $companyId;
     public Company $company;
+    public ?BillingDetail $billing = null;
 
     public function mount(int $id): void
     {
@@ -29,6 +31,8 @@ class CompanyBillingEntity extends Component
         if (!$isSuperAdmin && !in_array($this->company->id, $manageableHierarchy, true)) {
             abort(403, 'You do not have permission to view this organization (Access denied).');
         }
+
+        $this->billing = $this->company->billingDetail;
     }
 
     public function render()
@@ -36,4 +40,3 @@ class CompanyBillingEntity extends Component
         return view('livewire.company.billing-entity');
     }
 }
-

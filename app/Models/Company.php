@@ -56,6 +56,12 @@ class Company extends Model
         return $this->morphMany(Attachment::class, 'attachable');
     }
 
+    /** @return \Illuminate\Database\Eloquent\Relations\HasOne<BillingDetail, Company> */
+    public function billingDetail(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(BillingDetail::class);
+    }
+
     /**
      * Recursively fetch all IDs of descendant companies.
      * 

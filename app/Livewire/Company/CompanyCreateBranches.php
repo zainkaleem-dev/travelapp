@@ -117,7 +117,7 @@ class CompanyCreateBranches extends Component
         });
 
         session()->flash('status', 'Branches created successfully.');
-        return $this->redirect(route('companies.index'));
+        return $this->redirect(route('companies.create-billing', ['id' => $this->companyId]));
     }
 
     public function render()
