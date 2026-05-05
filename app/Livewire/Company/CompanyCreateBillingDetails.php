@@ -128,7 +128,7 @@ class CompanyCreateBillingDetails extends Component
         $billing->save();
 
         session()->flash('status', 'Billing details saved successfully.');
-        return $this->redirect(route('companies.index'));
+        return $this->redirect(route('companies.create-integrations', ['id' => $this->company->id]));
     }
 
     public function render()

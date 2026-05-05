@@ -62,6 +62,11 @@ class Company extends Model
         return $this->hasOne(BillingDetail::class);
     }
 
+    public function integration(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CompanyIntegration::class);
+    }
+
     /**
      * Recursively fetch all IDs of descendant companies.
      * 
