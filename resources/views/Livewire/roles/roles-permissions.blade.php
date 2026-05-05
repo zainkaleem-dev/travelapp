@@ -207,38 +207,107 @@
                                                 placeholder="Filter permissions...">
                                             <svg class="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                         </div>
+
+                                        {{-- Per Page Dropdown --}}
+                                        <div class="relative flex items-center justify-center w-20"
+                                            x-data="{ open: false, selected: @js((string) ($perPage ?? 10)) }"
+                                            @keydown.escape.window="open = false" @click.outside="open = false">
+                                            <button type="button" class="admin-menu-btn justify-center h-[34px]" @click="open = !open">
+                                                <span x-text="selected"></span>
+                                                <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </button>
+                                            <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel !w-20">
+                                                @foreach(['10', '20', '50', '100'] as $val)
+                                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': selected === '{{ $val }}' }" @click="selected = '{{ $val }}'; open = false; $wire.set('perPage', '{{ $val }}')">{{ $val }}</button>
+                                                @endforeach
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    @foreach($allPermissions as $permission)
-                                        <div wire:key="role-{{ $selectedRoleId }}-perm-{{ $permission->id }}" 
-                                            class="group border rounded-2xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300
-                                            {{ in_array($permission->name, $currentRolePermissions) ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
-                                                    {{ in_array($permission->name, $currentRolePermissions) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-300' }}">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                                </div>
-                                                <div>
-                                                    <h4 class="text-[11px] font-bold {{ in_array($permission->name, $currentRolePermissions) ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ ucwords(str_replace('.', ' ', $permission->name)) }}</h4>
-                                                    <p class="text-[10px] {{ in_array($permission->name, $currentRolePermissions) ? 'text-[#2ab4c0]' : 'text-gray-400' }} uppercase font-black tracking-widest mt-0.5 transition-colors">{{ $permission->name }}</p>
-                                                </div>
-                                            </div>
-
-                                            <label class="relative inline-flex items-center {{ $selectedRole->company_id === null ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}">
-                                                <input type="checkbox" 
-                                                    @if($selectedRole->company_id !== null)
-                                                        wire:click="togglePermission('{{ $permission->name }}')"
-                                                    @endif
-                                                    {{ in_array($permission->name, $currentRolePermissions) ? 'checked' : '' }}
-                                                    {{ $selectedRole->company_id === null ? 'disabled' : '' }}
-                                                    class="sr-only peer">
-                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors"></div>
-                                            </label>
-                                        </div>
-                                    @endforeach
+                                <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-[#f9faf6] border-b border-gray-100">
+                                                <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Permission Scope & Name</th>
+                                                <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest text-right">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-50 bg-white">
+                                            @foreach($allPermissions as $permission)
+                                                <tr wire:key="role-{{ $selectedRoleId }}-perm-{{ $permission->id }}" 
+                                                    class="group hover:bg-gray-50/50 transition-colors">
+                                                    <td class="px-6 py-4">
+                                                        <div class="flex items-center gap-4">
+                                                            <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
+                                                                {{ in_array($permission->name, $currentRolePermissions) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-300' }}">
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                                            </div>
+                                                            <div>
+                                                                <h4 class="text-[11px] font-bold {{ in_array($permission->name, $currentRolePermissions) ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ ucwords(str_replace('.', ' ', $permission->name)) }}</h4>
+                                                                <p class="text-[10px] {{ in_array($permission->name, $currentRolePermissions) ? 'text-[#2ab4c0]' : 'text-gray-400' }} uppercase font-black tracking-widest mt-0.5 transition-colors">{{ $permission->name }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4 text-right">
+                                                        <label class="relative inline-flex items-center {{ $selectedRole->company_id === null ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}">
+                                                            <input type="checkbox" 
+                                                                @if($selectedRole->company_id !== null)
+                                                                    wire:click="togglePermission('{{ $permission->name }}')"
+                                                                @endif
+                                                                {{ in_array($permission->name, $currentRolePermissions) ? 'checked' : '' }}
+                                                                {{ $selectedRole->company_id === null ? 'disabled' : '' }}
+                                                                class="sr-only peer">
+                                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors"></div>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
+
+                                {{-- Pagination Controls --}}
+                                @if ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0)
+                                    <div class="mt-8 pt-6 border-t border-gray-50">
+                                        <div class="flex items-center justify-between">
+                                            <div class="text-[11px] text-gray-500 font-medium">
+                                                Showing <span class="font-bold text-gray-900">{{ $paginationMeta['from'] ?? 0 }}</span> to
+                                                <span class="font-bold text-gray-900">{{ $paginationMeta['to'] ?? 0 }}</span> of
+                                                <span class="font-bold text-gray-900">{{ $paginationMeta['total'] }}</span> permissions
+                                            </div>
+                                            @if ($paginationMeta['last_page'] > 1)
+                                                <div class="flex items-center gap-1.5">
+                                                    @if ($paginationMeta['current_page'] > 1)
+                                                        <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
+                                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                                            Previous
+                                                        </button>
+                                                    @endif
+
+                                                    @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
+                                                        <button wire:click="goToPage({{ $page }})" 
+                                                            class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                                            {{ $page === $paginationMeta['current_page']
+                                                                ? 'bg-[#2ab4c0] text-white shadow-md'
+                                                                : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
+                                                            {{ $page }}
+                                                        </button>
+                                                    @endfor
+
+                                                    @if ($paginationMeta['has_more'])
+                                                        <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
+                                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                                            Next
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
                             @else
                                 <div class="h-64 flex flex-col items-center justify-center text-center opacity-50">
                                     <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0014 9.997l.013-1.047a7.5 7.5 0 00-11.512-6.373M9 13v1m0 0a3 3 0 100 6v-1m0 0a3 3 0 100-6"/></svg>
@@ -289,38 +358,48 @@
                                 </div>
 
                                 @if(count($contextRoles) > 0)
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        @foreach($contextRoles as $role)
-                                            <div wire:key="user-{{ $activeUser->id }}-role-{{ $role->id }}" 
-                                                class="group border rounded-2xl p-4 flex items-center justify-between transition-all duration-300 shadow-sm hover:shadow-md
-                                                {{ in_array($role->id, $currentUserRoleIds) ? 'bg-[#f2feff]/30 border-[#2ab4c0]/30' : 'bg-white border-gray-100' }}">
-                                                <div class="flex items-center gap-4">
-                                                    <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-teal-50 transition-colors">
-                                                        <svg class="w-5 h-5 text-gray-400 group-hover:text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                                    </div>
-                                                    <div>
-                                                        <h4 class="text-[11px] font-bold {{ in_array($role->id, $currentUserRoleIds) ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
-                                                        <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-0.5">
-                                                            {{ in_array($role->id, $currentUserRoleIds) ? 'Assigned to User' : 'Not Assigned' }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex items-center gap-3">
-                                                    <label class="relative inline-flex items-center {{ ($role->company_id === null || $activeUser->id === auth()->id()) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }}">
-                                                        <input type="checkbox" 
-                                                            @if($role->company_id !== null && $activeUser->id !== auth()->id())
-                                                                wire:click="toggleDoubleSync('{{ $role->name }}', {{ $role->id }})"
-                                                            @endif
-                                                            {{ in_array($role->id, $currentUserRoleIds) ? 'checked' : '' }}
-                                                            {{ ($role->company_id === null || $activeUser->id === auth()->id()) ? 'disabled' : '' }}
-                                                            class="sr-only peer">
-                                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors
-                                                            {{ $role->company_id === null ? 'opacity-30' : '' }}"></div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        @endforeach
+                                    <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="bg-[#f9faf6] border-b border-gray-100">
+                                                    <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Role Name</th>
+                                                    <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest text-right">Assignment</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-50 bg-white">
+                                                @foreach($contextRoles as $role)
+                                                    <tr wire:key="user-{{ $activeUser->id }}-role-{{ $role->id }}" 
+                                                        class="group hover:bg-gray-50/50 transition-colors">
+                                                        <td class="px-6 py-4">
+                                                            <div class="flex items-center gap-4">
+                                                                <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-teal-50 transition-colors
+                                                                    {{ in_array($role->id, $currentUserRoleIds) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : '' }}">
+                                                                    <svg class="w-5 h-5 {{ in_array($role->id, $currentUserRoleIds) ? 'text-[#2ab4c0]' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                                                </div>
+                                                                <div>
+                                                                    <h4 class="text-[11px] font-bold {{ in_array($role->id, $currentUserRoleIds) ? 'text-gray-800' : 'text-gray-400' }} leading-tight">{{ $role->name }}</h4>
+                                                                    <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest mt-0.5">
+                                                                        {{ in_array($role->id, $currentUserRoleIds) ? 'Assigned to User' : 'Not Assigned' }}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="px-6 py-4 text-right">
+                                                            <label class="relative inline-flex items-center {{ ($role->company_id === null || $activeUser->id === auth()->id()) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' }}">
+                                                                <input type="checkbox" 
+                                                                    @if($role->company_id !== null && $activeUser->id !== auth()->id())
+                                                                        wire:click="toggleDoubleSync('{{ $role->name }}', {{ $role->id }})"
+                                                                    @endif
+                                                                    {{ in_array($role->id, $currentUserRoleIds) ? 'checked' : '' }}
+                                                                    {{ ($role->company_id === null || $activeUser->id === auth()->id()) ? 'disabled' : '' }}
+                                                                    class="sr-only peer">
+                                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors"></div>
+                                                            </label>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
                                 @else
                                     <div class="h-64 flex flex-col items-center justify-center text-center opacity-50">

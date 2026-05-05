@@ -21,6 +21,8 @@ class RolesPermissions extends Component
     public $contextCompanyId = null; // Filter roles by this company
     public $companies = [];          // List of companies for the selector
     public $isCompanyRoute = false; // Whether we are on the companies.roles-permissions route
+    public int $currentPage = 1;
+    public int $perPage = 10;
 
     // User Assignment Mode Properties
     public $viewMode = 'roles'; // 'roles' or 'users'
@@ -119,9 +121,25 @@ class RolesPermissions extends Component
         $this->activeUser = null;
         $this->search = '';
         $this->searchUsers = '';
+        $this->currentPage = 1;
 
         // Auto-select first item in new context if available
         $this->setViewMode($this->viewMode);
+    }
+
+    public function updatedPerPage(): void
+    {
+        $this->currentPage = 1;
+    }
+
+    public function updatedSearchPermissions(): void
+    {
+        $this->currentPage = 1;
+    }
+
+    public function goToPage($page): void
+    {
+        $this->currentPage = (int) $page;
     }
 
     public function setViewMode($mode): void
@@ -278,7 +296,7 @@ class RolesPermissions extends Component
         // Determine the current context company ID
         $contextCompanyId = $this->isSuperAdmin ? $this->getNormalizedCompanyId() : app(\App\Support\TenantContext::class)->companyId();
 
-        return Permission::query()
+        $query = Permission::query()
             ->when(($selectedRole && $selectedRole->company_id !== null) || $contextCompanyId !== null || !$this->isSuperAdmin, function ($query) {
                 // NEVER show the "Manage Global System" permission in a company context/role
                 // or to non-super admins. It is strictly for Global context roles.
@@ -287,8 +305,9 @@ class RolesPermissions extends Component
             ->when($this->searchPermissions, function ($query) {
                 $query->where('name', 'like', '%' . $this->searchPermissions . '%');
             })
-            ->orderBy('name')
-            ->get();
+            ->orderBy('name');
+
+        return app(\App\Services\PaginationService::class)->paginate($query, $this->perPage, $this->currentPage);
     }
 
     public function editRole($id)
@@ -558,15 +577,17 @@ class RolesPermissions extends Component
         }
 
         $sidebarRoles = $this->getSidebarRolesProperty();
+        $allPermissions = $this->allPermissions;
 
         return view('livewire.roles.roles-permissions', [
             'sidebarRoles' => $sidebarRoles,
-            'allPermissions' => $this->allPermissions,
+            'allPermissions' => $allPermissions,
             'currentRolePermissions' => $currentRolePermissions,
             'selectedRole' => $selectedRole,
             'sidebarUsers' => $this->sidebarUsers,
             'currentUserRoleIds' => $currentUserRoleIds,
             'contextRoles' => $contextRoles,
+            'paginationMeta' => app(\App\Services\PaginationService::class)->getPaginationMeta($allPermissions),
         ]);
     }
 }
