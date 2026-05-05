@@ -74,29 +74,16 @@ class AuditLogs extends Component
      */
     public function activityMessage(ActivityLog $log): string
     {
-        $activity = (array) ($log->activity ?? []);
-        $action   = $log->action_name ?: 'performed';
-        $before   = $log->beforeState();
-        $after    = $log->afterState();
+        $action = $log->action_name ?: 'performed';
 
-        $entityName = $this->inferEntityName($before, $after);
-
+        // Map internal action names to display names if needed
         return match ($action) {
-            'viewed'  => "Viewed.",
-
-            'created' => $entityName !== null
-                ? "Created {$entityName}: " . $this->summarizeChanges([], is_array($after) ? $after : [])
-                : "Created a record: " . $this->summarizeChanges([], is_array($after) ? $after : []),
-
-            'deleted' => $entityName !== null
-                ? "Deleted {$entityName}: " . $this->summarizeChanges(is_array($before) ? $before : [], [])
-                : "Deleted a record: " . $this->summarizeChanges(is_array($before) ? $before : [], []),
-
-            'updated' => $this->buildUpdateMessage($before, $after),
-            
-            'viewed'  => "Viewed page.",
-
-            default   => $this->buildGenericMessage($log, $action),
+            'viewed'  => 'view',
+            'created' => 'create',
+            'updated' => 'edited',
+            'deleted' => 'delete',
+            'toggled' => 'edited',
+            default   => $action,
         };
     }
 

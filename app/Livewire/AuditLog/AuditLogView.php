@@ -21,7 +21,7 @@ class AuditLogView extends Component
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Returns the actor's display label, including role for super-admins.
+     * Returns the actor's display label, formatted as "Name (Role)".
      */
     public function actorLabel(): string
     {
@@ -29,17 +29,52 @@ class AuditLogView extends Component
         $actorName = $activity['actor_name'] ?? null;
         $actorRole = $activity['actor_role'] ?? null;
 
-        if ($actorRole === 'Super Admin') {
-            return trim(($actorName ?: 'User') . ' (Super Admin)');
-        }
-
+        $name = 'Unknown User';
         if ($this->activityLog->user) {
-            return $this->activityLog->user->name
+            $name = $this->activityLog->user->name
                 ?? $this->activityLog->user->display_name
                 ?? ('User #' . $this->activityLog->user->id);
+        } elseif ($actorName) {
+            $name = $actorName;
         }
 
-        return $actorName ?: 'Unknown User';
+        if ($actorRole) {
+            return "{$name} ({$actorRole})";
+        }
+
+        return $name;
+    }
+
+    /**
+     * Resolves the actor's organization name from the log or the user's profile.
+     */
+    public function organizationLabel(): string
+    {
+        if ($this->activityLog->company) {
+            return $this->activityLog->company->name;
+        }
+
+        if ($this->activityLog->user && $this->activityLog->user->company) {
+            return $this->activityLog->user->company->name;
+        }
+
+        return '-';
+    }
+
+    /**
+     * Resolves the actor's branch name from the log or the user's profile.
+     */
+    public function branchLabel(): string
+    {
+        if ($this->activityLog->branch) {
+            return $this->activityLog->branch->name;
+        }
+
+        if ($this->activityLog->user && $this->activityLog->user->branch) {
+            return $this->activityLog->user->branch->name;
+        }
+
+        return '-';
     }
 
     /**
@@ -238,8 +273,8 @@ class AuditLogView extends Component
     {
         $activity    = (array) ($this->activityLog->activity ?? []);
         $user        = $this->actorLabel();
-        $page        = $this->pageName();
-        $timestamp   = $this->activityLog->created_at?->format('Y-m-d H:i:s') ?? '';
+        $page        = strtolower($this->pageName());
+        $timestamp   = $this->activityLog->created_at?->format('d/m/Y (H:i:s)') ?? '';
         $action      = $this->resolveDisplayAction($activity);
 
         $before      = $this->activityLog->beforeState();
@@ -247,28 +282,25 @@ class AuditLogView extends Component
         $entityName  = $this->inferEntityName($before, $after);
         $entityType  = $this->inferEntityType();
 
-        // ── Build message ─────────────────────────────────────────────────────
+        // Standardize the entity label
         $entityLabel = $entityName !== null
             ? "{$entityType} \"{$entityName}\""
             : "a {$entityType} record";
 
-        $parts = match ($action) {
-            'created' => [
-                "{$user} created {$entityLabel} on {$page} at {$timestamp}.",
-                !empty($after) ? "Initial state: " . $this->diffChanges([], $after) . "." : "",
-            ],
-            'deleted' => [
-                "{$user} deleted {$entityLabel} from {$page} at {$timestamp}.",
-                !empty($before) ? "Last known state: " . $this->diffChanges($before, []) . "." : "",
-            ],
-            'viewed' => [
-                "{$user} viewed {$page} at {$timestamp}.",
-            ],
-            'updated', 'toggled' => $this->buildUpdateParts($user, $entityLabel, $page, $timestamp, $activity),
-            default => $this->buildGenericParts($user, $page, $timestamp, $activity, $action),
+        // Handle specific action wording
+        $actionWord = match ($action) {
+            'created' => 'created',
+            'deleted' => 'deleted',
+            'viewed'  => 'viewed',
+            'updated' => 'edited',
+            default   => 'performed an action on',
         };
 
-        return implode(' ', $parts);
+        if ($action === 'viewed') {
+            return "{$user} viewed {$page} at {$timestamp}.";
+        }
+
+        return "{$user} {$actionWord} {$entityLabel} on {$page} page at {$timestamp}.";
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -465,14 +497,44 @@ class AuditLogView extends Component
      */
     private function inferEntityName(?array $before, ?array $after): ?string
     {
-        $state = $after ?: $before;
-        if (!is_array($state)) {
-            return null;
+        $activity = (array) ($this->activityLog->activity ?? []);
+
+        // 1. Check for the explicitly captured subject name (most reliable)
+        if (!empty($activity['subject_name']) && is_string($activity['subject_name'])) {
+            return $activity['subject_name'];
         }
 
-        foreach (['name', 'label', 'title', 'company_name', 'city_name', 'country_name', 'code'] as $key) {
-            if (!empty($state[$key]) && is_string($state[$key])) {
-                return $state[$key];
+        // 2. Check before/after state (middleware tracking)
+        $state = $after ?: $before;
+        $keys  = ['name', 'label', 'title', 'company_name', 'city_name', 'country_name', 'code', 'legal_name'];
+
+        if (is_array($state)) {
+            foreach ($keys as $key) {
+                if (!empty($state[$key]) && is_string($state[$key])) {
+                    return $state[$key];
+                }
+            }
+        }
+
+        // 3. Fallback: Check input data / Livewire updates
+        $input = $activity['input'] ?? [];
+
+        if (is_array($input)) {
+            // Check direct input
+            foreach ($keys as $key) {
+                if (!empty($input[$key]) && is_string($input[$key])) {
+                    return $input[$key];
+                }
+            }
+
+            // Check Livewire component updates
+            $updates = $input['components'][0]['updates'] ?? [];
+            if (is_array($updates)) {
+                foreach ($keys as $key) {
+                    if (!empty($updates[$key]) && is_string($updates[$key])) {
+                        return $updates[$key];
+                    }
+                }
             }
         }
 

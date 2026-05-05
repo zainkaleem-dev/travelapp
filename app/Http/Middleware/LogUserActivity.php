@@ -19,7 +19,7 @@ class LogUserActivity
      * Route names or patterns that should never be logged (noise).
      */
     private const SKIP_ROUTES = [
-        'livewire.update', // Handled specially inside handle()
+        // 'livewire.update', // UN-SKIPPED to capture actions
         'livewire.js',
         'livewire.preview',
         'up', // Health check
@@ -33,7 +33,7 @@ class LogUserActivity
      */
     private const SKIP_PATHS = [
         'livewire/livewire.js',
-        'livewire/update',
+        // 'livewire/update', // UN-SKIPPED to capture actions
         '_debugbar',
         'telescope',
         'horizon',
@@ -57,6 +57,9 @@ class LogUserActivity
         'edit'    => 'updated',
         // toggle
         'toggle'  => 'updated',
+        // generic
+        'add'     => 'created',
+        'submit'  => 'created',
     ];
 
     public function handle(Request $request, Closure $next): Response
@@ -91,7 +94,7 @@ class LogUserActivity
         // ── 5. For Livewire POST requests, only log meaningful actions ────────
         $livewireAction = null;
         if ($this->isLivewireRequest($request)) {
-            $livewireAction = $this->resolveLivewireAction($request);
+            $livewireAction = $this->resolveLivewireAction($request, $trackedModel);
 
             // No recognisable action found (e.g. background polling with no changes) → skip.
             if ($livewireAction === null) {
@@ -102,12 +105,38 @@ class LogUserActivity
         // ── 6. Store the log ──────────────────────────────────────────────────
         try {
             $afterState = $this->resolveAfterState($trackedModel);
+            
+            // Capture a friendly name for the affected record (if any)
+            $subjectName = null;
+            if ($trackedModel) {
+                $subjectName = $trackedModel->name 
+                    ?? $trackedModel->display_name 
+                    ?? $trackedModel->company_name 
+                    ?? $trackedModel->label 
+                    ?? $trackedModel->title;
+            }
+
+            // For Livewire requests, if the tracked model is null (e.g. generic listing/update),
+            // try to pull the entity name from the snapshot data (e.g. $this->company_name).
+            if (!$subjectName && $this->isLivewireRequest($request)) {
+                $components = $request->input('components', []);
+                $snapshotRaw = $components[0]['snapshot'] ?? null;
+                if ($snapshotRaw) {
+                    $snapshot = json_decode($snapshotRaw, true);
+                    $data = $snapshot['data'] ?? [];
+                    $subjectName = $data['company_name'] ?? $data['name'] ?? $data['title'] ?? $data['label'] ?? null;
+                    
+                    // If it's a model array [id, type], we can't easily get the name here,
+                    // but we'll try to find any string property that looks like a name.
+                }
+            }
 
             ActivityLogHelper::storeFromRequest(
                 $request,
                 [
                     'status_code'      => $response->getStatusCode(),
                     '_livewire_action' => $livewireAction,
+                    'subject_name'     => $subjectName,
                 ],
                 $beforeState,
                 $afterState,
@@ -162,7 +191,7 @@ class LogUserActivity
      * Inspects the Livewire payload and returns the resolved CRUD action name,
      * or null when no recognisable action is found (e.g. property sync only).
      */
-    private function resolveLivewireAction(Request $request): ?string
+    private function resolveLivewireAction(Request $request, ?Model $trackedModel = null): ?string
     {
         $components = $request->input('components', []);
         $component  = $components[0] ?? null;
@@ -176,6 +205,13 @@ class LogUserActivity
         if (is_array($calls) && !empty($calls)) {
             foreach ($calls as $call) {
                 $method = strtolower((string) ($call['method'] ?? ''));
+
+                // Special handling for generic methods that could be either create or update.
+                // If we have a tracked model that already exists, it's an update.
+                if (str_contains($method, 'save') || str_contains($method, 'submit')) {
+                    return ($trackedModel && $trackedModel->exists) ? 'updated' : 'created';
+                }
+
                 foreach (self::LIVEWIRE_METHOD_MAP as $keyword => $action) {
                     if (str_contains($method, $keyword)) {
                         return $action;
@@ -184,33 +220,70 @@ class LogUserActivity
             }
 
             // If there's a method call but no specific CRUD keyword matched,
-            // log it as a generic "performed" action (capturing "every click").
+            // log it as a generic "performed" action.
             return 'performed';
         }
 
-        // If there are property updates (but no matched call) treat as updated.
-        $updates = $component['updates'] ?? [];
-        if (is_array($updates) && !empty($updates)) {
-            return 'updated';
-        }
-
-        // Nothing actionable found.
+        // We NO LONGER log property updates (without a call) to avoid noise from filters/keystrokes.
         return null;
     }
 
     /**
      * Finds the first route-model-binding parameter from the request.
+     * For Livewire requests, it attempts to resolve the model from method call arguments.
      */
     private function resolveTrackedModel(Request $request): ?Model
     {
         $route = $request->route();
-        if (!$route || !method_exists($route, 'parameters')) {
-            return null;
+        
+        // 1. Standard route-model binding (works for standard pages and Edit pages)
+        if ($route && method_exists($route, 'parameters')) {
+            foreach ($route->parameters() as $parameter) {
+                if ($parameter instanceof Model) {
+                    return $parameter;
+                }
+            }
         }
 
-        foreach ($route->parameters() as $parameter) {
-            if ($parameter instanceof Model) {
-                return $parameter;
+        // 2. Heuristic: Resolve model from Livewire call arguments (works for Listings)
+        if ($this->isLivewireRequest($request)) {
+            $components = $request->input('components', []);
+            $component  = $components[0] ?? null;
+            $calls      = $component['calls'] ?? [];
+
+            foreach ($calls as $call) {
+                $params = $call['params'] ?? [];
+                
+                // Find the first numeric parameter that could be an ID
+                $id = null;
+                foreach ($params as $param) {
+                    if (is_numeric($param)) {
+                        $id = $param;
+                        break;
+                    }
+                }
+
+                if ($id) {
+                    $compName   = strtolower($component['name'] ?? '');
+                    $modelClass = match (true) {
+                        str_contains($compName, 'company') => \App\Models\Company::class,
+                        str_contains($compName, 'branch')  => \App\Models\Branch::class,
+                        str_contains($compName, 'user')    => \App\Models\User::class,
+                        str_contains($compName, 'country') => \App\Models\Country::class,
+                        str_contains($compName, 'city')    => \App\Models\City::class,
+                        default => null,
+                    };
+
+                    if ($modelClass) {
+                        try {
+                            // We use withoutGlobalScopes() and withTrashed() to ensure we find the record
+                            // even if it was just soft-deleted or has scoping applied.
+                            return $modelClass::withoutGlobalScopes()->withTrashed()->find($id);
+                        } catch (\Throwable) {
+                            continue;
+                        }
+                    }
+                }
             }
         }
 
