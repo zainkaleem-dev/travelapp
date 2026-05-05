@@ -17,7 +17,7 @@ class FeaturesListing extends Component
     use WithPagination;
 
     public string $search = '';
-    public int $perPage = 15;
+    public int $perPage = 10;
 
     public function updatedSearch(): void
     {
@@ -188,7 +188,7 @@ class FeaturesListing extends Component
         $isCompanyContext = $this->isCompanyContext;
         
         // Fetch companies for the sidebar 
-        $paginatedCompanies = Company::query()
+        $sidebarCompanies = Company::query()
             ->where('id', '!=', auth()->user()->company_id)
             ->when($isCompanyContext, function ($q) use ($tenantContext) {
                 $q->where('id', $tenantContext->companyId());
@@ -197,10 +197,23 @@ class FeaturesListing extends Component
                 $q->where('name', 'like', '%' . $this->search . '%');
             })
             ->orderBy('name')
-            ->paginate($this->perPage);
+            ->get();
 
-        $sidebarCompanies = $paginatedCompanies->items();
-        $paginationMeta = $paginationService->getPaginationMeta($paginatedCompanies);
+        $currentPage = $this->getPage();
+        if (!$currentPage) {
+            $currentPage = 1;
+        }
+
+        $featuresCollection = collect($this->definedFeatures);
+        $paginatedFeatures = new \Illuminate\Pagination\LengthAwarePaginator(
+            $featuresCollection->slice(($currentPage - 1) * $this->perPage, $this->perPage)->all(),
+            $featuresCollection->count(),
+            $this->perPage,
+            $currentPage,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
+
+        $paginationMeta = $paginationService->getPaginationMeta($paginatedFeatures);
 
         // Calculate stats — only count toggle features for sidebar
         $toggleKeys = array_keys(array_filter($this->definedFeatures, fn($f) => ($f['type'] ?? 'toggle') === 'toggle'));
@@ -253,6 +266,7 @@ class FeaturesListing extends Component
 
         return view('livewire.admin.features.features-listing', [
             'sidebarCompanies' => $sidebarCompanies,
+            'paginatedFeatures' => $paginatedFeatures,
             'paginationMeta' => $paginationMeta,
             'companyStats' => $companyStats,
             'activeCompany' => $activeCompany,

@@ -64,42 +64,6 @@
                         @endforelse
                     </div>
 
-                    @if (isset($paginationMeta) && ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0))
-                        <div class="p-4 border-t border-gray-100 bg-white mt-auto">
-                            <div class="flex flex-col gap-3">
-                                <div class="text-[10px] text-gray-500 font-bold uppercase tracking-wider text-center">
-                                    Showing {{ $paginationMeta['from'] ?? 0 }}-{{ $paginationMeta['to'] ?? 0 }} of {{ $paginationMeta['total'] }}
-                                </div>
-                                @if ($paginationMeta['last_page'] > 1)
-                                    <div class="flex items-center justify-center gap-1.5">
-                                        @if ($paginationMeta['current_page'] > 1)
-                                            <button wire:click="gotoPage({{ $paginationMeta['current_page'] - 1 }})"
-                                                class="inline-flex items-center justify-center px-2 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[10px] font-bold transition-all">
-                                                Prev
-                                            </button>
-                                        @endif
-
-                                        @for ($page = max(1, $paginationMeta['current_page'] - 1); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 1); $page++)
-                                            <button wire:click="gotoPage({{ $page }})" 
-                                                class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[10px] font-bold transition-all
-                                                {{ $page === $paginationMeta['current_page']
-                                                    ? 'bg-[#2ab4c0] text-white shadow-sm'
-                                                    : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
-                                                {{ $page }}
-                                            </button>
-                                        @endfor
-
-                                        @if ($paginationMeta['has_more'])
-                                            <button wire:click="gotoPage({{ $paginationMeta['current_page'] + 1 }})"
-                                                class="inline-flex items-center justify-center px-2 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[10px] font-bold transition-all">
-                                                Next
-                                            </button>
-                                        @endif
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
                 </div>
             </div>
             @endif
@@ -138,176 +102,165 @@
                         </div>
 
                         {{-- Feature Body --}}
-                        <div class="p-6 bg-[#fdfdfc]/50 space-y-8">
+                        <div class="p-6 bg-[#fdfdfc]/50">
 
-                            {{-- ─ Travel Modules ─────────────────────────────── --}}
-                            <div>
-                                <div class="flex items-center gap-2 mb-4">
-                                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Travel Modules</span>
-                                    <div class="flex-1 h-px bg-gray-100"></div>
+                            <div class="mb-4 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Available Features</span>
                                 </div>
-                                <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
-                                    <table class="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr class="bg-[#f9faf6] border-b border-gray-100">
-                                                <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Module Name</th>
-                                                <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest text-right">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-50 bg-white">
-                                            @foreach($definedFeatures as $key => $feature)
-                                                @if(($feature['type'] ?? 'toggle') === 'toggle' && str_ends_with($key, '-module') && !in_array($key, ['companies-module','branches-module','users-module','roles-permissions-module','feature-management-module']))
-                                                    <tr class="group hover:bg-gray-50/50 transition-colors">
-                                                        <td class="px-6 py-4">
-                                                            <div class="flex items-center gap-4">
-                                                                <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
-                                                                    {{ $activeFeatures[$key] ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
-                                                                    @if($feature['icon'] === 'plane')
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-                                                                    @elseif($feature['icon'] === 'building')
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                                                    @elseif($feature['icon'] === 'car')
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zm-4-7H5l2-5h10l2 5z"/></svg>
-                                                                    @elseif($feature['icon'] === 'bell')
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                                                                    @else
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                                    @endif
-                                                                </div>
-                                                                <div>
-                                                                    <h4 class="text-[11px] font-bold {{ $activeFeatures[$key] ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ $feature['label'] }}</h4>
-                                                                    <p class="text-[10px] {{ $activeFeatures[$key] ? 'text-green-600' : 'text-gray-400' }} uppercase font-black tracking-widest mt-0.5 transition-colors">
-                                                                        {{ $activeFeatures[$key] ? 'Active' : 'Inactive' }}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="px-6 py-4 text-right">
-                                                            <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                                                <input type="checkbox"
-                                                                       wire:click="toggleFeature({{ $activeCompany->id }}, '{{ $key }}')"
-                                                                       {{ $activeFeatures[$key] ? 'checked' : '' }}
-                                                                       class="sr-only peer">
-                                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors duration-200"></div>
-                                                            </label>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                
+                                <div class="relative flex items-center justify-center"
+                                    x-data="{ open: false, selected: @js((string) ($perPage ?? 10)) }"
+                                    @keydown.escape.window="open = false" @click.outside="open = false">
+                                    <button type="button" class="admin-menu-btn justify-center" @click="open = !open">
+                                        <span x-text="selected"></span>
+                                        <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
+                                            :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                        <button type="button" class="admin-menu-item"
+                                            :class="{ 'is-active': selected == '5' }"
+                                            @click="selected = '5'; open = false; $wire.set('perPage', 5)">5</button>
+                                        <button type="button" class="admin-menu-item"
+                                            :class="{ 'is-active': selected == '10' }"
+                                            @click="selected = '10'; open = false; $wire.set('perPage', 10)">10</button>
+                                    </div>
                                 </div>
                             </div>
 
-                            {{-- ─ Admin Modules ──────────────────────────────── --}}
-                            <div>
-                                <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
-                                    <table class="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr class="bg-[#f9faf6] border-b border-gray-100">
-                                                <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Module Name</th>
-                                                <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest text-right">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-50 bg-white">
-                                            @foreach($definedFeatures as $key => $feature)
-                                                @if(($feature['type'] ?? 'toggle') === 'toggle' && in_array($key, ['companies-module','branches-module','users-module','roles-permissions-module','feature-management-module']))
-                                                    <tr class="group hover:bg-gray-50/50 transition-colors">
-                                                        <td class="px-6 py-4">
-                                                            <div class="flex items-center gap-4">
-                                                                <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
-                                                                    {{ $activeFeatures[$key] ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
-                                                                    @if($feature['icon'] === 'office-building')
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                                                    @elseif($feature['icon'] === 'branch')
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h5l2 4h6l2-4h3M3 7l2 8h14l2-8M3 7h18"/></svg>
-                                                                    @elseif($feature['icon'] === 'users')
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                                                    @elseif($feature['icon'] === 'shield')
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
-                                                                    @else
-                                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                                                    @endif
-                                                                </div>
-                                                                <div>
-                                                                    <h4 class="text-[11px] font-bold {{ $activeFeatures[$key] ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ $feature['label'] }}</h4>
-                                                                    <p class="text-[10px] {{ $activeFeatures[$key] ? 'text-[#2ab4c0]' : 'text-gray-400' }} uppercase font-black tracking-widest mt-0.5 transition-colors">
-                                                                        {{ $activeFeatures[$key] ? 'Enabled' : 'Disabled' }}
-                                                                    </p>
-                                                                </div>
+                            <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm bg-white mb-6">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-[#f9faf6] border-b border-gray-100">
+                                            <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest w-1/2">Module Name</th>
+                                            <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest text-center w-1/4">Status</th>
+                                            <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest text-right w-1/4">Configuration</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-50">
+                                        @foreach($paginatedFeatures as $key => $feature)
+                                            <tr class="group hover:bg-gray-50/50 transition-colors"
+                                                @if(($feature['type'] ?? 'toggle') === 'quantity') x-data="{ qty: {{ is_numeric($activeFeatures[$key] ?? 0) ? (int)($activeFeatures[$key] ?? 0) : 0 }} }" @endif>
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-4">
+                                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors flex-shrink-0
+                                                            {{ (($feature['type'] ?? 'toggle') === 'toggle' ? ($activeFeatures[$key] ?? false) : true) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
+                                                            @if($feature['icon'] === 'plane')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                                                            @elseif($feature['icon'] === 'building')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                                            @elseif($feature['icon'] === 'car')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zm-4-7H5l2-5h10l2 5z"/></svg>
+                                                            @elseif($feature['icon'] === 'bell')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                                            @elseif($feature['icon'] === 'office-building')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                                            @elseif($feature['icon'] === 'branch')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h5l2 4h6l2-4h3M3 7l2 8h14l2-8M3 7h18"/></svg>
+                                                            @elseif($feature['icon'] === 'users')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                            @elseif($feature['icon'] === 'shield')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+                                                            @elseif($feature['icon'] === 'hash')
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+                                                            @else
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                            @endif
+                                                        </div>
+                                                        <div>
+                                                            <h4 class="text-[11px] font-bold {{ (($feature['type'] ?? 'toggle') === 'toggle' ? ($activeFeatures[$key] ?? false) : true) ? 'text-gray-900' : 'text-gray-500' }} transition-colors leading-tight">{{ $feature['label'] }}</h4>
+                                                            <p class="text-[10px] {{ (($feature['type'] ?? 'toggle') === 'toggle' ? ($activeFeatures[$key] ?? false) : true) ? 'text-[#2ab4c0]' : 'text-gray-400' }} font-bold tracking-widest mt-0.5 transition-colors">
+                                                                {{ $feature['description'] ?? '' }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 text-center">
+                                                    @if(($feature['type'] ?? 'toggle') === 'toggle')
+                                                        <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                                            <input type="checkbox"
+                                                                    wire:click="toggleFeature({{ $activeCompany->id }}, '{{ $key }}')"
+                                                                    {{ ($activeFeatures[$key] ?? false) ? 'checked' : '' }}
+                                                                    class="sr-only peer">
+                                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors duration-200"></div>
+                                                        </label>
+                                                    @endif
+                                                </td>
+                                                <td class="px-6 py-4 text-right">
+                                                    @if(($feature['type'] ?? 'toggle') === 'quantity')
+                                                        <div class="flex items-center justify-end gap-3">
+                                                            <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100">
+                                                                <button type="button" @click="qty = Math.max(0, qty - 1)"
+                                                                    class="w-7 h-7 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-[11px]">−</button>
+                                                                <input type="number" x-model.number="qty" min="0"
+                                                                    class="input-field w-12 text-center text-[11px] font-black text-gray-800 !bg-transparent !border-0 p-0 focus:ring-0">
+                                                                <button type="button" @click="qty = qty + 1"
+                                                                    class="w-7 h-7 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-[11px]">+</button>
                                                             </div>
-                                                        </td>
-                                                        <td class="px-6 py-4 text-right">
-                                                            <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                                                                <input type="checkbox"
-                                                                       wire:click="toggleFeature({{ $activeCompany->id }}, '{{ $key }}')"
-                                                                       {{ $activeFeatures[$key] ? 'checked' : '' }}
-                                                                       class="sr-only peer">
-                                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2ab4c0] shadow-inner transition-colors duration-200"></div>
-                                                            </label>
-                                                        </td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                                            <button type="button"
+                                                                @click="$wire.updateQuantity({{ $activeCompany->id }}, '{{ $key }}', qty)"
+                                                                class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#2ab4c0] bg-white hover:bg-[#2ab4c0] hover:text-white border border-[#2ab4c0]/40 rounded-lg transition-all shadow-sm active:scale-95">
+                                                                Update
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        
+                                        @if(empty($paginatedFeatures))
+                                            <tr>
+                                                <td colspan="3" class="px-6 py-10 text-center text-[11px] text-gray-500">No features available.</td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
                             </div>
 
-                            {{-- ─ Quantity Limits ────────────────────────────── --}}
-                            <div>
-                                <div class="flex items-center gap-2 mb-4">
-                                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Quantity Limits</span>
-                                    <div class="flex-1 h-px bg-gray-100"></div>
-                                </div>
-                                <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
-                                    <table class="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr class="bg-[#f9faf6] border-b border-gray-100">
-                                                <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest">Limit Name</th>
-                                                <th class="px-6 py-4 text-[11px] font-black text-gray-400 uppercase tracking-widest text-right">Configuration</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-50 bg-white">
-                                            @foreach($definedFeatures as $key => $feature)
-                                                @if(($feature['type'] ?? 'toggle') === 'quantity')
-                                                    <tr x-data="{ qty: {{ is_numeric($activeFeatures[$key]) ? (int)$activeFeatures[$key] : 0 }} }" class="group hover:bg-gray-50/50 transition-colors">
-                                                        <td class="px-6 py-4">
-                                                            <div class="flex items-center gap-4">
-                                                                <div class="w-10 h-10 rounded-xl bg-[#2ab4c0]/10 text-[#2ab4c0] flex items-center justify-center flex-shrink-0 transition-colors">
-                                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
-                                                                </div>
-                                                                <div>
-                                                                    <h4 class="text-[11px] font-bold text-gray-900 leading-tight">{{ $feature['label'] }}</h4>
-                                                                    <p class="text-[10px] text-[#2ab4c0] font-black uppercase tracking-wider mt-0.5">
-                                                                        Current Limit: <span x-text="qty"></span>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="px-6 py-4">
-                                                            <div class="flex items-center justify-end gap-3">
-                                                                <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100">
-                                                                    <button type="button" @click="qty = Math.max(0, qty - 1)"
-                                                                        class="w-7 h-7 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-[11px]">−</button>
-                                                                    <input type="number" x-model.number="qty" min="0"
-                                                                        class="input-field w-12 text-center text-[11px] font-black text-gray-800 !bg-transparent !border-0 p-0 focus:ring-0">
-                                                                    <button type="button" @click="qty = qty + 1"
-                                                                        class="w-7 h-7 rounded bg-white border border-gray-200 text-gray-500 hover:text-[#2ab4c0] flex items-center justify-center font-black transition-colors text-[11px]">+</button>
-                                                                </div>
-                                                                <button type="button"
-                                                                    @click="$wire.updateQuantity({{ $activeCompany->id }}, '{{ $key }}', qty)"
-                                                                    class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#2ab4c0] bg-white hover:bg-[#2ab4c0] hover:text-white border border-[#2ab4c0]/40 rounded-lg transition-all shadow-sm active:scale-95">
-                                                                    Update
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                            <!-- Pagination Controls (Under Main Table) -->
+                            @if (isset($paginationMeta) && ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0))
+                                <div class="pt-2 border-t border-gray-50">
+                                    <div class="flex items-center justify-between">
+                                        <div class="text-[11px] text-gray-500 font-medium">
+                                            Showing <span class="font-bold text-gray-900">{{ $paginationMeta['from'] ?? 0 }}</span> to
+                                            <span class="font-bold text-gray-900">{{ $paginationMeta['to'] ?? 0 }}</span> of
+                                            <span class="font-bold text-gray-900">{{ $paginationMeta['total'] }}</span> features
+                                        </div>
+                                        @if ($paginationMeta['last_page'] > 1)
+                                            <div class="flex items-center gap-1.5">
+                                                @if ($paginationMeta['current_page'] > 1)
+                                                    <button wire:click="gotoPage({{ $paginationMeta['current_page'] - 1 }})"
+                                                        class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                                        Previous
+                                                    </button>
                                                 @endif
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+
+                                                @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
+                                                    <button wire:click="gotoPage({{ $page }})" 
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                                        {{ $page === $paginationMeta['current_page']
+                                                            ? 'bg-[#2ab4c0] text-white shadow-md'
+                                                            : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
+                                                        {{ $page }}
+                                                    </button>
+                                                @endfor
+
+                                                @if ($paginationMeta['has_more'])
+                                                    <button wire:click="gotoPage({{ $paginationMeta['current_page'] + 1 }})"
+                                                        class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                                        Next
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
+
                         </div>
 
                         {{-- Footer --}}
