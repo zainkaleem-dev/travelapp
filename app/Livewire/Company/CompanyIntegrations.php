@@ -11,6 +11,7 @@ class CompanyIntegrations extends Component
 {
     public int $companyId;
     public Company $company;
+    public array $integrations = [];
 
     public function mount(int $id): void
     {
@@ -24,12 +25,13 @@ class CompanyIntegrations extends Component
 
         $this->company = Company::query()
             ->withoutGlobalScopes()
-            ->with('integration')
             ->findOrFail($id);
 
         if (!$isSuperAdmin && !in_array($this->company->id, $manageableHierarchy, true)) {
             abort(403, 'You do not have permission to view this organization (Access denied).');
         }
+
+        $this->integrations = $this->company->settings['integrations'] ?? [];
     }
 
     public function render()

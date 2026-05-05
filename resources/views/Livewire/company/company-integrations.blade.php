@@ -18,22 +18,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
                         <label class="field-label">Amadeus URL</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->amadeus_url ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['amadeus_url'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Client ID</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->amadeus_client_id ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['amadeus_client_id'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Client Secret</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->amadeus_client_secret ? '••••••••••••••••' : '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ !empty($integrations['amadeus_client_secret']) ? '••••••••••••••••' : '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Grant Type</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->amadeus_grant_type ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['amadeus_grant_type'] ?? '--' }}" readonly>
                     </div>
                 </div>
             </div>
@@ -47,42 +47,42 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                         <label class="field-label">Mailer</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->mail_mailer ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_mailer'] ?? '--' }}" readonly>
                     </div>
 
                     <div class="md:col-span-2">
                         <label class="field-label">Host</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->mail_host ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_host'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Port</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->mail_port ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_port'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Encryption</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->mail_encryption ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_encryption'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Username</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->mail_username ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_username'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Password</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->mail_password ? '••••••••' : '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ !empty($integrations['mail_password']) ? '••••••••' : '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">From Address</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->mail_from_address ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_from_address'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">From Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->mail_from_name ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_from_name'] ?? '--' }}" readonly>
                     </div>
                 </div>
             </div>
@@ -96,32 +96,32 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="field-label">Filesystem Disk</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->filesystem_disk ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['filesystem_disk'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Default Region</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->aws_default_region ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['aws_default_region'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Access Key ID</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->aws_access_key_id ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['aws_access_key_id'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Secret Access Key</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->aws_secret_access_key ? '••••••••••••••••' : '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ !empty($integrations['aws_secret_access_key']) ? '••••••••••••••••' : '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Bucket Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->aws_bucket ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['aws_bucket'] ?? '--' }}" readonly>
                     </div>
 
                     <div>
                         <label class="field-label">Path Style Endpoint</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $company->integration?->aws_use_path_style_endpoint ?: '--' }}" readonly>
+                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['aws_use_path_style_endpoint'] ?? '--' }}" readonly>
                     </div>
                 </div>
             </div>

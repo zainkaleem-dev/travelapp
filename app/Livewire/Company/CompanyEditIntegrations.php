@@ -3,7 +3,6 @@
 namespace App\Livewire\Company;
 
 use App\Models\Company;
-use App\Models\CompanyIntegration;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -55,27 +54,29 @@ class CompanyEditIntegrations extends Component
             abort(403, 'You do not have permission to edit this organization (Access denied).');
         }
 
-        // Load existing integrations if any
-        $integration = $this->company->integration;
-        if ($integration) {
-            $this->amadeus_url = $integration->amadeus_url;
-            $this->amadeus_client_id = $integration->amadeus_client_id;
-            $this->amadeus_client_secret = $integration->amadeus_client_secret;
-            $this->amadeus_grant_type = $integration->amadeus_grant_type;
-            $this->mail_mailer = $integration->mail_mailer;
-            $this->mail_host = $integration->mail_host;
-            $this->mail_port = $integration->mail_port;
-            $this->mail_username = $integration->mail_username;
-            $this->mail_password = $integration->mail_password;
-            $this->mail_encryption = $integration->mail_encryption;
-            $this->mail_from_address = $integration->mail_from_address;
-            $this->mail_from_name = $integration->mail_from_name;
-            $this->filesystem_disk = $integration->filesystem_disk;
-            $this->aws_access_key_id = $integration->aws_access_key_id;
-            $this->aws_secret_access_key = $integration->aws_secret_access_key;
-            $this->aws_default_region = $integration->aws_default_region;
-            $this->aws_bucket = $integration->aws_bucket;
-            $this->aws_use_path_style_endpoint = $integration->aws_use_path_style_endpoint;
+        // Load existing integrations from settings JSON
+        $settings = $this->company->settings ?? [];
+        $integrations = $settings['integrations'] ?? [];
+
+        if (!empty($integrations)) {
+            $this->amadeus_url = $integrations['amadeus_url'] ?? null;
+            $this->amadeus_client_id = $integrations['amadeus_client_id'] ?? null;
+            $this->amadeus_client_secret = $integrations['amadeus_client_secret'] ?? null;
+            $this->amadeus_grant_type = $integrations['amadeus_grant_type'] ?? null;
+            $this->mail_mailer = $integrations['mail_mailer'] ?? null;
+            $this->mail_host = $integrations['mail_host'] ?? null;
+            $this->mail_port = $integrations['mail_port'] ?? null;
+            $this->mail_username = $integrations['mail_username'] ?? null;
+            $this->mail_password = $integrations['mail_password'] ?? null;
+            $this->mail_encryption = $integrations['mail_encryption'] ?? null;
+            $this->mail_from_address = $integrations['mail_from_address'] ?? null;
+            $this->mail_from_name = $integrations['mail_from_name'] ?? null;
+            $this->filesystem_disk = $integrations['filesystem_disk'] ?? null;
+            $this->aws_access_key_id = $integrations['aws_access_key_id'] ?? null;
+            $this->aws_secret_access_key = $integrations['aws_secret_access_key'] ?? null;
+            $this->aws_default_region = $integrations['aws_default_region'] ?? null;
+            $this->aws_bucket = $integrations['aws_bucket'] ?? null;
+            $this->aws_use_path_style_endpoint = $integrations['aws_use_path_style_endpoint'] ?? null;
         }
     }
 
@@ -102,9 +103,11 @@ class CompanyEditIntegrations extends Component
             'aws_use_path_style_endpoint' => 'nullable|string',
         ]);
 
-        $integration = CompanyIntegration::firstOrNew(['company_id' => $this->company->id]);
-        $integration->fill($validated);
-        $integration->save();
+        $settings = $this->company->settings ?? [];
+        $settings['integrations'] = $validated;
+        
+        $this->company->settings = $settings;
+        $this->company->save();
 
         session()->flash('status', 'Integration & API settings updated successfully.');
         return $this->redirect(route('companies.index'));
