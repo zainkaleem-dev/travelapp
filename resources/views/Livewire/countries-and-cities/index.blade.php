@@ -122,11 +122,11 @@
                                     <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-2xl" wire:click="sort('name')">
                                         <div class="flex items-center gap-2">
                                             <span>Name</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-40' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
@@ -135,11 +135,11 @@
                                     <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('code')">
                                         <div class="flex items-center gap-2">
                                             <span>Code</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'code' ? 'opacity-100' : 'opacity-40' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'code' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
@@ -148,11 +148,11 @@
                                     <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('dial_code')">
                                         <div class="flex items-center gap-2">
                                             <span>Dial Code</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'dial_code' ? 'opacity-100' : 'opacity-40' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'dial_code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'dial_code' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'dial_code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'dial_code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'dial_code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
@@ -161,11 +161,11 @@
                                     <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('created_at')">
                                         <div class="flex items-center gap-2">
                                             <span>Added on</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-40' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
@@ -230,11 +230,11 @@
                                     <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-2xl" wire:click="sort('name')">
                                         <div class="flex items-center gap-2">
                                             <span>Name</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-40' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
@@ -243,11 +243,11 @@
                                     <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('country_id')">
                                         <div class="flex items-center gap-2">
                                             <span>Country</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'country_id' ? 'opacity-100' : 'opacity-40' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'country_id' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'country_id' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'country_id' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'country_id' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'country_id' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
@@ -256,11 +256,11 @@
                                     <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('code')">
                                         <div class="flex items-center gap-2">
                                             <span>Code</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'code' ? 'opacity-100' : 'opacity-40' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'code' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>
@@ -269,11 +269,11 @@
                                     <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('created_at')">
                                         <div class="flex items-center gap-2">
                                             <span>Added on</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-40' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                                 </svg>
                                             </div>

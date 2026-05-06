@@ -132,14 +132,14 @@
                                     <div class="flex items-center gap-2">
                                         <span>User</span>
                                         <div
-                                            class="flex flex-col transition-opacity {{ $sortBy === 'first_name' ? 'opacity-100' : 'opacity-40' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'first_name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
+                                            class="flex flex-col transition-opacity {{ $sortBy === 'first_name' ? 'opacity-100' : 'opacity-70' }}">
+                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'first_name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'first_name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'first_name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -153,14 +153,14 @@
                                     <div class="flex items-center gap-2">
                                         <span>Email</span>
                                         <div
-                                            class="flex flex-col transition-opacity {{ $sortBy === 'email' ? 'opacity-100' : 'opacity-40' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'email' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
+                                            class="flex flex-col transition-opacity {{ $sortBy === 'email' ? 'opacity-100' : 'opacity-70' }}">
+                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'email' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'email' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'email' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -174,14 +174,14 @@
                                     <div class="flex items-center gap-2">
                                         <span>Status</span>
                                         <div
-                                            class="flex flex-col transition-opacity {{ $sortBy === 'status' ? 'opacity-100' : 'opacity-40' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'status' && $sortDirection === 'asc' ? 'text-white' : 'text-white/40' }}"
+                                            class="flex flex-col transition-opacity {{ $sortBy === 'status' ? 'opacity-100' : 'opacity-70' }}">
+                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'status' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'status' && $sortDirection === 'desc' ? 'text-white' : 'text-white/40' }}"
+                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'status' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
