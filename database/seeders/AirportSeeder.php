@@ -72,7 +72,7 @@ class AirportSeeder extends Seeder
             ]);
 
             Airport::updateOrCreate(
-                ['code' => $ap['code']],
+                ['iata_code' => $ap['code']],
                 [
                     'city_id' => $city->id,
                     'name' => ucwords(strtolower($ap['airport']))

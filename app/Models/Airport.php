@@ -12,7 +12,7 @@ class Airport extends Model
     protected $fillable = [
         'city_id',
         'name',
-        'code',
+        'iata_code',
         'icao_code',
     ];
 
