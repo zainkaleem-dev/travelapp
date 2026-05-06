@@ -18,8 +18,8 @@
                 <!-- Section 1: Identity -->
                 <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Identity & Organization
-                        </h2>
+                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Identity & Organization
+                    </h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -126,7 +126,7 @@
                 <!-- Section 2: Account Security -->
                 <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Account & Security</h2>
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Account & Security</h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

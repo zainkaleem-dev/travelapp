@@ -1,7 +1,7 @@
 <div>
     <div class="px-1 py-1 w-full">
         @if($isCompanyRoute)
-            <div class="mb-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div class="mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                 <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                     <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $activeCompany->name ?? 'Feature Management' }}</h1>
                 </div>
@@ -14,7 +14,7 @@
             {{-- ── Sidebar: Company List ─────────────────────────────── --}}
             @if(!$isCompanyContext)
             <div class="w-full lg:w-60 flex-shrink-0">
-                <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
+                <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
                     <div class="p-6 border-b border-gray-100 bg-[#f9faf6]">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
@@ -35,7 +35,7 @@
                     <div class="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar" style="max-height: 600px;">
                         @forelse($sidebarCompanies as $company)
                             <button wire:click="selectCompany({{ $company->id }})"
-                                class="w-full text-left p-2 rounded-xl border transition-all duration-200 group
+                                class="w-full text-left p-2 rounded-lg border transition-all duration-200 group
                                     {{ $selectedCompanyId === $company->id
                                         ? 'bg-white border-[#2ab4c0] shadow-md ring-1 ring-[#2ab4c0]/10'
                                         : 'bg-transparent border-transparent hover:bg-gray-50 hover:border-gray-200' }}">
@@ -71,12 +71,12 @@
             {{-- ── Main Content ──────────────────────────────────────── --}}
             <div class="flex-1 min-w-0">
                 @if($activeCompany)
-                    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-visible flex flex-col">
+                    <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-visible flex flex-col">
 
                         {{-- Header --}}
                         <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-br from-white to-[#fafbfc]">
                             <div class="flex items-center gap-4">
-                                <div class="w-14 h-14 rounded-2xl bg-[#f2feff] border border-[#2ab4c0]/20 flex items-center justify-center text-xl font-black text-[#2ab4c0]">
+                                <div class="w-14 h-14 rounded-lg bg-[#f2feff] border border-[#2ab4c0]/20 flex items-center justify-center text-xl font-black text-[#2ab4c0]">
                                     {{ substr($activeCompany->name, 0, 1) }}
                                 </div>
                                 <div>
@@ -132,7 +132,7 @@
                                 </div>
                             </div>
 
-                            <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm bg-white mb-6">
+                            <div class="overflow-hidden rounded-lg border border-gray-100 shadow-sm bg-white mb-6">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
                                         <tr class="bg-[#f9faf6] border-b border-gray-100">
@@ -147,7 +147,7 @@
                                                 @if(($feature['type'] ?? 'toggle') === 'quantity') x-data="{ qty: {{ is_numeric($activeFeatures[$key] ?? 0) ? (int)($activeFeatures[$key] ?? 0) : 0 }} }" @endif>
                                                 <td class="px-6 py-4">
                                                     <div class="flex items-center gap-4">
-                                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors flex-shrink-0
+                                                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors flex-shrink-0
                                                             {{ (($feature['type'] ?? 'toggle') === 'toggle' ? ($activeFeatures[$key] ?? false) : true) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-400' }}">
                                                             @if($feature['icon'] === 'plane')
                                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
@@ -234,14 +234,14 @@
                                             <div class="flex items-center gap-1.5">
                                                 @if ($paginationMeta['current_page'] > 1)
                                                     <button wire:click="gotoPage({{ $paginationMeta['current_page'] - 1 }})"
-                                                        class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                                        class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                                         Previous
                                                     </button>
                                                 @endif
 
                                                 @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                                     <button wire:click="gotoPage({{ $page }})" 
-                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
                                                         {{ $page === $paginationMeta['current_page']
                                                             ? 'bg-[#2ab4c0] text-white shadow-md'
                                                             : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
@@ -251,7 +251,7 @@
 
                                                 @if ($paginationMeta['has_more'])
                                                     <button wire:click="gotoPage({{ $paginationMeta['current_page'] + 1 }})"
-                                                        class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                                        class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                                         Next
                                                     </button>
                                                 @endif
@@ -274,9 +274,9 @@
                     </div>
 
                 @else
-                    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm flex items-center justify-center p-20 h-full">
+                    <div class="bg-white rounded-lg border border-gray-100 shadow-sm flex items-center justify-center p-20 h-full">
                         <div class="text-center">
-                            <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-5 text-gray-300">
+                            <div class="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-5 text-gray-300">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                             </div>
                             <h3 class="text-base font-bold text-gray-900">Select a Company</h3>

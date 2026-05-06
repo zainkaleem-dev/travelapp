@@ -111,13 +111,13 @@
         <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 @if (session('status'))
-                    <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-bold text-green-800 uppercase">
                         {{ session('status') }}
                     </div>
                 @endif
 
                 @if (session('error'))
-                    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 font-bold">
+                    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[11px] font-bold text-red-800 uppercase">
                         {{ session('error') }}
                     </div>
                 @endif
@@ -127,19 +127,19 @@
                     <table class="w-full border-separate border-spacing-0">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg"
+                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg"
                                     wire:click="sort('first_name')">
                                     <div class="flex items-center gap-2">
                                         <span>User</span>
                                         <div
                                             class="flex flex-col transition-opacity {{ $sortBy === 'first_name' ? 'opacity-100' : 'opacity-70' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'first_name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                            <svg class="w-3.5 h-3.5 {{ $sortBy === 'first_name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'first_name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                            <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'first_name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -148,19 +148,19 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('email')">
                                     <div class="flex items-center gap-2">
                                         <span>Email</span>
                                         <div
                                             class="flex flex-col transition-opacity {{ $sortBy === 'email' ? 'opacity-100' : 'opacity-70' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'email' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                            <svg class="w-3.5 h-3.5 {{ $sortBy === 'email' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'email' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                            <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'email' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -169,19 +169,19 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('status')">
                                     <div class="flex items-center gap-2">
                                         <span>Status</span>
                                         <div
                                             class="flex flex-col transition-opacity {{ $sortBy === 'status' ? 'opacity-100' : 'opacity-70' }}">
-                                            <svg class="w-2.5 h-2.5 {{ $sortBy === 'status' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                            <svg class="w-3.5 h-3.5 {{ $sortBy === 'status' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <svg class="w-2.5 h-2.5 -mt-1 {{ $sortBy === 'status' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                            <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'status' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -191,7 +191,7 @@
                                     </div>
                                 </th>
                                 <th
-                                    class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">
+                                    class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">
                                     Actions</th>
                             </tr>
                         </thead>
@@ -290,34 +290,35 @@
 
                 <!-- Pagination -->
                 @if ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0)
-                    <div class="mt-8 pt-6">
+                    <div class="mt-8 pt-6 border-t border-gray-50">
                         <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-600">
-                                Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
-                                <span class="font-semibold">{{ $paginationMeta['to'] ?? 0 }}</span> of
-                                <span class="font-semibold">{{ $paginationMeta['total'] }}</span> users
+                            <div class="text-[11px] text-gray-500 font-medium">
+                                Showing <span class="font-bold text-gray-900">{{ $paginationMeta['from'] ?? 0 }}</span> to
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['to'] ?? 0 }}</span> of
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['total'] }}</span> users
                             </div>
                             @if ($paginationMeta['last_page'] > 1)
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5">
                                     @if ($paginationMeta['current_page'] > 1)
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-[11px] font-semibold">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Previous
                                         </button>
                                     @endif
 
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
-                                                    <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-[11px] font-medium
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                {{ $page === $paginationMeta['current_page']
-                                        ? 'bg-[#2ab4c0] text-white'
-                                        : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
-                                                        {{ $page }}
-                                                    </button>
+                                        <button wire:click="goToPage({{ $page }})"
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
+                                            {{ $page === $paginationMeta['current_page']
+                                                ? 'bg-[#2ab4c0] text-white shadow-md'
+                                                : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
+                                            {{ $page }}
+                                        </button>
                                     @endfor
 
                                     @if ($paginationMeta['has_more'])
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-[11px] font-semibold">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Next
                                         </button>
                                     @endif

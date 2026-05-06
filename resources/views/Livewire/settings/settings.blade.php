@@ -1,42 +1,60 @@
-<div class="w-full">
-    <div class="w-full py-6 px-3 sm:px-4 lg:px-6">
-        <div class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-6">
-                {{-- Header --}}
-                <div class="mb-6 rounded-xl bg-gradient-to-r from-[#2ab4c0] to-[#239ea9] px-5 py-4">
-                    <h1 class="text-lg font-bold text-white">Settings</h1>
-                    <p class="mt-1 text-xs text-white/90">Choose how you usually travel. You can change this anytime.</p>
+<div class="w-full px-1 py-1">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+            <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Settings</h1>
+            <p class="text-[11px] font-bold text-gray-500 uppercase mt-1">Choose how you usually travel. You can change this anytime.</p>
+        </div>
+    </div>
+
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div class="p-6">
+            @if ($saveMessage)
+                <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-bold text-green-800 uppercase">
+                    {{ $saveMessage }}
                 </div>
+            @endif
 
-                @if ($saveMessage)
-                    <div class="mb-4 rounded-lg border border-[#2ab4c0]/30 bg-[#2ab4c0]/10 px-4 py-3 text-sm text-gray-800">
-                        {{ $saveMessage }}
-                    </div>
-                @endif
-
-                <div class="rounded-xl border border-gray-200/80 bg-gray-50/50 p-4 sm:p-5">
-                    <label for="trip_type" class="mb-2 block text-[11px] font-bold uppercase tracking-wider text-gray-500">
-                        Trip type
+            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase mb-4">Travel Preferences</h2>
+                <div class="max-w-sm">
+                    <label for="trip_type" class="field-label">
+                        Trip Type
                     </label>
-                    <select id="trip_type"
-                        wire:model.defer="trip_type"
-                        class="w-full rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm text-gray-800 shadow-sm focus:border-[#2ab4c0] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/25">
-                        <option value="">Select…</option>
-                        @foreach($tripPurposeOptions as $purposeKey => $purposeLabel)
-                            <option value="{{ $purposeKey }}">{{ $purposeLabel }}</option>
-                        @endforeach
-                    </select>
-                    @error('trip_type')
-                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
-                    @enderror
-
-                    <div class="mt-5 flex justify-end">
-                        <button type="button"
-                            wire:click="saveSettings"
-                            class="inline-flex items-center rounded-xl bg-gradient-to-r from-[#2ab4c0] to-[#239ea9] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#2ab4c0]/20 transition hover:brightness-105">
-                            Save settings
+                    <div class="relative" x-data="{ open: false, selected: @js($trip_type ?? '') }"
+                        @keydown.escape.window="open = false" @click.outside="open = false">
+                        <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
+                            <span x-text="selected === '' ? 'Select trip type...' : selected"></span>
+                            <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
+                                :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
                         </button>
+                        <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                            <button type="button" class="admin-menu-item"
+                                :class="{ 'is-active': selected === '' }"
+                                @click="selected = ''; open = false; $wire.set('trip_type', '')">Select trip type...</button>
+                            @foreach($tripPurposeOptions as $purposeKey => $purposeLabel)
+                                <button type="button" class="admin-menu-item"
+                                    :class="{ 'is-active': selected === '{{ $purposeLabel }}' }"
+                                    @click="selected = '{{ $purposeLabel }}'; open = false; $wire.set('trip_type', '{{ $purposeKey }}')">{{ $purposeLabel }}</button>
+                            @endforeach
+                        </div>
                     </div>
+                    @error('trip_type')
+                        <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p>
+                    @enderror
                 </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-100">
+                <button type="button"
+                    wire:click="saveSettings"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                    Save Settings
+                </button>
+            </div>
         </div>
     </div>
 

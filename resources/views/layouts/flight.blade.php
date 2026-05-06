@@ -679,6 +679,9 @@
         </div>
     @endif
 
+
+
+
     @php
         $user = auth()->user();
         $isAdmin = $user && $user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin');
@@ -695,9 +698,11 @@
             'admin.countries.*',
             'admin.cities.*',
             'admin.airports*',
+            'admin.subscriptions.*',
             'dashboard'
         ]);
     @endphp
+
     {{-- ── Navbar ── --}}
     <nav class="relative z-50 bg-white border-b border-gray-200">
         <div class="{{ $isAdminRoute ? 'w-full px-3 sm:px-4 lg:px-6 py-3' : 'max-w-7xl mx-auto px-3 sm:px-4 py-3' }} flex items-center justify-between gap-4">

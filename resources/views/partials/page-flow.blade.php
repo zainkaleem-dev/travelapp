@@ -108,9 +108,16 @@
             $crumbs = [['Trip Purpose', '#']];
             break;
             
+
+            
         case request()->routeIs('admin.audit-logs*'):
             $pageTitle = 'Audit Logs';
             $crumbs = [['Audit Logs', route('admin.audit-logs')]];
+            break;
+            
+        case request()->routeIs('admin.subscriptions*'):
+            $pageTitle = 'Subscriptions';
+            $crumbs = [['Subscriptions', route('admin.subscriptions.index')]];
             break;
             
         default:

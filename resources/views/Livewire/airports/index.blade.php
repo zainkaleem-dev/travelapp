@@ -105,7 +105,7 @@
         <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 @if ($crudMessage)
-                    <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-bold text-green-800 uppercase">
                         {{ $crudMessage }}
                     </div>
                 @endif
@@ -213,14 +213,14 @@
                                 <div class="flex items-center gap-1.5">
                                     @if ($paginationMeta['current_page'] > 1)
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Previous
                                         </button>
                                     @endif
 
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                         <button wire:click="goToPage({{ $page }})" 
-                                            class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
                                             {{ $page === $paginationMeta['current_page']
                                                 ? 'bg-[#2ab4c0] text-white shadow-md'
                                                 : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
@@ -230,7 +230,7 @@
 
                                     @if ($paginationMeta['has_more'])
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Next
                                         </button>
                                     @endif

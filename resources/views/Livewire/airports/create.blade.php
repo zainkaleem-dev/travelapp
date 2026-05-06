@@ -12,7 +12,7 @@
             </div>
 
             <div class="p-6">
-                <div class="rounded-lg border border-gray-200 bg-white p-4">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="md:col-span-2">
                             <label class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-gray-500">Airport Name</label>
