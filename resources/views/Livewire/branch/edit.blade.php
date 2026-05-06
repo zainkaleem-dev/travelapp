@@ -1,14 +1,15 @@
-<div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+<div class="w-full px-1 py-1 flex flex-col gap-3">
+    <!-- Header & Navigation Container -->
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Edit Branch</h1>
-                    <p class="text-xs text-gray-500 mt-1">Update branch information for <span
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Edit Branch</h1>
+                    <p class="text-[11px] text-gray-500 mt-1 uppercase font-semibold tracking-tight">Update branch information for <span
                             class="font-bold text-gray-700">{{ $branch->company->name ?? 'Company' }}</span></p>
                 </div>
                 <a href="{{ route('branches.index') }}"
-                    class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                    class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                     Back
                 </a>
             </div>
@@ -16,7 +17,7 @@
 
         @if (session('status'))
             <div class="px-6 py-4">
-                <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-800 uppercase font-semibold">
                     {{ session('status') }}
                 </div>
             </div>
@@ -25,9 +26,9 @@
         <form wire:submit.prevent="save" class="p-6">
             <div class="space-y-8">
                 <!-- Section 1: Identity -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Branch Identity</h2>
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Branch Identity</h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -116,7 +117,7 @@
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" wire:model="is_main"
                                     class="w-4 h-4 rounded border-gray-300 text-[#2ab4c0] focus:ring-[#2ab4c0]">
-                                <span class="text-sm font-semibold text-gray-700">Set as Main Branch for this
+                                <span class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Set as Main Branch for this
                                     Company</span>
                             </label>
                             @error('is_main') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
@@ -125,9 +126,9 @@
                 </div>
 
                 <!-- Section 2: Contact Information -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Contact Details</h2>
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Contact Details</h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -172,9 +173,9 @@
                 </div>
 
                 <!-- Section 3: Physical Address -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Location & Address</h2>
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Location & Address</h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -236,11 +237,11 @@
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                 <button type="button" onclick="window.history.back()"
-                    class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                    class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors uppercase">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm uppercase">
                     <span wire:loading.remove>Update Branch</span>
                     <span wire:loading>Updating...</span>
                 </button>

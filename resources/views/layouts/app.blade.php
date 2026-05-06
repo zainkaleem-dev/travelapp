@@ -43,7 +43,7 @@
             max-width: 440px;
             background: #fff;
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
+            border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
         }

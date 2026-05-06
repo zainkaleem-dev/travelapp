@@ -1,6 +1,6 @@
 <div class="w-full" x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
@@ -19,12 +19,12 @@
                         <div class="mt-0">
                             @if($activeTab === 'countries')
                                 <a href="{{ route('admin.countries.create') }}"
-                                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm uppercase">
                                     Add Country
                                 </a>
                             @else
                                 <a href="{{ route('admin.cities.create') }}"
-                                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm uppercase">
                                     Add City
                                 </a>
                             @endif
@@ -34,17 +34,17 @@
             </div>
 
             {{-- Standard Sub-Navigation --}}
-            <div class="px-6 pt-4 border-b border-gray-200 bg-white">
+            <div class="px-6 pt-2 border-b border-gray-200 bg-white">
                 <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-[11px] font-semibold w-full">
                     <button wire:click="setTab('countries')"
-                        class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t transition-colors whitespace-nowrap {{ $activeTab === 'countries' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }}">
+                        class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t-lg transition-colors whitespace-nowrap {{ $activeTab === 'countries' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }}">
                         <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A11.954 11.954 0 0 1 12 16.5c-2.998 0-5.74-1.1-7.843-2.918m0 0A8.959 8.959 0 0 1 3 12c0-.778.099-1.533.284-2.253" />
                         </svg>
                         Countries
                     </button>
                     <button wire:click="setTab('cities')"
-                        class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t transition-colors whitespace-nowrap {{ $activeTab === 'cities' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }}">
+                        class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t-lg transition-colors whitespace-nowrap {{ $activeTab === 'cities' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }}">
                         <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
@@ -106,10 +106,10 @@
             </div>
         </div>
 
-        <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 @if ($crudMessage)
-                    <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-bold text-green-800 uppercase">
                         {{ $crudMessage }}
                     </div>
                 @endif
@@ -119,7 +119,7 @@
                         <table class="w-full border-separate border-spacing-0">
                             <thead>
                                 <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-2xl" wire:click="sort('name')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg" wire:click="sort('name')">
                                         <div class="flex items-center gap-2">
                                             <span>Name</span>
                                             <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
@@ -171,7 +171,7 @@
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-2xl">Actions</th>
+                                    <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -184,7 +184,7 @@
                                         <td class="px-6 py-2 text-end">
                                             <div class="flex items-center justify-end gap-2">
                                                 <a href="{{ route('admin.countries.view', $country->id) }}"
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="View">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
@@ -192,7 +192,7 @@
                                                     </svg>
                                                 </a>
                                                 <a href="{{ route('admin.countries.edit', $country->id) }}"
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -205,7 +205,7 @@
                                                     data-confirm-button-text="Yes, delete it"
                                                     data-done-title="Deleted!"
                                                     data-done-text="Country has been deleted."
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -227,7 +227,7 @@
                         <table class="w-full border-separate border-spacing-0">
                             <thead>
                                 <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-2xl" wire:click="sort('name')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg" wire:click="sort('name')">
                                         <div class="flex items-center gap-2">
                                             <span>Name</span>
                                             <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
@@ -279,7 +279,7 @@
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-2xl">Actions</th>
+                                    <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -292,7 +292,7 @@
                                         <td class="px-6 py-2 text-end">
                                             <div class="flex items-center justify-end gap-2">
                                                 <a href="{{ route('admin.cities.view', $city->id) }}"
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="View">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
@@ -300,7 +300,7 @@
                                                     </svg>
                                                 </a>
                                                 <a href="{{ route('admin.cities.edit', $city->id) }}"
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -313,7 +313,7 @@
                                                     data-confirm-button-text="Yes, delete it"
                                                     data-done-title="Deleted!"
                                                     data-done-text="City has been deleted."
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -345,14 +345,14 @@
                                 <div class="flex items-center gap-1.5">
                                     @if ($paginationMeta['current_page'] > 1)
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Previous
                                         </button>
                                     @endif
 
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                         <button wire:click="goToPage({{ $page }})" 
-                                            class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
                                             {{ $page === $paginationMeta['current_page']
                                                 ? 'bg-[#2ab4c0] text-white shadow-md'
                                                 : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
@@ -362,7 +362,7 @@
 
                                     @if ($paginationMeta['has_more'])
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Next
                                         </button>
                                     @endif

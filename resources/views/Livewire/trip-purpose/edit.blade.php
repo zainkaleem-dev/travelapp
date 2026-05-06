@@ -1,11 +1,11 @@
 <div class="w-full">
     <div class="px-1 py-1 w-full">
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Edit Trip</h1>
                     <a href="{{ route('admin.trip-purpose') }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-50">
                         Back
                     </a>
                 </div>
@@ -19,9 +19,9 @@
                             <input type="text"
                                 wire:model.defer="purpose_label"
                                 placeholder="Business trip"
-                                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#2ab4c0] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/25">
+                                class="input-field">
                             @error('purpose_label')
-                                <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-[11px] font-bold text-red-600 uppercase">{{ $message }}</p>
                             @enderror
                         </div>
                         <div>
@@ -29,21 +29,21 @@
                             <input type="text"
                                 wire:model.defer="purpose_key"
                                 placeholder="business_trip"
-                                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm focus:border-[#2ab4c0] focus:outline-none focus:ring-2 focus:ring-[#2ab4c0]/25">
+                                class="input-field">
                             @error('purpose_key')
-                                <p class="mt-1 text-xs font-medium text-red-600">{{ $message }}</p>
+                                <p class="mt-1 text-[11px] font-bold text-red-600 uppercase">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
 
                     <div class="mt-4 flex items-center justify-end gap-2">
                         <a href="{{ route('admin.trip-purpose') }}"
-                            class="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+                            class="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-50">
                             Cancel
                         </a>
                         <button type="button"
                             wire:click="save"
-                            class="inline-flex items-center rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                            class="inline-flex items-center rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                             Update Trip
                         </button>
                     </div>

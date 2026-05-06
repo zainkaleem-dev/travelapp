@@ -1,6 +1,6 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
-<div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+<div class="w-full px-1 py-1 flex flex-col gap-3">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Users and Roles</h1>
         </div>
@@ -8,25 +8,25 @@
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'users-roles'])
     </div>
 
-    <div class="mt-4 overflow-visible rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
         <div class="p-6">
             @if (session('status'))
-                <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-800 uppercase font-semibold">
                     {{ session('status') }}
                 </div>
             @endif
 
-            <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
-                <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase mb-4">Users</h2>
+            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase mb-4">Users</h2>
 
                 <div class="overflow-visible">
                     <table class="w-full border-separate border-spacing-0">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-ss-xl">Name</th>
+                                <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-ss-lg">Name</th>
                                 <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide">Role</th>
                                 <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide">Notes</th>
-                                <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-se-xl">Action</th>
+                                <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,7 +67,7 @@
                                     </td>
                                     <td class="px-4 py-2">
                                         <button type="button" wire:click="saveUserSettings({{ $user->id }})"
-                                            class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4]">
+                                            class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] uppercase">
                                             Save
                                         </button>
                                     </td>

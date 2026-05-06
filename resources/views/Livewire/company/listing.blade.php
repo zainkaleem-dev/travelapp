@@ -1,7 +1,7 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
 <div x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
@@ -19,7 +19,7 @@
                         </button>
                         @can('Create Company')
                             <a href="{{ route('companies.create') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                                 {{ $isSuperAdmin ? 'Add Organization' : 'Add Partner' }}
                             </a>
                         @endcan
@@ -136,16 +136,16 @@
 
             </div>
 
-        <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 @if (session('status'))
-                    <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-800 uppercase font-semibold">
                         {{ session('status') }}
                     </div>
                 @endif
 
                 @if (session('error'))
-                    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 font-bold">
+                    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[11px] text-red-800 font-bold uppercase">
                         {{ session('error') }}
                     </div>
                 @endif
@@ -156,7 +156,7 @@
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
                                 <th
-                                    class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-ss-2xl">
+                                    class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-ss-lg">
                                     Logo
                                 </th>
                                 <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
@@ -244,7 +244,7 @@
                                     </div>
                                 </th>
                                 <th
-                                    class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-se-2xl">
+                                    class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">
                                     Actions
                                 </th>
                             </tr>
@@ -256,7 +256,7 @@
                                     onclick="window.location='{{ route('companies.show', $company->id) }}'">
                                     <td class="px-6 py-2">
                                         <div
-                                            class="w-8 h-8 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                                            class="w-8 h-8 rounded-lg border border-gray-200 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
                                             @if ($company->settings['logo_path'] ?? null)
                                                 <img src="{{ asset('storage/' . $company->settings['logo_path']) }}"
                                                     alt="{{ $company->name }} logo" class="w-full h-full object-contain p-1">
@@ -269,7 +269,7 @@
                                     </td>
                                     <td class="px-6 py-2">
                                         <a href="{{ route('companies.show', $company->id) }}"
-                                            class="text-xs font-semibold text-gray-900 hover:underline"
+                                            class="text-[11px] font-semibold text-gray-900 hover:underline"
                                             onclick="event.stopPropagation()">
                                             {{ $company->name }}
                                         </a>
@@ -313,7 +313,7 @@
                                             @endif
                                             @can('Edit Company')
                                                 <a href="{{ route('companies.edit', $company->id) }}"
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit"
                                                     onclick="event.stopPropagation()">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -323,7 +323,7 @@
                                                 </a>
                                             @endcan
                                             <a href="{{ route('companies.login_as_admin', $company->id) }}"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="Login as Organization Admin"
                                                 onclick="event.stopPropagation()">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -335,7 +335,7 @@
                                                 {{-- 
                                                 @can('Manage Features')
                                                     <a href="{{ route('companies.features', $company->id) }}"
-                                                        class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                        class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                         title="Manage Features"
                                                         onclick="event.stopPropagation()">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -354,7 +354,7 @@
                                                 data-confirm-text="Are you sure you want to change the active status of this organization?"
                                                 data-confirm-button-text="Yes, change it" data-done-title="Updated!"
                                                 data-done-text="Organization status has been updated."
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="{{ $company->status === 'active' ? 'Deactivate' : 'Activate' }}"
                                                 onclick="event.stopPropagation()">
                                                 @if ($company->status === 'active')
@@ -376,7 +376,7 @@
                                                     data-confirm-text="This will delete the organization and its related data."
                                                     data-confirm-button-text="Yes, delete it" data-done-title="Deleted!"
                                                     data-done-text="Organization has been deleted."
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete Organization"
                                                     onclick="event.stopPropagation()">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -412,14 +412,14 @@
                                 <div class="flex items-center gap-1.5">
                                     @if ($paginationMeta['current_page'] > 1)
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Previous
                                         </button>
                                     @endif
 
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                         <button wire:click="goToPage({{ $page }})" 
-                                            class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
                                             {{ $page === $paginationMeta['current_page']
                                                 ? 'bg-[#2ab4c0] text-white shadow-md'
                                                 : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
@@ -429,7 +429,7 @@
 
                                     @if ($paginationMeta['has_more'])
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Next
                                         </button>
                                     @endif

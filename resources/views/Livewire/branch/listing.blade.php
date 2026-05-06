@@ -1,10 +1,10 @@
 <div x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-            <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
+            <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <h1 class="text-2xl font-black text-gray-900 tracking-tight">Branches</h1>
+                        <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Branches</h1>
                     </div>
                     <div class="flex items-center gap-3">
                         <button @click="filtersOpen = !filtersOpen"
@@ -18,7 +18,7 @@
                         </button>
                         @can('Create Branch')
                             <a href="{{ route('branches.create') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                                 Add Branch
                             </a>
                         @endcan
@@ -142,23 +142,23 @@
 
             <div class="p-6">
                 @if (session('status'))
-                    <div class="mb-6   rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-800 uppercase font-semibold">
                         {{ session('status') }}
                     </div>
                 @endif
 
                 @if (session('error'))
-                    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 font-bold">
+                    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[11px] text-red-800 font-bold uppercase">
                         {{ session('error') }}
                     </div>
                 @endif
 
                 <!-- Datatable -->
-                <div class="overflow-x-auto rounded-t-2xl">
+                <div class="overflow-x-auto rounded-t-lg">
                     <table class="w-full border-separate border-spacing-0">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-2xl"
+                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg"
                                     wire:click="sort('name')">
                                     <div class="flex items-center gap-2">
                                         <span>Branch</span>
@@ -179,7 +179,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('company')">
                                     <div class="flex items-center gap-2">
                                         <span>Company</span>
@@ -200,7 +200,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('city')">
                                     <div class="flex items-center gap-2">
                                         <span>City</span>
@@ -221,7 +221,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('email')">
                                     <div class="flex items-center gap-2">
                                         <span>Email</span>
@@ -242,7 +242,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('phone')">
                                     <div class="flex items-center gap-2">
                                         <span>Phone</span>
@@ -263,7 +263,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                <th class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
                                     wire:click="sort('status')">
                                     <div class="flex items-center gap-2">
                                         <span>Status</span>
@@ -285,7 +285,7 @@
                                     </div>
                                 </th>
                                 <th
-                                    class="px-6 py-4 text-start text-xs font-bold text-white uppercase tracking-wide rounded-se-2xl">
+                                    class="px-6 py-4 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">
                                     Actions
                                 </th>
                             </tr>
@@ -303,7 +303,7 @@
                                                 </span>
                                             </div>
                                             <div>
-                                                <div class="text-sm font-semibold text-gray-900">{{ $branch->name }}</div>
+                                                <div class="text-[11px] font-semibold text-gray-900">{{ $branch->name }}</div>
                                                 <div class="text-[10px] text-gray-500 font-mono tracking-tighter">
                                                     {{ $branch->code }}
                                                 </div>
@@ -312,20 +312,20 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="text-sm font-medium text-gray-900">{{ $branch->company->name ?? '—' }}</span>
+                                            class="text-[11px] font-medium text-gray-900">{{ $branch->company->name ?? '—' }}</span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="text-sm text-gray-900">{{ $branch->city ?: '—' }}</span>
+                                        <span class="text-[11px] text-gray-900">{{ $branch->city ?: '—' }}</span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="text-sm text-gray-900">{{ $branch->email ?: '—' }}</span>
+                                        <span class="text-[11px] text-gray-900">{{ $branch->email ?: '—' }}</span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="text-sm text-gray-900">{{ $branch->phone ?: '—' }}</span>
+                                        <span class="text-[11px] text-gray-900">{{ $branch->phone ?: '—' }}</span>
                                     </td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="inline-flex items-center rounded-md {{ $branch->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
+                                            class="inline-flex items-center rounded-md {{ $branch->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-[11px] font-semibold">
                                             {{ ucfirst($branch->status) }}
                                         </span>
                                     </td>
@@ -333,7 +333,7 @@
                                         <div class="flex items-center gap-1">
                                             @can('Edit Branch')
                                                 <a href="{{ route('branches.edit', $branch->id) }}"
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -345,7 +345,7 @@
                                                 data-action="toggleActive" data-args='[{{ $branch->id }}]'
                                                 data-confirm-title="Change branch status?"
                                                 data-done-title="Branch status updated"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="{{ $branch->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                                 @if ($branch->status === 'active')
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -366,7 +366,7 @@
                                                     data-confirm-text="This will delete the branch and its related data."
                                                     data-confirm-button-text="Yes, delete it" data-done-title="Deleted!"
                                                     data-done-text="Branch has been deleted."
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete Branch">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -392,29 +392,29 @@
                 @if ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0)
                     <div class="mt-8 pt-6">
                         <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-600">
-                                Showing <span class="font-semibold">{{ $paginationMeta['from'] ?? 0 }}</span> to
-                                <span class="font-semibold">{{ $paginationMeta['to'] ?? 0 }}</span> of
-                                <span class="font-semibold">{{ $paginationMeta['total'] }}</span> branches
+                            <div class="text-[11px] text-gray-600 uppercase font-semibold">
+                                Showing <span class="font-bold text-gray-900">{{ $paginationMeta['from'] ?? 0 }}</span> to
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['to'] ?? 0 }}</span> of
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['total'] }}</span> branches
                             </div>
                             @if ($paginationMeta['last_page'] > 1)
                                 <div class="flex items-center gap-2">
                                     {{-- Previous Button --}}
                                     @if ($paginationMeta['current_page'] > 1)
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
+                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-[11px] font-semibold">
                                             Previous
                                         </button>
                                     @else
                                         <button disabled
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-sm font-semibold opacity-50">
+                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-[11px] font-semibold opacity-50">
                                             Previous
                                         </button>
                                     @endif
 
                                     {{-- Page Numbers --}}
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
-                                                    <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium
+                                                    <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-[11px] font-medium
                                                                                                                                                                                                                                                                                                                                         {{ $page === $paginationMeta['current_page']
                                         ? 'bg-[#2ab4c0] text-white'
                                         : 'border border-gray-200 text-gray-700 hover:bg-gray-50' }}">
@@ -425,12 +425,12 @@
                                     {{-- Next Button --}}
                                     @if ($paginationMeta['has_more'])
                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-semibold">
+                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 text-[11px] font-semibold">
                                             Next
                                         </button>
                                     @else
                                         <button disabled
-                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-sm font-semibold opacity-50">
+                                            class="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed text-[11px] font-semibold opacity-50">
                                             Next
                                         </button>
                                     @endif

@@ -167,9 +167,9 @@
             -webkit-appearance: none;
             border: 1px solid #e5e7eb;
             background: #fff;
-            border-radius: 9999px;
+            border-radius: 8px;
             padding: 6px 32px 6px 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #374151;
             line-height: 1.25rem;
@@ -202,7 +202,7 @@
             gap: 8px;
             border: 1px solid #e5e7eb;
             background: #fff;
-            border-radius: 9999px;
+            border-radius: 8px;
             padding: 6px 12px;
             font-size: 11px;
             font-weight: 600;
@@ -228,7 +228,7 @@
             margin-top: 8px;
             background: #fff;
             border: 1px solid #e5e7eb;
-            border-radius: 12px;
+            border-radius: 8px;
             box-shadow: 0 10px 25px rgba(17, 24, 39, .12);
             overflow: hidden;
             z-index: 60;

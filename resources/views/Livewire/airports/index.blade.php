@@ -1,6 +1,6 @@
 <div class="w-full" x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
@@ -17,7 +17,7 @@
                             </svg>
                         </button>
                         <a href="{{ route('admin.airports.create') }}"
-                            class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                            class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                             Add Airport
                         </a>
                     </div>
@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 @if ($crudMessage)
                     <div class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
@@ -114,7 +114,7 @@
                     <table class="w-full border-separate border-spacing-0">
                         <thead>
                             <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-2xl" wire:click="sort('name')">
+                                <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg" wire:click="sort('name')">
                                     <div class="flex items-center gap-2">
                                         <span>Airport Name</span>
                                         <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
@@ -142,7 +142,7 @@
                                 </th>
                                 <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide">City</th>
                                 <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide">Country</th>
-                                <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-2xl">Actions</th>
+                                <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -161,7 +161,7 @@
                                     <td class="px-6 py-2 text-end">
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('admin.airports.view', $airport->id) }}"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="View">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
@@ -169,7 +169,7 @@
                                                 </svg>
                                             </a>
                                             <a href="{{ route('admin.airports.edit', $airport->id) }}"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="Edit">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -182,7 +182,7 @@
                                                 data-confirm-button-text="Yes, delete it"
                                                 data-done-title="Deleted!"
                                                 data-done-text="Airport has been deleted."
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="Delete">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

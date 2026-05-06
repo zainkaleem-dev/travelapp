@@ -1,5 +1,5 @@
-<div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+<div class="w-full px-1 py-1 flex flex-col gap-3">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company_name }} Profile</h1>
         </div>
@@ -7,16 +7,16 @@
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'general'])
     </div>
 
-    <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div class="p-6 space-y-8">
-            <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Core Identity</h2>
+                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Core Identity</h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="md:col-span-3">
-                        <div class="flex items-center gap-6 p-4 rounded-2xl border border-dashed border-gray-200 bg-white">
+                        <div class="flex items-center gap-6 p-4 rounded-lg border border-dashed border-gray-200 bg-white">
                             @php
                                 $companyInitials = strtoupper(
                                     collect(preg_split('/\s+/', trim((string) $company_name)))
@@ -28,7 +28,7 @@
                                 $companyInitials = $companyInitials !== '' ? $companyInitials : strtoupper(mb_substr((string) $company_name, 0, 2));
                             @endphp
                             <div
-                                class="w-16 h-16 rounded-2xl border border-gray-100 bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                class="w-16 h-16 rounded-lg border border-gray-100 bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0">
                                 @if ($existing_logo_path)
                                     <img src="{{ asset('storage/' . $existing_logo_path) }}" class="w-full h-full object-contain p-1">
                                 @else
@@ -38,7 +38,7 @@
                                 @endif
                             </div>
                             <div class="flex-1">
-                                <label class="block text-xs font-bold text-gray-900 uppercase tracking-tight mb-1">{{ $company_name }}
+                                <label class="block text-[11px] font-bold text-gray-900 uppercase tracking-tight mb-1">{{ $company_name }}
                                     logo</label>
                                 <p class="text-[11px] text-gray-500">Read-only profile view.</p>
                             </div>
@@ -83,7 +83,7 @@
                 </div>
             </div>
 
-            <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="field-label">Status</label>

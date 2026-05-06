@@ -1,13 +1,13 @@
 <div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">Add New User</h1>
-                    <p class="text-xs text-gray-500 mt-1">Create a login account for the selected company</p>
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Add New User</h1>
+                    <p class="text-[11px] text-gray-500 mt-1">Create a login account for the selected company</p>
                 </div>
                 <a href="{{ route('users.index') }}"
-                    class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                    class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-semibold text-gray-700 hover:bg-gray-50">
                     Back
                 </a>
             </div>
@@ -16,7 +16,7 @@
         <form wire:submit.prevent="save" class="p-6">
             <div class="space-y-8">
                 <!-- Section 1: Identity -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Identity & Organization
                         </h2>
@@ -124,7 +124,7 @@
                 </div>
 
                 <!-- Section 2: Account Security -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Account & Security</h2>
                     </div>
@@ -171,11 +171,11 @@
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                 <button type="button" onclick="window.history.back()"
-                    class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                    class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                     Cancel
                 </button>
                 <button type="submit"
-                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                     <span wire:loading.remove>Create User</span>
                     <span wire:loading>Creating...</span>
                 </button>

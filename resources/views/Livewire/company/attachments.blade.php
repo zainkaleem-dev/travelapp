@@ -1,6 +1,6 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
-<div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+<div class="w-full px-1 py-1 flex flex-col gap-3">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Attachments</h1>
         </div>
@@ -8,25 +8,25 @@
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'attachments'])
     </div>
 
-    <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div class="p-6">
             @if (session('status'))
-                <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-800 uppercase font-semibold">
                     {{ session('status') }}
                 </div>
             @endif
             @if (session('error'))
-                <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[11px] text-red-800 uppercase font-semibold">
                     {{ session('error') }}
                 </div>
             @endif
 
-            <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
-                <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase mb-4">Uploaded Files</h2>
+            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase mb-4">Uploaded Files</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @forelse($uploadedAttachments as $uploadedAttachment)
-                        <div class="group relative flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-white hover:border-[#2ab4c0] transition-all shadow-sm hover:shadow-md">
+                        <div class="group relative flex items-center gap-4 p-4 rounded-lg border border-gray-100 bg-white hover:border-[#2ab4c0] transition-all shadow-sm hover:shadow-md">
                             <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0 group-hover:bg-[#f2feff]">
                                 <svg class="w-5 h-5 text-gray-400 group-hover:text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -64,11 +64,11 @@
                             </div>
                         </div>
                     @empty
-                        <div class="col-span-full py-12 text-center border-2 border-dashed border-gray-100 rounded-2xl bg-gray-50/30">
+                        <div class="col-span-full py-12 text-center border-2 border-dashed border-gray-100 rounded-lg bg-gray-50/30">
                             <svg class="w-12 h-12 text-gray-200 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                             </svg>
-                            <p class="text-[11px] text-gray-500 font-medium">No attachments uploaded yet.</p>
+                            <p class="text-[11px] text-gray-500 font-bold uppercase tracking-tight">No attachments uploaded yet.</p>
                         </div>
                     @endforelse
                 </div>

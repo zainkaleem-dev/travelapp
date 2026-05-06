@@ -1,6 +1,6 @@
 <div x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Audit Logs</h1>
@@ -104,7 +104,7 @@
             </div>
         </div>
 
-        <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
 {{-- 
                 @if($selectionMode)
@@ -140,7 +140,7 @@
                 @endif
 --}}
 
-                <div class="rounded-xl border border-gray-200/80 bg-white overflow-hidden">
+                <div class="rounded-lg border border-gray-200/80 bg-white overflow-hidden">
                     <table class="w-full text-sm">
                         <thead class="bg-[#2ab4c0]">
                             <tr>
@@ -176,7 +176,7 @@
                                     <td class="px-4 py-2">
                                         <div class="flex items-center justify-end gap-2">
                                             <a href="{{ route('admin.audit-logs.view', $log->id) }}"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="View">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -193,7 +193,7 @@
                                                 data-confirm-button-text="Yes, delete"
                                                 data-done-title="Deleted!"
                                                 data-done-text="The audit log has been deleted."
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="Delete Log">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -203,7 +203,7 @@
                                             {{-- 
                                             <button type="button"
                                                 wire:click="startBulkDeleteMode({{ $log->id }})"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="Delete Log">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -236,14 +236,14 @@
                                 <div class="flex items-center gap-1.5">
                                     @if ($paginationMeta['current_page'] > 1)
                                         <button wire:click="gotoPage({{ $paginationMeta['current_page'] - 1 }})"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Previous
                                         </button>
                                     @endif
 
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                         <button wire:click="gotoPage({{ $page }})" 
-                                            class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
                                             {{ $page === $paginationMeta['current_page']
                                                 ? 'bg-[#2ab4c0] text-white shadow-md'
                                                 : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
@@ -253,7 +253,7 @@
 
                                     @if ($paginationMeta['has_more'])
                                         <button wire:click="gotoPage({{ $paginationMeta['current_page'] + 1 }})"
-                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                             Next
                                         </button>
                                     @endif

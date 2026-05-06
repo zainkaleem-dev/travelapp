@@ -1,7 +1,7 @@
 <div>
     <div class="px-1 py-1 w-full">
         @if($isCompanyRoute)
-            <div class="mb-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div class="mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                 <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                     <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $this->activeCompany->name ?? 'Roles Permissions' }}</h1>
                 </div>
@@ -13,7 +13,7 @@
             
             {{-- Sidebar: Access Control (Super Admin sees Context, Company Admin sees their own) --}}
             <div class="w-full lg:w-60 flex-shrink-0">
-                <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
+                <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
                     <div class="p-6 bg-[#f9faf6] border-b border-gray-100">
                         <div class="flex items-center gap-2 mb-4">
                             <div class="w-2 h-2 rounded-full bg-[#2ab4c0] shadow-[0_0_8px_rgba(42,180,192,0.6)]"></div>
@@ -21,7 +21,7 @@
                         </div>
                         
                         {{-- Mode Selector --}}
-                        <div class="flex bg-gray-100 p-1 rounded-xl mb-4 overflow-hidden">
+                        <div class="flex bg-gray-100 p-1 rounded-lg mb-4 overflow-hidden">
                             <button wire:click="setViewMode('roles')" class="flex-1 py-1.5 text-[11px] font-bold rounded-lg transition-all {{ $viewMode === 'roles' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700' }}">
                                 Roles
                             </button>
@@ -75,7 +75,7 @@
                         @if($viewMode === 'roles')
                             @forelse($sidebarRoles as $role)
                                 <button wire:click="selectRole({{ $role->id }})"
-                                    class="w-full text-left p-2 rounded-xl border transition-all duration-200 group
+                                    class="w-full text-left p-2 rounded-lg border transition-all duration-200 group
                                         {{ $selectedRoleId === $role->id 
                                             ? 'bg-white border-[#2ab4c0] shadow-md ring-1 ring-[#2ab4c0]/10' 
                                             : 'bg-transparent border-transparent hover:bg-gray-50 hover:border-gray-200' }}">
@@ -105,7 +105,7 @@
                         @else
                             @forelse($sidebarUsers as $user)
                                 <button wire:click="selectUser({{ $user->id }})"
-                                    class="w-full text-left p-2 rounded-xl border transition-all duration-200 group
+                                    class="w-full text-left p-2 rounded-lg border transition-all duration-200 group
                                         {{ $selectedUserId === $user->id 
                                             ? 'bg-white border-[#2ab4c0] shadow-md ring-1 ring-[#2ab4c0]/10' 
                                             : 'bg-transparent border-transparent hover:bg-gray-50 hover:border-gray-200' }}">
@@ -141,29 +141,29 @@
             <div class="flex-1 min-h-0">
                 {{-- Global Alerts --}}
                 @if (session('status'))
-                    <div class="mb-4 p-4 bg-teal-50 border border-teal-100 rounded-2xl flex items-center gap-3 text-teal-700 shadow-sm animate-fade-in">
+                    <div class="mb-4 p-3 bg-teal-50 border border-teal-100 rounded-lg flex items-center gap-3 text-teal-700 shadow-sm animate-fade-in">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span class="text-sm font-bold">{{ session('status') }}</span>
+                        <span class="text-[11px] font-bold uppercase">{{ session('status') }}</span>
                     </div>
                 @endif
                 @if (session('error'))
-                    <div class="mb-4 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3 text-red-700 shadow-sm animate-fade-in">
+                    <div class="mb-4 p-3 bg-red-50 border border-red-100 rounded-lg flex items-center gap-3 text-red-700 shadow-sm animate-fade-in">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span class="text-sm font-bold">{{ session('error') }}</span>
+                        <span class="text-[11px] font-bold uppercase">{{ session('error') }}</span>
                     </div>
                 @endif
 
                 @if($viewMode === 'roles')
-                    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
+                    <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
                         {{-- Header / Create Role --}}
-                        <div class="p-8 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-white to-[#fafbfc] rounded-t-3xl">
+                        <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-white to-[#fafbfc] rounded-t-lg">
                             <div class="flex items-center gap-5 group">
-                                <div class="w-16 h-16 rounded-3xl bg-[#f2feff] border border-[#2ab4c0]/20 flex items-center justify-center text-2xl font-black text-[#2ab4c0] shadow-sm">
+                                <div class="w-14 h-14 rounded-lg bg-[#f2feff] border border-[#2ab4c0]/20 flex items-center justify-center text-[21px] font-black text-[#2ab4c0] shadow-sm">
                                     {{ $selectedRole ? strtoupper(substr($selectedRole->name, 0, 1)) : 'R' }}
                                 </div>
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">
+                                        <h2 class="text-[21px] font-black text-gray-900 tracking-tight">
                                             {{ $selectedRole ? $selectedRole->name : 'Role Architecture' }}
                                         </h2>
                                         @php
@@ -186,14 +186,14 @@
                             </div>
 
                             <div class="flex items-center gap-3">
-                                <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-2xl text-[11px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
+                                <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-lg text-[11px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
                                     {{ empty($contextCompanyId) || $contextCompanyId === 'global' ? 'Global Context' : (($selectedRole->company->name ?? 'Company') . ' Context') }}
                                 </div>
                             </div>
                         </div>
 
                         {{-- Permissions Matrix --}}
-                        <div class="flex-1 min-h-0 overflow-y-auto p-8 no-scrollbar">
+                        <div class="flex-1 min-h-0 overflow-y-auto p-6 no-scrollbar">
                             @if($selectedRole)
                                 <div class="flex items-center justify-between mb-8">
                                     <div>
@@ -227,7 +227,7 @@
                                     </div>
                                 </div>
 
-                                <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
+                                <div class="overflow-hidden rounded-lg border border-gray-100 shadow-sm">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
                                             <tr class="bg-[#f9faf6] border-b border-gray-100">
@@ -241,7 +241,7 @@
                                                     class="group hover:bg-gray-50/50 transition-colors">
                                                     <td class="px-6 py-4">
                                                         <div class="flex items-center gap-4">
-                                                            <div class="w-10 h-10 rounded-xl flex items-center justify-center transition-colors
+                                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors
                                                                 {{ in_array($permission->name, $currentRolePermissions) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : 'bg-gray-50 text-gray-300' }}">
                                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                                             </div>
@@ -282,14 +282,14 @@
                                                 <div class="flex items-center gap-1.5">
                                                     @if ($paginationMeta['current_page'] > 1)
                                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
-                                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                                             Previous
                                                         </button>
                                                     @endif
 
                                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
                                                         <button wire:click="goToPage({{ $page }})" 
-                                                            class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
                                                             {{ $page === $paginationMeta['current_page']
                                                                 ? 'bg-[#2ab4c0] text-white shadow-md'
                                                                 : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
@@ -299,7 +299,7 @@
 
                                                     @if ($paginationMeta['has_more'])
                                                         <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
-                                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
                                                             Next
                                                         </button>
                                                     @endif
@@ -320,10 +320,10 @@
                 @else
                     {{-- Users Mode --}}
                     @if($activeUser)
-                        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
-                            <div class="p-8 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-white to-[#fafbfc]">
+                        <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
+                            <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-white to-[#fafbfc]">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-16 h-16 rounded-3xl bg-[#f2feff] border border-[#2ab4c0]/20 flex items-center justify-center text-2xl font-black text-[#2ab4c0] shadow-sm">
+                                    <div class="w-14 h-14 rounded-lg bg-[#f2feff] border border-[#2ab4c0]/20 flex items-center justify-center text-[21px] font-black text-[#2ab4c0] shadow-sm">
                                         {{ strtoupper(substr($activeUser->first_name ?? $activeUser->email, 0, 1)) }}
                                     </div>
                                     <div>
@@ -342,14 +342,14 @@
 
                                 @if($isSuperAdmin)
                                     <div class="flex items-center gap-3">
-                                        <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-2xl text-[11px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
+                                        <div class="px-4 py-2 bg-gray-100/80 border border-gray-100 rounded-lg text-[11px] font-black text-gray-500 uppercase tracking-widest text-center shadow-sm">
                                             {{ empty($contextCompanyId) || $contextCompanyId === 'global' ? 'Global Context' : (($companies->find($contextCompanyId)->name ?? 'Company') . ' Context') }}
                                         </div>
                                     </div>
                                 @endif
                             </div>
 
-                            <div class="flex-1 min-h-0 overflow-y-auto p-8 no-scrollbar">
+                            <div class="flex-1 min-h-0 overflow-y-auto p-6 no-scrollbar">
                                 <div class="flex items-center justify-between mb-8">
                                     <div>
                                         <h3 class="text-[21px] font-black text-gray-900">User Roles</h3>
@@ -358,7 +358,7 @@
                                 </div>
 
                                 @if(count($contextRoles) > 0)
-                                    <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
+                                    <div class="overflow-hidden rounded-lg border border-gray-100 shadow-sm">
                                         <table class="w-full text-left border-collapse">
                                             <thead>
                                                 <tr class="bg-[#f9faf6] border-b border-gray-100">
@@ -372,7 +372,7 @@
                                                         class="group hover:bg-gray-50/50 transition-colors">
                                                         <td class="px-6 py-4">
                                                             <div class="flex items-center gap-4">
-                                                                <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:bg-teal-50 transition-colors
+                                                                <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-teal-50 transition-colors
                                                                     {{ in_array($role->id, $currentUserRoleIds) ? 'bg-[#2ab4c0]/10 text-[#2ab4c0]' : '' }}">
                                                                     <svg class="w-5 h-5 {{ in_array($role->id, $currentUserRoleIds) ? 'text-[#2ab4c0]' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                                                 </div>
@@ -411,9 +411,9 @@
                             </div>
                         </div>
                     @else
-                        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm flex items-center justify-center p-20 h-full">
+                        <div class="bg-white rounded-lg border border-gray-100 shadow-sm flex items-center justify-center p-20 h-full">
                             <div class="text-center">
-                                <div class="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-gray-300">
+                                <div class="w-20 h-20 bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-6 text-gray-300">
                                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                                 </div>
                                 <h3 class="text-lg font-bold text-gray-900">User Assignments</h3>

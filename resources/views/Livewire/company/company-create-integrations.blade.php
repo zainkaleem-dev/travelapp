@@ -1,13 +1,13 @@
-<div class="w-full px-1 py-1 flex flex-col gap-6">
+<div class="w-full px-1 py-1 flex flex-col gap-3">
     <!-- Header & Navigation Container -->
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div class="px-6 py-5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-black text-gray-900 tracking-tight">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Add Organization' : 'Add Partner' }}</h1>
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ (auth()->user()?->can('Manage Global System') ?? false) ? 'Add Organization' : 'Add Partner' }}</h1>
                 </div>
                 <a href="{{ route('companies.index') }}"
-                    class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                    class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                     Back
                 </a>
             </div>
@@ -17,10 +17,10 @@
     </div>
 
     <!-- Main Content Container -->
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         @if (session('status'))
             <div class="px-6 pt-6">
-                <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] text-green-800 uppercase font-semibold">
                     {{ session('status') }}
                 </div>
             </div>
@@ -28,8 +28,8 @@
 
         @if ($errors->any())
             <div class="px-6 pt-6">
-                <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-                    <p class="font-bold uppercase text-xs mb-2">Please fix the following errors:</p>
+                <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[11px] text-red-800">
+                    <p class="font-bold uppercase text-[11px] mb-2">Please fix the following errors:</p>
                     <ul class="list-disc pl-5 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -42,9 +42,9 @@
         <form wire:submit.prevent="save" class="p-6">
             <div class="space-y-8">
                 <!-- Section 1: Amadeus API -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Amadeus API Settings</h2>
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Amadeus API Settings</h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -75,9 +75,9 @@
                 </div>
 
                 <!-- Section 2: Mail (SMTP) -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">Mail (SMTP) Settings</h2>
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Mail (SMTP) Settings</h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -132,9 +132,9 @@
                 </div>
 
                 <!-- Section 3: AWS / Storage -->
-                <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase">AWS / Storage Settings</h2>
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">AWS / Storage Settings</h2>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -183,7 +183,7 @@
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
                 <button type="submit"
-                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-sm font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                     Save & Finish
                 </button>
             </div>

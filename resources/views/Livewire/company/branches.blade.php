@@ -1,6 +1,6 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
-<div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+<div class="w-full px-1 py-1 flex flex-col gap-3">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Branches</h1>
         </div>
@@ -8,24 +8,24 @@
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'branches'])
     </div>
 
-    <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div class="p-6">
-            <div class="rounded-xl border border-gray-100 bg-gray-50/30 p-6">
-                <h2 class="text-xs font-black tracking-widest text-gray-400 uppercase mb-4">Branches (Read Only)</h2>
+            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase mb-4">Branches (Read Only)</h2>
 
                 @forelse($branches as $branch)
-                    <div class="relative p-6 rounded-2xl border border-gray-100 bg-white shadow-sm mb-4 last:mb-0">
+                    <div class="relative p-6 rounded-lg border border-gray-100 bg-white shadow-sm mb-4 last:mb-0">
                         <div class="mb-4 flex items-center justify-between gap-3">
-                            <h3 class="text-sm font-black text-gray-900">
+                            <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest">
                                 {{ $branch->name ?: 'Branch' }}
                             </h3>
                             <div class="flex items-center gap-2">
                                 @if($branch->is_main)
-                                    <span class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2.5 py-0.5 text-xs font-bold text-[#1f8f98]">
+                                    <span class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#1f8f98] uppercase tracking-tight">
                                         Main Branch
                                     </span>
                                 @endif
-                                <span class="inline-flex items-center rounded-md {{ $branch->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-xs font-semibold">
+                                <span class="inline-flex items-center rounded-md {{ $branch->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700' }} px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-tight">
                                     {{ ucfirst($branch->status ?? 'inactive') }}
                                 </span>
                             </div>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3 text-[11px] text-gray-500">
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3 text-[11px] text-gray-500 font-semibold uppercase">
                         No branches found for this {{ $isSuperAdmin ? 'organization' : 'partner' }}.
                     </div>
                 @endforelse

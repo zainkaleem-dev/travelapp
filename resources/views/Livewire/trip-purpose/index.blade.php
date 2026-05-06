@@ -1,21 +1,20 @@
 <div class="w-full">
     <div class="px-1 py-1 w-full">
-        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Trips</h1>
                     </div>
                     <a href="{{ route('admin.trip-purpose.create') }}"
-                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                         Add Trip
                     </a>
                 </div>
             </div>
+        </div>
 
-            </div>
-
-        <div class="mt-4 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6 space-y-6">
             @if (session('status'))
                 <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
@@ -23,7 +22,7 @@
                 </div>
             @endif
 
-            <div class="rounded-xl border border-gray-200/80 bg-white overflow-hidden">
+            <div class="rounded-lg border border-gray-200/80 bg-white overflow-hidden">
                 <table class="w-full text-sm">
                     <thead class="bg-[#2ab4c0]">
                         <tr>
@@ -38,7 +37,7 @@
                                 <td class="px-4 py-2">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.trip-purpose.view', $purpose->id) }}"
-                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                             title="View">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -48,7 +47,7 @@
                                             </svg>
                                         </a>
                                         <a href="{{ route('admin.trip-purpose.edit', $purpose->id) }}"
-                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                             title="Edit">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -62,7 +61,7 @@
                                             data-confirm-button-text="Yes, delete it"
                                             data-done-title="Deleted!"
                                             data-done-text="Trip has been deleted."
-                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-xs font-semibold transition-colors hover:border-gray-400"
+                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                             title="Delete">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -7,9 +7,9 @@
 @endphp
 
 <div class="px-6 pt-4 border-b border-gray-200 bg-white">
-    <div class="flex items-center gap-0 overflow-x-auto custom-scrollbar pb-1 text-xs font-semibold w-full">
+    <div class="flex items-center gap-0 overflow-x-auto custom-scrollbar pb-1 text-[11px] font-semibold w-full">
         <a href="{{ route('companies.create') }}"
-            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t {{ $activeTab === 'info' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
+            class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ $activeTab === 'info' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -20,7 +20,7 @@
 
         @if($companyNavId)
             <a href="{{ route('companies.create-branches', ['id' => $companyNavId]) }}"
-                class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t {{ $activeTab === 'branches' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
+                class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ $activeTab === 'branches' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
                 <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -30,7 +30,7 @@
             </a>
             @if($hasBranches)
                 <a href="{{ route('companies.create-billing', ['id' => $companyNavId]) }}"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t {{ $activeTab === 'billing-entity' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
+                    class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ $activeTab === 'billing-entity' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -40,7 +40,7 @@
                 </a>
                 @if($hasBilling)
                     <a href="{{ route('companies.create-integrations', ['id' => $companyNavId]) }}"
-                        class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t {{ $activeTab === 'integrations' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
+                        class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ $activeTab === 'integrations' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
                         <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -49,7 +49,7 @@
                         Integrations & API
                     </a>
                 @else
-                    <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please save billing details first">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please save billing details first">
                         <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                             viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -59,7 +59,7 @@
                     </span>
                 @endif
             @else
-                <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please save branches first">
+                <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please save branches first">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -67,7 +67,7 @@
                     </svg>
                     Billing Details
                 </span>
-                <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please save branches first">
+                <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please save branches first">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -77,7 +77,7 @@
                 </span>
             @endif
         @else
-            <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please create organization first">
+            <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please create organization first">
                 <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -85,7 +85,7 @@
                 </svg>
                 Branches
             </span>
-            <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please create organization first">
+            <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please create organization first">
                 <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -93,7 +93,7 @@
                 </svg>
                 Billing Details
             </span>
-            <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please create organization first">
+            <span class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg text-gray-300 cursor-not-allowed whitespace-nowrap" title="Please create organization first">
                 <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                     viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round"
