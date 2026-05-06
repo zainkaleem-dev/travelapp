@@ -26,7 +26,6 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">{{ $isSuperAdmin ? 'Organizations' : 'Partners' }}</p>
-                        <p class="text-xs text-gray-500 font-medium truncate">{{ $isSuperAdmin ? 'Total Registered' : 'Managed Partners' }}</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -42,7 +41,6 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Branches</p>
-                        <p class="text-xs text-gray-500 font-medium truncate">Active Locations</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -58,7 +56,6 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Users</p>
-                        <p class="text-xs text-gray-500 font-medium truncate">System Accounts</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -75,7 +72,6 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Airports</p>
-                        <p class="text-xs text-gray-500 font-medium truncate">Global Entries</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -91,7 +87,6 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Countries</p>
-                        <p class="text-xs text-gray-500 font-medium truncate">Supported Regions</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -107,7 +102,6 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Cities</p>
-                        <p class="text-xs text-gray-500 font-medium truncate">Mapped Cities</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -123,7 +117,6 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Trip Purposes</p>
-                        <p class="text-xs text-gray-500 font-medium truncate">Category Types</p>
                     </div>
                 </div>
                 <div class="text-right">
@@ -139,7 +132,6 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Audit Logs</p>
-                        <p class="text-xs text-gray-500 font-medium truncate">Total Actions</p>
                     </div>
                 </div>
                 <div class="text-right">

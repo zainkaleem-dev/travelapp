@@ -1,4 +1,4 @@
-<div class="w-full">
+<div class="w-full" x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
@@ -6,18 +6,29 @@
                     <div>
                         <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Countries & Cities</h1>
                     </div>
-                    <div class="mt-1">
-                        @if($activeTab === 'countries')
-                            <a href="{{ route('admin.countries.create') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                                Add Country
-                            </a>
-                        @else
-                            <a href="{{ route('admin.cities.create') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                                Add City
-                            </a>
-                        @endif
+                    <div class="flex items-center gap-3">
+                        <button @click="filtersOpen = !filtersOpen"
+                            class="inline-flex items-center justify-center rounded-lg border border-gray-200 p-2 transition-colors"
+                            :class="filtersOpen ? 'bg-[#2ab4c0]/10 text-[#2ab4c0] border-[#2ab4c0]/30' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700'"
+                            title="Toggle Filters">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                        </button>
+                        <div class="mt-0">
+                            @if($activeTab === 'countries')
+                                <a href="{{ route('admin.countries.create') }}"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                    Add Country
+                                </a>
+                            @else
+                                <a href="{{ route('admin.cities.create') }}"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
+                                    Add City
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -35,10 +46,62 @@
                     <button wire:click="setTab('cities')"
                         class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t transition-colors whitespace-nowrap {{ $activeTab === 'cities' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }}">
                         <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                         Cities
                     </button>
+                </div>
+            </div>
+
+            {{-- Filters Section --}}
+            <div x-show="filtersOpen" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 transform -translate-y-2"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+                class="px-6 py-3 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="w-full sm:w-24 ms-auto">
+                            <div class="relative flex items-center justify-center"
+                                x-data="{ open: false, selected: @js((string) ($perPage ?? 10)) }"
+                                @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="admin-menu-btn justify-center" @click="open = !open">
+                                    <span x-text="selected"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform"
+                                        :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item"
+                                        :class="{ 'is-active': selected === '10' }"
+                                        @click="selected = '10'; open = false; $wire.set('perPage', '10')">10</button>
+                                    <button type="button" class="admin-menu-item"
+                                        :class="{ 'is-active': selected === '20' }"
+                                        @click="selected = '20'; open = false; $wire.set('perPage', '20')">20</button>
+                                    <button type="button" class="admin-menu-item"
+                                        :class="{ 'is-active': selected === '50' }"
+                                        @click="selected = '50'; open = false; $wire.set('perPage', '50')">50</button>
+                                    <button type="button" class="admin-menu-item"
+                                        :class="{ 'is-active': selected === '100' }"
+                                        @click="selected = '100'; open = false; $wire.set('perPage', '100')">100</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full">
+                        <div class="relative">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <input type="text" class="input-field pl-10" wire:model.live.debounce.300ms="search"
+                                placeholder="Search {{ $activeTab === 'countries' ? 'countries' : 'cities' }}..." />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -112,7 +175,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($countries as $country)
+                                @forelse($items as $country)
                                     <tr class="border-b border-gray-200 transition-colors hover:bg-blue-50">
                                         <td class="px-6 py-2 text-[11px] font-semibold text-gray-900">{{ $country->name }}</td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $country->code }}</td>
@@ -220,7 +283,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($cities as $city)
+                                @forelse($items as $city)
                                     <tr class="border-b border-gray-200 transition-colors hover:bg-blue-50">
                                         <td class="px-6 py-2 text-[11px] font-semibold text-gray-900">{{ $city->name }}</td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $city->country->name }}</td>
@@ -266,6 +329,46 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+                @endif
+
+                <!-- Pagination Controls -->
+                @if ($paginationMeta['last_page'] > 1 || $paginationMeta['total'] > 0)
+                    <div class="mt-8 pt-6 border-t border-gray-50">
+                        <div class="flex items-center justify-between">
+                            <div class="text-[11px] text-gray-500 font-medium">
+                                Showing <span class="font-bold text-gray-900">{{ $paginationMeta['from'] ?? 0 }}</span> to
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['to'] ?? 0 }}</span> of
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['total'] }}</span> {{ $activeTab === 'countries' ? 'countries' : 'cities' }}
+                            </div>
+                            @if ($paginationMeta['last_page'] > 1)
+                                <div class="flex items-center gap-1.5">
+                                    @if ($paginationMeta['current_page'] > 1)
+                                        <button wire:click="goToPage({{ $paginationMeta['current_page'] - 1 }})"
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            Previous
+                                        </button>
+                                    @endif
+
+                                    @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
+                                        <button wire:click="goToPage({{ $page }})" 
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-[11px] font-bold transition-all
+                                            {{ $page === $paginationMeta['current_page']
+                                                ? 'bg-[#2ab4c0] text-white shadow-md'
+                                                : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
+                                            {{ $page }}
+                                        </button>
+                                    @endfor
+
+                                    @if ($paginationMeta['has_more'])
+                                        <button wire:click="goToPage({{ $paginationMeta['current_page'] + 1 }})"
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 text-[11px] font-bold transition-all">
+                                            Next
+                                        </button>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 @endif
             </div>
