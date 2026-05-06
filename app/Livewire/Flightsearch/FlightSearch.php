@@ -351,31 +351,6 @@ class FlightSearch extends Component
         $this->searching = false;
     }
 
-    /**
-     * @return array<int, array{name:string,code:string}>
-     */
-    private function loadAirlinesCache(): array
-    {
-        $path = storage_path('app/flightsearch/airlines.json');
-        if (!is_file($path))
-            return [];
-        $raw = file_get_contents($path);
-        if ($raw === false)
-            return [];
-        $decoded = json_decode($raw, true);
-        return is_array($decoded) ? $decoded : [];
-    }
-
-    private function writeAirlinesCache(array $airlines): void
-    {
-        $path = storage_path('app/flightsearch/airlines.json');
-        $dir = dirname($path);
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-        file_put_contents($path, json_encode(array_values($airlines), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-    }
-
     public function fetchAirlines(string $query, string $type): void
     {
         $q = trim($query);
@@ -384,15 +359,12 @@ class FlightSearch extends Component
             return;
         }
 
-        $all = $this->loadAirlinesCache();
-        $matches = collect($all)
-            ->filter(function ($a) use ($q) {
-                return str_contains(strtolower($a['name'] ?? ''), strtolower($q)) ||
-                    str_contains(strtolower($a['code'] ?? ''), strtolower($q));
-            })
-            ->take(8)
-            ->values()
-            ->all();
+        $matches = \App\Models\Airline::query()
+            ->where('name', 'like', '%' . $q . '%')
+            ->orWhere('code', 'like', '%' . $q . '%')
+            ->limit(8)
+            ->get(['name', 'code'])
+            ->toArray();
 
         if (empty($matches) && mb_strlen($q) === 2) {
             // API Fallback for IATA code
@@ -401,16 +373,18 @@ class FlightSearch extends Component
                 $response = $service->getAirlines(['airlineCodes' => strtoupper($q)]);
 
                 if (isset($response['data'][0])) {
-                    $newAirline = [
+                    $newAirlineData = [
                         'name' => $response['data'][0]['commonName'] ?? $response['data'][0]['businessName'] ?? 'Unknown Airline',
                         'code' => strtoupper($q)
                     ];
 
-                    // Add to cache
-                    $all[] = $newAirline;
-                    $this->writeAirlinesCache($all);
+                    // Save to database
+                    $newAirline = \App\Models\Airline::updateOrCreate(
+                        ['code' => $newAirlineData['code']],
+                        ['name' => $newAirlineData['name']]
+                    );
 
-                    $matches = [$newAirline];
+                    $matches = [['name' => $newAirline->name, 'code' => $newAirline->code]];
                 }
             } catch (\Exception $e) {
                 \Log::error("Airline API Search Error: " . $e->getMessage());
@@ -486,7 +460,6 @@ class FlightSearch extends Component
         $this->multiAirlineSearch = '';
         $this->multiAirlineSearchResults = [];
     }
-
     public function updatedReturnUserSearch(): void
     {
         $q = trim($this->returnUserSearch);
@@ -511,7 +484,7 @@ class FlightSearch extends Component
             return;
         }
 
-        $users = User::query()
+        $users = \App\Models\User::query()
             ->select(['id', 'first_name', 'middle_name', 'last_name', 'email'])
             ->where(function ($builder) use ($q) {
                 $builder->where('first_name', 'like', '%' . $q . '%')
@@ -523,7 +496,7 @@ class FlightSearch extends Component
             ->limit(8)
             ->get();
 
-        $this->returnUserSearchResults = $users->map(function (User $u) {
+        $this->returnUserSearchResults = $users->map(function (\App\Models\User $u) {
             return [
                 'id' => $u->id,
                 'name' => $u->display_name,
@@ -534,7 +507,7 @@ class FlightSearch extends Component
 
     public function selectReturnUser(int $userId): void
     {
-        $user = User::query()->find($userId);
+        $user = \App\Models\User::query()->find($userId);
         if (!$user) {
             return;
         }
@@ -575,7 +548,7 @@ class FlightSearch extends Component
             return;
         }
 
-        $users = User::query()
+        $users = \App\Models\User::query()
             ->select(['id', 'first_name', 'middle_name', 'last_name', 'email'])
             ->where(function ($builder) use ($q) {
                 $builder->where('first_name', 'like', '%' . $q . '%')
@@ -587,7 +560,7 @@ class FlightSearch extends Component
             ->limit(8)
             ->get();
 
-        $this->onewayUserSearchResults = $users->map(function (User $u) {
+        $this->onewayUserSearchResults = $users->map(function (\App\Models\User $u) {
             return [
                 'id' => $u->id,
                 'name' => $u->display_name,
@@ -598,7 +571,7 @@ class FlightSearch extends Component
 
     public function selectOnewayUser(int $userId): void
     {
-        $user = User::query()->find($userId);
+        $user = \App\Models\User::query()->find($userId);
         if (!$user) {
             return;
         }
@@ -639,7 +612,7 @@ class FlightSearch extends Component
             return;
         }
 
-        $users = User::query()
+        $users = \App\Models\User::query()
             ->select(['id', 'first_name', 'middle_name', 'last_name', 'email'])
             ->where(function ($builder) use ($q) {
                 $builder->where('first_name', 'like', '%' . $q . '%')
@@ -651,7 +624,7 @@ class FlightSearch extends Component
             ->limit(8)
             ->get();
 
-        $this->multiUserSearchResults = $users->map(function (User $u) {
+        $this->multiUserSearchResults = $users->map(function (\App\Models\User $u) {
             return [
                 'id' => $u->id,
                 'name' => $u->display_name,
@@ -662,7 +635,7 @@ class FlightSearch extends Component
 
     public function selectMultiUser(int $userId): void
     {
-        $user = User::query()->find($userId);
+        $user = \App\Models\User::query()->find($userId);
         if (!$user) {
             return;
         }
@@ -679,81 +652,35 @@ class FlightSearch extends Component
         $this->multiUserSearchResults = [];
     }
 
-    private function getLocationsCacheFilePath(): string
+    private function saveLocationToDatabase(array $apiLocation): ?array
     {
-        return storage_path('app/flightsearch/locations.json');
-    }
-
-    /**
-     * @return array{generated_at:?string,countries:array<int, array{name:string,code:string}>,airports:array<int, array{code:string,city:string,country:string,airport:string}>}
-     */
-    private function loadLocationsCachePayload(): array
-    {
-        $path = $this->getLocationsCacheFilePath();
-        if (!is_file($path)) {
-            return [
-                'generated_at' => null,
-                'countries' => [],
-                'airports' => [],
-            ];
-        }
-
-        $raw = file_get_contents($path);
-        if ($raw === false) {
-            return [
-                'generated_at' => null,
-                'countries' => [],
-                'airports' => [],
-            ];
-        }
-
-        $decoded = json_decode($raw, true);
-        if (!is_array($decoded)) {
-            return [
-                'generated_at' => null,
-                'countries' => [],
-                'airports' => [],
-            ];
-        }
-
-        return [
-            'generated_at' => $decoded['generated_at'] ?? null,
-            'countries' => is_array($decoded['countries'] ?? null) ? $decoded['countries'] : [],
-            'airports' => is_array($decoded['airports'] ?? null) ? $decoded['airports'] : [],
-        ];
-    }
-
-    /**
-     * @param array{generated_at:?string,countries:array<int, array{name:string,code:string}>,airports:array<int, array{code:string,city:string,country:string,airport:string}>} $payload
-     */
-    private function writeLocationsCachePayload(array $payload): void
-    {
-        $path = $this->getLocationsCacheFilePath();
-        $dir = dirname($path);
-
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
-        }
-
-        $payload['generated_at'] = now()->toISOString();
-
-        $tmpPath = $path . '.tmp';
-        file_put_contents($tmpPath, json_encode($payload, JSON_UNESCAPED_UNICODE));
-        rename($tmpPath, $path);
-    }
-
-    /**
-     * @param array<string, mixed> $location
-     * @return array{airport:array{code:string,city:string,country:string,airport:string,display:string},country:?array{name:string,code:string}}
-     */
-    private function mapApiLocationToCacheEntry(array $location): array
-    {
-        $address = $location['address'] ?? [];
+        $address = $apiLocation['address'] ?? [];
         $cityName = $address['cityName'] ?? '';
+        $cityCode = $apiLocation['iataCode'] ?? ''; // Sometimes city code is the same as airport iataCode
         $countryName = $address['countryName'] ?? '';
         $countryCode = $address['countryCode'] ?? '';
-        $airportName = $location['name'] ?? '';
-        $iataCode = $location['iataCode'] ?? '';
+        $airportName = $apiLocation['name'] ?? '';
+        $iataCode = $apiLocation['iataCode'] ?? '';
+
+        if (!$iataCode || !$countryCode) return null;
+
+        // 1. Ensure Country exists
+        $country = \App\Models\Country::updateOrCreate(
+            ['code' => $countryCode],
+            ['name' => $countryName]
+        );
+
+        // 2. Ensure City exists
+        $city = \App\Models\City::updateOrCreate(
+            ['code' => $cityCode, 'country_id' => $country->id],
+            ['name' => $cityName]
+        );
+
+        // 3. Ensure Airport exists
+        $airport = \App\Models\Airport::updateOrCreate(
+            ['code' => $iataCode, 'city_id' => $city->id],
+            ['name' => $airportName]
+        );
 
         $display = "{$cityName} ({$iataCode})";
         if ($airportName && stripos($airportName, $cityName) === false) {
@@ -764,164 +691,80 @@ class FlightSearch extends Component
         }
 
         return [
-            'airport' => [
-                'code' => $iataCode,
-                'city' => $cityName,
-                'country' => $countryName,
-                'airport' => $airportName,
-                'display' => $display,
-            ],
-            'country' => ($countryCode !== '' && $countryName !== '')
-                ? [
-                    'name' => $countryName,
-                    'code' => $countryCode,
-                ]
-                : null,
+            'code' => $iataCode,
+            'city' => $cityName,
+            'country' => $countryName,
+            'airport' => $airportName,
+            'display' => $display,
         ];
-    }
-
-    /**
-     * @param array<int, array<string, mixed>> $locations
-     * @return array<int, array{code:string,city:string,country:string,airport:string,display:string}>
-     */
-    private function mergeApiLocationsIntoCache(array $locations): array
-    {
-        $payload = $this->loadLocationsCachePayload();
-
-        $airportsByCode = [];
-        foreach ($payload['airports'] as $airport) {
-            $code = $airport['code'] ?? '';
-            if ($code === '') {
-                continue;
-            }
-
-            $airportsByCode[$code] = [
-                'code' => $code,
-                'city' => $airport['city'] ?? '',
-                'country' => $airport['country'] ?? '',
-                'airport' => $airport['airport'] ?? '',
-            ];
-        }
-
-        $countriesByCode = [];
-        foreach ($payload['countries'] as $country) {
-            $code = $country['code'] ?? '';
-            $name = $country['name'] ?? '';
-            if ($code === '' || $name === '') {
-                continue;
-            }
-
-            $countriesByCode[$code] = [
-                'code' => $code,
-                'name' => $name,
-            ];
-        }
-
-        $results = [];
-        foreach ($locations as $location) {
-            $mapped = $this->mapApiLocationToCacheEntry($location);
-            $airport = $mapped['airport'];
-
-            if (($airport['code'] ?? '') !== '') {
-                $airportsByCode[$airport['code']] = [
-                    'code' => $airport['code'],
-                    'city' => $airport['city'],
-                    'country' => $airport['country'],
-                    'airport' => $airport['airport'],
-                ];
-                $results[] = $airport;
-            }
-
-            if ($mapped['country'] !== null) {
-                $countriesByCode[$mapped['country']['code']] = $mapped['country'];
-            }
-        }
-
-        ksort($countriesByCode);
-        ksort($airportsByCode);
-
-        $this->writeLocationsCachePayload([
-            'generated_at' => $payload['generated_at'],
-            'countries' => array_values($countriesByCode),
-            'airports' => array_values($airportsByCode),
-        ]);
-
-        return array_slice($results, 0, 8);
-    }
-
-    /**
-     * Filters cached airports by substring match across city/country/airport/code.
-     *
-     * @param array<int, array{code:string,city:string,country:string,airport:string}> $allAirports
-     * @return array<int, array{code:string,city:string,country:string,airport:string}>
-     */
-    private function filterCachedAirports(array $allAirports, string $query): array
-    {
-        $q = mb_strtolower($query);
-
-        $matches = [];
-        foreach ($allAirports as $a) {
-            $city = mb_strtolower($a['city'] ?? '');
-            $country = mb_strtolower($a['country'] ?? '');
-            $airport = mb_strtolower($a['airport'] ?? '');
-            $code = mb_strtolower($a['code'] ?? '');
-
-            if (
-                $q === '' ||
-                (str_contains($city, $q) || str_contains($country, $q) || str_contains($airport, $q) || str_contains($code, $q))
-            ) {
-                $matches[] = [
-                    'code' => $a['code'] ?? '',
-                    'city' => $a['city'] ?? '',
-                    'country' => $a['country'] ?? '',
-                    'airport' => $a['airport'] ?? '',
-                ];
-                if (count($matches) >= 8) {
-                    break;
-                }
-            }
-        }
-
-        return $matches;
     }
 
     public function fetchAirports(string $query, string $type = ''): void
     {
         $this->searchType = $type;
-        \Log::info("fetchAirports called with query: '$query' for type: '$type'");
         $q = trim(mb_strtolower($query));
-        if ($q === '' || strlen($q) < 2) {
+        if ($q === '' || mb_strlen($q) < 2) {
             $this->airportSearchResults = [];
             return;
         }
 
-        // Primary source is the local JSON cache built by the job.
-        // Only hit Amadeus when a location is missing, then merge that result
-        // back into the JSON so future searches stay local.
-        $payload = $this->loadLocationsCachePayload();
-        $cachedAirports = $payload['airports'];
-        if (!empty($cachedAirports)) {
-            $cachedResults = $this->filterCachedAirports($cachedAirports, $q);
-            if (!empty($cachedResults)) {
-                $this->airportSearchResults = $cachedResults;
-                return;
-            }
+        // 1. Search in local database
+        $dbResults = \App\Models\Airport::query()
+            ->with(['city', 'city.country'])
+            ->where(function ($query) use ($q) {
+                $query->where('name', 'like', '%' . $q . '%')
+                    ->orWhere('code', 'like', '%' . $q . '%')
+                    ->orWhereHas('city', function ($query) use ($q) {
+                        $query->where('name', 'like', '%' . $q . '%')
+                            ->orWhereHas('country', function ($query) use ($q) {
+                                $query->where('name', 'like', '%' . $q . '%');
+                            });
+                    });
+            })
+            ->limit(8)
+            ->get();
+
+        if ($dbResults->isNotEmpty()) {
+            $this->airportSearchResults = $dbResults->map(function ($a) {
+                $cityName = $a->city->name ?? '';
+                $countryName = $a->city->country->name ?? '';
+                $airportName = $a->name;
+                $iataCode = $a->code;
+
+                $display = "{$cityName} ({$iataCode})";
+                if ($airportName && stripos($airportName, $cityName) === false) {
+                    $display .= " - {$airportName}";
+                }
+                if ($countryName) {
+                    $display .= ", {$countryName}";
+                }
+
+                return [
+                    'code' => $iataCode,
+                    'city' => $cityName,
+                    'country' => $countryName,
+                    'airport' => $airportName,
+                    'display' => $display,
+                ];
+            })->toArray();
+            return;
         }
 
+        // 2. API Fallback if nothing found in DB
         try {
             $service = app(AmadeusService::class);
             $response = $service->searchLocations($q);
 
             if (isset($response['data']) && is_array($response['data'])) {
-                $results = $this->mergeApiLocationsIntoCache($response['data']);
-
-                \Log::info("fetchAirports found " . count($results) . " results for '$q'");
-                if (count($results) > 0) {
-                    \Log::info("Sample result: " . $results[0]['display']);
+                $results = [];
+                foreach ($response['data'] as $location) {
+                    $saved = $this->saveLocationToDatabase($location);
+                    if ($saved) {
+                        $results[] = $saved;
+                    }
                 }
-                $this->airportSearchResults = $results;
+                $this->airportSearchResults = array_slice($results, 0, 8);
             } else {
-                \Log::info("fetchAirports no results for '$q'");
                 $this->airportSearchResults = [];
             }
         } catch (\Exception $e) {

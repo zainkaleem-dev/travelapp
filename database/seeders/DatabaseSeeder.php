@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             AdminSeeder::class,
             FeaturesSeeder::class,
+            CountrySeeder::class,
+            AirlineSeeder::class,
             DummyOrganizationSeeder::class,
         ]);
     }
