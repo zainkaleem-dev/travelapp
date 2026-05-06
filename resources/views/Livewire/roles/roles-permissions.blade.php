@@ -1,7 +1,7 @@
 <div>
     <div class="px-1 py-1 w-full">
         @if($isCompanyRoute)
-            <div class="mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+            <div class="mb-4 overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
                 <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                     <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $this->activeCompany->name ?? 'Roles Permissions' }}</h1>
                 </div>
@@ -154,7 +154,7 @@
                 @endif
 
                 @if($viewMode === 'roles')
-                    <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden h-full min-h-0 flex flex-col">
+                    <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-visible h-full min-h-0 flex flex-col">
                         {{-- Header / Create Role --}}
                         <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-br from-white to-[#fafbfc] rounded-t-lg">
                             <div class="flex items-center gap-5 group">

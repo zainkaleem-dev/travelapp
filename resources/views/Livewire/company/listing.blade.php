@@ -1,7 +1,7 @@
 @php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
 <div x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
-        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
+        <div class="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
                     <div>
