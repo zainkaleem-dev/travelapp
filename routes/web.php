@@ -281,6 +281,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/trip-purpose/{tripPurpose}/edit', TripPurposeEdit::class)->name('admin.trip-purpose.edit')->middleware('can:Manage Global System');
         Route::get('/integrations-api', IntegrationsApi::class)->name('admin.integrations-api')->middleware('can:Manage Global System');
         Route::get('/audit-logs', AuditLogs::class)->name('admin.audit-logs')->middleware('can:Manage Global System');
+        Route::get('/system-settings', \App\Livewire\SystemSettings\SystemSettings::class)->name('admin.system-settings')->middleware('can:Manage Global System');
         Route::get('/audit-logs/{activityLog}', AuditLogView::class)->name('admin.audit-logs.view')->middleware('can:Manage Global System');
         Route::get('/countries-and-cities', CountriesAndCities::class)->name('admin.countries-and-cities')->middleware('can:Manage Global System');
         Route::get('/countries-and-cities/country/create', \App\Livewire\CountriesAndCities\CountryCreate::class)->name('admin.countries.create')->middleware('can:Manage Global System');

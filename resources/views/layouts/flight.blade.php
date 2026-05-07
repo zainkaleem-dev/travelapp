@@ -694,6 +694,7 @@
             'admin.trip-purpose*',
             'admin.integrations-api*',
             'admin.audit-logs*',
+            'admin.system-settings*',
             'admin.countries-and-cities*',
             'admin.countries.*',
             'admin.cities.*',
