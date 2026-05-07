@@ -16,6 +16,7 @@ class EnsurePasswordIsSet
             $user &&
             !$user->has_set_password &&
             !$user->hasRole('Super Admin') &&
+            !session()->has('impersonated_by') &&
             !$request->routeIs('password.setup') &&
             !$request->routeIs('logout')
         ) {
