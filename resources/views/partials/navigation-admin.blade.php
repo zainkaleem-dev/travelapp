@@ -170,11 +170,13 @@
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h12M3 17h8" /></svg>
                                     Trip Purpose &amp; Travel Services
                                 </a>
+                                @can('View Travel Policy')
                                 <a href="{{ route('companies.travel-policy', ['id' => $activeCompanyId]) }}" 
                                     class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('companies.travel-policy') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
                                     <svg class="w-3 h-3 {{ request()->routeIs('companies.travel-policy') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" /></svg>
                                     Travel Policy
                                 </a>
+                                @endcan
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
                                     Grades / Positions
@@ -354,6 +356,7 @@
                     Permissions
                 </a>
 
+                @can('View Subscription')
                 <a href="{{ route('subscriptions.index') }}"
                     class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('subscriptions.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -363,7 +366,9 @@
                     </svg>
                     Subscriptions
                 </a>
+                @endcan
 
+                @can('View System Setting')
                 <a href="{{ route('admin.system-settings') }}"
                     class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('admin.system-settings*', 'admin.travel-policy.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -374,6 +379,8 @@
                     </svg>
                     System Settings
                 </a>
+                @endcan
+                @can('View Countries and Cities')
                 <a href="{{ route('admin.countries-and-cities') }}"
                     class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('admin.countries-and-cities*', 'admin.countries.*', 'admin.cities.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -383,6 +390,8 @@
                     </svg>
                     Countries & Cities List
                 </a>
+                @endcan
+                @can('View Airport')
                 <a href="{{ route('admin.airports') }}"
                     class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('admin.airports*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="currentColor"
@@ -391,6 +400,8 @@
                     </svg>
                     Airport List
                 </a>
+                @endcan
+                @can('View Trip Purpose')
                 <a href="{{ route('admin.trip-purpose') }}"
                     class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('admin.trip-purpose*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -400,6 +411,7 @@
                     </svg>
                     Trip Purpose
                 </a>
+                @endcan
                 <a href="{{ route('admin.integrations-api') }}"
                     class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('admin.integrations-api*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"

@@ -76,6 +76,7 @@
             Billing Entity
         </a>
 
+        @can('View Travel Policy')
         <a href="{{ $companyNavId ? route('companies.travel-policy', $companyNavId) : '#' }}"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ ($activeCompanyTab === 'travel-policy' || ($activeCompanyTab === null && request()->routeIs('companies.travel-policy'))) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -85,6 +86,7 @@
             </svg>
             Travel Policy
         </a>
+        @endcan
 
         <a href="{{ $companyNavId ? route('companies.integrations', $companyNavId) : '#' }}"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ ($activeCompanyTab === 'integrations' || ($activeCompanyTab === null && request()->routeIs('companies.integrations'))) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">

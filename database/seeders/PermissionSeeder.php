@@ -49,6 +49,39 @@ class PermissionSeeder extends Seeder
             'Delete User',
             'Manage Roles and Permissions',
             'Manage Features',
+
+            // Airports
+            'View Airport',
+            'Create Airport',
+            'Edit Airport',
+            'Delete Airport',
+
+            // Countries and Cities
+            'View Countries and Cities',
+            'Create Countries and Cities',
+            'Edit Countries and Cities',
+            'Delete Countries and Cities',
+
+            // Subscriptions
+            'View Subscription',
+            'Create Subscription',
+            'Edit Subscription',
+            'Delete Subscription',
+
+            // Travel Policies
+            'View Travel Policy',
+            'Create Travel Policy',
+            'Edit Travel Policy',
+            'Delete Travel Policy',
+
+            // Trip Purposes
+            'View Trip Purpose',
+            'Create Trip Purpose',
+            'Edit Trip Purpose',
+            'Delete Trip Purpose',
+
+            // System Settings
+            'View System Setting',
         ];
 
         $globalPermissions = [
