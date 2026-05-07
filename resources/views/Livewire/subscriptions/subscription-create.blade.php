@@ -7,7 +7,7 @@
                 <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Create Subscription</h1>
                 <p class="text-[11px] font-bold text-gray-500 uppercase mt-0.5">Configure a new plan for a company</p>
             </div>
-            <a href="{{ route('admin.subscriptions.index') }}"
+            <a href="{{ route('subscriptions.index') }}"
                 class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors shadow-sm uppercase"
                 wire:navigate>
                 Back to List
@@ -177,7 +177,7 @@
 
             {{-- ── Submit Footer ─────────────────────────────────────── --}}
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3">
-                <a href="{{ route('admin.subscriptions.index') }}"
+                <a href="{{ route('subscriptions.index') }}"
                     class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors shadow-sm uppercase"
                     wire:navigate>
                     Cancel

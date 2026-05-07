@@ -7,7 +7,7 @@
                     <p class="text-[11px] font-bold text-gray-500 uppercase mt-1">Manage company plans and feature entitlements</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('admin.subscriptions.create') }}"
+                    <a href="{{ route('subscriptions.create') }}"
                         class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm uppercase">
                         Add Subscription
                     </a>
@@ -64,7 +64,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-end">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('admin.subscriptions.view', $sub->id) }}"
+                                        <a href="{{ route('subscriptions.view', $sub->id) }}"
                                             class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                             title="View">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@
                                                 <circle cx="12" cy="13.5" r="3" stroke-width="2" />
                                             </svg>
                                         </a>
-                                        <a href="{{ route('admin.subscriptions.edit', $sub->id) }}"
+                                        <a href="{{ route('subscriptions.edit', $sub->id) }}"
                                             class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                             title="Edit">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

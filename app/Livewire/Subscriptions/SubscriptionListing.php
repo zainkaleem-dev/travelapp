@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Subscriptions;
+namespace App\Livewire\Subscriptions;
 
 use App\Models\Subscription;
 use Livewire\Attributes\Layout;
@@ -39,7 +39,7 @@ class SubscriptionListing extends Component
             ->orderBy('id', 'desc')
             ->paginate($this->perPage);
 
-        return view('livewire.admin.subscriptions.subscription-listing', [
+        return view('livewire.subscriptions.subscription-listing', [
             'subscriptions' => $subscriptions,
         ]);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Subscriptions;
+namespace App\Livewire\Subscriptions;
 
 use App\Models\Subscription;
 use Livewire\Attributes\Layout;
@@ -34,6 +34,6 @@ class SubscriptionView extends Component
 
     public function render()
     {
-        return view('livewire.admin.subscriptions.subscription-view');
+        return view('livewire.subscriptions.subscription-view');
     }
 }

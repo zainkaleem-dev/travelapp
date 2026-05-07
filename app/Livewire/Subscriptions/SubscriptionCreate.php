@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Subscriptions;
+namespace App\Livewire\Subscriptions;
 
 use App\Models\Company;
 use App\Models\Subscription;
@@ -64,12 +64,12 @@ class SubscriptionCreate extends Component
         ]);
 
         session()->flash('status', 'Subscription created successfully.');
-        $this->redirect(route('admin.subscriptions.index'), navigate: true);
+        $this->redirect(route('subscriptions.index'), navigate: true);
     }
 
     public function render()
     {
-        return view('livewire.admin.subscriptions.subscription-create', [
+        return view('livewire.subscriptions.subscription-create', [
             'companies' => Company::orderBy('name')->get(),
         ]);
     }

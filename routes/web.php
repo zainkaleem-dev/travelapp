@@ -50,10 +50,10 @@ use App\Livewire\IntegrationApi\IntegrationsApi;
 use App\Livewire\Roles\RolesPermissions;
 use App\Livewire\CountriesAndCities\CountriesAndCities;
 use App\Livewire\Airports\Airports;
-use App\Livewire\Admin\Subscriptions\SubscriptionListing;
-use App\Livewire\Admin\Subscriptions\SubscriptionCreate;
-use App\Livewire\Admin\Subscriptions\SubscriptionEdit;
-use App\Livewire\Admin\Subscriptions\SubscriptionView;
+use App\Livewire\Subscriptions\SubscriptionListing;
+use App\Livewire\Subscriptions\SubscriptionCreate;
+use App\Livewire\Subscriptions\SubscriptionEdit;
+use App\Livewire\Subscriptions\SubscriptionView;
 
 Route::get('/lang/{locale}', function (Request $request, string $locale) {
     $locale = strtolower($locale);
@@ -294,10 +294,10 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/airports/{airport}', \App\Livewire\Airports\AirportView::class)->name('admin.airports.view')->middleware('can:Manage Global System');
         Route::get('/airports/{airport}/edit', \App\Livewire\Airports\AirportEdit::class)->name('admin.airports.edit')->middleware('can:Manage Global System');
 
-        Route::get('/subscriptions', SubscriptionListing::class)->name('admin.subscriptions.index')->middleware('can:Manage Global System');
-        Route::get('/subscriptions/create', SubscriptionCreate::class)->name('admin.subscriptions.create')->middleware('can:Manage Global System');
-        Route::get('/subscriptions/{subscription}', SubscriptionView::class)->name('admin.subscriptions.view')->middleware('can:Manage Global System');
-        Route::get('/subscriptions/{subscription}/edit', SubscriptionEdit::class)->name('admin.subscriptions.edit')->middleware('can:Manage Global System');
+        Route::get('/subscriptions', SubscriptionListing::class)->name('subscriptions.index')->middleware('can:Manage Global System');
+        Route::get('/subscriptions/create', SubscriptionCreate::class)->name('subscriptions.create')->middleware('can:Manage Global System');
+        Route::get('/subscriptions/{subscription}', SubscriptionView::class)->name('subscriptions.view')->middleware('can:Manage Global System');
+        Route::get('/subscriptions/{subscription}/edit', SubscriptionEdit::class)->name('subscriptions.edit')->middleware('can:Manage Global System');
 
         // Impersonation
         Route::get('/impersonate/take/{user}', [\App\Http\Controllers\ImpersonateController::class, 'take'])->name('impersonate.take');

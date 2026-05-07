@@ -8,7 +8,7 @@
                 </div>
                 <div class="flex items-center gap-3">
 
-                    <a href="{{ route('admin.subscriptions.index') }}"
+                    <a href="{{ route('subscriptions.index') }}"
                         class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors shadow-sm uppercase"
                         wire:navigate>
                         Back to List

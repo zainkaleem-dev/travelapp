@@ -698,7 +698,7 @@
             'admin.countries.*',
             'admin.cities.*',
             'admin.airports*',
-            'admin.subscriptions.*',
+            'subscriptions.*',
             'dashboard'
         ]);
     @endphp

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\Subscriptions;
+namespace App\Livewire\Subscriptions;
 
 use App\Models\Company;
 use App\Models\Subscription;
@@ -70,12 +70,12 @@ class SubscriptionEdit extends Component
         ]);
 
         session()->flash('status', 'Subscription updated successfully.');
-        $this->redirect(route('admin.subscriptions.index'), navigate: true);
+        $this->redirect(route('subscriptions.index'), navigate: true);
     }
 
     public function render()
     {
-        return view('livewire.admin.subscriptions.subscription-edit', [
+        return view('livewire.subscriptions.subscription-edit', [
             'companies' => Company::orderBy('name')->get(),
         ]);
     }
