@@ -14,12 +14,21 @@ class SystemSettings extends Component
     use WithPagination;
 
     public $companyId = '';
+    public $policyType = '';
     public $search = '';
+    public $activeTab = 'endpoints';
 
     protected $queryString = [
         'companyId' => ['except' => ''],
+        'policyType' => ['except' => ''],
         'search' => ['except' => ''],
+        'activeTab' => ['except' => 'endpoints'],
     ];
+
+    public function updatingPolicyType()
+    {
+        $this->resetPage();
+    }
 
     public function updatingSearch()
     {
@@ -54,5 +63,12 @@ class SystemSettings extends Component
             'endpoints' => $query->paginate(10),
             'companies' => Company::orderBy('name')->get(),
         ]);
+    }
+
+    public function toggleVerified($id)
+    {
+        $endpoint = SystemEndpoint::findOrFail($id);
+        $endpoint->update(['is_verified' => !$endpoint->is_verified]);
+        session()->flash('status', 'Endpoint verification status updated.');
     }
 }

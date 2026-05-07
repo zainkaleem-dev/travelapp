@@ -158,7 +158,8 @@
                         </thead>
                         <tbody>
                             @forelse($logs as $log)
-                                <tr class="border-t border-gray-100 align-top">
+                                <tr class="border-t border-gray-100 align-top transition-colors cursor-pointer hover:bg-blue-50"
+                                    onclick="window.location='{{ route('admin.audit-logs.view', $log->id) }}'">
 {{-- 
                                     @if($selectionMode)
                                         <td class="px-4 py-3">
@@ -173,18 +174,8 @@
                                     <td class="px-4 py-2 text-[11px] text-gray-700 font-medium whitespace-nowrap">{{ $this->pageLabel($log) }}</td>
                                     <td class="px-4 py-2 text-[11px] text-gray-700">{{ $this->activityMessage($log) }}</td>
                                     <td class="px-4 py-2 text-[11px] text-gray-700 whitespace-nowrap">{{ $log->created_at?->format('d/m/Y (H:i:s)') }}</td>
-                                    <td class="px-4 py-2">
+                                    <td class="px-4 py-2" onclick="event.stopPropagation()">
                                         <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ route('admin.audit-logs.view', $log->id) }}"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
-                                                title="View">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 16.5a3 3 0 100-6 3 3 0 000 6z" />
-                                                </svg>
-                                            </a>
                                             <button type="button" 
                                                 x-on:click="appSwalFromDataset($el, $wire)"
                                                 data-action="deleteLog({{ $log->id }})"

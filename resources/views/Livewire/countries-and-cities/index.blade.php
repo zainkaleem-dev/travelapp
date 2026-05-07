@@ -177,20 +177,17 @@
                             <tbody>
                                 @forelse($items as $country)
                                     <tr class="border-b border-gray-200 transition-colors hover:bg-blue-50">
-                                        <td class="px-6 py-2 text-[11px] font-semibold text-gray-900">{{ $country->name }}</td>
+                                        <td class="px-6 py-2 text-[11px] font-semibold text-gray-900">
+                                            <a href="{{ route('admin.countries.view', $country->id) }}" class="text-gray-900 hover:text-[#2ab4c0] transition-colors">
+                                                {{ $country->name }}
+                                            </a>
+                                        </td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $country->code }}</td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $country->dial_code }}</td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600 font-medium">{{ $country->created_at->format('d/m/Y') }}</td>
                                         <td class="px-6 py-2 text-end">
                                             <div class="flex items-center justify-end gap-2">
-                                                <a href="{{ route('admin.countries.view', $country->id) }}"
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
-                                                    title="View">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16.5a3 3 0 100-6 3 3 0 000 6z" />
-                                                    </svg>
-                                                </a>
+
                                                 <a href="{{ route('admin.countries.edit', $country->id) }}"
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit">
@@ -285,20 +282,17 @@
                             <tbody>
                                 @forelse($items as $city)
                                     <tr class="border-b border-gray-200 transition-colors hover:bg-blue-50">
-                                        <td class="px-6 py-2 text-[11px] font-semibold text-gray-900">{{ $city->name }}</td>
+                                        <td class="px-6 py-2 text-[11px] font-semibold text-gray-900">
+                                            <a href="{{ route('admin.cities.view', $city->id) }}" class="text-gray-900 hover:text-[#2ab4c0] transition-colors">
+                                                {{ $city->name }}
+                                            </a>
+                                        </td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $city->country->name }}</td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $city->code }}</td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600 font-medium">{{ $city->created_at->format('d/m/Y') }}</td>
                                         <td class="px-6 py-2 text-end">
                                             <div class="flex items-center justify-end gap-2">
-                                                <a href="{{ route('admin.cities.view', $city->id) }}"
-                                                    class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
-                                                    title="View">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16.5a3 3 0 100-6 3 3 0 000 6z" />
-                                                    </svg>
-                                                </a>
+
                                                 <a href="{{ route('admin.cities.edit', $city->id) }}"
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit">

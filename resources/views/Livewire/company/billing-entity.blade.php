@@ -1,168 +1,130 @@
-<div class="w-full px-1 py-1 flex flex-col gap-3">
+<div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <!-- Unified Header -->
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Billing Entity</h1>
         </div>
 
+        <!-- Navigation Tabs -->
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'billing-entity'])
-    </div>
 
-    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <!-- Content Area -->
         <div class="p-6 space-y-8">
             <!-- Section 1: Entity Information -->
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Entity Information</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="field-label">Legal Entity Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->entity_name ?: '--' }}" readonly>
+            <div class="space-y-4">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Entity Information</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Legal Entity Name</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->entity_name ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Display / Trade Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->display_name ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Display / Trade Name</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->display_name ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Registration Number</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->registration_number ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Registration Number</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->registration_number ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Tax / VAT Number</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->tax_number ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Tax / VAT Number</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->tax_number ?: '--' }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Section 2: Currency & Location -->
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Currency & Location</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="field-label">Currency Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->currency ?: '--' }}" readonly>
+            <div class="space-y-4">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Currency & Location</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Currency Name</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->currency ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Currency Code</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->currency_code ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Currency Code</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-700 font-mono uppercase">{{ $billing?->currency_code ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Country</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->country ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Country</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->country ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">City</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->city ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">City</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->city ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">State / Province</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->state ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">State / Province</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->state ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Postal Code</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->postal_code ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Postal Code</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->postal_code ?: '--' }}</p>
                     </div>
-
-                    <div class="md:col-span-2">
-                        <label class="field-label">Address Line 1</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->address_line_1 ?: '--' }}" readonly>
-                    </div>
-
-                    <div class="md:col-span-2">
-                        <label class="field-label">Address Line 2</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->address_line_2 ?: '--' }}" readonly>
+                    <div class="md:col-span-2 lg:col-span-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Full Address</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">
+                            {{ $billing?->address_line_1 }}@if($billing?->address_line_2), {{ $billing?->address_line_2 }}@endif
+                            @if(!$billing?->address_line_1 && !$billing?->address_line_2)--@endif
+                        </p>
                     </div>
                 </div>
             </div>
 
             <!-- Section 3: Contact Person -->
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Contact Person</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="field-label">First Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->first_name ?: '--' }}" readonly>
+            <div class="space-y-4">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Contact Person</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Full Name</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">
+                            {{ trim(($billing?->first_name ?? '') . ' ' . ($billing?->middle_name ?? '') . ' ' . ($billing?->last_name ?? '')) ?: '--' }}
+                        </p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Middle Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->middle_name ?: '--' }}" readonly>
+                    <div class="md:col-span-2 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Email Address</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->email ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Last Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->last_name ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Phone</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->phone ?: '--' }}</p>
                     </div>
-
-                    <div class="md:col-span-3">
-                        <label class="field-label">Email</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->email ?: '--' }}" readonly>
-                    </div>
-
-                    <div class="md:col-span-1 border-r border-gray-200 pr-6">
-                        <label class="field-label">Phone</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->phone ?: '--' }}" readonly>
-                    </div>
-
-                    <div class="md:col-span-2 pl-6">
-                        <label class="field-label">Fax</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->fax ?: '--' }}" readonly>
+                    <div class="md:col-span-2 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Fax</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->fax ?: '--' }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Section 4: Banking Details -->
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Banking Details</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="field-label">Bank Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->bank_name ?: '--' }}" readonly>
+            <div class="space-y-4">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Banking Details</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Bank Name</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $billing?->bank_name ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Account Number</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->bank_account_number ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Account Number</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase font-mono">{{ $billing?->bank_account_number ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">IBAN</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->bank_iban ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">IBAN</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase font-mono">{{ $billing?->bank_iban ?: '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">SWIFT / BIC</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $billing?->bank_swift ?: '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">SWIFT / BIC</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase font-mono">{{ $billing?->bank_swift ?: '--' }}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Section 5: Notes -->
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Additional Information</h2>
-                </div>
-                <div>
-                    <label class="field-label">Internal Notes</label>
-                    <textarea rows="3" class="input-field pt-2 bg-gray-50 text-gray-700" readonly>{{ $billing?->notes ?: '--' }}</textarea>
+            <!-- Section 5: Additional Info -->
+            <div class="space-y-4">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Additional Information</p>
+                <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Internal Notes</p>
+                    <p class="mt-2 text-[11px] font-medium text-gray-700 leading-relaxed">{{ $billing?->notes ?: 'No internal notes.' }}</p>
                 </div>
             </div>
         </div>

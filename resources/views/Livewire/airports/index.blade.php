@@ -149,7 +149,11 @@
                             @forelse($airports as $airport)
                                 <tr class="border-b border-gray-200 transition-colors hover:bg-blue-50">
                                     <td class="px-6 py-2">
-                                        <div class="text-[11px] font-semibold text-gray-900">{{ $airport->name }}</div>
+                                        <div class="text-[11px] font-bold text-gray-900 uppercase">
+                                            <a href="{{ route('admin.airports.view', $airport->id) }}" class="text-gray-900 hover:text-[#2ab4c0] transition-colors">
+                                                {{ $airport->name }}
+                                            </a>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-2">
                                         <span class="inline-flex items-center rounded-md bg-[#2ab4c0]/10 px-2 py-0.5 text-[11px] font-bold text-[#1f8f98]">
@@ -160,14 +164,7 @@
                                     <td class="px-6 py-2 text-[11px] text-gray-600">{{ $airport->city->country->name }}</td>
                                     <td class="px-6 py-2 text-end">
                                         <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ route('admin.airports.view', $airport->id) }}"
-                                                class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
-                                                title="View">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16.5a3 3 0 100-6 3 3 0 000 6z" />
-                                                </svg>
-                                            </a>
+
                                             <a href="{{ route('admin.airports.edit', $airport->id) }}"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="Edit">

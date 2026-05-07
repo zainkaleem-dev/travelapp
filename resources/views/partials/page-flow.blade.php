@@ -58,6 +58,11 @@
             $crumbs[] = ['Roles Permissions', route('companies.roles-permissions', $companyId)];
             break;
             
+        case request()->routeIs('companies.travel-policy'):
+            $pageTitle = 'Travel Policy';
+            $crumbs[] = ['Travel Policy', route('companies.travel-policy', $companyId)];
+            break;
+            
         case request()->routeIs('companies.billing-entity'):
             $pageTitle = 'Billing Entity';
             $crumbs[] = ['Billing Entity', route('companies.billing-entity', $companyId)];
@@ -108,16 +113,54 @@
             $crumbs = [['Trip Purpose', '#']];
             break;
             
+        case request()->routeIs('admin.system-settings*'):
+            $pageTitle = 'System Settings';
+            $crumbs = [['System Settings', route('admin.system-settings')]];
+            break;
 
+        case request()->routeIs('admin.travel-policy.create'):
+            $pageTitle = 'Create Travel Policy';
+            $crumbs = [['System Settings', route('admin.system-settings')], ['Create Travel Policy', '#']];
+            break;
+
+        case request()->routeIs('admin.travel-policy.view'):
+            $pageTitle = 'Travel Policy View';
+            $crumbs = [['System Settings', route('admin.system-settings')], ['Travel Policy View', '#']];
+            break;
+
+        case request()->routeIs('admin.travel-policy.edit'):
+            $pageTitle = 'Edit Travel Policy';
+            $crumbs = [['System Settings', route('admin.system-settings')], ['Edit Travel Policy', '#']];
+            break;
             
-        case request()->routeIs('admin.audit-logs*'):
+        case request()->routeIs('admin.audit-logs'):
             $pageTitle = 'Audit Logs';
             $crumbs = [['Audit Logs', route('admin.audit-logs')]];
             break;
+
+        case request()->routeIs('admin.audit-logs.view'):
+            $pageTitle = 'View Activity';
+            $crumbs = [['Audit Logs', route('admin.audit-logs')], ['View Activity', '#']];
+            break;
             
-        case request()->routeIs('subscriptions*'):
+        case request()->routeIs('subscriptions.index'):
             $pageTitle = 'Subscriptions';
             $crumbs = [['Subscriptions', route('subscriptions.index')]];
+            break;
+
+        case request()->routeIs('subscriptions.create'):
+            $pageTitle = 'Add Subscription';
+            $crumbs = [['Subscriptions', route('subscriptions.index')], ['Add Subscription', '#']];
+            break;
+
+        case request()->routeIs('subscriptions.view'):
+            $pageTitle = 'View Subscription';
+            $crumbs = [['Subscriptions', route('subscriptions.index')], ['View Subscription', '#']];
+            break;
+
+        case request()->routeIs('subscriptions.edit'):
+            $pageTitle = 'Edit Subscription';
+            $crumbs = [['Subscriptions', route('subscriptions.index')], ['Edit Subscription', '#']];
             break;
             
         default:

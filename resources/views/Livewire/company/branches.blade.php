@@ -1,22 +1,22 @@
-@php($isSuperAdmin = auth()->check() && auth()->user()->can('Manage Global System'))
-<div class="w-full px-1 py-1 flex flex-col gap-3">
+<div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <!-- Unified Header -->
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Branches</h1>
         </div>
 
+        <!-- Navigation Tabs -->
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'branches'])
-    </div>
 
-    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-        <div class="p-6">
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase mb-4">Branches (Read Only)</h2>
+        <!-- Content Area -->
+        <div class="p-6 space-y-8">
+            <div class="space-y-6">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Organization Branches (Read Only)</p>
 
                 @forelse($branches as $branch)
-                    <div class="relative p-6 rounded-lg border border-gray-100 bg-white shadow-sm mb-4 last:mb-0">
-                        <div class="mb-4 flex items-center justify-between gap-3">
-                            <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest">
+                    <div class="relative p-6 rounded-lg border border-gray-200 bg-gray-50/30 shadow-sm mb-6 last:mb-0">
+                        <div class="mb-6 flex items-center justify-between gap-3">
+                            <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest border-l-4 border-[#2ab4c0] pl-3">
                                 {{ $branch->name ?: 'Branch' }}
                             </h3>
                             <div class="flex items-center gap-2">
@@ -31,77 +31,64 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label class="field-label">Branch Name</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->name }}" readonly>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Branch Name</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $branch->name }}</p>
                             </div>
-                            <div>
-                                <label class="field-label">Branch Code</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700 font-mono" value="{{ $branch->code }}" readonly>
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Branch Code</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-700 font-mono uppercase">{{ $branch->code }}</p>
                             </div>
-                            <div>
-                                <label class="field-label">Slug</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700 font-mono" value="{{ $branch->slug }}" readonly>
-                            </div>
-
-                            <div>
-                                <label class="field-label">Email</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->email }}" readonly>
-                            </div>
-                            <div>
-                                <label class="field-label">Primary Phone</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->phone }}" readonly>
-                            </div>
-                            <div>
-                                <label class="field-label">Secondary Phone</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->phone_secondary }}" readonly>
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Slug</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-700 font-mono uppercase">{{ $branch->slug }}</p>
                             </div>
 
-                            <div>
-                                <label class="field-label">Fax</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->fax }}" readonly>
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Email Address</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $branch->email ?: '--' }}</p>
                             </div>
-                            <div>
-                                <label class="field-label">WhatsApp</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->whatsapp }}" readonly>
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Primary Phone</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $branch->phone ?: '--' }}</p>
                             </div>
-                            <div>
-                                <label class="field-label">Postal Code</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->postal_code }}" readonly>
-                            </div>
-
-                            <div class="md:col-span-2">
-                                <label class="field-label">Address Line 1</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->address_line_1 }}" readonly>
-                            </div>
-                            <div>
-                                <label class="field-label">Address Line 2</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->address_line_2 }}" readonly>
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Secondary Phone</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $branch->phone_secondary ?: '--' }}</p>
                             </div>
 
-                            <div>
-                                <label class="field-label">City</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->city }}" readonly>
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Fax</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $branch->fax ?: '--' }}</p>
                             </div>
-                            <div>
-                                <label class="field-label">State / Province</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->state }}" readonly>
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">WhatsApp</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $branch->whatsapp ?: '--' }}</p>
                             </div>
-                            <div>
-                                <label class="field-label">Country</label>
-                                <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $branch->country }}" readonly>
+                            <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Postal Code</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $branch->postal_code ?: '--' }}</p>
                             </div>
 
-                            <div class="md:col-span-3">
-                                <label class="field-label">Notes</label>
-                                <textarea rows="2" class="input-field pt-2 bg-gray-50 text-gray-700" readonly>{{ $branch->notes }}</textarea>
+                            <div class="md:col-span-2 lg:col-span-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Full Address</p>
+                                <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">
+                                    {{ $branch->address_line_1 }}@if($branch->address_line_2), {{ $branch->address_line_2 }}@endif
+                                    @if($branch->city), {{ $branch->city }}@endif @if($branch->state), {{ $branch->state }}@endif @if($branch->country), {{ $branch->country }}@endif
+                                    @if(!$branch->address_line_1 && !$branch->address_line_2 && !$branch->city)--@endif
+                                </p>
+                            </div>
+
+                            <div class="md:col-span-2 lg:col-span-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Branch Notes</p>
+                                <p class="mt-2 text-[11px] font-medium text-gray-700 leading-relaxed">{{ $branch->notes ?: 'No internal notes.' }}</p>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3 text-[11px] text-gray-500 font-semibold uppercase">
-                        No branches found for this {{ $isSuperAdmin ? 'organization' : 'partner' }}.
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-6 text-center text-[11px] text-gray-500 font-semibold uppercase tracking-wider shadow-sm">
+                        No branches found for this {{ auth()->user()->can('Manage Global System') ? 'organization' : 'partner' }}.
                     </div>
                 @endforelse
             </div>

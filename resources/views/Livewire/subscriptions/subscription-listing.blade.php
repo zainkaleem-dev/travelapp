@@ -41,37 +41,38 @@
             @endif
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
+                <table class="w-full border-separate border-spacing-0">
                     <thead>
-                        <tr class="border-b border-gray-100">
-                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500">Company</th>
-                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500">Plan Name</th>
-                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500">Price</th>
-                            <th class="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-500 text-end">Actions</th>
+                        <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
+                            <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide rounded-ss-lg">
+                                Company
+                            </th>
+                            <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide">
+                                Plan Name
+                            </th>
+                            <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide">
+                                Price
+                            </th>
+                            <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">
+                                Actions
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @forelse($subscriptions as $sub)
-                            <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="px-6 py-4">
+                            <tr class="border-b border-gray-200 transition-colors cursor-pointer hover:bg-blue-50"
+                                onclick="window.location='{{ route('subscriptions.view', $sub->id) }}'">
+                                <td class="px-6 py-2">
                                     <div class="text-[11px] font-bold text-gray-900 uppercase">{{ $sub->company->name }}</div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-2">
                                     <div class="text-[11px] font-bold text-gray-700 uppercase">{{ $sub->plan_name }}</div>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-2">
                                     <div class="text-[11px] font-bold text-gray-700 uppercase">{{ number_format($sub->price, 2) }} {{ session('currency', 'USD') }}</div>
                                 </td>
-                                <td class="px-6 py-4 text-end">
+                                <td class="px-6 py-2 text-end" onclick="event.stopPropagation()">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('subscriptions.view', $sub->id) }}"
-                                            class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
-                                            title="View">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5c-5.25 0-9.75 3.72-11.25 9 1.5 5.28 6 9 11.25 9s9.75-3.72 11.25-9c-1.5-5.28-6-9-11.25-9z" />
-                                                <circle cx="12" cy="13.5" r="3" stroke-width="2" />
-                                            </svg>
-                                        </a>
                                         <a href="{{ route('subscriptions.edit', $sub->id) }}"
                                             class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                             title="Edit">
@@ -79,7 +80,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </a>
-                                        <button 
+                                        <button type="button"
                                             onclick="appSwalConfirmAction({
                                                 wire: @this,
                                                 action: 'deleteSubscription',

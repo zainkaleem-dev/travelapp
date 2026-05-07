@@ -1,127 +1,104 @@
-<div class="w-full px-1 py-1 flex flex-col gap-3">
+<div class="w-full px-1 py-1">
     <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <!-- Unified Header -->
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Integrations & API</h1>
         </div>
 
+        <!-- Navigation Tabs -->
         @include('partials.navigation-company', ['companyId' => $companyId, 'activeTab' => 'integrations'])
-    </div>
 
-    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <!-- Content Area -->
         <div class="p-6 space-y-8">
             <!-- Section 1: Amadeus API -->
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Amadeus API Settings</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="md:col-span-2">
-                        <label class="field-label">Amadeus URL</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['amadeus_url'] ?? '--' }}" readonly>
+            <div class="space-y-4">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Amadeus API Settings</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Amadeus URL</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['amadeus_url'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Client ID</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['amadeus_client_id'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Client ID</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase font-mono">{{ $integrations['amadeus_client_id'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Client Secret</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ !empty($integrations['amadeus_client_secret']) ? '••••••••••••••••' : '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Client Secret</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase font-mono">{{ !empty($integrations['amadeus_client_secret']) ? '••••••••••••••••' : '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Grant Type</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['amadeus_grant_type'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Grant Type</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['amadeus_grant_type'] ?? '--' }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Section 2: Mail (SMTP) -->
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Mail (SMTP) Settings</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="field-label">Mailer</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_mailer'] ?? '--' }}" readonly>
+            <div class="space-y-4">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Mail (SMTP) Settings</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Mailer</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['mail_mailer'] ?? '--' }}</p>
                     </div>
-
-                    <div class="md:col-span-2">
-                        <label class="field-label">Host</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_host'] ?? '--' }}" readonly>
+                    <div class="md:col-span-2 rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Host</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase font-mono">{{ $integrations['mail_host'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Port</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_port'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Port</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['mail_port'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Encryption</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_encryption'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Encryption</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['mail_encryption'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Username</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_username'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Username</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['mail_username'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Password</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ !empty($integrations['mail_password']) ? '••••••••' : '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Password</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ !empty($integrations['mail_password']) ? '••••••••' : '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">From Address</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_from_address'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">From Address</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['mail_from_address'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">From Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['mail_from_name'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">From Name</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['mail_from_name'] ?? '--' }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Section 3: AWS / Storage -->
-            <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">AWS / Storage Settings</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="field-label">Filesystem Disk</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['filesystem_disk'] ?? '--' }}" readonly>
+            <div class="space-y-4">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">AWS / Storage Settings</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Filesystem Disk</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['filesystem_disk'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Default Region</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['aws_default_region'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Default Region</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['aws_default_region'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Access Key ID</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['aws_access_key_id'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Access Key ID</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase font-mono">{{ $integrations['aws_access_key_id'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Secret Access Key</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ !empty($integrations['aws_secret_access_key']) ? '••••••••••••••••' : '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Secret Access Key</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase font-mono">{{ !empty($integrations['aws_secret_access_key']) ? '••••••••••••••••' : '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Bucket Name</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['aws_bucket'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Bucket Name</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['aws_bucket'] ?? '--' }}</p>
                     </div>
-
-                    <div>
-                        <label class="field-label">Path Style Endpoint</label>
-                        <input type="text" class="input-field bg-gray-50 text-gray-700" value="{{ $integrations['aws_use_path_style_endpoint'] ?? '--' }}" readonly>
+                    <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Path Style Endpoint</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 uppercase">{{ $integrations['aws_use_path_style_endpoint'] ?? '--' }}</p>
                     </div>
                 </div>
             </div>

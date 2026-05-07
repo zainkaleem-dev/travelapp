@@ -700,6 +700,7 @@
             'admin.cities.*',
             'admin.airports*',
             'subscriptions.*',
+            'admin.travel-policy.*',
             'dashboard'
         ]);
     @endphp

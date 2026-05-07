@@ -266,6 +266,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/companies/{id}/integrations', \App\Livewire\Company\CompanyIntegrations::class)->name('companies.integrations')->middleware('can:View Company');
         Route::get('/companies/{id}/branches', CompanyBranches::class)->name('companies.branches')->middleware('can:View Company');
         Route::get('/companies/{id}/user-roles', CompanyUserRoles::class)->name('companies.user-roles')->middleware('can:View Company');
+        Route::get('/companies/{id}/travel-policy', \App\Livewire\Company\CompanyTravelPolicy::class)->name('companies.travel-policy')->middleware('can:View Company');
         Route::get('/companies/{id}/roles-permissions', RolesPermissions::class)->name('companies.roles-permissions')->middleware('can:Manage Roles and Permissions');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit')->middleware('can:Edit Company');
         Route::get('/companies/{id}/edit-branches', \App\Livewire\Company\CompanyEditBranches::class)->name('companies.edit-branches')->middleware('can:Edit Company');
@@ -282,6 +283,9 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/integrations-api', IntegrationsApi::class)->name('admin.integrations-api')->middleware('can:Manage Global System');
         Route::get('/audit-logs', AuditLogs::class)->name('admin.audit-logs')->middleware('can:Manage Global System');
         Route::get('/system-settings', \App\Livewire\SystemSettings\SystemSettings::class)->name('admin.system-settings')->middleware('can:Manage Global System');
+        Route::get('/system-settings/travel-policy/create', \App\Livewire\SystemSettings\TravelPolicyCreate::class)->name('admin.travel-policy.create')->middleware('can:Manage Global System');
+        Route::get('/system-settings/travel-policy/{id}', \App\Livewire\SystemSettings\TravelPolicyView::class)->name('admin.travel-policy.view')->middleware('can:Manage Global System');
+        Route::get('/system-settings/travel-policy/{id}/edit', \App\Livewire\SystemSettings\TravelPolicyEdit::class)->name('admin.travel-policy.edit')->middleware('can:Manage Global System');
         Route::get('/audit-logs/{activityLog}', AuditLogView::class)->name('admin.audit-logs.view')->middleware('can:Manage Global System');
         Route::get('/countries-and-cities', CountriesAndCities::class)->name('admin.countries-and-cities')->middleware('can:Manage Global System');
         Route::get('/countries-and-cities/country/create', \App\Livewire\CountriesAndCities\CountryCreate::class)->name('admin.countries.create')->middleware('can:Manage Global System');

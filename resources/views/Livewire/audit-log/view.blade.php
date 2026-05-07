@@ -3,10 +3,13 @@
         <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
             <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
                 <div class="flex items-start justify-between gap-4">
-                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Audit Log Details</h1>
+                    <div>
+                        <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Audit Log Details</h1>
+                        <p class="text-[11px] font-bold text-gray-400 uppercase mt-1 tracking-wider">Detailed Activity Report</p>
+                    </div>
                     <a href="{{ route('admin.audit-logs') }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-50 uppercase tracking-wider">
-                        Back
+                        class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-50 uppercase tracking-wider transition-colors shadow-sm">
+                        Back to List
                     </a>
                 </div>
             </div>

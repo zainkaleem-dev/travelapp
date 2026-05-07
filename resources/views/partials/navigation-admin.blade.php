@@ -170,8 +170,9 @@
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h12M3 17h8" /></svg>
                                     Trip Purpose &amp; Travel Services
                                 </a>
-                                <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
-                                    <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" /></svg>
+                                <a href="{{ route('companies.travel-policy', ['id' => $activeCompanyId]) }}" 
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('companies.travel-policy') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    <svg class="w-3 h-3 {{ request()->routeIs('companies.travel-policy') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" /></svg>
                                     Travel Policy
                                 </a>
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
@@ -364,7 +365,7 @@
                 </a>
 
                 <a href="{{ route('admin.system-settings') }}"
-                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('admin.system-settings*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
+                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('admin.system-settings*', 'admin.travel-policy.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round"
