@@ -1,7 +1,7 @@
 <div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
         <!-- Unified Header -->
-        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200 rounded-t-lg">
             <h1 class="text-[21px] font-black text-gray-900 tracking-tight">{{ $company->name }} Users and Roles</h1>
         </div>
 
@@ -19,14 +19,14 @@
             <div class="space-y-6">
                 <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-2 border-b border-gray-50">Team & Access Management</p>
 
-                <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                <div class="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
                     <table class="w-full text-sm border-separate border-spacing-0">
                         <thead class="bg-[#2ab4c0]">
                             <tr>
-                                <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wider">Name</th>
+                                <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wider rounded-ss-lg">Name</th>
                                 <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wider">Role</th>
                                 <th class="px-4 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wider">Notes</th>
-                                <th class="px-4 py-2 text-right text-[11px] font-bold text-white uppercase tracking-wider">Action</th>
+                                <th class="px-4 py-2 text-right text-[11px] font-bold text-white uppercase tracking-wider rounded-se-lg">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
