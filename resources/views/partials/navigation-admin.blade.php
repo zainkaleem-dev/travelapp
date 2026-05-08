@@ -49,6 +49,14 @@
             @endif
 
             <div class="mb-4 w-full rounded-lg bg-[#2ab4c0] px-4 py-2.5 text-white shadow-sm">
+                @if(auth()->user()->company && isset(auth()->user()->company->settings['logo_path']))
+                    <div class="flex justify-center pt-2">
+                        <img src="{{ asset('storage/' . auth()->user()->company->settings['logo_path']) }}" 
+                             alt="{{ auth()->user()->company->name }} Logo" 
+                             class="h-20 w-auto object-contain">
+                    </div>
+                    <div class="h-px bg-white/20 my-4"></div>
+                @endif
                 <div class="flex items-center justify-between gap-2">
                     <p class="text-xs font-semibold truncate">{{ $displayName }}</p>
                     <p class="text-[11px] font-semibold text-white/90 whitespace-nowrap">{{ $sidebarRole }}</p>

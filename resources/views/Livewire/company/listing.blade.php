@@ -324,7 +324,7 @@
                                             @endcan
                                             <a href="{{ route('companies.login_as_admin', $company->id) }}"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
-                                                title="Login as Organization Admin"
+                                                title="{{ $isSuperAdmin ? 'Login as Organization Admin' : 'Login as Partner' }}"
                                                 onclick="event.stopPropagation()">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
