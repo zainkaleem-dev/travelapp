@@ -21,26 +21,6 @@ class TravelPolicyManagement extends Component
     #[Reactive]
     public $search = '';
 
-    protected $queryString = [
-        'companyId' => ['except' => ''],
-        'policyType' => ['except' => ''],
-        'search' => ['except' => ''],
-    ];
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingCompanyId()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingPolicyType()
-    {
-        $this->resetPage();
-    }
 
     public function delete($id)
     {

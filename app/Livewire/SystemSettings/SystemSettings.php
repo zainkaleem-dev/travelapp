@@ -43,12 +43,10 @@ class SystemSettings extends Component
     public function render()
     {
         $query = SystemEndpoint::query()
-            ->with('company')
-            ->join('companies', 'system_endpoints.company_id', '=', 'companies.id')
-            ->select('system_endpoints.*');
+            ->with('company');
 
         if ($this->companyId) {
-            $query->where('system_endpoints.company_id', $this->companyId);
+            $query->where('company_id', $this->companyId);
         }
 
         if ($this->search) {
