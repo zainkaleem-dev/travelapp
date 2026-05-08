@@ -11,19 +11,27 @@ class ImpersonateController extends Controller
     public function take($userId)
     {
         $user = User::withoutGlobalScopes()->findOrFail($userId);
+        $currentUser = auth()->user();
 
-        // Security check: Only Super Admins can initiate impersonation
-        if (!auth()->user()->hasRole('Super Admin')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        // Security check: Don't allow impersonating other super admins (optional but safer)
+        // Security check: Don't allow impersonating other super admins
         if ($user->hasRole('Super Admin')) {
             abort(403, 'Cannot impersonate a super admin.');
         }
 
-        // Store original admin ID
-        session()->put('impersonated_by', auth()->id());
+        // Super Admins can impersonate anyone (except other super admins, handled above)
+        // Organization Admins can only impersonate users within their own company
+        if ($currentUser->hasRole('Super Admin')) {
+            // Allowed
+        } elseif ($currentUser->hasRole('Organization Admin') && $user->company_id === $currentUser->company_id) {
+            // Allowed — same company
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Push the current user's ID onto the impersonation stack
+        $stack = session()->get('impersonated_by', []);
+        $stack[] = auth()->id();
+        session()->put('impersonated_by', $stack);
 
         // Login as the user
         Auth::login($user);
@@ -41,15 +49,31 @@ class ImpersonateController extends Controller
 
     public function leave()
     {
-        if (!session()->has('impersonated_by')) {
+        $stack = session()->get('impersonated_by', []);
+
+        if (empty($stack)) {
             return redirect()->route('travel.hub');
         }
 
-        $adminId = session()->pull('impersonated_by');
+        // Pop the last admin from the stack
+        $adminId = array_pop($stack);
+
+        if (empty($stack)) {
+            session()->forget('impersonated_by');
+        } else {
+            session()->put('impersonated_by', $stack);
+        }
+
         $admin = User::withoutGlobalScopes()->find($adminId);
 
         if ($admin) {
             Auth::login($admin);
+            setPermissionsTeamId($admin->company_id);
+
+            // Redirect based on role of the restored user
+            if ($admin->hasRole('Super Admin')) {
+                return redirect()->route('companies.index')->with('status', 'Returned to Super Admin session.');
+            }
             return redirect()->route('companies.index')->with('status', 'Returned to admin session.');
         }
 

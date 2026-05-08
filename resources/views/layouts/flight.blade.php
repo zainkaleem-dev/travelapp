@@ -697,7 +697,13 @@
 </head>
 
 <body x-data="{ searchOpen: false }">
-    @if(session()->has('impersonated_by'))
+    @if(session()->has('impersonated_by') && count(session('impersonated_by', [])) > 0)
+        @php
+            $impersonationStack = session('impersonated_by', []);
+            $previousAdminId = end($impersonationStack);
+            $previousAdmin = $previousAdminId ? \App\Models\User::withoutGlobalScopes()->find($previousAdminId) : null;
+            $depth = count($impersonationStack);
+        @endphp
         <div class="bg-indigo-600 px-4 py-2 text-white shadow-sm sticky top-0 z-[1000]">
             <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
@@ -705,11 +711,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     <span class="text-[13px] font-semibold leading-tight">
-                        You are currently impersonating <span class="underline decoration-indigo-300 decoration-2 underline-offset-2">{{ auth()->user()->display_name }}</span>
+                        Impersonating <span class="underline decoration-indigo-300 decoration-2 underline-offset-2">{{ auth()->user()->display_name }}</span>
+                        @if($depth > 1)
+                            <span class="ml-1 text-indigo-300 text-[11px] font-normal">({{ $depth }} levels deep)</span>
+                        @endif
                     </span>
                 </div>
                 <a href="{{ route('impersonate.leave') }}" class="flex-shrink-0 rounded-lg bg-white/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50">
-                    Return to Admin
+                    Return to {{ $previousAdmin ? $previousAdmin->display_name : 'Admin' }}
                 </a>
             </div>
         </div>
