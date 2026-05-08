@@ -11,7 +11,7 @@
 
         <div class="flex flex-col lg:flex-row gap-6 bg-transparent min-h-[calc(100vh-200px)]">
             
-            {{-- Sidebar: Access Control (Super Admin sees Context, Company Admin sees their own) --}}
+            {{-- Sidebar: Access Control (Super Admin sees Context, Partner Admin sees their own) --}}
             <div class="w-full lg:w-60 flex-shrink-0">
                 <div class="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
                     <div class="p-6 bg-[#f9faf6] border-b border-gray-100">
@@ -167,7 +167,7 @@
                                             {{ $selectedRole ? $selectedRole->name : 'Role Architecture' }}
                                         </h2>
                                         @php
-                                            $protectedRoles = ['Super Admin', 'Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
+                                            $protectedRoles = ['Super Admin', 'Partner Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
                                         @endphp
                                         @if($selectedRole && !in_array($selectedRole->name, $protectedRoles))
                                             <button wire:click="editRole({{ $selectedRole->id }})" class="opacity-0 group-hover:opacity-100 p-1.5 text-gray-400 hover:text-[#2ab4c0] hover:bg-[#2ab4c0]/5 rounded-lg transition-all" title="Rename Role">

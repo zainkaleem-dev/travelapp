@@ -33,10 +33,10 @@ class CompanyScope implements Scope
             $companyId = $tenantContext->companyId();
 
             $user = auth()->user();
-            $isSuperAdmin = $user && $user->hasRole('Super Admin');
+            $isSuperAdmin = $user && $user->hasRole('Super Admin', null, null);
 
             // Global bypass for Super Admin or Unauthenticated users (allows login)
-            if ($isSuperAdmin || !auth()->check()) {
+            if (!auth()->check() || $isSuperAdmin) {
                 return;
             }
 

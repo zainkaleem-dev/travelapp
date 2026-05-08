@@ -37,7 +37,7 @@ class RolesPermissions extends Component
         return match ($roleName) {
             'Super Admin' => 100,
             'Organization Admin' => 80,
-            'Company Admin' => 60,
+            'Partner Admin' => 60,
             'Branch Admin' => 40,
             'Agent' => 20,
             'User' => 0,
@@ -316,7 +316,7 @@ class RolesPermissions extends Component
         if (!$role)
             return;
 
-        $protectedRoles = ['Super Admin', 'Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
+        $protectedRoles = ['Super Admin', 'Partner Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
         if (in_array($role->name, $protectedRoles)) {
             session()->flash('error', "The '{$role->name}' role is a system-protected role and cannot be renamed.");
             return;
@@ -345,7 +345,7 @@ class RolesPermissions extends Component
         if (!$role)
             return;
 
-        $protectedRoles = ['Super Admin', 'Company Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
+        $protectedRoles = ['Super Admin', 'Partner Admin', 'Organization Admin', 'Branch Admin', 'Agent', 'User'];
         if (in_array($role->name, $protectedRoles)) {
             session()->flash('error', "The '{$role->name}' role name is protected.");
             return;

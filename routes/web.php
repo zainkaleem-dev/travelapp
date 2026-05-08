@@ -109,7 +109,7 @@ Route::get('/', function () {
             return redirect()->route('dashboard');
         }
 
-        // 2. Tenant Admin landing (Organization/Company Admins)
+        // 2. Tenant Admin landing (Organization/Partner Admins)
         if ($user->can('View Users')) {
             return redirect()->route('dashboard');
         }
@@ -228,7 +228,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
             $manageableIds = $tenantContext->getManageableHierarchy($user);
             abort_unless(in_array($company->id, $manageableIds, true), 403);
 
-            // Prefer Organization Admin for this company, fallback to Company Admin.
+            // Prefer Organization Admin for this company, fallback to Partner Admin.
             $targetUserId = \Illuminate\Support\Facades\DB::table('users')
                 ->join('model_has_roles', function ($join) use ($company) {
                     $join->on('users.id', '=', 'model_has_roles.model_id')
@@ -237,13 +237,13 @@ Route::middleware(['auth', 'password.set'])->group(function () {
                 })
                 ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
                 ->where('users.company_id', $company->id)
-                ->whereIn('roles.name', ['Organization Admin', 'Company Admin'])
-                ->orderByRaw("FIELD(roles.name, 'Organization Admin', 'Company Admin')")
+                ->whereIn('roles.name', ['Organization Admin', 'Partner Admin'])
+                ->orderByRaw("FIELD(roles.name, 'Organization Admin', 'Partner Admin')")
                 ->select('users.id')
                 ->value('users.id');
 
             if (!$targetUserId) {
-                return redirect()->back()->with('error', 'No Organization Admin user found for this organization.');
+                return redirect()->back()->with('error', 'No Partner Admin user found for this organization.');
             }
 
             // Set context for subsequent feature/permission checks while impersonating.

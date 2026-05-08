@@ -41,7 +41,7 @@
             </svg>
             Travel hub
         </a>
-        @if(auth()->check() && auth()->user()->hasRole(['Super Admin', 'Organization Admin', 'Branch Admin', 'Company Admin']))
+        @if(auth()->check() && auth()->user()->hasRole(['Super Admin', 'Organization Admin', 'Branch Admin', 'Partner Admin']))
             <a href="{{ route('root') }}"
                 class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 {{ request()->routeIs('root') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} rounded-t-lg transition-colors whitespace-nowrap">
                 <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"

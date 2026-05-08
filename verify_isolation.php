@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Permission;
 echo "--- ISOLATION VERIFICATION ---\n";
 
 // 1. Get two roles in the same company
-$admin = Role::where('name', 'Company Admin')->whereNotNull('company_id')->first();
+$admin = Role::where('name', 'Partner Admin')->whereNotNull('company_id')->first();
 $agent = Role::where('name', 'Agent')->where('company_id', $admin->company_id)->first();
 
 if (!$admin || !$agent) {

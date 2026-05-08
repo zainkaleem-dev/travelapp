@@ -30,8 +30,13 @@ class BranchScope implements Scope
         try {
             $user = auth()->user();
 
-            // Bypass for Super Admin, Company Admin, Organization Admin, or Unauthenticated users (allows login)
-            if (!auth()->check() || ($user && ($user->hasRole('Super Admin') || $user->hasRole('Company Admin') || $user->hasRole('Organization Admin')))) {
+            // Bypass for Super Admin, Partner Admin, Organization Admin, or Unauthenticated users (allows login)
+            $isAdmin = $user && (
+                $user->hasRole('Super Admin') || 
+                ($user->company_id > 0 && $user->hasRole(['Partner Admin', 'Organization Admin'], null, (int) $user->company_id))
+            );
+
+            if (!auth()->check() || $isAdmin) {
                 return;
             }
 
@@ -43,7 +48,7 @@ class BranchScope implements Scope
                 $column = $model instanceof \App\Models\Branch ? $model->getKeyName() : 'branch_id';
                 $builder->where($model->getTable() . '.' . $column, $branchId);
             } else {
-                // If it's a guest or Super/Company Admin, they should have been bypassed above.
+                // If it's a guest or Super/Partner Admin, they should have been bypassed above.
                 // If we reached here, it's a restricted user without a branch context.
                 if (!auth()->check())
                     return;

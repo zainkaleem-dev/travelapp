@@ -36,7 +36,7 @@ class CompanyObserver
 
 
         $roleDefinitions = [
-            'Company Admin' => $standardPermissions,
+            'Partner Admin' => $standardPermissions,
             'Organization Admin' => $standardPermissions,
             'Branch Admin' => $standardPermissions,
             'Agent' => $standardPermissions,

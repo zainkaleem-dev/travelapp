@@ -99,7 +99,7 @@ class Login extends Component
             return;
         }
 
-        if ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin') || $user->hasRole('Branch Admin')) {
+        if ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Partner Admin') || $user->hasRole('Branch Admin')) {
             $this->redirect(route('dashboard'));
             return;
         }

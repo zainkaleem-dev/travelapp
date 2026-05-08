@@ -729,7 +729,7 @@
 
     @php
         $user = auth()->user();
-        $isAdmin = $user && $user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Company Admin');
+        $isAdmin = $user && $user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Partner Admin');
         $isAdminRoute = request()->routeIs([
             'companies.*',
             'branches.*',

@@ -25,11 +25,12 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Override Spatie's hasRole to strictly enforce role status (Active/Inactive).
      */
-    public function hasRole($roles, string $guard = null): bool
+    public function hasRole($roles, string $guard = null, ?int $companyId = null): bool
     {
         // 1. Get all roles currently assigned to the user that are ACTIVE (status = 1)
         // We check both the current team context and the global context (null)
         $originalTeamId = getPermissionsTeamId();
+        $targetTeamId = $companyId ?? $originalTeamId;
 
         try {
             $hasActiveRole = function ($roleNames, $teamId) use ($guard) {
@@ -50,13 +51,13 @@ class User extends Authenticatable implements MustVerifyEmail
                     ->exists();
             };
 
-            // Check in current context
-            if ($hasActiveRole($roles, $originalTeamId)) {
+            // Check in target context
+            if ($hasActiveRole($roles, $targetTeamId)) {
                 return true;
             }
 
             // Check in global context (Only for Super Admin bypass)
-            if ($originalTeamId !== null && $hasActiveRole(['Super Admin'], null)) {
+            if ($targetTeamId !== null && $hasActiveRole(['Super Admin'], null)) {
                 return true;
             }
 
