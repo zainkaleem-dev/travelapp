@@ -53,11 +53,11 @@
             </div>
 
             {{-- Actions Footer --}}
-            <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                <a href="{{ route('subscriptions.edit', $subscription->id) }}"
+            <div class="flex items-center justify-end gap-3 pt-6 ">
+                <!-- <a href="{{ route('subscriptions.edit', $subscription->id) }}"
                     class="inline-flex items-center justify-center rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-bold text-white hover:bg-[#229aa4] uppercase tracking-wider transition-colors shadow-sm">
                     Edit Plan
-                </a>
+                </a> -->
                 <a href="{{ route('subscriptions.index') }}"
                     class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-bold text-gray-700 hover:bg-gray-50 uppercase tracking-wider transition-colors">
                     Close

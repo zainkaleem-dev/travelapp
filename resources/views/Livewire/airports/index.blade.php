@@ -1,7 +1,7 @@
 <div class="w-full" x-data="{ filtersOpen: true }">
     <div class="px-1 py-1 w-full">
         <div class="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
-            <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+            <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200 rounded-t-lg">
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Airport List</h1>
@@ -28,7 +28,7 @@
             <div x-show="filtersOpen" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 transform -translate-y-2"
                 x-transition:enter-end="opacity-100 transform translate-y-0"
-                class="px-6 py-3 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+                class="px-6 py-3 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200 rounded-b-lg">
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-wrap items-center gap-3">
                         <div class="w-full sm:w-44">

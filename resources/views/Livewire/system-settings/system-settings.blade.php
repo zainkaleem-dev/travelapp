@@ -7,7 +7,7 @@
 
     {{-- Top Container: Title, Nav, and Filters --}}
     <div class="overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
-        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
+        <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200 rounded-t-lg">
             <div class="flex items-start justify-between gap-4">
                 <div>
                     <h1 class="text-[21px] font-black text-gray-900 tracking-tight">System Settings</h1>
