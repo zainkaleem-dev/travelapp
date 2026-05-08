@@ -26,7 +26,7 @@
                     </div>
                     <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
                         <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">IATA Code</p>
-                        <p class="mt-1 text-[11px] font-bold text-gray-900 font-mono uppercase">{{ $airport->code }}</p>
+                        <p class="mt-1 text-[11px] font-bold text-gray-900 font-mono uppercase">{{ $airport->iata_code }}</p>
                     </div>
                     <div class="rounded-lg border border-gray-200 bg-white px-4 py-3">
                         <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">ICAO Code</p>

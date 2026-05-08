@@ -656,7 +656,43 @@
 	        html[data-hide-nprogress="1"] #nprogress {
 	            display: none !important;
 	        }
-	    </style>
+	        /* ── Custom Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(42, 180, 192, 0.2);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(42, 180, 192, 0.5);
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(42, 180, 192, 0.2) transparent;
+        }
+
+    </style>
 
 </head>
 

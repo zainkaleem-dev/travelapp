@@ -201,29 +201,33 @@
                                 <div class="mt-6 space-y-3">
                                     <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Selected Files</h3>
                                     @foreach($attachments as $index => $file)
-                                        <div class="group relative flex items-center gap-4 p-4 rounded-lg border border-gray-100 bg-white hover:border-[#2ab4c0] transition-all shadow-sm hover:shadow-md">
-                                            <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0 group-hover:bg-[#f2feff]">
-                                                <svg class="w-5 h-5 text-gray-400 group-hover:text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                </svg>
-                                            </div>
-                                            
-                                                <div class="flex items-center gap-2" x-show="!editing">
-                                                    <p class="text-[11px] font-bold text-gray-900 truncate tracking-tight">{{ $attachmentNames[$index] ?? $file->getClientOriginalName() }}</p>
-                                                    <button type="button" @click="editing = true" class="text-gray-400 hover:text-[#2ab4c0]">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                        </svg>
-                                                    </button>
+                                        <div x-data="{ editing: false, newName: '{{ $attachmentNames[$index] ?? $file->getClientOriginalName() }}' }" 
+                                            class="group relative flex items-center justify-between p-4 rounded-lg border border-gray-100 bg-white hover:border-[#2ab4c0] transition-all shadow-sm hover:shadow-md">
+                                            <div class="flex items-center gap-4 overflow-hidden">
+                                                <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0 group-hover:bg-[#f2feff]">
+                                                    <svg class="w-5 h-5 text-gray-400 group-hover:text-[#2ab4c0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
                                                 </div>
-                                                <div class="flex items-center gap-2" x-show="editing" @click.outside="editing = false">
-                                                    <input type="text" x-model="newName" class="text-[11px] font-bold text-gray-900 border-b border-[#2ab4c0] bg-transparent focus:outline-none py-0 px-0" 
-                                                        @keydown.enter.prevent="$wire.renameAttachment({{ $index }}, newName); editing = false">
-                                                    <button type="button" @click="$wire.renameAttachment({{ $index }}, newName); editing = false" class="text-[#2ab4c0]">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                                                    </button>
+                                                
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center gap-2" x-show="!editing">
+                                                        <p class="text-[11px] font-bold text-gray-900 truncate tracking-tight">{{ $attachmentNames[$index] ?? $file->getClientOriginalName() }}</p>
+                                                        <button type="button" @click="editing = true" class="text-gray-400 hover:text-[#2ab4c0]">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="flex items-center gap-2" x-show="editing" @click.outside="editing = false" x-cloak>
+                                                        <input type="text" x-model="newName" class="text-[11px] font-bold text-gray-900 border-b border-[#2ab4c0] bg-transparent focus:outline-none py-0 px-0 w-full" 
+                                                            @keydown.enter.prevent="$wire.renameAttachment({{ $index }}, newName); editing = false">
+                                                        <button type="button" @click="$wire.renameAttachment({{ $index }}, newName); editing = false" class="text-[#2ab4c0]">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                        </button>
+                                                    </div>
+                                                    <p class="text-[11px] text-gray-500 uppercase tracking-tight">{{ number_format($file->getSize() / 1024, 1) }} KB • {{ strtoupper($file->getClientOriginalExtension()) }}</p>
                                                 </div>
-                                                <p class="text-[11px] text-gray-500 uppercase tracking-tight">{{ number_format($file->getSize() / 1024, 1) }} KB • {{ strtoupper($file->getClientOriginalExtension()) }}</p>
                                             </div>
 
                                             <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
