@@ -34,15 +34,22 @@ class PermissionSeeder extends Seeder
 
         // 4. Standard Permissions
         $standardPermissions = [
+            // dashboard
             'View Dashboard',
+
+            // company
             'View Company',
             'Create Company',
             'Edit Company',
             'Delete Company',
+
+            // branch
             'View Branch',
             'Create Branch',
             'Edit Branch',
             'Delete Branch',
+
+            // user
             'View Users',
             'Create User',
             'Edit User',
