@@ -93,6 +93,11 @@ class CompanyEditBillingDetails extends Component
             $this->bank_swift = $billing->bank_swift;
             $this->notes = $billing->notes;
         }
+
+        // Pre-fill registration number from company info if billing doesn't have one yet
+        if (empty($this->registration_number)) {
+            $this->registration_number = $this->company->registration_number;
+        }
     }
 
     public function save()

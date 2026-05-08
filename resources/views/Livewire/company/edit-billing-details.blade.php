@@ -62,7 +62,7 @@
 
                         <div>
                             <label class="field-label">Registration Number</label>
-                            <input type="text" wire:model="registration_number" class="input-field" placeholder="12345678">
+                            <input type="text" wire:model="registration_number" class="input-field" placeholder="12345678" readonly disabled>
                             @error('registration_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
