@@ -87,6 +87,24 @@ class PermissionSeeder extends Seeder
             'Edit Trip Purpose',
             'Delete Trip Purpose',
 
+            // Grades
+            'View Grades',
+            'Create Grade',
+            'Edit Grade',
+            'Delete Grade',
+
+            // Divisions
+            'View Divisions',
+            'Create Division',
+            'Edit Division',
+            'Delete Division',
+
+            // Departments
+            'View Departments',
+            'Create Department',
+            'Edit Department',
+            'Delete Department',
+
             // System Settings
             'View System Setting',
         ];
@@ -99,10 +117,13 @@ class PermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
+        $allPermissions = Permission::all();
+        $standardPermissionsColl = Permission::where('name', '!=', 'Manage Global System')->get();
+
         // 5. Global Roles (Explicitly NULL company_id)
         $superAdmin = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web', 'company_id' => null, 'status' => 1]);
         // Super Admin gets EVERYTHING including Global System management
-        $superAdmin->syncPermissions(array_merge($standardPermissions, $globalPermissions));
+        $superAdmin->syncPermissions($allPermissions);
 
         // 6. Ensure Base Admin User exists and has role
         $admin = User::firstOrCreate(

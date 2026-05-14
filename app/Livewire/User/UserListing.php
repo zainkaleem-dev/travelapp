@@ -22,8 +22,11 @@ class UserListing extends Component
     public string $sortDirection = 'asc';
     public string $routePrefix = 'admin';
 
-    public function mount(): void
+    public ?int $companyId = null;
+
+    public function mount(?int $companyId = null): void
     {
+        $this->companyId = $companyId;
         $this->routePrefix = request()->is('admin*') ? 'admin' : 'company';
         $this->currentPage = (int) request()->query('page', 1);
     }
@@ -118,9 +121,8 @@ class UserListing extends Component
             ->when($this->statusFilter, function ($query) {
                 $query->where('status', $this->statusFilter);
             })
-            ->when($companyId > 0, function ($query) {
-                // Hierarchical visibility is now handled by CompanyScope
-                $query->where('users.company_id', '>', 0);
+            ->when($this->companyId, function ($query) {
+                $query->where('users.company_id', $this->companyId);
             })
             ->orderBy($this->sortBy, $this->sortDirection);
 

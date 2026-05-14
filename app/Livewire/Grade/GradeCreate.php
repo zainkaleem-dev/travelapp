@@ -16,9 +16,12 @@ class GradeCreate extends Component
     public ?int $department_id = null;
     public $departments = [];
 
-    public function mount()
+    public ?int $companyId = null;
+
+    public function mount(int $companyId)
     {
-        $this->departments = \App\Models\Department::orderBy('name')->get();
+        $this->companyId = $companyId;
+        $this->departments = \App\Models\Department::where('company_id', $this->companyId)->orderBy('name')->get();
     }
 
     protected function rules(): array
@@ -34,10 +37,9 @@ class GradeCreate extends Component
     public function save(TenantContext $tenantContext)
     {
         $validated = $this->validate();
-        $companyId = $tenantContext->companyId();
 
         Grade::create([
-            'company_id' => $companyId,
+            'company_id' => $this->companyId,
             'department_id' => $this->department_id,
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -45,7 +47,7 @@ class GradeCreate extends Component
         ]);
 
         session()->flash('status', "Grade '{$validated['name']}' created successfully.");
-        return redirect()->route('grades.index');
+        return redirect()->route('grades.index', ['companyId' => $this->companyId]);
     }
 
     public function render()

@@ -16,14 +16,17 @@ class GradeEdit extends Component
     public ?int $department_id = null;
     public $departments = [];
 
-    public function mount(Grade $grade)
+    public ?int $companyId = null;
+
+    public function mount(int $companyId, Grade $grade)
     {
+        $this->companyId = $companyId;
         $this->grade = $grade;
         $this->name = $grade->name;
         $this->description = $grade->description ?? '';
         $this->status = $grade->status;
         $this->department_id = $grade->department_id;
-        $this->departments = \App\Models\Department::orderBy('name')->get();
+        $this->departments = \App\Models\Department::where('company_id', $this->companyId)->orderBy('name')->get();
     }
 
     protected function rules(): array
@@ -48,7 +51,7 @@ class GradeEdit extends Component
         ]);
 
         session()->flash('status', "Grade '{$validated['name']}' updated successfully.");
-        return redirect()->route('grades.index');
+        return redirect()->route('grades.index', ['companyId' => $this->companyId]);
     }
 
     public function render()

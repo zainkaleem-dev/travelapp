@@ -6,7 +6,7 @@
                     <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Edit Grade</h1>
                     <p class="text-[11px] text-gray-500 mt-1">Modify the existing grade or position</p>
                 </div>
-                <a href="{{ route('grades.index') }}"
+                <a href="{{ route('grades.index', ['companyId' => $companyId]) }}"
                     class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-semibold text-gray-700 hover:bg-gray-50">
                     Back
                 </a>

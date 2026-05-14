@@ -14,8 +14,11 @@ class DivisionEdit extends Component
     public string $description = '';
     public string $status = 'active';
 
-    public function mount(Division $division)
+    public ?int $companyId = null;
+
+    public function mount(int $companyId, Division $division)
     {
+        $this->companyId = $companyId;
         $this->division = $division;
         $this->name = $division->name;
         $this->description = $division->description ?? '';
@@ -42,7 +45,7 @@ class DivisionEdit extends Component
         ]);
 
         session()->flash('status', "Division '{$validated['name']}' updated successfully.");
-        return redirect()->route('divisions.index');
+        return redirect()->route('divisions.index', ['companyId' => $this->companyId]);
     }
 
     public function render()

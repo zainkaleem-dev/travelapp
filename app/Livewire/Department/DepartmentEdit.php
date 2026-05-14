@@ -16,14 +16,17 @@ class DepartmentEdit extends Component
     public ?int $division_id = null;
     public $divisions = [];
 
-    public function mount(Department $department)
+    public ?int $companyId = null;
+
+    public function mount(int $companyId, Department $department)
     {
+        $this->companyId = $companyId;
         $this->department = $department;
         $this->name = $department->name;
         $this->description = $department->description ?? '';
         $this->status = $department->status;
         $this->division_id = $department->division_id;
-        $this->divisions = \App\Models\Division::orderBy('name')->get();
+        $this->divisions = \App\Models\Division::where('company_id', $this->companyId)->orderBy('name')->get();
     }
 
     protected function rules(): array
@@ -48,7 +51,7 @@ class DepartmentEdit extends Component
         ]);
 
         session()->flash('status', "Department '{$validated['name']}' updated successfully.");
-        return redirect()->route('departments.index');
+        return redirect()->route('departments.index', ['companyId' => $this->companyId]);
     }
 
     public function render()

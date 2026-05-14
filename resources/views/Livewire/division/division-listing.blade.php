@@ -7,7 +7,7 @@
                         <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Divisions</h1>
                     </div>
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('divisions.create') }}"
+                        <a href="{{ route('divisions.create', ['companyId' => $companyId]) }}"
                             class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                             Add Division
                         </a>
@@ -108,7 +108,7 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-1">
-                                            <a href="{{ route('divisions.edit', $division->id) }}"
+                                            <a href="{{ route('divisions.edit', ['companyId' => $companyId, 'id' => $division->id]) }}"
                                                 class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                 title="Edit">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

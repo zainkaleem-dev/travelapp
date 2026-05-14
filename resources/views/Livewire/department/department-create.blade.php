@@ -6,7 +6,7 @@
                     <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Add New Department</h1>
                     <p class="text-[11px] text-gray-500 mt-1">Create a new department for the company</p>
                 </div>
-                <a href="{{ route('departments.index') }}"
+                <a href="{{ route('departments.index', ['companyId' => $companyId]) }}"
                     class="hidden sm:inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-semibold text-gray-700 hover:bg-gray-50">
                     Back
                 </a>

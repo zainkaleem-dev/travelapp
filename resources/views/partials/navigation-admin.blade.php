@@ -24,7 +24,7 @@
             @php($middleInitial = $middleName !== '' ? strtoupper(mb_substr($middleName, 0, 1)) . '.' : '')
             @php($displayName = $sidebarUser?->name ?: 'User')
             
-            @php($activeCompanyId = request()->route('id') ?? (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) ? auth()->user()->company_id : null))
+            @php($activeCompanyId = request()->route('companyId') ?? request()->route('id') ?? session('active_company_id') ?? auth()->user()->company_id)
             @php($activeCompany = $activeCompanyId ? \App\Models\Company::find($activeCompanyId) : null)
             @php($userCompanyType = auth()->user()->company?->company_type)
             @php($isTmcContext = ($activeCompany?->company_type === 'TMC') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'TMC'))
@@ -154,10 +154,15 @@
 
                                 @featureOrAdmin('users-module')
                                 @can('View Users')
+<<<<<<< Updated upstream
                                     @php($isCorpUsersActive = request()->routeIs('users.*'))
                                     <a href="{{ route('users.index') }}"
                                         class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpUsersActive ? '!text-white font-semibold rounded-lg' : '' }}"
                                         style="{{ $isCorpUsersActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
+=======
+                                    <a href="{{ route('users.index', ['companyId' => $activeCompanyId]) }}"
+                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+>>>>>>> Stashed changes
                                         <svg class="w-3 h-3 {{ request()->routeIs('users.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                                         </svg>
@@ -180,6 +185,7 @@
                                     <svg class="w-3 h-3 {{ request()->routeIs('companies.travel-policy') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     Travel Policy
                                 </a>
+<<<<<<< Updated upstream
                                 @php($isGradesActive = request()->routeIs('grades.*'))
                                 <a href="{{ route('grades.index') }}" 
                                     class="admin-menu-item inline-flex items-center gap-1.5 {{ $isGradesActive ? '!text-white font-semibold rounded-lg' : '' }}"
@@ -201,6 +207,25 @@
                                     <svg class="w-3 h-3 {{ request()->routeIs('departments.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M6 12h12M6 17h8" /></svg>
                                     Departments
                                 </a>
+=======
+                                @if($activeCompanyId)
+                                    <a href="{{ route('grades.index', ['companyId' => $activeCompanyId]) }}" 
+                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('grades.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                        <svg class="w-3 h-3 {{ request()->routeIs('grades.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
+                                        Grades / Positions
+                                    </a>
+                                    <a href="{{ route('divisions.index', ['companyId' => $activeCompanyId]) }}" 
+                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('divisions.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                        <svg class="w-3 h-3 {{ request()->routeIs('divisions.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 12h8M8 17h5" /></svg>
+                                        Divisions
+                                    </a>
+                                    <a href="{{ route('departments.index', ['companyId' => $activeCompanyId]) }}" 
+                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('departments.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                        <svg class="w-3 h-3 {{ request()->routeIs('departments.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M6 12h12M6 17h8" /></svg>
+                                        Departments
+                                    </a>
+                                @endif
+>>>>>>> Stashed changes
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
 
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
@@ -281,15 +306,17 @@
                                 </a>
 
                                 @featureOrAdmin('users-module')
-                                @can('View Users')
-                                    <a href="{{ route('users.index') }}"
-                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
-                                        <svg class="w-3 h-3 {{ request()->routeIs('users.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                                        </svg>
-                                        Users
-                                    </a>
-                                @endcan
+                                @if($activeCompanyId)
+                                    @can('View Users')
+                                        <a href="{{ route('users.index', ['companyId' => $activeCompanyId]) }}"
+                                            class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                            <svg class="w-3 h-3 {{ request()->routeIs('users.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                            </svg>
+                                            Users
+                                        </a>
+                                    @endcan
+                                @endif
                                 @endfeatureOrAdmin
 
                                 <button type="button"
@@ -353,16 +380,18 @@
                     @endfeatureOrAdmin
 
                     @featureOrAdmin('users-module')
-                    @can('View Users')
-                        <a href="{{ route('users.index') }}"
-                            class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
-                            <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-                            </svg>
-                            Users
-                        </a>
-                    @endcan
+                    @if($activeCompanyId)
+                        @can('View Users')
+                            <a href="{{ route('users.index', ['companyId' => $activeCompanyId]) }}"
+                                class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                </svg>
+                                Users
+                            </a>
+                        @endcan
+                    @endif
                     @endfeatureOrAdmin
                     <a href="#"
                         class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg text-gray-600 hover:bg-gray-50 text-xs whitespace-nowrap transition-colors">

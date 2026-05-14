@@ -207,6 +207,27 @@ Route::middleware(['auth', 'password.set'])->group(function () {
     Route::get('/companies/{companyId}/travel-policy/{id}', \App\Livewire\SystemSettings\TravelPolicyView::class)->name('admin.travel-policy.view')->middleware('can:View Travel Policy');
     Route::get('/companies/{companyId}/travel-policy/{id}/edit', \App\Livewire\SystemSettings\TravelPolicyEdit::class)->name('admin.travel-policy.edit')->middleware('can:Edit Travel Policy');
 
+    // User Routes (Accessible to Company Admins)
+    Route::get('/companies/{companyId}/users', UserListing::class)->name('users.index')->middleware('can:View Users');
+    Route::get('/companies/{companyId}/users/create', UserCreate::class)->name('users.create')->middleware('can:Create User');
+    Route::get('/companies/{companyId}/users/{id}/edit', UserEdit::class)->name('users.edit')->middleware('can:Edit User');
+
+    // Grade Routes
+    Route::get('/companies/{companyId}/grades', \App\Livewire\Grade\GradeListing::class)->name('grades.index')->middleware('can:View Grades');
+    Route::get('/companies/{companyId}/grades/create', \App\Livewire\Grade\GradeCreate::class)->name('grades.create')->middleware('can:Create Grade');
+    Route::get('/companies/{companyId}/grades/{id}/edit', \App\Livewire\Grade\GradeEdit::class)->name('grades.edit')->middleware('can:Edit Grade');
+
+    // Division Routes
+    Route::get('/companies/{companyId}/divisions', \App\Livewire\Division\DivisionListing::class)->name('divisions.index')->middleware('can:View Divisions');
+    Route::get('/companies/{companyId}/divisions/create', \App\Livewire\Division\DivisionCreate::class)->name('divisions.create')->middleware('can:Create Division');
+    Route::get('/companies/{companyId}/divisions/{id}/edit', \App\Livewire\Division\DivisionEdit::class)->name('divisions.edit')->middleware('can:Edit Division');
+
+    // Department Routes
+    Route::get('/companies/{companyId}/departments', \App\Livewire\Department\DepartmentListing::class)->name('departments.index')->middleware('can:View Departments');
+    Route::get('/companies/{companyId}/departments/create', \App\Livewire\Department\DepartmentCreate::class)->name('departments.create')->middleware('can:Create Department');
+    Route::get('/companies/{companyId}/departments/{id}/edit', \App\Livewire\Department\DepartmentEdit::class)->name('departments.edit')->middleware('can:Edit Department');
+
+
 
 
     Route::middleware(['superadmin'])->group(function () {
@@ -280,21 +301,10 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/companies/{id}/edit-branches', \App\Livewire\Company\CompanyEditBranches::class)->name('companies.edit-branches')->middleware('can:Edit Company');
         Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features')->middleware('can:Manage Features');
         Route::get('/features', FeaturesListing::class)->name('features')->middleware('can:Manage Features');
-        Route::get('/users', UserListing::class)->name('users.index')->middleware('can:View Users');
-        Route::get('/grades', \App\Livewire\Grade\GradeListing::class)->name('grades.index');
-        Route::get('/grades/create', \App\Livewire\Grade\GradeCreate::class)->name('grades.create');
-        Route::get('/grades/{grade}/edit', \App\Livewire\Grade\GradeEdit::class)->name('grades.edit');
 
-        Route::get('/divisions', \App\Livewire\Division\DivisionListing::class)->name('divisions.index');
-        Route::get('/divisions/create', \App\Livewire\Division\DivisionCreate::class)->name('divisions.create');
-        Route::get('/divisions/{division}/edit', \App\Livewire\Division\DivisionEdit::class)->name('divisions.edit');
 
-        Route::get('/departments', \App\Livewire\Department\DepartmentListing::class)->name('departments.index');
-        Route::get('/departments/create', \App\Livewire\Department\DepartmentCreate::class)->name('departments.create');
-        Route::get('/departments/{department}/edit', \App\Livewire\Department\DepartmentEdit::class)->name('departments.edit');
 
-        Route::get('/users/create', UserCreate::class)->name('users.create')->middleware('can:Create User');
-        Route::get('/users/{id}/edit', UserEdit::class)->name('users.edit')->middleware('can:Edit User');
+
         Route::get('/roles-permissions', RolesPermissions::class)->name('roles.index')->middleware('can:Manage Roles and Permissions');
         Route::get('/trip-purpose', TripPurpose::class)->name('admin.trip-purpose')->middleware('can:Manage Global System');
         Route::get('/trip-purpose/create', \App\Livewire\TripPurpose\TripPurposeCreate::class)->name('admin.trip-purpose.create')->middleware('can:Manage Global System');

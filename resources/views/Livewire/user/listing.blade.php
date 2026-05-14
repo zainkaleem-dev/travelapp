@@ -17,7 +17,7 @@
                             </svg>
                         </button>
                         @can('Create User')
-                            <a href="{{ route('users.create') }}"
+                            <a href="{{ route('users.create', ['companyId' => $companyId]) }}"
                                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
                                 Add User
                             </a>
@@ -251,7 +251,7 @@
                                                                 @endif
 
                                                                 @can('Edit User')
-                                                                    <a href="{{ route('users.edit', $user->id) }}"
+                                                                    <a href="{{ route('users.edit', ['companyId' => $user->company_id, 'id' => $user->id]) }}"
                                                                         class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                                         title="Edit">
                                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

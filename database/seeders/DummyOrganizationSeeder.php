@@ -55,9 +55,6 @@ class DummyOrganizationSeeder extends Seeder
             ]
         );
 
-        // Ensure the Organization Admin role exists
-        Role::firstOrCreate(['name' => 'Organization Admin']);
-
         // 4. Assign the role within the specific company context
         setPermissionsTeamId($company->id);
         $orgAdmin->assignRole('Organization Admin');

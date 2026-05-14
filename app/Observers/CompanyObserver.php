@@ -16,34 +16,19 @@ class CompanyObserver
         // 1. Force context to the new company
         setPermissionsTeamId($company->id);
 
-        $standardPermissions = [
-            'View Dashboard',
-            'View Company',
-            'Create Company',
-            'Edit Company',
-            'Delete Company',
-            'View Branch',
-            'Create Branch',
-            'Edit Branch',
-            'Delete Branch',
-            'View Users',
-            'Create User',
-            'Edit User',
-            'Delete User',
-            'Manage Roles and Permissions',
-            'Manage Features',
-        ];
-
+        // 2. Fetch all available permissions except Global Management
+        $allStandardPermissions = Permission::where('name', '!=', 'Manage Global System')->get();
+        $permissionIds = $allStandardPermissions->pluck('id');
 
         $roleDefinitions = [
-            'Partner Admin' => $standardPermissions,
-            'Organization Admin' => $standardPermissions,
-            'Branch Admin' => $standardPermissions,
-            'Agent' => $standardPermissions,
-            'User' => $standardPermissions,
+            'Partner Admin',
+            'Organization Admin',
+            'Branch Admin',
+            'Agent',
+            'User',
         ];
 
-        foreach ($roleDefinitions as $roleName => $perms) {
+        foreach ($roleDefinitions as $roleName) {
             $role = Role::firstOrCreate([
                 'name' => $roleName,
                 'guard_name' => 'web',
@@ -51,11 +36,7 @@ class CompanyObserver
                 'status' => 1
             ]);
 
-            // Sync permissions for this specific role context
-            $permissionIds = Permission::whereIn('name', $perms)
-                ->where('name', '!=', 'Manage Global System')
-                ->pluck('id');
-
+            // Sync all standard permissions for this specific role context
             $syncData = $permissionIds->mapWithKeys(fn($id) => [$id => ['company_id' => $company->id]])->toArray();
             $role->permissions()->sync($syncData);
         }

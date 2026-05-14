@@ -16,9 +16,12 @@ class DepartmentCreate extends Component
     public ?int $division_id = null;
     public $divisions = [];
 
-    public function mount()
+    public ?int $companyId = null;
+
+    public function mount(int $companyId)
     {
-        $this->divisions = \App\Models\Division::orderBy('name')->get();
+        $this->companyId = $companyId;
+        $this->divisions = \App\Models\Division::where('company_id', $this->companyId)->orderBy('name')->get();
     }
 
     protected function rules(): array
@@ -34,10 +37,9 @@ class DepartmentCreate extends Component
     public function save(TenantContext $tenantContext)
     {
         $validated = $this->validate();
-        $companyId = $tenantContext->companyId();
 
         Department::create([
-            'company_id' => $companyId,
+            'company_id' => $this->companyId,
             'division_id' => $this->division_id,
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -45,7 +47,7 @@ class DepartmentCreate extends Component
         ]);
 
         session()->flash('status', "Department '{$validated['name']}' created successfully.");
-        return redirect()->route('departments.index');
+        return redirect()->route('departments.index', ['companyId' => $this->companyId]);
     }
 
     public function render()

@@ -14,8 +14,11 @@ class DivisionCreate extends Component
     public string $description = '';
     public string $status = 'active';
 
-    public function mount()
+    public ?int $companyId = null;
+
+    public function mount(int $companyId)
     {
+        $this->companyId = $companyId;
     }
 
     protected function rules(): array
@@ -30,17 +33,16 @@ class DivisionCreate extends Component
     public function save(TenantContext $tenantContext)
     {
         $validated = $this->validate();
-        $companyId = $tenantContext->companyId();
 
         Division::create([
-            'company_id' => $companyId,
+            'company_id' => $this->companyId,
             'name' => $validated['name'],
             'description' => $validated['description'],
             'status' => $validated['status'],
         ]);
 
         session()->flash('status', "Division '{$validated['name']}' created successfully.");
-        return redirect()->route('divisions.index');
+        return redirect()->route('divisions.index', ['companyId' => $this->companyId]);
     }
 
     public function render()

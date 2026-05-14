@@ -85,17 +85,62 @@
             
         case request()->routeIs('users.index'):
             $pageTitle = 'Users';
-            $crumbs = [['Users', route('users.index')]];
+            $crumbs = [['Users', route('users.index', ['companyId' => request()->route('companyId')])]];
             break;
             
         case request()->routeIs('users.create'):
             $pageTitle = 'Add User';
-            $crumbs = [['Users', route('users.index')], ['Add User', route('users.create')]];
+            $crumbs = [['Users', route('users.index', ['companyId' => request()->route('companyId')])], ['Add User', route('users.create', ['companyId' => request()->route('companyId')])]];
             break;
             
         case request()->routeIs('users.edit'):
             $pageTitle = 'Edit User';
-            $crumbs = [['Users', route('users.index')], ['Edit User', '#']];
+            $crumbs = [['Users', route('users.index', ['companyId' => request()->route('companyId')])], ['Edit User', '#']];
+            break;
+
+        case request()->routeIs('grades.index'):
+            $pageTitle = 'Grades';
+            $crumbs = [['Grades', route('grades.index', ['companyId' => request()->route('companyId')])]];
+            break;
+            
+        case request()->routeIs('grades.create'):
+            $pageTitle = 'Add Grade';
+            $crumbs = [['Grades', route('grades.index', ['companyId' => request()->route('companyId')])], ['Add Grade', '#']];
+            break;
+            
+        case request()->routeIs('grades.edit'):
+            $pageTitle = 'Edit Grade';
+            $crumbs = [['Grades', route('grades.index', ['companyId' => request()->route('companyId')])], ['Edit Grade', '#']];
+            break;
+
+        case request()->routeIs('divisions.index'):
+            $pageTitle = 'Divisions';
+            $crumbs = [['Divisions', route('divisions.index', ['companyId' => request()->route('companyId')])]];
+            break;
+            
+        case request()->routeIs('divisions.create'):
+            $pageTitle = 'Add Division';
+            $crumbs = [['Divisions', route('divisions.index', ['companyId' => request()->route('companyId')])], ['Add Division', '#']];
+            break;
+            
+        case request()->routeIs('divisions.edit'):
+            $pageTitle = 'Edit Division';
+            $crumbs = [['Divisions', route('divisions.index', ['companyId' => request()->route('companyId')])], ['Edit Division', '#']];
+            break;
+
+        case request()->routeIs('departments.index'):
+            $pageTitle = 'Departments';
+            $crumbs = [['Departments', route('departments.index', ['companyId' => request()->route('companyId')])]];
+            break;
+            
+        case request()->routeIs('departments.create'):
+            $pageTitle = 'Add Department';
+            $crumbs = [['Departments', route('departments.index', ['companyId' => request()->route('companyId')])], ['Add Department', '#']];
+            break;
+            
+        case request()->routeIs('departments.edit'):
+            $pageTitle = 'Edit Department';
+            $crumbs = [['Departments', route('departments.index', ['companyId' => request()->route('companyId')])], ['Edit Department', '#']];
             break;
             
         case request()->routeIs('roles.index'):

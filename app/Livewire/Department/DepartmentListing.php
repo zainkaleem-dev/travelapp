@@ -18,8 +18,11 @@ class DepartmentListing extends Component
     public string $sortBy = 'name';
     public string $sortDirection = 'asc';
 
-    public function mount(): void
+    public ?int $companyId = null;
+
+    public function mount(int $companyId): void
     {
+        $this->companyId = $companyId;
         $this->currentPage = (int) request()->query('page', 1);
     }
 
@@ -68,8 +71,8 @@ class DepartmentListing extends Component
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
             })
-            ->when($this->statusFilter, function ($query) {
-                $query->where('status', $this->statusFilter);
+            ->when($this->companyId, function ($query) {
+                $query->where('company_id', $this->companyId);
             })
             ->orderBy($this->sortBy, $this->sortDirection);
 

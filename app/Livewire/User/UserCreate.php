@@ -28,23 +28,28 @@ class UserCreate extends Component
     public $branches = [];
     public string $routePrefix = 'admin';
 
-    public function mount(TenantContext $tenantContext)
+    public function mount(TenantContext $tenantContext, ?int $companyId = null)
     {
         $user = auth()->user();
         $isSuperAdmin = $user->hasRole('Super Admin');
 
+        if ($companyId) {
+            $this->company_id = $companyId;
+        }
+
         if ($isSuperAdmin) {
             $this->companies = Company::orderBy('name')->get();
         } else {
-            $this->company_id = $tenantContext->companyId();
+            $this->company_id = $this->company_id ?: $tenantContext->companyId();
             $this->companies = Company::where('id', $this->company_id)
                 ->orWhere('parent_id', $this->company_id)
                 ->orderBy('name')
                 ->get();
-            $this->updatedCompanyId();
         }
+        
+        $this->updatedCompanyId();
 
-        if (request()->is('admin*')) {
+        if (request()->is('admin*') || request()->is('companies*')) {
             $this->routePrefix = 'admin';
         } elseif (request()->is('company*')) {
             $this->routePrefix = 'company';
@@ -103,7 +108,7 @@ class UserCreate extends Component
         // 3. Prevent save if limit is reached
         if ($count >= $limit) {
             session()->flash('error', "Limit reached. This company is only allowed to have {$limit} users.");
-            return $this->redirect(route('users.index'));
+            return $this->redirect(route('users.index', ['companyId' => $this->company_id]));
         }
 
         $validated = $this->validate();
@@ -143,7 +148,7 @@ class UserCreate extends Component
         }
 
         session()->flash('status', "User '{$user->display_name}' created successfully with default permissions.");
-        return redirect()->route('users.index');
+        return redirect()->route('users.index', ['companyId' => $this->company_id]);
     }
 
     public function render()

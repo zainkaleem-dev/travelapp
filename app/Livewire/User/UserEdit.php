@@ -30,9 +30,9 @@ class UserEdit extends Component
     public $branches = [];
     public string $routePrefix = 'admin';
 
-    public function mount(int $id, TenantContext $tenantContext): void
+    public function mount(int $id, TenantContext $tenantContext, ?int $companyId = null): void
     {
-        $companyId = $tenantContext->companyId();
+        $this->company_id = $companyId ?: $tenantContext->companyId();
 
         $this->userId = $id;
 
@@ -143,7 +143,7 @@ class UserEdit extends Component
         }
 
         session()->flash('status', 'User updated successfully.');
-        return redirect()->route('users.index');
+        return redirect()->route('users.index', ['companyId' => $this->company_id]);
     }
 
     public function render()
