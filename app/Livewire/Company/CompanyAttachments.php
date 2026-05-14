@@ -11,6 +11,7 @@ use Livewire\Component;
 #[Layout('layouts.flight')]
 class CompanyAttachments extends Component
 {
+    use HandlesCompanyAttachments;
     public int $companyId;
     public Company $company;
     public array $downloadNames = [];
@@ -53,59 +54,20 @@ class CompanyAttachments extends Component
             $this->addError("downloadNames.{$attachmentId}", 'Please enter a valid file name.');
             return;
         }
-
-        $currentExtension = pathinfo($attachment->original_name, PATHINFO_EXTENSION);
-        if ($currentExtension === '') {
-            $currentExtension = pathinfo($attachment->path, PATHINFO_EXTENSION);
-        }
-
-        $requestedBase = pathinfo($requestedName, PATHINFO_FILENAME);
-        $requestedExtension = pathinfo($requestedName, PATHINFO_EXTENSION);
-
-        $finalDownloadName = $requestedName;
-        if ($currentExtension !== '' && strtolower($requestedExtension) !== strtolower($currentExtension)) {
-            $finalDownloadName = ($requestedBase !== '' ? $requestedBase : 'attachment') . '.' . $currentExtension;
-        }
-
-        $safeStorageBase = Str::slug(pathinfo($finalDownloadName, PATHINFO_FILENAME), '-');
-        if ($safeStorageBase === '') {
-            $safeStorageBase = 'attachment';
-        }
-
-        $directory = pathinfo($attachment->path, PATHINFO_DIRNAME);
-        $directory = ($directory === '.' || $directory === '\\') ? '' : trim((string) $directory, '/\\');
-        $extensionSuffix = $currentExtension !== '' ? '.' . $currentExtension : '';
-
-        $disk = Storage::disk($attachment->disk);
-
-        if (!$disk->exists($attachment->path)) {
-            $this->addError("downloadNames.{$attachmentId}", 'File not found in storage.');
+        
+        $result = $this->renameAttachmentPhysically($attachment, $requestedName);
+        
+        if (isset($result['error']) && !$result['success']) {
+            $this->addError("downloadNames.{$attachmentId}", $result['error']);
             return;
         }
 
-        $newPath = ($directory !== '' ? $directory . '/' : '') . $safeStorageBase . $extensionSuffix;
-
-        if ($newPath !== $attachment->path) {
-            $candidatePath = $newPath;
-            $counter = 1;
-
-            while ($disk->exists($candidatePath)) {
-                $candidatePath = ($directory !== '' ? $directory . '/' : '') . $safeStorageBase . '-' . $counter . $extensionSuffix;
-                $counter++;
-            }
-
-            if ($disk->exists($attachment->path)) {
-                $disk->move($attachment->path, $candidatePath);
-                $newPath = $candidatePath;
-            }
-        }
-
         $attachment->update([
-            'path' => $newPath,
-            'original_name' => $finalDownloadName,
+            'path' => $result['path'],
+            'original_name' => $result['original_name'],
         ]);
 
-        $this->downloadNames[$attachmentId] = $finalDownloadName;
+        $this->downloadNames[$attachmentId] = $result['original_name'];
         session()->flash('status', 'Attachment renamed successfully.');
     }
 

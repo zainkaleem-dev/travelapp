@@ -18,7 +18,7 @@ use Livewire\WithFileUploads;
 #[Layout('layouts.flight')]
 class CompanyEdit extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, HandlesCompanyAttachments;
 
     public int $companyId;
     public Company $company;
@@ -133,8 +133,18 @@ class CompanyEdit extends Component
             ->whereKey($attachmentId)
             ->firstOrFail();
 
-        $attachment->update(['original_name' => $newName]);
-        $this->existingAttachmentNames[$attachmentId] = $newName;
+        $result = $this->renameAttachmentPhysically($attachment, $newName);
+        
+        if (isset($result['error']) && !$result['success']) {
+            $this->addError("attachments.{$attachmentId}", $result['error']);
+            return;
+        }
+
+        $attachment->update([
+            'path' => $result['path'],
+            'original_name' => $result['original_name']
+        ]);
+        $this->existingAttachmentNames[$attachmentId] = $result['original_name'];
     }
 
     public function renameNewAttachment(int $index, string $newName): void
@@ -238,28 +248,17 @@ class CompanyEdit extends Component
             ]);
 
 
-            if ($this->company_logo instanceof UploadedFile && $logoPath) {
-                $this->company->attachments()->create([
-                    'disk' => 'public',
-                    'path' => $logoPath,
-                    'original_name' => $this->company_logo->getClientOriginalName(),
-                    'mime_type' => $this->company_logo->getClientMimeType(),
-                    'size' => $this->company_logo->getSize(),
-                    'uploaded_by' => auth()->id(),
-                ]);
-            }
-
             foreach ($this->attachments as $index => $attachment) {
                 if (!$attachment instanceof UploadedFile) {
                     continue;
                 }
 
                 $customName = $this->attachmentNames[$index] ?? $attachment->getClientOriginalName();
-                $path = $attachment->storePublicly('company-attachments', 'public');
+                $stored = $this->storeAttachmentPhysically($attachment, $customName);
                 $this->company->attachments()->create([
                     'disk' => 'public',
-                    'path' => $path,
-                    'original_name' => $customName,
+                    'path' => $stored['path'],
+                    'original_name' => $stored['original_name'],
                     'mime_type' => $attachment->getClientMimeType(),
                     'size' => $attachment->getSize(),
                     'uploaded_by' => auth()->id(),

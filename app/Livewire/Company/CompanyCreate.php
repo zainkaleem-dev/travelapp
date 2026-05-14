@@ -15,7 +15,7 @@ use Livewire\WithFileUploads;
 #[Layout('layouts.flight')]
 class CompanyCreate extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, HandlesCompanyAttachments;
 
     // Core Identity
     public string $company_name = '';
@@ -147,27 +147,16 @@ class CompanyCreate extends Component
             ]);
 
             // Attachments Logic
-            if ($this->company_logo instanceof UploadedFile && $logoPath) {
-                $company->attachments()->create([
-                    'disk' => 'public',
-                    'path' => $logoPath,
-                    'original_name' => $this->company_logo->getClientOriginalName(),
-                    'mime_type' => $this->company_logo->getClientMimeType(),
-                    'size' => $this->company_logo->getSize(),
-                    'uploaded_by' => auth()->id(),
-                ]);
-            }
-
             foreach ($this->attachments as $index => $attachment) {
                 if (!$attachment instanceof UploadedFile) continue;
                 
                 $customName = $this->attachmentNames[$index] ?? $attachment->getClientOriginalName();
-                $path = $attachment->storePublicly('company-attachments', 'public');
+                $stored = $this->storeAttachmentPhysically($attachment, $customName);
                 
                 $company->attachments()->create([
                     'disk' => 'public',
-                    'path' => $path,
-                    'original_name' => $customName,
+                    'path' => $stored['path'],
+                    'original_name' => $stored['original_name'],
                     'mime_type' => $attachment->getClientMimeType(),
                     'size' => $attachment->getSize(),
                     'uploaded_by' => auth()->id(),

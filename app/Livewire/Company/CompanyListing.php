@@ -86,11 +86,11 @@ class CompanyListing extends Component
 
         $query = Company::query()
             ->when(!auth()->user()->can('Manage Global System'), function ($query) {
-                // Organization Admin sees their own company AND branches/sub-companies they created
-                $query->where(function ($q) {
-                    $q->where('id', auth()->user()->company_id)
-                        ->orWhere('parent_id', auth()->user()->company_id);
-                });
+                // Organization Admin sees branches/sub-companies they created
+                $query->where('parent_id', auth()->user()->company_id);
+            })
+            ->when(auth()->user()->company_id, function ($query) {
+                $query->where('id', '!=', auth()->user()->company_id);
             })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
