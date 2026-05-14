@@ -98,7 +98,7 @@
                     @if(count($grades) === 0)
                         <div class="text-center py-8 rounded-lg border-2 border-dashed border-gray-100 bg-white">
                             <p class="text-[11px] font-bold text-gray-400 uppercase">No grades found for this organization.</p>
-                            <a href="{{ route('grades.index') }}" class="text-[10px] font-bold text-[#2ab4c0] hover:underline mt-2 inline-block uppercase">Manage Grades First</a>
+                            <a href="{{ $companyId ? route('grades.index', ['companyId' => $companyId]) : '#' }}" class="text-[10px] font-bold text-[#2ab4c0] hover:underline mt-2 inline-block uppercase">Manage Grades First</a>
                         </div>
                     @endif
                     @error('selectedGrades') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror

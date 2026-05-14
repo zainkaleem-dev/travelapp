@@ -24,11 +24,16 @@
             @php($middleInitial = $middleName !== '' ? strtoupper(mb_substr($middleName, 0, 1)) . '.' : '')
             @php($displayName = $sidebarUser?->name ?: 'User')
             
-            @php($activeCompanyId = request()->route('companyId') ?? request()->route('id') ?? session('active_company_id') ?? auth()->user()->company_id)
+            @php($routeParams = request()->route()?->parameters() ?? [])
+            @php($activeCompanyId = $routeParams['companyId'] ?? $routeParams['id'] ?? $routeParams['company'] ?? request()->companyId ?? request()->id ?? request()->company ?? session('active_company_id') ?? auth()->user()->company_id)
+            @if(is_object($activeCompanyId)) @php($activeCompanyId = $activeCompanyId->id) @endif
+            @if(!$activeCompanyId && preg_match('/\/companies\/(\d+)/', request()->url(), $m)) @php($activeCompanyId = $m[1]) @endif
+            
             @php($activeCompany = $activeCompanyId ? \App\Models\Company::find($activeCompanyId) : null)
             @php($userCompanyType = auth()->user()->company?->company_type)
-            @php($isTmcContext = ($activeCompany?->company_type === 'TMC') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'TMC'))
-            @php($isCorporateContext = ($activeCompany?->company_type === 'Corporate') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'Corporate'))
+            @php($isTravelPolicyRoute = request()->routeIs(['admin.travel-policy.*', 'companies.travel-policy']))
+            @php($isTmcContext = ($activeCompany?->company_type === 'TMC') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'TMC') || ($isTravelPolicyRoute && $userCompanyType === 'TMC'))
+            @php($isCorporateContext = ($activeCompany?->company_type === 'Corporate') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'Corporate') || ($isTravelPolicyRoute && $userCompanyType === 'Corporate'))
 
             @if($firstName !== '' && $lastName !== '')
                 @if($middleName === '')
@@ -110,13 +115,13 @@
                         Reports
                     </a>
 
-                    @if($activeCompanyId || request()->routeIs(['users.*', 'divisions.*', 'departments.*', 'grades.*']))
+                    @if($activeCompanyId || request()->routeIs(['users.*', 'divisions.*', 'departments.*', 'grades.*', 'admin.travel-policy.*']))
                     <div class="h-px bg-gray-100 my-1"></div>
 
                     <div x-data="{ 
                             openPartner: @js((bool) $activeCompanyId), 
-                            openCorporate: @js((bool) $isCorporateContext || request()->routeIs('companies.travel-policy')), 
-                            openTmc: @js((bool) $isTmcContext && !request()->routeIs('companies.travel-policy')), 
+                            openCorporate: @js((bool) $isCorporateContext || $isTravelPolicyRoute), 
+                            openTmc: @js((bool) $isTmcContext && !$isTravelPolicyRoute), 
                             openCorpNotifications: false, 
                             openCorpIntegrations: false, 
                             openTmcServices: false, 
