@@ -746,6 +746,9 @@
             'admin.airports*',
             'subscriptions.*',
             'admin.travel-policy.*',
+            'grades.*',
+            'divisions.*',
+            'departments.*',
             'dashboard'
         ]);
     @endphp
