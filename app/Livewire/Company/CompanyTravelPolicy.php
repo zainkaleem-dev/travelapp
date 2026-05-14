@@ -15,6 +15,13 @@ class CompanyTravelPolicy extends Component
 
     public int $companyId;
     public Company $company;
+    public $search = '';
+    public $activeTab = 'hotel';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'activeTab' => ['except' => 'hotel'],
+    ];
 
     public function mount(int $id): void
     {
@@ -37,13 +44,6 @@ class CompanyTravelPolicy extends Component
 
     public function render()
     {
-        $policies = TravelPolicy::where('company_id', $this->companyId)
-            ->where('is_active', true)
-            ->latest()
-            ->paginate(10);
-
-        return view('livewire.company.travel-policy', [
-            'policies' => $policies,
-        ]);
+        return view('livewire.company.travel-policy');
     }
 }

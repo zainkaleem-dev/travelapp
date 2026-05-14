@@ -16,6 +16,7 @@ class TravelPolicyEdit extends Component
     public $companyId;
     public $policyType;
     public $isActive;
+    public $returnUrl;
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -34,6 +35,7 @@ class TravelPolicyEdit extends Component
         $this->companyId = $policy->company_id;
         $this->policyType = $policy->policy_type;
         $this->isActive = $policy->is_active;
+        $this->returnUrl = request()->query('returnUrl');
     }
 
     public function save()
@@ -50,6 +52,11 @@ class TravelPolicyEdit extends Component
         ]);
 
         session()->flash('status', 'Travel policy updated successfully.');
+
+        if ($this->returnUrl) {
+            return redirect($this->returnUrl);
+        }
+
         return redirect()->route('admin.system-settings', ['activeTab' => 'travel-policy']);
     }
 

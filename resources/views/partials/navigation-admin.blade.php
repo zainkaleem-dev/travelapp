@@ -107,8 +107,8 @@
 
                     <div x-data="{ 
                             openPartner: @js((bool) $activeCompanyId), 
-                            openCorporate: @js((bool) $isCorporateContext), 
-                            openTmc: @js((bool) $isTmcContext), 
+                            openCorporate: @js((bool) $isCorporateContext || request()->routeIs('companies.travel-policy')), 
+                            openTmc: @js((bool) $isTmcContext && !request()->routeIs('companies.travel-policy')), 
                             openCorpNotifications: false, 
                             openCorpIntegrations: false, 
                             openTmcServices: false, 
@@ -160,10 +160,9 @@
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h12M3 17h8" /></svg>
                                     Trip Purpose &amp; Travel Services
                                 </a>
-                                @can('View Travel Policy')
                                 <a href="{{ route('companies.travel-policy', ['id' => $activeCompanyId]) }}" 
                                     class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('companies.travel-policy') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
-                                    <svg class="w-3 h-3 {{ request()->routeIs('companies.travel-policy') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" /></svg>
+                                    <svg class="w-3 h-3 {{ request()->routeIs('companies.travel-policy') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     Travel Policy
                                 </a>
                                 @endcan

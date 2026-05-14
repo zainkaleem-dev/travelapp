@@ -15,6 +15,13 @@ class TravelPolicyCreate extends Component
     public $companyId;
     public $policyType = 'general';
     public $isActive = true;
+    public $returnUrl;
+
+    public function mount()
+    {
+        $this->companyId = $this->companyId ?: request()->query('companyId');
+        $this->returnUrl = request()->query('returnUrl');
+    }
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -37,6 +44,11 @@ class TravelPolicyCreate extends Component
         ]);
 
         session()->flash('status', 'Travel policy created successfully.');
+        
+        if ($this->returnUrl) {
+            return redirect($this->returnUrl);
+        }
+
         return redirect()->route('admin.system-settings', ['activeTab' => 'travel-policy']);
     }
 

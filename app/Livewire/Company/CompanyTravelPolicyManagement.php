@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\SystemSettings;
+namespace App\Livewire\Company;
 
 use App\Models\TravelPolicy;
 use App\Models\Company;
@@ -8,7 +8,7 @@ use Livewire\Attributes\Reactive;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class TravelPolicyManagement extends Component
+class CompanyTravelPolicyManagement extends Component
 {
     use WithPagination;
 
@@ -27,7 +27,6 @@ class TravelPolicyManagement extends Component
     {
         $this->returnUrl = request()->fullUrl();
     }
-
 
     public function delete($id)
     {
@@ -61,10 +60,10 @@ class TravelPolicyManagement extends Component
             });
         }
 
-        return view('livewire.system-settings.travel-policy-management', [
+        return view('livewire.company.company-travel-policy-management', [
             'policies' => $query->latest()->paginate(10),
             'companies' => Company::orderBy('name')->get(),
-            'policyTypes' => ['flight', 'car', 'hotel', 'concierge', 'general'],
+            'policyTypes' => ['hotel', 'car', 'rail', 'bus', 'flight', 'concierge', 'general'],
         ]);
     }
 }
