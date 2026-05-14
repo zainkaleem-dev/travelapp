@@ -25,7 +25,7 @@ class CompanyTravelPolicyManagement extends Component
 
     public function mount()
     {
-        $this->returnUrl = request()->fullUrl();
+        $this->returnUrl = request()->getRequestUri();
     }
 
     public function delete($id)

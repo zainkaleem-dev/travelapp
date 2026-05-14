@@ -25,7 +25,7 @@ class TravelPolicyManagement extends Component
 
     public function mount()
     {
-        $this->returnUrl = request()->fullUrl();
+        $this->returnUrl = request()->getRequestUri();
     }
 
 
