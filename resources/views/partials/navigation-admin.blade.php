@@ -48,25 +48,31 @@
                 @endif
             @endif
 
-            <div class="mb-4 w-full rounded-lg bg-[#2ab4c0] px-4 py-2.5 text-white shadow-sm">
-                @if(auth()->user()->company && isset(auth()->user()->company->settings['logo_path']))
+            @php($company = auth()->user()->company)
+            @php($sidebarBg = $company->settings['background_color'] ?? '#2ab4c0')
+            @php($sidebarFg = $company->settings['foreground_color'] ?? '#ffffff')
+
+            <div class="mb-4 w-full rounded-lg px-4 py-2.5 shadow-sm transition-colors duration-300" style="background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};">
+                @if($company && isset($company->settings['logo_path']))
                     <div class="flex justify-center pt-2">
-                        <img src="{{ asset('storage/' . auth()->user()->company->settings['logo_path']) }}" 
-                             alt="{{ auth()->user()->company->name }} Logo" 
+                        <img src="{{ asset('storage/' . $company->settings['logo_path']) }}" 
+                             alt="{{ $company->name }} Logo" 
                              class="h-20 w-auto object-contain">
                     </div>
-                    <div class="h-px bg-white/20 my-4"></div>
+                    <div class="h-px my-4" style="background-color: {{ $sidebarFg }}33;"></div>
                 @endif
                 <div class="flex items-center justify-between gap-2">
-                    <p class="text-xs font-semibold truncate">{{ $displayName }}</p>
-                    <p class="text-[11px] font-semibold text-white/90 whitespace-nowrap">{{ $sidebarRole }}</p>
+                    <p class="text-xs font-semibold truncate" style="color: {{ $sidebarFg }};">{{ $displayName }}</p>
+                    <p class="text-[11px] font-semibold whitespace-nowrap" style="color: {{ $sidebarFg }}CC;">{{ $sidebarRole }}</p>
                 </div>
             </div>
 
             <div class="flex flex-col gap-1 w-full overflow-y-auto" style="-webkit-overflow-scrolling: touch;">
 
+                @php($isDashActive = request()->is('dashboard*'))
                 <a href="{{ route('dashboard') }}"
-                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('dashboard') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
+                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isDashActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
+                    style="{{ $isDashActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -80,8 +86,10 @@
                 @if($isOrganizationAdmin)
                     @featureOrAdmin('companies-module')
                     @can('View Company')
+                        @php($isCompaniesActive = request()->routeIs('companies.index'))
                         <a href="{{ route('companies.index') }}"
-                            class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('companies.index') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
+                            class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isCompaniesActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
+                            style="{{ $isCompaniesActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                                 viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -118,7 +126,8 @@
 
                             <button type="button"
                                 class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
-                                :class="(openCorporate || @js($isCorporateContext)) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                :class="(openCorporate || @js($isCorporateContext)) ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                :style="(openCorporate || @js($isCorporateContext)) ? 'background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};' : ''"
                                 @click="openCorporate = !openCorporate">
                                 <span class="inline-flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -135,16 +144,20 @@
                             </button>
 
                             <div x-show="openCorporate" x-cloak class="ml-3 flex flex-col gap-1">
+                                @php($isCorpProfileActive = request()->routeIs('companies.show'))
                                 <a href="{{ route('companies.show', ['id' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('companies.show') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpProfileActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    style="{{ $isCorpProfileActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                                     <svg class="w-3 h-3 {{ request()->routeIs('companies.show') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
                                     Profile
                                 </a>
 
                                 @featureOrAdmin('users-module')
                                 @can('View Users')
+                                    @php($isCorpUsersActive = request()->routeIs('users.*'))
                                     <a href="{{ route('users.index') }}"
-                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('users.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpUsersActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                        style="{{ $isCorpUsersActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                                         <svg class="w-3 h-3 {{ request()->routeIs('users.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                                         </svg>
@@ -160,23 +173,31 @@
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h12M3 17h8" /></svg>
                                     Trip Purpose &amp; Travel Services
                                 </a>
+                                @php($isTravelPolicyActive = request()->routeIs('companies.travel-policy'))
                                 <a href="{{ route('companies.travel-policy', ['id' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('companies.travel-policy') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isTravelPolicyActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    style="{{ $isTravelPolicyActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                                     <svg class="w-3 h-3 {{ request()->routeIs('companies.travel-policy') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     Travel Policy
                                 </a>
+                                @php($isGradesActive = request()->routeIs('grades.*'))
                                 <a href="{{ route('grades.index') }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('grades.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isGradesActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    style="{{ $isGradesActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                                     <svg class="w-3 h-3 {{ request()->routeIs('grades.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
                                     Grades / Positions
                                 </a>
+                                @php($isDivisionsActive = request()->routeIs('divisions.*'))
                                 <a href="{{ route('divisions.index') }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('divisions.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isDivisionsActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    style="{{ $isDivisionsActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                                     <svg class="w-3 h-3 {{ request()->routeIs('divisions.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 12h8M8 17h5" /></svg>
                                     Divisions
                                 </a>
+                                @php($isDeptsActive = request()->routeIs('departments.*'))
                                 <a href="{{ route('departments.index') }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('departments.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isDeptsActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    style="{{ $isDeptsActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                                     <svg class="w-3 h-3 {{ request()->routeIs('departments.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M6 12h12M6 17h8" /></svg>
                                     Departments
                                 </a>
@@ -192,7 +213,8 @@
 
                                 <button type="button"
                                     class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
-                                    :class="openCorpNotifications ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                    :class="openCorpNotifications ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                    :style="openCorpNotifications ? 'background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};' : ''"
                                     @click="openCorpNotifications = !openCorpNotifications">
                                     <span class="inline-flex items-center gap-1.5">
                                         <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0a3 3 0 1 1-6 0h6z" /></svg>
@@ -210,7 +232,8 @@
 
                                 <button type="button"
                                     class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
-                                    :class="openCorpIntegrations ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                    :class="openCorpIntegrations ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                    :style="openCorpIntegrations ? 'background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};' : ''"
                                     @click="openCorpIntegrations = !openCorpIntegrations">
                                     <span class="inline-flex items-center gap-1.5">
                                         <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
@@ -232,7 +255,8 @@
 
                             <button type="button"
                                 class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
-                                :class="(openTmc || @js($isTmcContext)) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                :class="(openTmc || @js($isTmcContext)) ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                :style="(openTmc || @js($isTmcContext)) ? 'background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};' : ''"
                                 @click="openTmc = !openTmc">
                                 <span class="inline-flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -248,8 +272,10 @@
                                 </svg>
                             </button>
                             <div x-show="openTmc" x-cloak class="ml-3 flex flex-col gap-1">
+                                @php($isCorpProfileActive = request()->routeIs('companies.show'))
                                 <a href="{{ route('companies.show', ['id' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('companies.show') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpProfileActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    style="{{ $isCorpProfileActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                                     <svg class="w-3 h-3 {{ request()->routeIs('companies.show') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
                                     Profile
                                 </a>
@@ -268,7 +294,8 @@
 
                                 <button type="button"
                                     class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
-                                    :class="openTmcServices ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                    :class="openTmcServices ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                    :style="openTmcServices ? 'background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};' : ''"
                                     @click="openTmcServices = !openTmcServices">
                                     <span class="inline-flex items-center gap-1.5">
                                         <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h12M3 17h8" /></svg>
@@ -287,7 +314,8 @@
 
                                 <button type="button"
                                     class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
-                                    :class="openTmcIntegrations ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                    :class="openTmcIntegrations ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
+                                    :style="openTmcIntegrations ? 'background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};' : ''"
                                     @click="openTmcIntegrations = !openTmcIntegrations">
                                     <span class="inline-flex items-center gap-1.5">
                                         <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
@@ -361,8 +389,10 @@
                 </a>
 
                 @can('View Subscription')
+                @php($isSubActive = request()->routeIs('subscriptions.*'))
                 <a href="{{ route('subscriptions.index') }}"
-                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('subscriptions.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
+                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isSubActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
+                    style="{{ $isSubActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -373,8 +403,10 @@
                 @endcan
 
                 @can('View System Setting')
+                @php($isSettingsActive = request()->routeIs('admin.system-settings*', 'admin.travel-policy.*'))
                 <a href="{{ route('admin.system-settings') }}"
-                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('admin.system-settings*', 'admin.travel-policy.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
+                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isSettingsActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
+                    style="{{ $isSettingsActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                     <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round"

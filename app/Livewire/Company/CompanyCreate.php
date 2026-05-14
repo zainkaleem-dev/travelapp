@@ -28,6 +28,8 @@ class CompanyCreate extends Component
     public array $attachmentNames = []; // Map of index => custom name
     public ?int $founded_year = null;
     public ?string $description = null;
+    public string $foreground_color = '#000000';
+    public string $background_color = '#ffffff';
 
     // SaaS / Status
     public string $status = 'active';
@@ -143,6 +145,8 @@ class CompanyCreate extends Component
                 'parent_id' => auth()->user()->can('Manage Global System') ? null : auth()->user()->company_id,
                 'settings' => [
                     'logo_path' => $logoPath,
+                    'foreground_color' => $this->foreground_color,
+                    'background_color' => $this->background_color,
                 ],
             ]);
 

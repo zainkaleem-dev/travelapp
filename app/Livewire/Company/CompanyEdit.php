@@ -41,6 +41,8 @@ class CompanyEdit extends Component
     // SaaS / Status
     public string $status = 'active';
     public ?string $notes = null;
+    public string $foreground_color = '#000000';
+    public string $background_color = '#ffffff';
 
 
     public function mount(int $id): void
@@ -78,6 +80,8 @@ class CompanyEdit extends Component
         $this->status = $this->company->status;
         $this->notes = $this->company->notes;
         $this->parent_id = $this->company->parent_id;
+        $this->foreground_color = $this->company->settings['foreground_color'] ?? '#000000';
+        $this->background_color = $this->company->settings['background_color'] ?? '#ffffff';
 
         $this->existingAttachmentNames = $this->company
             ->attachments()
@@ -244,6 +248,8 @@ class CompanyEdit extends Component
                 'parent_id' => $validated['parent_id'],
                 'settings' => array_merge($this->company->settings ?? [], [
                     'logo_path' => $logoPath,
+                    'foreground_color' => $this->foreground_color,
+                    'background_color' => $this->background_color,
                 ]),
             ]);
 

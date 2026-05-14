@@ -283,6 +283,33 @@
                         </div>
                     </div>
                 </div>
+
+                @if(auth()->user()->hasRole('Super Admin'))
+                <!-- Section 4: Branding & Customization -->
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Branding & Customization</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="field-label">Foreground Color</label>
+                            <div class="flex items-center gap-2 h-[34px] rounded-lg border border-gray-200 bg-white px-2">
+                                <input type="color" wire:model="foreground_color" class="w-6 h-6 rounded border-0 cursor-pointer p-0 bg-transparent">
+                                <input type="text" wire:model="foreground_color" class="flex-1 text-[11px] font-mono border-0 focus:ring-0 p-0" placeholder="#000000">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="field-label">Background Color</label>
+                            <div class="flex items-center gap-2 h-[34px] rounded-lg border border-gray-200 bg-white px-2">
+                                <input type="color" wire:model="background_color" class="w-6 h-6 rounded border-0 cursor-pointer p-0 bg-transparent">
+                                <input type="text" wire:model="background_color" class="flex-1 text-[11px] font-mono border-0 focus:ring-0 p-0" placeholder="#FFFFFF">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
