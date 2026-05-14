@@ -63,7 +63,7 @@ class CompanyTravelPolicyManagement extends Component
         return view('livewire.company.company-travel-policy-management', [
             'policies' => $query->latest()->paginate(10),
             'companies' => Company::orderBy('name')->get(),
-            'policyTypes' => ['hotel', 'car', 'rail', 'bus', 'flight', 'concierge', 'general'],
+            'policyTypes' => ['flight', 'hotel', 'car', 'concierge', 'general'],
         ]);
     }
 }

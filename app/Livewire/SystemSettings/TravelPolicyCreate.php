@@ -19,9 +19,9 @@ class TravelPolicyCreate extends Component
     public $returnUrl;
     public $selectedGrades = [];
 
-    public function mount()
+    public function mount($companyId = null)
     {
-        $this->companyId = $this->companyId ?: request()->query('companyId');
+        $this->companyId = $companyId ?: request()->query('companyId');
         $this->returnUrl = request()->query('returnUrl');
     }
 
@@ -52,7 +52,7 @@ class TravelPolicyCreate extends Component
         }
 
         session()->flash('status', 'Travel policy created successfully.');
-        
+
         if ($this->returnUrl) {
             return redirect($this->returnUrl);
         }

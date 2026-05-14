@@ -16,11 +16,11 @@ class CompanyTravelPolicy extends Component
     public int $companyId;
     public Company $company;
     public $search = '';
-    public $activeTab = 'hotel';
+    public $activeTab = 'flight';
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'activeTab' => ['except' => 'hotel'],
+        'activeTab' => ['except' => 'flight'],
     ];
 
     public function mount(int $id): void

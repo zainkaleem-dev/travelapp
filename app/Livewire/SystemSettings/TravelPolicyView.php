@@ -11,7 +11,7 @@ class TravelPolicyView extends Component
 {
     public $policy;
 
-    public function mount($id)
+    public function mount($companyId, $id)
     {
         $this->policy = TravelPolicy::with('company')->findOrFail($id);
     }

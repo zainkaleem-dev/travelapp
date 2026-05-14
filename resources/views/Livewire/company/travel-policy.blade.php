@@ -36,7 +36,7 @@
         {{-- Tab Navigation --}}
         <div class="px-6 pt-2 border-b border-gray-200 bg-white">
             <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-[11px] font-semibold w-full">
-                @foreach(['hotel', 'car', 'rail', 'bus'] as $tab)
+                @foreach(['flight', 'hotel', 'car', 'concierge', 'general'] as $tab)
                     <button wire:click="$set('activeTab', '{{ $tab }}')" 
                         class="inline-flex items-center gap-1.5 px-6 py-2.5 flex-shrink-0 rounded-t-lg transition-all duration-200 whitespace-nowrap uppercase tracking-wider
                         {{ $activeTab === $tab ? 'bg-[#2ab4c0] text-white font-bold shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50' }}">

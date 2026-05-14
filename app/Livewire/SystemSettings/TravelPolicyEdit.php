@@ -30,7 +30,7 @@ class TravelPolicyEdit extends Component
         'selectedGrades.*' => 'exists:grades,id',
     ];
 
-    public function mount($id)
+    public function mount($companyId, $id)
     {
         $policy = TravelPolicy::findOrFail($id);
         $this->policyId = $policy->id;
