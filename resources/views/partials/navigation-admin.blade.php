@@ -102,7 +102,7 @@
                         Reports
                     </a>
 
-                    @if($activeCompanyId || request()->routeIs('users.*'))
+                    @if($activeCompanyId || request()->routeIs(['users.*', 'divisions.*', 'departments.*', 'grades.*']))
                     <div class="h-px bg-gray-100 my-1"></div>
 
                     <div x-data="{ 
@@ -165,7 +165,6 @@
                                     <svg class="w-3 h-3 {{ request()->routeIs('companies.travel-policy') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     Travel Policy
                                 </a>
-                                @endcan
                                 <a href="{{ route('grades.index') }}" 
                                     class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('grades.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
                                     <svg class="w-3 h-3 {{ request()->routeIs('grades.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
@@ -182,6 +181,7 @@
                                     Departments
                                 </a>
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
+
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
                                     Approval Flow
                                 </a>
@@ -437,7 +437,8 @@
                 @endif
 
 
-                <!-- @featureOrAdmin('branches-module')
+                {{-- 
+                @featureOrAdmin('branches-module')
                 @can('View Branch')
                     <a href="{{ route('branches.index') }}"
                         class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('branches.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
@@ -449,10 +450,12 @@
                         Branches
                     </a>
                 @endcan
-                @endfeatureOrAdmin -->
+                @endfeatureOrAdmin
+                --}}
 
 
-                <!-- @featureOrAdmin('roles-permissions-module')
+                {{-- 
+                @featureOrAdmin('roles-permissions-module')
                 @can('Manage Roles and Permissions')
                     <a href="{{ route('roles.index') }}"
                         class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ request()->routeIs('roles.*') ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors">
@@ -479,9 +482,11 @@
                         Feature Management
                     </a>
                 @endcan
-                @endfeatureOrAdmin -->
+                @endfeatureOrAdmin
+                --}}
 
-                <!-- <div class="h-px bg-gray-100 my-1"></div>
+                {{-- 
+                <div class="h-px bg-gray-100 my-1"></div>
 
                 @featureOrAdmin('flights-module')
                 <a href="{{ route('flights.search') }}"
@@ -493,7 +498,8 @@
                     </svg>
                     Book Trip
                 </a>
-                @endfeatureOrAdmin -->
+                @endfeatureOrAdmin
+                --}}
 
 
 
