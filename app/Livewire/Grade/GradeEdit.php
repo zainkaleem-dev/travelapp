@@ -22,9 +22,9 @@ class GradeEdit extends Component
     {
         $this->companyId = $companyId;
         $this->grade = $grade;
-        $this->name = $grade->name;
+        $this->name = $grade->name ?? '';
         $this->description = $grade->description ?? '';
-        $this->status = $grade->status;
+        $this->status = $grade->status ?? 'active';
         $this->department_id = $grade->department_id;
         $this->departments = \App\Models\Department::where('company_id', $this->companyId)->orderBy('name')->get();
     }

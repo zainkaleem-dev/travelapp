@@ -20,9 +20,9 @@ class DivisionEdit extends Component
     {
         $this->companyId = $companyId;
         $this->division = $division;
-        $this->name = $division->name;
+        $this->name = $division->name ?? '';
         $this->description = $division->description ?? '';
-        $this->status = $division->status;
+        $this->status = $division->status ?? 'active';
     }
 
     protected function rules(): array

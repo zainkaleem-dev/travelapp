@@ -22,9 +22,9 @@ class DepartmentEdit extends Component
     {
         $this->companyId = $companyId;
         $this->department = $department;
-        $this->name = $department->name;
+        $this->name = $department->name ?? '';
         $this->description = $department->description ?? '';
-        $this->status = $department->status;
+        $this->status = $department->status ?? 'active';
         $this->division_id = $department->division_id;
         $this->divisions = \App\Models\Division::where('company_id', $this->companyId)->orderBy('name')->get();
     }
