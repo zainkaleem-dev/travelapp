@@ -24,11 +24,11 @@
             @php($middleInitial = $middleName !== '' ? strtoupper(mb_substr($middleName, 0, 1)) . '.' : '')
             @php($displayName = $sidebarUser?->name ?: 'User')
             
-            @php($activeCompanyId = request()->route('id') ?? (request()->routeIs('users.*') ? auth()->user()->company_id : null))
+            @php($activeCompanyId = request()->route('id') ?? (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) ? auth()->user()->company_id : null))
             @php($activeCompany = $activeCompanyId ? \App\Models\Company::find($activeCompanyId) : null)
             @php($userCompanyType = auth()->user()->company?->company_type)
-            @php($isTmcContext = ($activeCompany?->company_type === 'TMC') || (request()->routeIs('users.*') && $userCompanyType === 'TMC'))
-            @php($isCorporateContext = ($activeCompany?->company_type === 'Corporate') || (request()->routeIs('users.*') && $userCompanyType === 'Corporate'))
+            @php($isTmcContext = ($activeCompany?->company_type === 'TMC') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'TMC'))
+            @php($isCorporateContext = ($activeCompany?->company_type === 'Corporate') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'Corporate'))
 
             @if($firstName !== '' && $lastName !== '')
                 @if($middleName === '')
@@ -167,16 +167,19 @@
                                     Travel Policy
                                 </a>
                                 @endcan
-                                <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
-                                    <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
+                                <a href="{{ route('grades.index') }}" 
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('grades.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    <svg class="w-3 h-3 {{ request()->routeIs('grades.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
                                     Grades / Positions
                                 </a>
-                                <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
-                                    <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 12h8M8 17h5" /></svg>
+                                <a href="{{ route('divisions.index') }}" 
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('divisions.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    <svg class="w-3 h-3 {{ request()->routeIs('divisions.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 12h8M8 17h5" /></svg>
                                     Divisions
                                 </a>
-                                <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
-                                    <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M6 12h12M6 17h8" /></svg>
+                                <a href="{{ route('departments.index') }}" 
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ request()->routeIs('departments.*') ? 'bg-[#2ab4c0] hover:bg-[#2ab4c0] !text-white font-semibold rounded-lg' : '' }}">
+                                    <svg class="w-3 h-3 {{ request()->routeIs('departments.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M6 12h12M6 17h8" /></svg>
                                     Departments
                                 </a>
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
