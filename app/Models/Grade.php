@@ -28,4 +28,9 @@ class Grade extends Model
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function travelPolicies()
+    {
+        return $this->belongsToMany(TravelPolicy::class, 'travel_policy_grade')->withTimestamps();
+    }
 }

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Livewire\SystemSettings;
+namespace App\Livewire\Company;
 
 use App\Models\TravelPolicy;
-use App\Models\Company;
 use App\Models\Grade;
+use App\Models\Company;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('layouts.flight')]
-class TravelPolicyEdit extends Component
+class CompanyTravelPolicyEdit extends Component
 {
     public $policyId;
     public $name;
@@ -17,12 +17,25 @@ class TravelPolicyEdit extends Component
     public $companyId;
     public $policyType;
     public $isActive;
-    public $returnUrl;
     public $selectedGrades = [];
+    public $company;
+
+    public function mount($id, $policy)
+    {
+        $this->companyId = $id;
+        $this->company = Company::findOrFail($id);
+        
+        $policyModel = TravelPolicy::where('company_id', $id)->findOrFail($policy);
+        $this->policyId = $policyModel->id;
+        $this->name = $policyModel->name;
+        $this->description = $policyModel->description;
+        $this->policyType = $policyModel->policy_type;
+        $this->isActive = $policyModel->is_active;
+        $this->selectedGrades = $policyModel->grades->pluck('id')->toArray();
+    }
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'companyId' => 'required|exists:companies,id',
         'policyType' => 'required|in:flight,car,hotel,concierge,general',
         'description' => 'nullable|string',
         'isActive' => 'boolean',
@@ -30,28 +43,15 @@ class TravelPolicyEdit extends Component
         'selectedGrades.*' => 'exists:grades,id',
     ];
 
-    public function mount($id)
-    {
-        $policy = TravelPolicy::findOrFail($id);
-        $this->policyId = $policy->id;
-        $this->name = $policy->name;
-        $this->description = $policy->description;
-        $this->companyId = $policy->company_id;
-        $this->policyType = $policy->policy_type;
-        $this->isActive = $policy->is_active;
-        $this->selectedGrades = $policy->grades->pluck('id')->toArray();
-        $this->returnUrl = request()->query('returnUrl');
-    }
-
     public function save()
     {
         $this->validate();
 
-        $policy = TravelPolicy::findOrFail($this->policyId);
+        $policy = TravelPolicy::where('company_id', $this->companyId)->findOrFail($this->policyId);
+        
         $policy->update([
             'name' => $this->name,
             'description' => $this->description,
-            'company_id' => $this->companyId,
             'policy_type' => $this->policyType,
             'is_active' => $this->isActive,
         ]);
@@ -59,19 +59,14 @@ class TravelPolicyEdit extends Component
         $policy->grades()->syncWithPivotValues($this->selectedGrades, ['company_id' => $this->companyId]);
 
         session()->flash('status', 'Travel policy updated successfully.');
-
-        if ($this->returnUrl) {
-            return redirect($this->returnUrl);
-        }
-
-        return redirect()->route('admin.system-settings', ['activeTab' => 'travel-policy']);
+        
+        return redirect()->route('companies.travel-policy', ['id' => $this->companyId]);
     }
 
     public function render()
     {
-        return view('livewire.system-settings.travel-policy-edit', [
-            'companies' => Company::orderBy('name')->get(),
-            'grades' => $this->companyId ? Grade::where('company_id', $this->companyId)->orderBy('name')->get() : collect(),
+        return view('livewire.company.company-travel-policy-edit', [
+            'grades' => Grade::where('company_id', $this->companyId)->orderBy('name')->get(),
             'policyTypes' => ['flight', 'car', 'hotel', 'concierge', 'general'],
         ]);
     }

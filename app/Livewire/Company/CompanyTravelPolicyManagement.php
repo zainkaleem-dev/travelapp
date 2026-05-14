@@ -43,7 +43,7 @@ class CompanyTravelPolicyManagement extends Component
 
     public function render()
     {
-        $query = TravelPolicy::query()->with('company');
+        $query = TravelPolicy::query()->with(['company', 'grades']);
 
         if ($this->companyId) {
             $query->where('company_id', $this->companyId);

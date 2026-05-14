@@ -1,33 +1,32 @@
 <?php
 
-namespace App\Livewire\SystemSettings;
+namespace App\Livewire\Company;
 
 use App\Models\TravelPolicy;
-use App\Models\Company;
 use App\Models\Grade;
+use App\Models\Company;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('layouts.flight')]
-class TravelPolicyCreate extends Component
+class CompanyTravelPolicyCreate extends Component
 {
     public $name;
     public $description;
     public $companyId;
     public $policyType = 'general';
     public $isActive = true;
-    public $returnUrl;
     public $selectedGrades = [];
+    public $company;
 
-    public function mount()
+    public function mount($id)
     {
-        $this->companyId = $this->companyId ?: request()->query('companyId');
-        $this->returnUrl = request()->query('returnUrl');
+        $this->companyId = $id;
+        $this->company = Company::findOrFail($id);
     }
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'companyId' => 'required|exists:companies,id',
         'policyType' => 'required|in:flight,car,hotel,concierge,general',
         'description' => 'nullable|string',
         'isActive' => 'boolean',
@@ -53,18 +52,13 @@ class TravelPolicyCreate extends Component
 
         session()->flash('status', 'Travel policy created successfully.');
         
-        if ($this->returnUrl) {
-            return redirect($this->returnUrl);
-        }
-
-        return redirect()->route('admin.system-settings', ['activeTab' => 'travel-policy']);
+        return redirect()->route('companies.travel-policy', ['id' => $this->companyId]);
     }
 
     public function render()
     {
-        return view('livewire.system-settings.travel-policy-create', [
-            'companies' => Company::orderBy('name')->get(),
-            'grades' => $this->companyId ? Grade::where('company_id', $this->companyId)->orderBy('name')->get() : collect(),
+        return view('livewire.company.company-travel-policy-create', [
+            'grades' => Grade::where('company_id', $this->companyId)->orderBy('name')->get(),
             'policyTypes' => ['flight', 'car', 'hotel', 'concierge', 'general'],
         ]);
     }

@@ -13,6 +13,7 @@
                     <th class="px-6 py-2.5 text-[11px] font-bold text-white uppercase tracking-wide rounded-ss-lg">Policy Name</th>
                     <th class="px-6 py-2.5 text-[11px] font-bold text-white uppercase tracking-wide">Type</th>
                     <th class="px-6 py-2.5 text-[11px] font-bold text-white uppercase tracking-wide">Company</th>
+                    <th class="px-6 py-2.5 text-[11px] font-bold text-white uppercase tracking-wide">Grades</th>
                     <th class="px-6 py-2.5 text-[11px] font-bold text-white uppercase tracking-wide">Status</th>
                     <th class="px-6 py-2.5 text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg text-right">Actions</th>
                 </tr>
@@ -33,6 +34,17 @@
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-[11px] font-medium text-gray-600">{{ $policy->company->name }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-wrap gap-1 max-w-[200px]">
+                                @forelse($policy->grades as $grade)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600 uppercase border border-gray-200">
+                                        {{ $grade->name }}
+                                    </span>
+                                @empty
+                                    <span class="text-[10px] text-gray-400 italic uppercase">No grades assigned</span>
+                                @endforelse
+                            </div>
                         </td>
                         <td class="px-6 py-4">
                             <button type="button" wire:click="toggleStatus({{ $policy->id }})"

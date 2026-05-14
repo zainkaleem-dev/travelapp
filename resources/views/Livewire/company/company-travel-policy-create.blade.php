@@ -4,9 +4,10 @@
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Edit Travel Policy</h1>
+                    <h1 class="text-[21px] font-black text-gray-900 tracking-tight">Create Travel Policy</h1>
+                    <p class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mt-1">Organization: {{ $company->name }}</p>
                 </div>
-                <a href="{{ route('admin.system-settings', ['activeTab' => 'travel-policy']) }}"
+                <a href="{{ route('companies.travel-policy', ['id' => $companyId]) }}"
                     class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-50 uppercase tracking-wider transition-colors">
                     Back to List
                 </a>
@@ -23,29 +24,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
                             <label class="field-label">Policy Name <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="name" class="input-field" placeholder="e.g. Executive Flight Policy">
+                            <input type="text" wire:model="name" class="input-field" placeholder="e.g. Standard Economy Policy">
                             @error('name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
-
-                        <div>
-                            <label class="field-label">Company <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, selected: @js($companyId ?: ''), companies: @js($companies->pluck('name', 'id')) }"
-                                @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
-                                    <span x-text="selected === '' ? 'Select company...' : companies[selected]"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel max-h-64 overflow-y-auto">
-                                    <button type="button" class="admin-menu-item" @click="selected = ''; open = false; $wire.set('companyId', '')">Select company...</button>
-                                    @foreach($companies as $company)
-                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected == '{{ $company->id }}' }"
-                                            @click="selected = '{{ $company->id }}'; open = false; $wire.set('companyId', '{{ $company->id }}')">{{ $company->name }}</button>
-                                    @endforeach
-                                </div>
-                            </div>
-                            @error('companyId') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
@@ -68,12 +48,6 @@
                             @error('policyType') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
-                        <div class="md:col-span-2">
-                            <label class="field-label">Description</label>
-                            <textarea wire:model="description" rows="3" class="input-field pt-2" placeholder="Policy details and rules..."></textarea>
-                            @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
-
                         <div>
                             <label class="field-label">Status</label>
                             <div class="flex items-center gap-3 mt-2">
@@ -86,6 +60,12 @@
                                     Inactive
                                 </button>
                             </div>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="field-label">Description</label>
+                            <textarea wire:model="description" rows="3" class="input-field pt-2" placeholder="Policy details and rules..."></textarea>
+                            @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
@@ -126,13 +106,13 @@
             </div>
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
-                <a href="{{ route('admin.system-settings', ['activeTab' => 'travel-policy']) }}"
+                <a href="{{ route('companies.travel-policy', ['id' => $companyId]) }}"
                     class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                     Cancel
                 </a>
                 <button type="submit"
                     class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                    Update Policy
+                    Create Policy
                 </button>
             </div>
         </form>

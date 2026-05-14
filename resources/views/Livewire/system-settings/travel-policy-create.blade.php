@@ -89,6 +89,40 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Grade Selection -->
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Applicable Grades</h2>
+                        <span class="text-[10px] font-bold text-[#2ab4c0] bg-[#2ab4c0]/5 px-2 py-0.5 rounded uppercase">Selection Required</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        @foreach($grades as $grade)
+                            <label class="relative flex items-center p-3 rounded-lg border cursor-pointer transition-all {{ in_array($grade->id, $selectedGrades) ? 'bg-[#f2feff] border-[#2ab4c0] shadow-sm' : 'bg-white border-gray-200 hover:border-gray-300' }}">
+                                <input type="checkbox" wire:model.live="selectedGrades" value="{{ $grade->id }}" class="sr-only">
+                                <div class="flex-1">
+                                    <p class="text-[12px] font-bold {{ in_array($grade->id, $selectedGrades) ? 'text-[#2ab4c0]' : 'text-gray-700' }}">{{ $grade->name }}</p>
+                                    @if($grade->description)
+                                        <p class="text-[10px] text-gray-400 truncate">{{ $grade->description }}</p>
+                                    @endif
+                                </div>
+                                <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center {{ in_array($grade->id, $selectedGrades) ? 'border-[#2ab4c0] bg-[#2ab4c0]' : 'border-gray-200' }}">
+                                    @if(in_array($grade->id, $selectedGrades))
+                                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                                    @endif
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+                    @if(count($grades) === 0)
+                        <div class="text-center py-8 rounded-lg border-2 border-dashed border-gray-100 bg-white">
+                            <p class="text-[11px] font-bold text-gray-400 uppercase">No grades found for this organization.</p>
+                            <a href="{{ route('grades.index') }}" class="text-[10px] font-bold text-[#2ab4c0] hover:underline mt-2 inline-block uppercase">Manage Grades First</a>
+                        </div>
+                    @endif
+                    @error('selectedGrades') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">

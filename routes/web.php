@@ -268,6 +268,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/companies/{id}/user-roles', CompanyUserRoles::class)->name('companies.user-roles')->middleware('can:View Company');
         Route::get('/companies/{id}/travel-policy', \App\Livewire\Company\CompanyTravelPolicy::class)->name('companies.travel-policy')->middleware('can:View Company');
 
+
         Route::get('/companies/{id}/roles-permissions', RolesPermissions::class)->name('companies.roles-permissions')->middleware('can:Manage Roles and Permissions');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit')->middleware('can:Edit Company');
         Route::get('/companies/{id}/edit-branches', \App\Livewire\Company\CompanyEditBranches::class)->name('companies.edit-branches')->middleware('can:Edit Company');
