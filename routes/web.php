@@ -247,6 +247,11 @@ Route::middleware(['auth', 'password.set'])->group(function () {
             return "Database refreshed, seeded, and cache cleared successfully! Please log in again.";
         })->name('system.refresh');
         
+        // Mail Template CRUD
+        Route::get('/mail-templates', \App\Livewire\Mail\MailTemplateListing::class)->name('admin.mail.index');
+        Route::get('/mail-templates/create', \App\Livewire\Mail\MailTemplateCreate::class)->name('admin.mail.create');
+        Route::get('/mail-templates/{id}/edit', \App\Livewire\Mail\MailTemplateEdit::class)->name('admin.mail.edit');
+        
         Route::get('/companies', CompanyListing::class)->name('companies.index')->middleware('can:View Company');
         Route::get('/companies/{company}/context', function (\App\Models\Company $company) {
             $user = auth()->user();

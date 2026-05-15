@@ -452,6 +452,18 @@
                     </svg>
                     System Settings
                 </a>
+
+                @php($isMailActive = request()->routeIs('admin.mail.*'))
+                <a href="{{ route('admin.mail.index') }}"
+                    class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isMailActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
+                    style="{{ $isMailActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
+                    <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 8l9 6 9-6M4 6h16a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z" />
+                    </svg>
+                    Mail Templates
+                </a>
                 @endcan
                 @can('View Countries and Cities')
                 @php($isCountriesActive = request()->routeIs('admin.countries-and-cities*', 'admin.countries.*', 'admin.cities.*'))

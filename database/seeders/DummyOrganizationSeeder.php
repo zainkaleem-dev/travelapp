@@ -69,7 +69,31 @@ class DummyOrganizationSeeder extends Seeder
 
         $orgAdmin->assignRole($role);
 
-        $this->command->info('✅ Dummy organization, branch, and admin user created!');
+        // 5. Create Partner Companies (Children of Demo Organization)
+        
+        // Partner 1: Sub-Corporate
+        Company::updateOrCreate(
+            ['slug' => 'demo-sub-corporate'],
+            [
+                'parent_id' => $company->id,
+                'name' => 'Demo Sub-Corporate',
+                'company_type' => 'Corporate',
+                'status' => 'active',
+            ]
+        );
+
+        // Partner 2: Sub-TMC
+        Company::updateOrCreate(
+            ['slug' => 'demo-sub-tmc'],
+            [
+                'parent_id' => $company->id,
+                'name' => 'Demo Sub-TMC',
+                'company_type' => 'TMC',
+                'status' => 'active',
+            ]
+        );
+
+        $this->command->info('✅ Dummy organization, partners, branch, and admin user created!');
         $this->command->info('Email: orgadmin@demo.com');
         $this->command->info('Password: password');
     }
