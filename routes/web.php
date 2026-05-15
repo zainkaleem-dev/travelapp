@@ -191,6 +191,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/password-setup', PasswordSetup::class)->name('password.setup');
 });
 
+// Database Refresh Route (Accessible for initial seeding)
+Route::get('/refresh-db', function () {
+    // WARNING: This will wipe all data on the server!
+    \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    
+    return "Database refreshed, seeded, and cache cleared successfully! Please log in again.";
+})->name('system.refresh');
+
 Route::middleware(['auth', 'password.set'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile');
@@ -237,13 +246,7 @@ Route::middleware(['auth', 'password.set'])->group(function () {
 
 
     Route::middleware(['superadmin'])->group(function () {
-        Route::get('/refresh-db', function () {
-            // WARNING: This will wipe all data on the server!
-            \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
-            \Illuminate\Support\Facades\Artisan::call('cache:clear');
-            
-            return "Database refreshed, seeded, and cache cleared successfully! Please log in again.";
-        })->name('system.refresh');
+
         
         // Mail Template CRUD
         Route::get('/mail-templates', \App\Livewire\Mail\MailTemplateListing::class)->name('admin.mail.index');
