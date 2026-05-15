@@ -101,6 +101,7 @@ Route::get('/trip-type/{type}', function (Request $request, string $type) {
 Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();
+
         if (!$user->has_set_password && !$user->hasRole('Super Admin') && !session()->has('impersonated_by')) {
             return redirect()->route('password.setup');
         }

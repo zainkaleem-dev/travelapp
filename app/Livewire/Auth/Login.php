@@ -94,13 +94,13 @@ class Login extends Component
         // Set the multi-tenant context before checking roles for redirection
         setPermissionsTeamId($user->company_id);
 
-        if ($user->hasRole('Agent') || $user->hasRole('User')) {
-            $this->redirect(route('flights.search'));
+        if ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Partner Admin') || $user->hasRole('Branch Admin')) {
+            $this->redirect(route('dashboard'));
             return;
         }
 
-        if ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Partner Admin') || $user->hasRole('Branch Admin')) {
-            $this->redirect(route('dashboard'));
+        if ($user->hasRole('Agent') || $user->hasRole('User')) {
+            $this->redirect(route('flights.search'));
             return;
         }
 

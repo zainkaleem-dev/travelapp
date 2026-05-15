@@ -57,7 +57,22 @@ class User extends Authenticatable implements MustVerifyEmail
             }
 
             // Check in global context (Only for Super Admin bypass)
-            if ($targetTeamId !== null && $hasActiveRole(['Super Admin'], null)) {
+            // We only return true here if the role being checked IS 'Super Admin'
+            // OR if the user IS a global super admin and we are in a permission check context.
+            // For hasRole() specifically, we should be strict unless it's the Super Admin role itself.
+            $checkingSuperAdmin = false;
+            if (is_string($roles) && $roles === 'Super Admin') {
+                $checkingSuperAdmin = true;
+            } elseif (is_iterable($roles)) {
+                foreach ($roles as $r) {
+                    if ((is_string($r) ? $r : $r->name) === 'Super Admin') {
+                        $checkingSuperAdmin = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($targetTeamId !== null && $checkingSuperAdmin && $hasActiveRole(['Super Admin'], null)) {
                 return true;
             }
 
