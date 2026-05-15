@@ -238,11 +238,8 @@ Route::middleware(['auth', 'password.set'])->group(function () {
 
     Route::middleware(['superadmin'])->group(function () {
         Route::get('/refresh-db', function () {
-            if (app()->environment('production')) {
-                return "Cannot refresh database in production!";
-            }
-            
-            \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true]);
+            // WARNING: This will wipe all data on the server!
+            \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
             \Illuminate\Support\Facades\Artisan::call('cache:clear');
             
             return "Database refreshed, seeded, and cache cleared successfully! Please log in again.";
