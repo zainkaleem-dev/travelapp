@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::table('role_has_permissions', function (Blueprint $table) {
             // Check if column already exists (from failed migration)
             if (!Schema::hasColumn('role_has_permissions', 'company_id')) {
@@ -18,9 +19,6 @@ return new class extends Migration
             }
 
             // Drop existing primary key safely
-            // Note: Since we don't know if the dropPrimary survived in the last run, we check if there is a primary key
-            // However, Schema doesn't have a specific hasPrimaryKey. 
-            // We'll use a raw statement to ensure we are starting clean.
             try {
                 $table->dropPrimary(['permission_id', 'role_id']);
             } catch (\Exception $e) {
@@ -33,6 +31,7 @@ return new class extends Migration
             // Add foreign key
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -40,6 +39,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::table('role_has_permissions', function (Blueprint $table) {
             // Truncate to avoid isolation issues during rollback
             \Illuminate\Support\Facades\DB::table('role_has_permissions')->truncate();
@@ -53,5 +53,6 @@ return new class extends Migration
                 // Handle cases where rollback partially failed
             }
         });
+        Schema::enableForeignKeyConstraints();
     }
 };
