@@ -13,7 +13,63 @@
             </div>
         </div>
 
-        <form wire:submit.prevent="save" class="p-6">
+        <div class="px-6 py-4" x-data="{ tab: @entangle('tab') }">
+            <style>
+                .profile-tabs {
+                    display: flex;
+                    position: relative;
+                    padding: 0.25rem;
+                    border-radius: 50px;
+                    background-color: #F5F3F1;
+                    width: 100%;
+                    max-width: 400px;
+                    margin: 0 0 1.5rem 0;
+                    box-sizing: border-box;
+                }
+                .profile-tabs * { z-index: 2; }
+                .profile-tabs input[type=radio] { display: none; }
+                .profile-tabs input[type=radio]:checked + label { color: #F5F3F1; }
+                .profile-tabs .tab {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex: 1;
+                    height: 40px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    border-radius: 50px;
+                    cursor: pointer;
+                    transition: color 0.15s ease-in;
+                    color: #6b7280;
+                }
+                .profile-tabs .glider {
+                    position: absolute;
+                    height: 40px;
+                    width: calc(50% - 0.25rem);
+                    background-image: linear-gradient(to right, #2ab4c0, #239ea9);
+                    z-index: 1;
+                    border-radius: 80px;
+                    transition: transform 0.25s ease-out;
+                    box-shadow: 0 5px 13px rgba(42, 180, 192, 0.35);
+                    top: 0.25rem;
+                    left: 0.25rem;
+                }
+                .profile-tabs #ptabs-1:checked ~ .glider { transform: translateX(0); }
+                .profile-tabs #ptabs-2:checked ~ .glider { transform: translateX(100%); }
+            </style>
+
+            <div class="profile-tabs">
+                <input type="radio" id="ptabs-1" name="profile-tabs" value="personal" x-model="tab">
+                <label for="ptabs-1" class="tab">Personal</label>
+
+                <input type="radio" id="ptabs-2" name="profile-tabs" value="family" x-model="tab">
+                <label for="ptabs-2" class="tab">Family</label>
+
+                <div class="glider"></div>
+            </div>
+
+            <div x-show="tab === 'personal'">
+                <form wire:submit.prevent="save">
             <div class="space-y-8">
                 <!-- Section 1: Identity -->
                 <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
@@ -167,6 +223,136 @@
 
                     </div>
                 </div>
+                <!-- Section 3: Additional Personal Info -->
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Additional Personal Info</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="field-label">Phone</label>
+                            <input type="tel" wire:model="phone" class="input-field" placeholder="Phone number">
+                            @error('phone') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Date of Birth</label>
+                            <input type="date" wire:model="dob" class="input-field">
+                            @error('dob') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Gender</label>
+                            <select wire:model="gender" class="input-field">
+                                <option value="">Select</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                                <option>Prefer not to say</option>
+                            </select>
+                            @error('gender') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Nationality</label>
+                            <input type="text" wire:model="nationality" class="input-field" placeholder="Nationality">
+                            @error('nationality') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Travel Documents -->
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Travel Documents</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="field-label">Passport number</label>
+                            <input type="text" wire:model="passport_number" class="input-field" placeholder="Passport number">
+                            @error('passport_number') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Expiry date</label>
+                            <input type="date" wire:model="expiry_date" class="input-field">
+                            @error('expiry_date') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Issuing country</label>
+                            <input type="text" wire:model="issuing_country" class="input-field" placeholder="Issuing country">
+                            @error('issuing_country') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Preferences -->
+                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Preferences</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="field-label">Purpose of travel</label>
+                            <select wire:model="purpose_of_travel" class="input-field">
+                                <option value="">Select</option>
+                                <option>Business</option>
+                                <option>Leisure</option>
+                                <option>Education</option>
+                                <option>Visiting family</option>
+                                <option>Other</option>
+                            </select>
+                            @error('purpose_of_travel') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Seat preference</label>
+                            <select wire:model="seat_preference" class="input-field">
+                                <option value="">Select</option>
+                                <option>Aisle</option>
+                                <option>Window</option>
+                                <option>Middle</option>
+                                <option>Any</option>
+                            </select>
+                            @error('seat_preference') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Meal preference</label>
+                            <select wire:model="meal_preference" class="input-field">
+                                <option value="">Select</option>
+                                <option>Regular</option>
+                                <option>Vegetarian</option>
+                                <option>Vegan</option>
+                                <option>Halal</option>
+                                <option>Kosher</option>
+                            </select>
+                            @error('meal_preference') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="field-label">Preferred cabin</label>
+                            <select wire:model="preferred_cabin" class="input-field">
+                                <option value="">Select</option>
+                                <option>Economy</option>
+                                <option>Premium Economy</option>
+                                <option>Business</option>
+                                <option>First</option>
+                            </select>
+                            @error('preferred_cabin') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="field-label">Preferred airline</label>
+                            <input type="text" wire:model="preferred_airline" class="input-field" placeholder="Airline name">
+                            @error('preferred_airline') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
@@ -181,5 +367,99 @@
                 </button>
             </div>
         </form>
+    </div>
+
+    <div x-show="tab === 'family'" x-cloak class="space-y-6">
+        @if (!empty($familyMembers))
+            <div class="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-700 uppercase tracking-wider text-[11px]">Name</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-700 uppercase tracking-wider text-[11px]">Email</th>
+                            <th class="px-4 py-3 text-right font-semibold text-gray-700 uppercase tracking-wider text-[11px]">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach ($familyMembers as $index => $fm)
+                            <tr>
+                                <td class="px-4 py-3 text-gray-900 font-medium">{{ $fm['first_name'] }} {{ $fm['last_name'] }}</td>
+                                <td class="px-4 py-3 text-gray-600">{{ $fm['email'] ?: '—' }}</td>
+                                <td class="px-4 py-3 text-right">
+                                    <button type="button" wire:click="removeFamilyMember({{ $index }})" class="text-red-600 hover:text-red-800 font-bold text-[11px] uppercase tracking-wider">Remove</button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
+        <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Add New Family Member</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="field-label">First Name *</label>
+                    <input type="text" wire:model="f_first_name" class="input-field" placeholder="First Name">
+                    @error('f_first_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="field-label">Last Name *</label>
+                    <input type="text" wire:model="f_last_name" class="input-field" placeholder="Last Name">
+                    @error('f_last_name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="field-label">Email</label>
+                    <input type="email" wire:model="f_email" class="input-field" placeholder="Email">
+                    @error('f_email') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="field-label">Phone</label>
+                    <input type="tel" wire:model="f_phone" class="input-field" placeholder="Phone">
+                    @error('f_phone') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="field-label">Date of Birth</label>
+                    <input type="date" wire:model="f_dob" class="input-field">
+                    @error('f_dob') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="field-label">Gender</label>
+                    <select wire:model="f_gender" class="input-field">
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="field-label">Passport number</label>
+                        <input type="text" wire:model="f_passport_number" class="input-field" placeholder="Passport number">
+                    </div>
+                    <div>
+                        <label class="field-label">Expiry date</label>
+                        <input type="date" wire:model="f_expiry_date" class="input-field">
+                    </div>
+                    <div>
+                        <label class="field-label">Issuing country</label>
+                        <input type="text" wire:model="f_issuing_country" class="input-field" placeholder="Issuing country">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+                <button type="button" wire:click="addFamilyMember"
+                    class="rounded-lg bg-gradient-to-r from-[#2ab4c0] to-[#239ea9] px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-[#2ab4c0]/20 transition hover:scale-[1.02] active:scale-[0.98]">
+                    Add Family Member to List
+                </button>
+            </div>
+        </div>
     </div>
 </div>

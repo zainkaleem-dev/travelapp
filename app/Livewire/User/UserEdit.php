@@ -26,9 +26,25 @@ class UserEdit extends Component
     public ?int $company_id = null;
     public ?int $branch_id = null;
 
+    public ?string $phone = null;
+    public ?string $dob = null;
+    public ?string $gender = null;
+    public ?string $nationality = null;
+
+    public ?string $passport_number = null;
+    public ?string $expiry_date = null;
+    public ?string $issuing_country = null;
+
+    public ?string $purpose_of_travel = null;
+    public ?string $seat_preference = null;
+    public ?string $meal_preference = null;
+    public ?string $preferred_cabin = null;
+    public ?string $preferred_airline = null;
+
     public $companies = [];
     public $branches = [];
     public string $routePrefix = 'admin';
+    public string $tab = 'personal';
 
     public function mount(int $id, TenantContext $tenantContext, ?int $companyId = null): void
     {
@@ -87,6 +103,24 @@ class UserEdit extends Component
 
         $this->branch_id = $this->user->branch_id;
         $this->updatedCompanyId();
+
+        $pi = \App\Models\UserPersonalInfo::where('user_id', $this->userId)->first();
+        if ($pi) {
+            $this->phone = $pi->phone;
+            $this->dob = $pi->dob?->format('Y-m-d');
+            $this->gender = $pi->gender;
+            $this->nationality = $pi->nationality;
+
+            $this->passport_number = $pi->passport_number;
+            $this->expiry_date = $pi->expiry_date?->format('Y-m-d');
+            $this->issuing_country = $pi->issuing_country;
+
+            $this->purpose_of_travel = $pi->purpose_of_travel;
+            $this->seat_preference = $pi->seat_preference;
+            $this->meal_preference = $pi->meal_preference;
+            $this->preferred_cabin = $pi->preferred_cabin;
+            $this->preferred_airline = $pi->preferred_airline;
+        }
     }
 
     public function updatedCompanyId()
@@ -108,6 +142,18 @@ class UserEdit extends Component
             'password' => ['nullable', 'string', 'min:8'],
             'company_id' => [auth()->user()->hasRole('Super Admin') ? 'required' : 'nullable', 'exists:companies,id'],
             'branch_id' => ['required', 'exists:branches,id'],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'dob' => ['nullable', 'date'],
+            'gender' => ['nullable', 'string', 'max:255'],
+            'nationality' => ['nullable', 'string', 'max:255'],
+            'passport_number' => ['nullable', 'string', 'max:255'],
+            'expiry_date' => ['nullable', 'date'],
+            'issuing_country' => ['nullable', 'string', 'max:255'],
+            'purpose_of_travel' => ['nullable', 'string', 'max:255'],
+            'seat_preference' => ['nullable', 'string', 'max:255'],
+            'meal_preference' => ['nullable', 'string', 'max:255'],
+            'preferred_cabin' => ['nullable', 'string', 'max:255'],
+            'preferred_airline' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -142,12 +188,46 @@ class UserEdit extends Component
             $this->user->update(['password' => Hash::make($validated['password'])]);
         }
 
+        $pi = \App\Models\UserPersonalInfo::firstOrNew(['user_id' => $this->userId]);
+        $pi->phone = $validated['phone'] ?? null;
+        $pi->dob = !empty($validated['dob']) ? date('Y-m-d', strtotime($validated['dob'])) : null;
+        $pi->gender = $validated['gender'] ?? null;
+        $pi->nationality = $validated['nationality'] ?? null;
+        $pi->passport_number = $validated['passport_number'] ?? null;
+        $pi->expiry_date = !empty($validated['expiry_date']) ? date('Y-m-d', strtotime($validated['expiry_date'])) : null;
+        $pi->issuing_country = $validated['issuing_country'] ?? null;
+        $pi->purpose_of_travel = $validated['purpose_of_travel'] ?? null;
+        $pi->seat_preference = $validated['seat_preference'] ?? null;
+        $pi->meal_preference = $validated['meal_preference'] ?? null;
+        $pi->preferred_cabin = $validated['preferred_cabin'] ?? null;
+        $pi->preferred_airline = $validated['preferred_airline'] ?? null;
+        $pi->save();
+
         session()->flash('status', 'User updated successfully.');
         return redirect()->route('users.index', ['companyId' => $this->company_id]);
     }
 
+    public function deleteFamilyMember(int $id): void
+    {
+        $member = \App\Models\UserFamilyInfo::query()
+            ->where('user_id', $this->userId)
+            ->findOrFail($id);
+
+        $member->delete();
+
+        session()->flash('status', 'Family traveler removed.');
+    }
+
     public function render()
     {
-        return view('livewire.user.edit');
+        $familyMembers = \App\Models\UserFamilyInfo::query()
+            ->where('user_id', $this->userId)
+            ->orderByDesc('updated_at')
+            ->orderBy('id')
+            ->get();
+
+        return view('livewire.user.edit', [
+            'familyMembers' => $familyMembers,
+        ]);
     }
 }
