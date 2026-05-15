@@ -69,26 +69,26 @@ class DummyOrganizationSeeder extends Seeder
 
         $orgAdmin->assignRole($role);
 
-        // 5. Create Partner Companies (Children of Demo Organization)
+        // 5. Create Partner Hierarchy (Corporate -> TMC -> Corporate)
         
-        // Partner 1: Sub-Corporate
-        $subCorp = Company::updateOrCreate(
-            ['slug' => 'demo-sub-corporate'],
-            [
-                'parent_id' => $company->id,
-                'name' => 'Demo Sub-Corporate',
-                'company_type' => 'Corporate',
-                'status' => 'active',
-            ]
-        );
-
-        // Partner 2: Sub-TMC
+        // Level 2: Sub-TMC (Child of Demo Organization Corporate)
         $subTmc = Company::updateOrCreate(
             ['slug' => 'demo-sub-tmc'],
             [
                 'parent_id' => $company->id,
                 'name' => 'Demo Sub-TMC',
                 'company_type' => 'TMC',
+                'status' => 'active',
+            ]
+        );
+
+        // Level 3: Sub-Corporate (Child of Demo Sub-TMC)
+        $subCorp = Company::updateOrCreate(
+            ['slug' => 'demo-sub-corporate'],
+            [
+                'parent_id' => $subTmc->id,
+                'name' => 'Demo Sub-Corporate',
+                'company_type' => 'Corporate',
                 'status' => 'active',
             ]
         );
