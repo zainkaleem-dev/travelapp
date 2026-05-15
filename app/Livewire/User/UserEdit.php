@@ -45,6 +45,7 @@ class UserEdit extends Component
     public $branches = [];
     public string $routePrefix = 'admin';
     public string $tab = 'personal';
+    public bool $isTmc = false;
 
     public function mount(int $id, TenantContext $tenantContext, ?int $companyId = null): void
     {
@@ -126,8 +127,11 @@ class UserEdit extends Component
     public function updatedCompanyId()
     {
         if ($this->company_id) {
+            $company = Company::find($this->company_id);
+            $this->isTmc = ($company?->company_type === 'TMC');
             $this->branches = Branch::where('company_id', $this->company_id)->orderBy('name')->get();
         } else {
+            $this->isTmc = false;
             $this->branches = [];
         }
     }

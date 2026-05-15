@@ -43,6 +43,7 @@ class UserCreate extends Component
     public $branches = [];
     public string $routePrefix = 'admin';
     public string $tab = 'personal';
+    public bool $isTmc = false;
 
     public array $familyMembers = [];
 
@@ -91,8 +92,11 @@ class UserCreate extends Component
     {
         $this->branch_id = null;
         if ($this->company_id) {
+            $company = Company::find($this->company_id);
+            $this->isTmc = ($company?->company_type === 'TMC');
             $this->branches = Branch::where('company_id', $this->company_id)->orderBy('name')->get();
         } else {
+            $this->isTmc = false;
             $this->branches = [];
         }
     }

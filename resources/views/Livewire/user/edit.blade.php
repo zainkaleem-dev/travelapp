@@ -74,6 +74,7 @@
                 .profile-tabs #ptabs-2:checked ~ .glider { transform: translateX(100%); }
             </style>
 
+            @if(!$isTmc)
             <div class="profile-tabs">
                 <input type="radio" id="ptabs-1" name="profile-tabs" value="personal" x-model="tab">
                 <label for="ptabs-1" class="tab">Personal</label>
@@ -83,6 +84,7 @@
 
                 <div class="glider"></div>
             </div>
+            @endif
 
             <div x-show="tab === 'personal'">
                 <form wire:submit.prevent="save">
@@ -245,6 +247,8 @@
                         </div>
                     </div>
                 </div>
+
+                @if(!$isTmc)
                 <!-- Section 3: Additional Personal Info -->
                 <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
                     <div class="flex items-center justify-between mb-6">
@@ -375,6 +379,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
@@ -391,6 +396,7 @@
         </form>
     </div>
 
+    @if(!$isTmc)
     <div x-show="tab === 'family'" x-cloak>
         <div class="relative overflow-hidden rounded-2xl border border-gray-200/80 bg-white p-4 shadow-sm ring-1 ring-gray-900/[0.04] sm:p-6">
             <div class="pointer-events-none absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-[#2ab4c0] to-[#239ea9]" aria-hidden="true"></div>
@@ -455,6 +461,7 @@
             @endif
         </div>
     </div>
+    @endif
 
     {{-- Delete Modal --}}
     <div
