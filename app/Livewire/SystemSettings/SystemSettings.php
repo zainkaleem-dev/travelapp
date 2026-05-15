@@ -14,21 +14,14 @@ class SystemSettings extends Component
     use WithPagination;
 
     public $companyId = '';
-    public $policyType = '';
     public $search = '';
     public $activeTab = 'endpoints';
 
     protected $queryString = [
         'companyId' => ['except' => ''],
-        'policyType' => ['except' => ''],
         'search' => ['except' => ''],
         'activeTab' => ['except' => 'endpoints'],
     ];
-
-    public function updatingPolicyType()
-    {
-        $this->resetPage();
-    }
 
     public function updatingSearch()
     {

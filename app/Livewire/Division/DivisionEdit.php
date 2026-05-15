@@ -16,13 +16,13 @@ class DivisionEdit extends Component
 
     public ?int $companyId = null;
 
-    public function mount(int $companyId, Division $division)
+    public function mount(int $companyId, int $id)
     {
         $this->companyId = $companyId;
-        $this->division = $division;
-        $this->name = $division->name ?? '';
-        $this->description = $division->description ?? '';
-        $this->status = $division->status ?? 'active';
+        $this->division = Division::withoutGlobalScopes()->findOrFail($id);
+        $this->name = $this->division->name ?? '';
+        $this->description = $this->division->description ?? '';
+        $this->status = $this->division->status ?? 'active';
     }
 
     protected function rules(): array

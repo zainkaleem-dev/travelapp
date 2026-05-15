@@ -18,14 +18,14 @@ class DepartmentEdit extends Component
 
     public ?int $companyId = null;
 
-    public function mount(int $companyId, Department $department)
+    public function mount(int $companyId, int $id)
     {
         $this->companyId = $companyId;
-        $this->department = $department;
-        $this->name = $department->name ?? '';
-        $this->description = $department->description ?? '';
-        $this->status = $department->status ?? 'active';
-        $this->division_id = $department->division_id;
+        $this->department = Department::withoutGlobalScopes()->findOrFail($id);
+        $this->name = $this->department->name ?? '';
+        $this->description = $this->department->description ?? '';
+        $this->status = $this->department->status ?? 'active';
+        $this->division_id = $this->department->division_id;
         $this->divisions = \App\Models\Division::where('company_id', $this->companyId)->orderBy('name')->get();
     }
 

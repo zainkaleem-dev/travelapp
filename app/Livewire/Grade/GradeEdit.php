@@ -18,14 +18,14 @@ class GradeEdit extends Component
 
     public ?int $companyId = null;
 
-    public function mount(int $companyId, Grade $grade)
+    public function mount(int $companyId, int $id)
     {
         $this->companyId = $companyId;
-        $this->grade = $grade;
-        $this->name = $grade->name ?? '';
-        $this->description = $grade->description ?? '';
-        $this->status = $grade->status ?? 'active';
-        $this->department_id = $grade->department_id;
+        $this->grade = Grade::withoutGlobalScopes()->findOrFail($id);
+        $this->name = $this->grade->name ?? '';
+        $this->description = $this->grade->description ?? '';
+        $this->status = $this->grade->status ?? 'active';
+        $this->department_id = $this->grade->department_id;
         $this->departments = \App\Models\Department::where('company_id', $this->companyId)->orderBy('name')->get();
     }
 
