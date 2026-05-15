@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             AirlineSeeder::class,
             AirportSeeder::class,
             DummyOrganizationSeeder::class,
+            TmcOrganizationSeeder::class,
         ]);
     }
 }

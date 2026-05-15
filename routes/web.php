@@ -105,7 +105,7 @@ Route::get('/', function () {
             return redirect()->route('password.setup');
         }
         // 1. Global Super Admin landing
-        if ($user->can('Manage Global System')) {
+        if ($user->hasRole('Super Admin') || $user->can('Manage Global System')) {
             return redirect()->route('dashboard');
         }
 
@@ -234,7 +234,17 @@ Route::middleware(['auth', 'password.set'])->group(function () {
 
 
 
+
     Route::middleware(['superadmin'])->group(function () {
+        Route::get('/refresh-db', function () {
+            if (app()->environment('production')) {
+                return "Cannot refresh database in production!";
+            }
+            
+            \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true]);
+            return "Database refreshed and seeded successfully!";
+        })->name('system.refresh');
+        
         Route::get('/companies', CompanyListing::class)->name('companies.index')->middleware('can:View Company');
         Route::get('/companies/{company}/context', function (\App\Models\Company $company) {
             $user = auth()->user();

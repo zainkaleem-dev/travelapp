@@ -387,7 +387,7 @@
                     @featureOrAdmin('users-module')
                     @can('View Users')
                         @php($isUsersActive = request()->routeIs('users.*'))
-                        @php($targetCompanyId = $activeCompanyId ?: auth()->user()->company_id ?: \App\Models\Company::first()?->id)
+                        @php($targetCompanyId = $activeCompanyId ?: auth()->user()->company_id)
                         @if($targetCompanyId)
                             <a href="{{ route('users.index', ['companyId' => $targetCompanyId]) }}"
                                 class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isUsersActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
