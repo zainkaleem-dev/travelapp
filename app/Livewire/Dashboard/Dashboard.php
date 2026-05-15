@@ -158,6 +158,6 @@ class Dashboard extends Component
             $data['monthlyActivity'] = ['labels' => [], 'data' => []];
         }
 
-        return view('livewire.dashboard.index', $data);
+        return view('livewire.dashboard.dashboard', $data);
     }
 }
