@@ -72,10 +72,19 @@
             color: var(--primary-bg) !important;
         }
         
+
+        /* Foreground color for accented text and icons */
         [class*="text-[#2ab4c0]"], [class*="text-teal-"],
         [class*="text-[#1f9aa6]"], [class*="hover:text-[#1f9aa6]"]:hover,
         [class*="hover:text-[#2ab4c0]"]:hover, [class*="group-hover:text-[#2ab4c0]"]:hover {
             color: color-mix(in srgb, var(--primary-bg), black 15%) !important;
+        }
+
+        /* Ensure filter arrows in branded headers use the foreground color */
+        thead[class*="bg-[#2ab4c0]"] svg, tr[class*="bg-[#2ab4c0]"] svg,
+        .table-header-branded svg, .admin-menu-btn svg, .flex-1.min-w-0 .table-header-branded svg,
+        .md\:w-72 [class*="bg-gradient-to-r"][class*="from-[#2ab4c0]"] svg {
+            color: var(--primary-fg) !important;
         }
         
         [class*="border-[#2ab4c0]"], [class*="border-teal-"],
@@ -92,16 +101,21 @@
             --tw-ring-color: var(--primary-bg) !important;
         }
 
+        /* Gradient overrides: Match super admin style (white -> light brand) */
+        [class*="from-"][class*="2ab4c0"], .from-teal-500 {
+            --tw-gradient-from: var(--primary-bg) !important;
+            --tw-gradient-to: color-mix(in srgb, var(--primary-bg), black 10%) !important;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+            color: var(--primary-fg) !important;
+        }
+
+        [class*="to-"][class*="f2feff"] {
+            --tw-gradient-to: color-mix(in srgb, var(--primary-bg), white 92%) !important;
+        }
+
         /* Light background variants using color-mix */
         [class*="bg-"][class*="eaf9fb"], [class*="bg-"][class*="f2feff"], .bg-teal-50, .hover\:bg-teal-50:hover {
             background-color: color-mix(in srgb, var(--primary-bg), white 97%) !important;
-        }
-
-        /* Gradient overrides */
-        [class*="from-"][class*="2ab4c0"], .from-teal-500, [class*="to-"][class*="f2feff"] {
-            --tw-gradient-from: var(--primary-bg) !important;
-            --tw-gradient-to: color-mix(in srgb, var(--primary-bg), white 98%) !important;
-            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
         }
         
         /* Progress bars and status indicators */
@@ -112,7 +126,7 @@
 
         /* Specific overrides for common components */
         thead[class*="bg-[#2ab4c0]"] th, tr[class*="bg-[#2ab4c0]"] th,
-        .table-header-branded {
+        .table-header-branded, .table-header-branded th {
             background-color: var(--primary-bg) !important;
             color: var(--primary-fg) !important;
         }

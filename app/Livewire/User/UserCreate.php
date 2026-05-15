@@ -208,7 +208,6 @@ class UserCreate extends Component
             'preferred_cabin' => $validated['preferred_cabin'] ?? null,
             'preferred_airline' => $validated['preferred_airline'] ?? null,
         ]);
-        $pi->save();
 
         foreach ($this->familyMembers as $fm) {
             \App\Models\UserFamilyInfo::create([

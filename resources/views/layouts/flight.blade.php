@@ -115,26 +115,39 @@
             background-color: color-mix(in srgb, var(--primary-bg), white 97%) !important;
         }
 
-        /* Gradient overrides */
-        [class*="from-"][class*="2ab4c0"], .from-teal-500, [class*="to-"][class*="f2feff"] {
-            --tw-gradient-from: var(--primary-bg) !important;
-            --tw-gradient-to: color-mix(in srgb, var(--primary-bg), white 98%) !important;
-            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+        /* Foreground color for accented text and icons */
+        [class*="text-[#2ab4c0]"], [class*="text-teal-"],
+        [class*="text-[#1f9aa6]"], [class*="hover:text-[#1f9aa6]"]:hover,
+        [class*="hover:text-[#2ab4c0]"]:hover, [class*="group-hover:text-[#2ab4c0]"]:hover {
+            color: color-mix(in srgb, var(--primary-bg), black 15%) !important;
+        }
+
+        /* Ensure content SVGs and filter arrows use the foreground color */
+        thead[class*="bg-[#2ab4c0]"] svg, tr[class*="bg-[#2ab4c0]"] svg,
+        .table-header-branded svg, .admin-menu-btn svg, .flex-1.min-w-0 .table-header-branded svg,
+        .md\:w-72 [class*="bg-gradient-to-r"][class*="from-[#2ab4c0]"] svg {
+            color: var(--primary-fg) !important;
         }
         
-        /* Progress bars and status indicators */
-        [class*="peer-checked:bg-[#2ab4c0]"]:checked ~ [class*="peer-checked:bg-[#2ab4c0]"],
-        [class*="peer-checked:bg-[#2ab4c0]"] {
-            background-color: var(--primary-bg) !important;
+        /* Gradient overrides: Match super admin style (white -> light brand) */
+        [class*="from-"][class*="2ab4c0"], .from-teal-500 {
+            --tw-gradient-from: var(--primary-bg) !important;
+            --tw-gradient-to: color-mix(in srgb, var(--primary-bg), black 10%) !important;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+            color: var(--primary-fg) !important;
+        }
+
+        [class*="to-"][class*="f2feff"] {
+            --tw-gradient-to: color-mix(in srgb, var(--primary-bg), white 92%) !important;
         }
 
         /* Specific overrides for common components */
         thead[class*="bg-[#2ab4c0]"] th, tr[class*="bg-[#2ab4c0]"] th,
-        .table-header-branded {
+        .table-header-branded, .table-header-branded th {
             background-color: var(--primary-bg) !important;
             color: var(--primary-fg) !important;
         }
-
+        
         /* Navigation active states */
         .is-active, .active-tab {
             background-color: var(--primary-bg) !important;
@@ -826,39 +839,9 @@
 </head>
 
 <body x-data="{ searchOpen: false }">
-    @if(session()->has('impersonated_by') && count(session('impersonated_by', [])) > 0)
-        @php
-            $impersonationStack = session('impersonated_by', []);
-            $previousAdminId = end($impersonationStack);
-            $previousAdmin = $previousAdminId ? \App\Models\User::withoutGlobalScopes()->find($previousAdminId) : null;
-            $depth = count($impersonationStack);
-        @endphp
-        <div class="px-4 py-2 shadow-sm sticky top-0 z-[1000]" style="background-color: {{ $primaryBg }}; color: {{ $primaryFg }};">
-            <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span class="text-[13px] font-semibold leading-tight">
-                        Impersonating {{ auth()->user()->company ? auth()->user()->company->name : 'N/A' }} admin, <span class="underline decoration-white/30 decoration-2 underline-offset-2">{{ auth()->user()->display_name }}</span>
-                        @if($depth > 1)
-                            <span class="ml-1 opacity-70 text-[11px] font-normal">({{ $depth }} levels deep)</span>
-                        @endif
-                    </span>
-                </div>
-                <a href="{{ route('impersonate.leave') }}" class="flex-shrink-0 rounded-lg bg-white/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50" style="color: {{ $primaryFg }};">
-                    Return to {{ $previousAdmin ? $previousAdmin->display_name : 'Admin' }}
-                </a>
-            </div>
-        </div>
-    @endif
-
-
-
-
     @php
         $user = auth()->user();
-        $isAdmin = $user && $user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Partner Admin');
+        $isAdmin = $user && ($user->hasRole('Super Admin') || $user->hasRole('Organization Admin') || $user->hasRole('Partner Admin'));
         $isAdminRoute = request()->routeIs([
             'companies.*',
             'branches.*',
@@ -881,6 +864,37 @@
             'dashboard'
         ]);
     @endphp
+
+    @if(session()->has('impersonated_by') && count(session('impersonated_by', [])) > 0)
+        @php
+            $impersonationStack = session('impersonated_by', []);
+            $previousAdminId = end($impersonationStack);
+            $previousAdmin = $previousAdminId ? \App\Models\User::withoutGlobalScopes()->find($previousAdminId) : null;
+            $depth = count($impersonationStack);
+        @endphp
+        <div class="py-2 shadow-sm sticky top-0 z-[1000]" style="background-color: {{ $primaryBg }}; color: {{ $primaryFg }};">
+            <div class="{{ $isAdminRoute ? 'w-full px-3 sm:px-4 lg:px-6' : 'max-w-7xl mx-auto px-3 sm:px-4' }} flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span class="text-[13px] font-semibold leading-tight">
+                        Impersonating {{ auth()->user()->company ? auth()->user()->company->name : 'N/A' }} admin, <span class="underline decoration-white/30 decoration-2 underline-offset-2">{{ auth()->user()->display_name }}</span>
+                        @if($depth > 1)
+                            <span class="ml-1 opacity-70 text-[11px] font-normal">({{ $depth }} levels deep)</span>
+                        @endif
+                    </span>
+                </div>
+                <a href="{{ route('impersonate.leave') }}" class="flex-shrink-0 rounded-lg bg-white/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50" style="color: {{ $primaryFg }};">
+                    Return to {{ $previousAdmin ? $previousAdmin->display_name : 'Admin' }}
+                </a>
+            </div>
+        </div>
+    @endif
+
+
+
+
 
     {{-- ── Navbar ── --}}
     <nav class="relative z-50 bg-white border-b border-gray-200">

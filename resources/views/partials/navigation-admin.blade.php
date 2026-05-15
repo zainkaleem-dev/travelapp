@@ -25,15 +25,16 @@
             @php($displayName = $sidebarUser?->name ?: 'User')
             
             @php($routeParams = request()->route()?->parameters() ?? [])
-            @php($activeCompanyId = $routeParams['companyId'] ?? $routeParams['id'] ?? $routeParams['company'] ?? request()->companyId ?? request()->id ?? request()->company ?? session('active_company_id') ?? auth()->user()->company_id)
+            @php($activeCompanyId = $routeParams['companyId'] ?? $routeParams['id'] ?? $routeParams['company'] ?? request()->companyId ?? request()->id ?? request()->company ?? null)
             @if(is_object($activeCompanyId)) @php($activeCompanyId = $activeCompanyId->id) @endif
             @if(!$activeCompanyId && preg_match('/\/companies\/(\d+)/', request()->url(), $m)) @php($activeCompanyId = $m[1]) @endif
+            @if(request()->routeIs('companies.index')) @php($activeCompanyId = null) @endif
             
             @php($activeCompany = $activeCompanyId ? \App\Models\Company::find($activeCompanyId) : null)
             @php($userCompanyType = auth()->user()->company?->company_type)
             @php($isTravelPolicyRoute = request()->routeIs(['admin.travel-policy.*', 'companies.travel-policy']))
-            @php($isTmcContext = ($activeCompany?->company_type === 'TMC') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'TMC') || ($isTravelPolicyRoute && $userCompanyType === 'TMC'))
-            @php($isCorporateContext = ($activeCompany?->company_type === 'Corporate') || (request()->routeIs(['users.*', 'grades.*', 'divisions.*', 'departments.*']) && $userCompanyType === 'Corporate') || ($isTravelPolicyRoute && $userCompanyType === 'Corporate'))
+            @php($isTmcContext = $activeCompanyId && ($activeCompany?->company_type === 'TMC'))
+            @php($isCorporateContext = $activeCompanyId && ($activeCompany?->company_type === 'Corporate'))
 
             @if($firstName !== '' && $lastName !== '')
                 @if($middleName === '')
@@ -104,7 +105,7 @@
                 @if($isOrganizationAdmin)
                     @featureOrAdmin('companies-module')
                     @can('View Company')
-                        @php($isCompaniesActive = request()->routeIs('companies.index'))
+                        @php($isCompaniesActive = request()->routeIs(['companies.*']))
                         <a href="{{ route('companies.index') }}"
                             class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isCompaniesActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
                             style="{{ $isCompaniesActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
@@ -142,6 +143,7 @@
                         }"
                         class="flex flex-col gap-1">
 
+                            @if($isCorporateContext || $isTravelPolicyRoute)
                             <button type="button"
                                 class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
                                 :class="(openCorporate || @js($isCorporateContext)) ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
@@ -164,19 +166,19 @@
                             <div x-show="openCorporate" x-cloak class="ml-3 flex flex-col gap-1">
                                 @php($isCorpProfileActive = request()->routeIs('companies.show'))
                                 <a href="{{ route('companies.show', ['id' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpProfileActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpProfileActive ? 'font-semibold rounded-lg' : '' }}"
                                     style="{{ $isCorpProfileActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
-                                    <svg class="w-3 h-3 {{ request()->routeIs('companies.show') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
+                                    <svg class="w-3 h-3 {{ $isCorpProfileActive ? '' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
                                     Profile
                                 </a>
 
                                 @featureOrAdmin('users-module')
                                 @can('View Users')
-                                    @php($isCorpUsersActive = request()->routeIs('users.*'))
+                                    @php($isCorpUsersActive = $isCorporateContext && request()->routeIs('users.*'))
                                     <a href="{{ route('users.index', ['companyId' => $activeCompanyId]) }}"
-                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpUsersActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                        class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpUsersActive ? 'font-semibold rounded-lg' : '' }}"
                                         style="{{ $isCorpUsersActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
-                                        <svg class="w-3 h-3 {{ request()->routeIs('users.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <svg class="w-3 h-3 {{ $isCorpUsersActive ? '' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                                         </svg>
                                         Users
@@ -191,32 +193,34 @@
                                     <svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h12M3 17h8" /></svg>
                                     Trip Purpose &amp; Travel Services
                                 </a>
+                                @if(!$isGlobalSuperAdmin)
                                 @php($isTravelPolicyActive = request()->routeIs('companies.travel-policy'))
                                 <a href="{{ route('companies.travel-policy', ['id' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isTravelPolicyActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isTravelPolicyActive ? 'font-semibold rounded-lg' : '' }}"
                                     style="{{ $isTravelPolicyActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
-                                    <svg class="w-3 h-3 {{ request()->routeIs('companies.travel-policy') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                    <svg class="w-3 h-3 {{ $isTravelPolicyActive ? '' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                     Travel Policy
                                 </a>
+                                @endif
                                 @php($isGradesActive = request()->routeIs('grades.*'))
                                 <a href="{{ route('grades.index', ['companyId' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isGradesActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isGradesActive ? 'font-semibold rounded-lg' : '' }}"
                                     style="{{ $isGradesActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
-                                    <svg class="w-3 h-3 {{ request()->routeIs('grades.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
+                                    <svg class="w-3 h-3 {{ $isGradesActive ? '' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" /></svg>
                                     Grades / Positions
                                 </a>
                                 @php($isDivisionsActive = request()->routeIs('divisions.*'))
                                 <a href="{{ route('divisions.index', ['companyId' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isDivisionsActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isDivisionsActive ? 'font-semibold rounded-lg' : '' }}"
                                     style="{{ $isDivisionsActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
-                                    <svg class="w-3 h-3 {{ request()->routeIs('divisions.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 12h8M8 17h5" /></svg>
+                                    <svg class="w-3 h-3 {{ $isDivisionsActive ? '' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 12h8M8 17h5" /></svg>
                                     Divisions
                                 </a>
                                 @php($isDeptsActive = request()->routeIs('departments.*'))
                                 <a href="{{ route('departments.index', ['companyId' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isDeptsActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isDeptsActive ? 'font-semibold rounded-lg' : '' }}"
                                     style="{{ $isDeptsActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
-                                    <svg class="w-3 h-3 {{ request()->routeIs('departments.*') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M6 12h12M6 17h8" /></svg>
+                                    <svg class="w-3 h-3 {{ $isDeptsActive ? '' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M6 12h12M6 17h8" /></svg>
                                     Departments
                                 </a>
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5">
@@ -270,7 +274,9 @@
 
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5"><svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12" /></svg>Reports</a>
                             </div>
+                            @endif
 
+                            @if($isTmcContext)
                             <button type="button"
                                 class="inline-flex items-center justify-between gap-1.5 px-4 py-2.5 w-full rounded-lg text-xs whitespace-nowrap transition-colors"
                                 :class="(openTmc || @js($isTmcContext)) ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50'"
@@ -292,20 +298,20 @@
                             <div x-show="openTmc" x-cloak class="ml-3 flex flex-col gap-1">
                                 @php($isCorpProfileActive = request()->routeIs('companies.show'))
                                 <a href="{{ route('companies.show', ['id' => $activeCompanyId]) }}" 
-                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpProfileActive ? '!text-white font-semibold rounded-lg' : '' }}"
+                                    class="admin-menu-item inline-flex items-center gap-1.5 {{ $isCorpProfileActive ? 'font-semibold rounded-lg' : '' }}"
                                     style="{{ $isCorpProfileActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
-                                    <svg class="w-3 h-3 {{ request()->routeIs('companies.show') ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
+                                    <svg class="w-3 h-3 {{ $isCorpProfileActive ? '' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
                                     Profile
                                 </a>
 
                                 @featureOrAdmin('users-module')
                                 @if($activeCompanyId)
                                     @can('View Users')
-                                        @php($isUsersActive = request()->routeIs('users.*'))
+                                        @php($isTmcUsersActive = $isTmcContext && request()->routeIs('users.*'))
                                         <a href="{{ route('users.index', ['companyId' => $activeCompanyId]) }}"
-                                            class="admin-menu-item inline-flex items-center gap-1.5 {{ $isUsersActive ? '!text-white font-semibold rounded-lg' : '' }}"
-                                            style="{{ $isUsersActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
-                                            <svg class="w-3 h-3 {{ $isUsersActive ? 'text-white' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            class="admin-menu-item inline-flex items-center gap-1.5 {{ $isTmcUsersActive ? 'font-semibold rounded-lg' : '' }}"
+                                            style="{{ $isTmcUsersActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
+                                            <svg class="w-3 h-3 {{ $isTmcUsersActive ? '' : 'opacity-80' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                                             </svg>
                                             Users
@@ -355,6 +361,8 @@
 
                                 <a href="#" class="admin-menu-item inline-flex items-center gap-1.5"><svg class="w-3 h-3 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-2.2 0-4 .9-4 2s1.8 2 4 2 4 .9 4 2-1.8 2-4 2m0-10V6m0 12v-2" /></svg>Manage Service Fees &amp; Markup</a>
                             </div>
+                            @endif
+
                     </div>
 
                     <div class="h-px bg-gray-100 my-1"></div>
@@ -362,7 +370,7 @@
                 @else
                     @featureOrAdmin('companies-module')
                     @can('View Company')
-                        @php($isCompaniesActive = request()->routeIs('companies.index'))
+                        @php($isCompaniesActive = request()->routeIs(['companies.*']))
                         <a href="{{ route('companies.index') }}"
                             class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isCompaniesActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
                             style="{{ $isCompaniesActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
@@ -377,10 +385,11 @@
                     @endfeatureOrAdmin
 
                     @featureOrAdmin('users-module')
-                    @if($activeCompanyId)
-                        @can('View Users')
-                            @php($isUsersActive = request()->routeIs('users.*'))
-                            <a href="{{ route('users.index', ['companyId' => $activeCompanyId]) }}"
+                    @can('View Users')
+                        @php($isUsersActive = request()->routeIs('users.*'))
+                        @php($targetCompanyId = $activeCompanyId ?: auth()->user()->company_id ?: \App\Models\Company::first()?->id)
+                        @if($targetCompanyId)
+                            <a href="{{ route('users.index', ['companyId' => $targetCompanyId]) }}"
                                 class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isUsersActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
                                 style="{{ $isUsersActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -389,8 +398,8 @@
                                 </svg>
                                 Users
                             </a>
-                        @endcan
-                    @endif
+                        @endif
+                    @endcan
                     @endfeatureOrAdmin
                     <a href="#"
                         class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg text-gray-600 hover:bg-gray-50 text-xs whitespace-nowrap transition-colors">

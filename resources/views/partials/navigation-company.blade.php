@@ -35,7 +35,7 @@
             Branches
         </a>
 
-        <a href="{{ $companyNavId ? route('users.index', ['companyId' => $companyNavId]) : '#' }}"
+        <a href="{{ $companyNavId ? route('companies.user-roles', $companyNavId) : '#' }}"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ ($activeCompanyTab === 'users-roles' || ($activeCompanyTab === null && (request()->routeIs('companies.user-roles') || request()->routeIs('users.*')))) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" aria-hidden="true">
@@ -77,6 +77,7 @@
         </a>
 
         @can('View Travel Policy')
+        @if(!auth()->user()->hasRole('Super Admin'))
         <a href="{{ $companyNavId ? route('companies.travel-policy', $companyNavId) : '#' }}"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ ($activeCompanyTab === 'travel-policy' || ($activeCompanyTab === null && request()->routeIs('companies.travel-policy'))) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -86,6 +87,7 @@
             </svg>
             Travel Policy
         </a>
+        @endif
         @endcan
 
         <a href="{{ $companyNavId ? route('companies.integrations', $companyNavId) : '#' }}"

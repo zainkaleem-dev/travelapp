@@ -1,5 +1,5 @@
 <div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4" x-data="{ tab: @entangle('tab') }">
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
@@ -13,62 +13,31 @@
             </div>
         </div>
 
-        <div class="px-6 py-4" x-data="{ tab: @entangle('tab') }">
-            <style>
-                .profile-tabs {
-                    display: flex;
-                    position: relative;
-                    padding: 0.25rem;
-                    border-radius: 50px;
-                    background-color: #F5F3F1;
-                    width: 100%;
-                    max-width: 400px;
-                    margin: 0 0 1.5rem 0;
-                    box-sizing: border-box;
-                }
-                .profile-tabs * { z-index: 2; }
-                .profile-tabs input[type=radio] { display: none; }
-                .profile-tabs input[type=radio]:checked + label { color: #F5F3F1; }
-                .profile-tabs .tab {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    flex: 1;
-                    height: 40px;
-                    font-size: 13px;
-                    font-weight: 700;
-                    border-radius: 50px;
-                    cursor: pointer;
-                    transition: color 0.15s ease-in;
-                    color: #6b7280;
-                }
-                .profile-tabs .glider {
-                    position: absolute;
-                    height: 40px;
-                    width: calc(50% - 0.25rem);
-                    background-image: linear-gradient(to right, #2ab4c0, #239ea9);
-                    z-index: 1;
-                    border-radius: 80px;
-                    transition: transform 0.25s ease-out;
-                    box-shadow: 0 5px 13px rgba(42, 180, 192, 0.35);
-                    top: 0.25rem;
-                    left: 0.25rem;
-                }
-                .profile-tabs #ptabs-1:checked ~ .glider { transform: translateX(0); }
-                .profile-tabs #ptabs-2:checked ~ .glider { transform: translateX(100%); }
-            </style>
-
-            @if(!$isTmc)
-            <div class="profile-tabs">
-                <input type="radio" id="ptabs-1" name="profile-tabs" value="personal" x-model="tab">
-                <label for="ptabs-1" class="tab">Personal</label>
-
-                <input type="radio" id="ptabs-2" name="profile-tabs" value="family" x-model="tab">
-                <label for="ptabs-2" class="tab">Family</label>
-
-                <div class="glider"></div>
+        @if(!$isTmc)
+        {{-- Standard Sub-Navigation --}}
+        <div class="px-6 pt-2 border-b border-gray-200 bg-white">
+            <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-[11px] font-semibold w-full">
+                <button type="button" @click="tab = 'personal'"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t-lg transition-colors whitespace-nowrap"
+                    :class="tab === 'personal' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900'">
+                    <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Personal Information
+                </button>
+                <button type="button" @click="tab = 'family'"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t-lg transition-colors whitespace-nowrap"
+                    :class="tab === 'family' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900'">
+                    <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5V4H2v16h5m10 0v-4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v4m10 0H7" />
+                    </svg>
+                    Family Members
+                </button>
             </div>
-            @endif
+        </div>
+        @endif
+
+        <div class="px-6 py-4">
 
             <div x-show="tab === 'personal'">
                 <form wire:submit.prevent="save">
