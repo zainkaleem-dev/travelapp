@@ -57,7 +57,17 @@ class DummyOrganizationSeeder extends Seeder
 
         // 4. Assign the role within the specific company context
         setPermissionsTeamId($company->id);
-        $orgAdmin->assignRole('Organization Admin');
+        
+        // Ensure the role exists for this company
+        $role = Role::firstOrCreate(
+            ['name' => 'Organization Admin', 'company_id' => $company->id, 'guard_name' => 'web'],
+            ['status' => 1]
+        );
+        
+        // Sync permissions to this role (exclude global system management)
+        $role->syncPermissions(\Spatie\Permission\Models\Permission::whereNotIn('name', ['Manage Global System'])->get());
+
+        $orgAdmin->assignRole($role);
 
         $this->command->info('✅ Dummy organization, branch, and admin user created!');
         $this->command->info('Email: orgadmin@demo.com');

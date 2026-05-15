@@ -242,7 +242,9 @@ Route::middleware(['auth', 'password.set'])->group(function () {
             }
             
             \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true]);
-            return "Database refreshed and seeded successfully!";
+            \Illuminate\Support\Facades\Artisan::call('cache:clear');
+            
+            return "Database refreshed, seeded, and cache cleared successfully! Please log in again.";
         })->name('system.refresh');
         
         Route::get('/companies', CompanyListing::class)->name('companies.index')->middleware('can:View Company');
