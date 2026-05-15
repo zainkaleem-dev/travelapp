@@ -105,7 +105,7 @@
                 @if($isOrganizationAdmin)
                     @featureOrAdmin('companies-module')
                     @can('View Company')
-                        @php($isCompaniesActive = request()->routeIs(['companies.*']))
+                        @php($isCompaniesActive = request()->routeIs(['companies.index', 'companies.create', 'companies.edit']))
                         <a href="{{ route('companies.index') }}"
                             class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isCompaniesActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
                             style="{{ $isCompaniesActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
@@ -370,7 +370,7 @@
                 @else
                     @featureOrAdmin('companies-module')
                     @can('View Company')
-                        @php($isCompaniesActive = request()->routeIs(['companies.*']))
+                        @php($isCompaniesActive = request()->routeIs(['companies.index', 'companies.create', 'companies.edit']))
                         <a href="{{ route('companies.index') }}"
                             class="inline-flex items-center gap-1.5 px-4 py-2.5 w-full rounded-lg {{ $isCompaniesActive ? 'text-white font-semibold' : 'text-gray-600 hover:bg-gray-50' }} text-xs whitespace-nowrap transition-colors"
                             style="{{ $isCompaniesActive ? "background-color: $sidebarBg; color: $sidebarFg;" : '' }}">
