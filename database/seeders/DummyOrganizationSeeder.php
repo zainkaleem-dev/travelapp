@@ -72,7 +72,7 @@ class DummyOrganizationSeeder extends Seeder
         // 5. Create Partner Companies (Children of Demo Organization)
         
         // Partner 1: Sub-Corporate
-        Company::updateOrCreate(
+        $subCorp = Company::updateOrCreate(
             ['slug' => 'demo-sub-corporate'],
             [
                 'parent_id' => $company->id,
@@ -83,7 +83,7 @@ class DummyOrganizationSeeder extends Seeder
         );
 
         // Partner 2: Sub-TMC
-        Company::updateOrCreate(
+        $subTmc = Company::updateOrCreate(
             ['slug' => 'demo-sub-tmc'],
             [
                 'parent_id' => $company->id,
@@ -93,8 +93,90 @@ class DummyOrganizationSeeder extends Seeder
             ]
         );
 
-        $this->command->info('✅ Dummy organization, partners, branch, and admin user created!');
-        $this->command->info('Email: orgadmin@demo.com');
-        $this->command->info('Password: password');
+        // Create Users for Partners
+        $partners = [
+            [
+                'company' => $subCorp,
+                'email' => 'partner-corp@demo.com',
+                'first_name' => 'Corporate',
+                'last_name' => 'Partner',
+                'role' => 'Partner Admin',
+            ],
+            [
+                'company' => $subCorp,
+                'email' => 'agent-corp@demo.com',
+                'first_name' => 'Corporate',
+                'last_name' => 'Agent',
+                'role' => 'Agent',
+            ],
+            [
+                'company' => $subTmc,
+                'email' => 'partner-tmc@demo.com',
+                'first_name' => 'TMC',
+                'last_name' => 'Partner',
+                'role' => 'Partner Admin',
+            ],
+            [
+                'company' => $subTmc,
+                'email' => 'agent-tmc@demo.com',
+                'first_name' => 'TMC',
+                'last_name' => 'Agent',
+                'role' => 'Agent',
+            ]
+        ];
+
+        foreach ($partners as $pData) {
+            $pComp = $pData['company'];
+            
+            // Create a branch for the partner
+            $pBranch = Branch::firstOrCreate(
+                ['slug' => $pComp->slug . '-hq'],
+                [
+                    'company_id' => $pComp->id,
+                    'name' => 'Headquarters',
+                    'code' => strtoupper(substr($pComp->slug, 5, 3)) . '-01',
+                    'is_main' => true,
+                    'status' => 'active',
+                ]
+            );
+
+            $pUser = User::firstOrCreate(
+                ['email' => $pData['email']],
+                [
+                    'first_name' => $pData['first_name'],
+                    'last_name' => $pData['last_name'],
+                    'password' => 'password',
+                    'company_id' => $pComp->id,
+                    'branch_id' => $pBranch->id,
+                    'email_verified_at' => Carbon::now(),
+                    'status' => 'active',
+                ]
+            );
+
+            // Set context for the partner company
+            setPermissionsTeamId($pComp->id);
+            
+            $pRole = Role::firstOrCreate(
+                ['name' => $pData['role'], 'company_id' => $pComp->id, 'guard_name' => 'web'],
+                ['status' => 1]
+            );
+            
+            // Sync permissions based on role
+            if ($pData['role'] === 'Partner Admin') {
+                $pRole->syncPermissions(\Spatie\Permission\Models\Permission::whereNotIn('name', ['Manage Global System'])->get());
+            } else {
+                // Agents get restricted permissions (e.g. only view/create things related to flights/users)
+                $pRole->syncPermissions(\Spatie\Permission\Models\Permission::whereIn('name', ['View Users', 'View Company'])->get());
+            }
+            
+            $pUser->assignRole($pRole);
+        }
+
+        $this->command->info('✅ Dummy organization, partners, branches, and admin users created!');
+        $this->command->info('Org Admin: orgadmin@demo.com / password');
+        $this->command->info('Corp Partner Admin: partner-corp@demo.com / password');
+        $this->command->info('Corp Agent: agent-corp@demo.com / password');
+        $this->command->info('TMC Partner Admin: partner-tmc@demo.com / password');
+        $this->command->info('TMC Agent: agent-tmc@demo.com / password');
     }
 }
