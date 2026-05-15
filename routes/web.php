@@ -193,8 +193,13 @@ Route::middleware(['auth'])->group(function () {
 
 // Database Refresh Route (Accessible for initial seeding)
 Route::get('/refresh-db', function () {
+    // Disable foreign key checks to prevent the "errno: 150" error during fresh migration
+    \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+    
     // WARNING: This will wipe all data on the server!
     \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
+    
+    \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
     \Illuminate\Support\Facades\Artisan::call('cache:clear');
     
     return "Database refreshed, seeded, and cache cleared successfully! Please log in again.";
