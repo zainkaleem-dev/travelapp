@@ -27,6 +27,14 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasRole($roles, string $guard = null, ?int $companyId = null): bool
     {
+        // Normalize to a flat array to support Spatie's hasAnyRole and hasAllRoles passing nested arrays
+        $normalizedRoles = [];
+        if (is_iterable($roles)) {
+            $normalizedRoles = \Illuminate\Support\Arr::flatten($roles);
+        } else {
+            $normalizedRoles = [$roles];
+        }
+
         // 1. Get all roles currently assigned to the user that are ACTIVE (status = 1)
         // We check both the current team context and the global context (null)
         $originalTeamId = getPermissionsTeamId();
@@ -34,14 +42,15 @@ class User extends Authenticatable implements MustVerifyEmail
 
         try {
             $hasActiveRole = function ($roleNames, $teamId) use ($guard) {
-                // Normalize $roleNames to an array of strings if it's a collection or array of objects
                 $names = [];
-                if (is_iterable($roleNames)) {
-                    foreach ($roleNames as $role) {
-                        $names[] = is_string($role) ? $role : (is_numeric($role) ? $role : $role->name);
+                foreach ($roleNames as $role) {
+                    if (is_string($role) || is_numeric($role)) {
+                        $names[] = (string) $role;
+                    } elseif (is_object($role) && isset($role->name)) {
+                        $names[] = $role->name;
+                    } elseif (is_array($role) && isset($role['name'])) {
+                        $names[] = $role['name'];
                     }
-                } else {
-                    $names = [is_string($roleNames) ? $roleNames : (is_numeric($roleNames) ? $roleNames : $roleNames->name)];
                 }
 
                 setPermissionsTeamId($teamId);
@@ -52,23 +61,17 @@ class User extends Authenticatable implements MustVerifyEmail
             };
 
             // Check in target context
-            if ($hasActiveRole($roles, $targetTeamId)) {
+            if ($hasActiveRole($normalizedRoles, $targetTeamId)) {
                 return true;
             }
 
             // Check in global context (Only for Super Admin bypass)
-            // We only return true here if the role being checked IS 'Super Admin'
-            // OR if the user IS a global super admin and we are in a permission check context.
-            // For hasRole() specifically, we should be strict unless it's the Super Admin role itself.
             $checkingSuperAdmin = false;
-            if (is_string($roles) && $roles === 'Super Admin') {
-                $checkingSuperAdmin = true;
-            } elseif (is_iterable($roles)) {
-                foreach ($roles as $r) {
-                    if ((is_string($r) ? $r : $r->name) === 'Super Admin') {
-                        $checkingSuperAdmin = true;
-                        break;
-                    }
+            foreach ($normalizedRoles as $r) {
+                $rName = is_string($r) ? $r : (is_object($r) && isset($r->name) ? $r->name : (is_array($r) && isset($r['name']) ? $r['name'] : ''));
+                if ($rName === 'Super Admin') {
+                    $checkingSuperAdmin = true;
+                    break;
                 }
             }
 

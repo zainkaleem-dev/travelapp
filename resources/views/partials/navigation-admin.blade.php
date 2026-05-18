@@ -16,7 +16,7 @@
                     ->exists()
             )
             @endif
-            @php($isOrganizationAdmin = auth()->check() && !$isGlobalSuperAdmin && auth()->user()->hasRole('Organization Admin'))
+            @php($isOrganizationAdmin = auth()->check() && !$isGlobalSuperAdmin && auth()->user()->hasAnyRole(['Organization Admin', 'Partner Admin']))
             @php($sidebarRole = $isGlobalSuperAdmin ? 'Super Admin' : ($sidebarUser?->getRoleNames()?->first() ?? 'User'))
             @php($firstName = trim((string) ($sidebarUser?->first_name ?? '')))
             @php($middleName = trim((string) ($sidebarUser?->middle_name ?? '')))
@@ -31,6 +31,17 @@
             @if(!$activeCompanyId && preg_match('/\/companies\/(\d+)/', request()->url(), $m))
             @php($activeCompanyId = $m[1]) @endif
             @if(request()->routeIs('companies.index')) @php($activeCompanyId = null) @endif
+
+            @php($urlCompanyId = $activeCompanyId)
+            @php($isImpersonating = session()->has('impersonated_by') && count(session('impersonated_by', [])) > 0)
+            @php($showConfigNav = true)
+            @if($isImpersonating && !$urlCompanyId)
+                @php($showConfigNav = false)
+            @endif
+
+            @if(!$activeCompanyId && !$isGlobalSuperAdmin && auth()->check())
+                @php($activeCompanyId = auth()->user()->company_id)
+            @endif
 
             @php($activeCompany = $activeCompanyId ? \App\Models\Company::find($activeCompanyId) : null)
             @php($userCompanyType = auth()->user()->company?->company_type)
@@ -138,7 +149,7 @@
                     Reports
                 </a>
 
-                @if($activeCompanyId || request()->routeIs(['users.*', 'divisions.*', 'departments.*', 'grades.*', 'admin.travel-policy.*']))
+                @if($showConfigNav && ($activeCompanyId || request()->routeIs(['users.*', 'divisions.*', 'departments.*', 'grades.*', 'admin.travel-policy.*'])))
                 <div class="h-px bg-gray-100 my-1"></div>
 
                 <div x-data="{ 
