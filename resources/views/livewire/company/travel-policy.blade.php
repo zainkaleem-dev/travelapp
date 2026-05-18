@@ -1,6 +1,7 @@
 <div class="px-1 py-1 w-full flex flex-col gap-3" x-data="{ filtersOpen: true }">
     @if (session('status'))
-        <div class="mb-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-bold text-green-800 uppercase shadow-sm animate-fade-in">
+        <div
+            class="mb-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-bold text-green-800 uppercase shadow-sm animate-fade-in">
             {{ session('status') }}
         </div>
     @endif
@@ -22,10 +23,11 @@
                                 d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                         </svg>
                     </button>
-                    <a href="{{ route('admin.travel-policy.create', ['companyId' => $companyId, 'returnUrl' => route('companies.travel-policy', ['id' => $companyId]) . '?activeTab=' . $activeTab]) }}" 
+                    <a href="{{ route('admin.travel-policy.create', ['companyId' => $companyId, 'returnUrl' => route('companies.travel-policy', ['id' => $companyId]) . '?activeTab=' . $activeTab]) }}"
                         class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm uppercase tracking-wide">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M12 4v16m8-8H4" />
                         </svg>
                         Add Policy
                     </a>
@@ -38,7 +40,7 @@
             <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-[11px] font-semibold w-full">
                 @foreach(['flight', 'hotel', 'car', 'concierge', 'general'] as $tab)
                     @php
-                        $icon = match($tab) {
+                        $icon = match ($tab) {
                             'flight' => '<svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" /></svg>',
                             'hotel' => '<svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>',
                             'car' => '<svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0 1.5 1.5 0 0 1 3 0ZM18.75 18.75a1.5 1.5 0 0 1-3 0 1.5 1.5 0 0 1 3 0ZM3.75 15h16.5M4.5 9h15M3.75 15l.369-2.957A3.75 3.75 0 0 1 7.828 9h8.344a3.75 3.75 0 0 1 3.709 3.043l.369 2.957M3.75 15v3.375c0 .621.504 1.125 1.125 1.125h.375M20.25 15v3.375c0 .621-.504 1.125-1.125 1.125h-.375" /></svg>',
@@ -47,9 +49,9 @@
                             default => ''
                         };
                     @endphp
-                    <button wire:click="$set('activeTab', '{{ $tab }}')" 
+                    <button wire:click="$set('activeTab', '{{ $tab }}')"
                         class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg transition-all duration-200 whitespace-nowrap uppercase tracking-wider
-                        {{ $activeTab === $tab ? 'bg-[#2ab4c0] text-white font-semibold shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
+                            {{ $activeTab === $tab ? 'bg-[#2ab4c0] text-white font-semibold shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
                         {!! $icon !!}
                         {{ $tab }}
                     </button>
@@ -64,12 +66,16 @@
             class="px-6 py-3 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex flex-col sm:flex-row items-end gap-4 animate-fade-in">
                 <div class="flex-1 w-full">
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Search {{ ucfirst($activeTab) }} Policies</label>
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Search
+                        {{ ucfirst($activeTab) }} Policies</label>
                     <div class="relative">
-                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        <input type="text" wire:model.live.debounce.300ms="search" class="input-field pl-10" placeholder="Search by name or description...">
+                        <input type="text" wire:model.live.debounce.300ms="search" class="input-field pl-10"
+                            placeholder="Search by name or description...">
                     </div>
                 </div>
             </div>
@@ -84,7 +90,7 @@
                     'companyId' => $companyId,
                     'policyType' => $activeTab,
                     'search' => $search
-                ], key('travel-policy-'.$companyId.'-'.now()))
+                ], key('travel-policy-' . $companyId . '-' . now()))
             </div>
         </div>
     </div>

@@ -566,10 +566,8 @@
 
                             {{-- Primary Action Buttons (same line) --}}
                             <div class="flex flex-wrap gap-3 pt-2">
-                                <button 
-                                    x-data="{ loading: false }"
-                                    @click="loading = true; setTimeout(() => $wire.back(), 500)"
-                                    :disabled="loading"
+                                <button x-data="{ loading: false }"
+                                    @click="loading = true; setTimeout(() => $wire.back(), 500)" :disabled="loading"
                                     :class="loading ? 'bg-neutral-400' : 'bg-white hover:bg-gray-50'"
                                     class="flex-1 min-w-0 py-2 border border-gray-200 text-gray-600 font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-[11px] disabled:opacity-50 disabled:cursor-not-allowed">
                                     <span x-show="!loading" class="flex items-center gap-2">
@@ -579,8 +577,8 @@
                                         </svg>
                                         Back
                                     </span>
-                                    <svg x-show="loading" class="animate-spin w-4 h-4" fill="none"
-                                        viewBox="0 0 24 24" aria-hidden="true">
+                                    <svg x-show="loading" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                        aria-hidden="true">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                             stroke-width="4" />
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />

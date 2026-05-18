@@ -38,15 +38,19 @@
                 <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-[11px] font-semibold w-full">
                     <button wire:click="setTab('countries')"
                         class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t-lg transition-colors whitespace-nowrap {{ $activeTab === 'countries' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }}">
-                        <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A11.954 11.954 0 0 1 12 16.5c-2.998 0-5.74-1.1-7.843-2.918m0 0A8.959 8.959 0 0 1 3 12c0-.778.099-1.533.284-2.253" />
+                        <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A11.954 11.954 0 0 1 12 16.5c-2.998 0-5.74-1.1-7.843-2.918m0 0A8.959 8.959 0 0 1 3 12c0-.778.099-1.533.284-2.253" />
                         </svg>
                         Countries
                     </button>
                     <button wire:click="setTab('cities')"
                         class="inline-flex items-center gap-1.5 px-4 py-2 flex-shrink-0 rounded-t-lg transition-colors whitespace-nowrap {{ $activeTab === 'cities' ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }}">
-                        <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                         Cities
                     </button>
@@ -109,7 +113,8 @@
         <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="p-6">
                 @if ($crudMessage)
-                    <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-bold text-green-800 uppercase">
+                    <div
+                        class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[11px] font-bold text-green-800 uppercase">
                         {{ $crudMessage }}
                     </div>
                 @endif
@@ -119,72 +124,108 @@
                         <table class="w-full border-separate border-spacing-0">
                             <thead>
                                 <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg" wire:click="sort('name')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg"
+                                        wire:click="sort('name')">
                                         <div class="flex items-center gap-2">
                                             <span>Name</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            <div
+                                                class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('code')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                        wire:click="sort('code')">
                                         <div class="flex items-center gap-2">
                                             <span>Code</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'code' ? 'opacity-100' : 'opacity-70' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            <div
+                                                class="flex flex-col transition-opacity {{ $sortBy === 'code' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('dial_code')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                        wire:click="sort('dial_code')">
                                         <div class="flex items-center gap-2">
                                             <span>Dial Code</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'dial_code' ? 'opacity-100' : 'opacity-70' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'dial_code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            <div
+                                                class="flex flex-col transition-opacity {{ $sortBy === 'dial_code' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'dial_code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'dial_code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'dial_code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('created_at')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                        wire:click="sort('created_at')">
                                         <div class="flex items-center gap-2">
                                             <span>Added on</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-70' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            <div
+                                                class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">Actions</th>
+                                    <th
+                                        class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">
+                                        Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($items as $country)
                                     <tr class="border-b border-gray-200 transition-colors hover:bg-blue-50">
                                         <td class="px-6 py-2 text-[11px] font-semibold text-gray-900">
-                                            <a href="{{ route('admin.countries.view', $country->id) }}" class="text-gray-900 hover:text-[#2ab4c0] transition-colors">
+                                            <a href="{{ route('admin.countries.view', $country->id) }}"
+                                                class="text-gray-900 hover:text-[#2ab4c0] transition-colors">
                                                 {{ $country->name }}
                                             </a>
                                         </td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $country->code }}</td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $country->dial_code }}</td>
-                                        <td class="px-6 py-2 text-[11px] text-gray-600 font-medium">{{ $country->created_at->format('d/m/Y') }}</td>
+                                        <td class="px-6 py-2 text-[11px] text-gray-600 font-medium">
+                                            {{ $country->created_at->format('d/m/Y') }}</td>
                                         <td class="px-6 py-2 text-end">
                                             <div class="flex items-center justify-end gap-2">
 
@@ -192,20 +233,21 @@
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
                                                 </a>
                                                 <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
                                                     data-action="deleteCountry" data-args='[{{ $country->id }}]'
                                                     data-confirm-title="Are you sure?"
                                                     data-confirm-text="This will permanently delete this country."
-                                                    data-confirm-button-text="Yes, delete it"
-                                                    data-done-title="Deleted!"
+                                                    data-confirm-button-text="Yes, delete it" data-done-title="Deleted!"
                                                     data-done-text="Country has been deleted."
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
                                                 </button>
                                             </div>
@@ -213,7 +255,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-6 text-center text-[11px] text-gray-500">No countries found.</td>
+                                        <td colspan="5" class="px-6 py-6 text-center text-[11px] text-gray-500">No countries
+                                            found.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -224,72 +267,108 @@
                         <table class="w-full border-separate border-spacing-0">
                             <thead>
                                 <tr class="border-b-2 border-gray-200 bg-[#2ab4c0]">
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg" wire:click="sort('name')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group rounded-ss-lg"
+                                        wire:click="sort('name')">
                                         <div class="flex items-center gap-2">
                                             <span>Name</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            <div
+                                                class="flex flex-col transition-opacity {{ $sortBy === 'name' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'name' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'name' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('country_id')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                        wire:click="sort('country_id')">
                                         <div class="flex items-center gap-2">
                                             <span>Country</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'country_id' ? 'opacity-100' : 'opacity-70' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'country_id' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            <div
+                                                class="flex flex-col transition-opacity {{ $sortBy === 'country_id' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'country_id' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'country_id' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'country_id' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('code')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                        wire:click="sort('code')">
                                         <div class="flex items-center gap-2">
                                             <span>Code</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'code' ? 'opacity-100' : 'opacity-70' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            <div
+                                                class="flex flex-col transition-opacity {{ $sortBy === 'code' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'code' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'code' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group" wire:click="sort('created_at')">
+                                    <th class="px-6 py-2 text-start text-[11px] font-bold text-white uppercase tracking-wide cursor-pointer group"
+                                        wire:click="sort('created_at')">
                                         <div class="flex items-center gap-2">
                                             <span>Added on</span>
-                                            <div class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-70' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                            <div
+                                                class="flex flex-col transition-opacity {{ $sortBy === 'created_at' ? 'opacity-100' : 'opacity-70' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $sortBy === 'created_at' && $sortDirection === 'asc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
-                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                <svg class="w-3.5 h-3.5 -mt-1 {{ $sortBy === 'created_at' && $sortDirection === 'desc' ? 'text-white' : 'text-white/70' }}"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clip-rule="evenodd" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </th>
-                                    <th class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">Actions</th>
+                                    <th
+                                        class="px-6 py-2 text-end text-[11px] font-bold text-white uppercase tracking-wide rounded-se-lg">
+                                        Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($items as $city)
                                     <tr class="border-b border-gray-200 transition-colors hover:bg-blue-50">
                                         <td class="px-6 py-2 text-[11px] font-semibold text-gray-900">
-                                            <a href="{{ route('admin.cities.view', $city->id) }}" class="text-gray-900 hover:text-[#2ab4c0] transition-colors">
+                                            <a href="{{ route('admin.cities.view', $city->id) }}"
+                                                class="text-gray-900 hover:text-[#2ab4c0] transition-colors">
                                                 {{ $city->name }}
                                             </a>
                                         </td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $city->country->name }}</td>
                                         <td class="px-6 py-2 text-[11px] text-gray-600">{{ $city->code }}</td>
-                                        <td class="px-6 py-2 text-[11px] text-gray-600 font-medium">{{ $city->created_at->format('d/m/Y') }}</td>
+                                        <td class="px-6 py-2 text-[11px] text-gray-600 font-medium">
+                                            {{ $city->created_at->format('d/m/Y') }}</td>
                                         <td class="px-6 py-2 text-end">
                                             <div class="flex items-center justify-end gap-2">
 
@@ -297,20 +376,21 @@
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Edit">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
                                                 </a>
                                                 <button type="button" x-on:click="appSwalFromDataset($el, $wire)"
                                                     data-action="deleteCity" data-args='[{{ $city->id }}]'
                                                     data-confirm-title="Are you sure?"
                                                     data-confirm-text="This will permanently delete this city."
-                                                    data-confirm-button-text="Yes, delete it"
-                                                    data-done-title="Deleted!"
+                                                    data-confirm-button-text="Yes, delete it" data-done-title="Deleted!"
                                                     data-done-text="City has been deleted."
                                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400"
                                                     title="Delete">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
                                                 </button>
                                             </div>
@@ -318,7 +398,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-6 text-center text-[11px] text-gray-500">No cities found.</td>
+                                        <td colspan="5" class="px-6 py-6 text-center text-[11px] text-gray-500">No cities found.
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -333,7 +414,8 @@
                             <div class="text-[11px] text-gray-500 font-medium">
                                 Showing <span class="font-bold text-gray-900">{{ $paginationMeta['from'] ?? 0 }}</span> to
                                 <span class="font-bold text-gray-900">{{ $paginationMeta['to'] ?? 0 }}</span> of
-                                <span class="font-bold text-gray-900">{{ $paginationMeta['total'] }}</span> {{ $activeTab === 'countries' ? 'countries' : 'cities' }}
+                                <span class="font-bold text-gray-900">{{ $paginationMeta['total'] }}</span>
+                                {{ $activeTab === 'countries' ? 'countries' : 'cities' }}
                             </div>
                             @if ($paginationMeta['last_page'] > 1)
                                 <div class="flex items-center gap-1.5">
@@ -345,13 +427,12 @@
                                     @endif
 
                                     @for ($page = max(1, $paginationMeta['current_page'] - 2); $page <= min($paginationMeta['last_page'], $paginationMeta['current_page'] + 2); $page++)
-                                        <button wire:click="goToPage({{ $page }})" 
-                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
-                                            {{ $page === $paginationMeta['current_page']
-                                                ? 'bg-[#2ab4c0] text-white shadow-md'
-                                                : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
-                                            {{ $page }}
-                                        </button>
+                                                    <button wire:click="goToPage({{ $page }})" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-[11px] font-bold transition-all
+                                                                    {{ $page === $paginationMeta['current_page']
+                                        ? 'bg-[#2ab4c0] text-white shadow-md'
+                                        : 'border border-gray-100 text-gray-500 hover:bg-gray-50' }}">
+                                                        {{ $page }}
+                                                    </button>
                                     @endfor
 
                                     @if ($paginationMeta['has_more'])
