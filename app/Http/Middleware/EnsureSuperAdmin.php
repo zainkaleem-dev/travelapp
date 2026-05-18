@@ -15,6 +15,21 @@ class EnsureSuperAdmin
     {
         $user = $request->user();
 
+        // If the original session owner was a Super Admin, bypass this check
+        $stack = session()->get('impersonated_by', []);
+        $originalUserId = !empty($stack) ? $stack[0] : null;
+        $isOriginalSuperAdmin = false;
+        if ($originalUserId) {
+            $originalUser = \App\Models\User::withoutGlobalScopes()->find($originalUserId);
+            if ($originalUser && $originalUser->hasRole('Super Admin')) {
+                $isOriginalSuperAdmin = true;
+            }
+        }
+
+        if ($isOriginalSuperAdmin) {
+            return $next($request);
+        }
+
         if (!$user || (!$user->can('Manage Global System') && !$user->hasPermissionTo('Manage Roles and Permissions'))) {
             abort(403);
         }

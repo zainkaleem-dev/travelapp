@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             AirlineSeeder::class,
             AirportSeeder::class,
-            DummyOrganizationSeeder::class,
-            TmcOrganizationSeeder::class,
+            OrganizationSeeder::class,
+            TmcSeeder::class,
             MailTemplateSeeder::class,
         ]);
     }

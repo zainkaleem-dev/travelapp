@@ -198,8 +198,24 @@ class UserCreate extends Component
 
         if ($this->company_id) {
             setPermissionsTeamId($this->company_id);
+            
+            // Check if this is the first user of the company
+            $isFirstUser = User::where('company_id', $this->company_id)->count() <= 1;
+            
+            $defaultRoleName = 'User';
+            if ($isFirstUser) {
+                $targetCompany = Company::find($this->company_id);
+                if ($targetCompany) {
+                    if (is_null($targetCompany->parent_id)) {
+                        $defaultRoleName = 'Organization Admin';
+                    } else {
+                        $defaultRoleName = 'Partner Admin';
+                    }
+                }
+            }
+
             // Explicitly resolve the role belonging to THIS company to prevent Global role bleeds
-            $role = \App\Models\Role::where('name', 'User')
+            $role = \App\Models\Role::where('name', $defaultRoleName)
                 ->where('company_id', $this->company_id)
                 ->first();
 
@@ -207,7 +223,7 @@ class UserCreate extends Component
                 $user->assignRole($role);
             } else {
                 // Fallback or error if company roles aren't seeded yet
-                $user->assignRole('User');
+                $user->assignRole($defaultRoleName);
             }
         }
 
