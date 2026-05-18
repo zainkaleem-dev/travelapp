@@ -71,6 +71,35 @@ class TmcSeeder extends Seeder
 
         $tmcAdmin->assignRole($role);
 
+        // Seed Divisions, Departments, and Grades for TMC Organization
+        $this->seedCompanyStructure($company, [
+            [
+                'division' => 'Executive Administration',
+                'departments' => [
+                    [
+                        'name' => 'Leadership & HQ',
+                        'grades' => [
+                            ['name' => 'Grade A - Chief Executive Officer', 'description' => 'Overall strategy and execution of the agency network'],
+                            ['name' => 'Grade B - Regional Vice President', 'description' => 'Manages specific geographical regions and branches'],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'division' => 'Customer Experience',
+                'departments' => [
+                    [
+                        'name' => 'Global Agent Support',
+                        'grades' => [
+                            ['name' => 'Grade C - Support Supervisor', 'description' => 'Manages support shifts and escalations'],
+                            ['name' => 'Grade D - Senior Agent', 'description' => 'Experienced helpdesk operator assisting partners and affiliates'],
+                            ['name' => 'Grade E - Helpdesk Specialist', 'description' => 'Level 1 support agents handling booking queries'],
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
         // 5. Create Corporate Partner (Child of TMC Organization)
         $childCorp = Company::updateOrCreate(
             ['slug' => 'corporate-partner'],
@@ -127,8 +156,85 @@ class TmcSeeder extends Seeder
 
         $corpAdmin->assignRole($corpRole);
 
+        // Seed Divisions, Departments, and Grades for Corporate Partner
+        $this->seedCompanyStructure($childCorp, [
+            [
+                'division' => 'Corporate Operations',
+                'departments' => [
+                    [
+                        'name' => 'Product Management',
+                        'grades' => [
+                            ['name' => 'Grade B - VP of Product', 'description' => 'Product portfolio strategy and vision'],
+                            ['name' => 'Grade C - Senior Product Manager', 'description' => 'Owns individual product lines'],
+                            ['name' => 'Grade D - Associate Product Manager', 'description' => 'Assists product managers on key initiatives'],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'division' => 'Finance & HR',
+                'departments' => [
+                    [
+                        'name' => 'Corporate Finance',
+                        'grades' => [
+                            ['name' => 'Grade B - Finance Director', 'description' => 'Financial planning, audits, budget management'],
+                            ['name' => 'Grade C - Senior Accountant', 'description' => 'Handles bookkeeping, tax compliance, and payroll'],
+                            ['name' => 'Grade D - Financial Analyst', 'description' => 'Analyzes business and market performance'],
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
         $this->command->info('✅ TMC Organization and Corporate Partner (Corporate Partner) created with admins!');
         $this->command->info('TMC Organization Admin: tmc-organization-admin@example.com / password');
         $this->command->info('Corporate Partner Admin: corporate-partner-admin@example.com / password');
+    }
+
+    /**
+     * Helper to seed Division, Department, and Grade structures cleanly.
+     */
+    private function seedCompanyStructure(Company $company, array $structure): void
+    {
+        foreach ($structure as $divData) {
+            $division = \App\Models\Division::updateOrCreate(
+                [
+                    'company_id' => $company->id,
+                    'name' => $divData['division']
+                ],
+                [
+                    'description' => $divData['division'] . ' Division for ' . $company->name,
+                    'status' => 'active'
+                ]
+            );
+
+            foreach ($divData['departments'] as $deptData) {
+                $department = \App\Models\Department::updateOrCreate(
+                    [
+                        'company_id' => $company->id,
+                        'division_id' => $division->id,
+                        'name' => $deptData['name']
+                    ],
+                    [
+                        'description' => $deptData['name'] . ' Department within ' . $division->name,
+                        'status' => 'active'
+                    ]
+                );
+
+                foreach ($deptData['grades'] as $gradeData) {
+                    \App\Models\Grade::updateOrCreate(
+                        [
+                            'company_id' => $company->id,
+                            'department_id' => $department->id,
+                            'name' => $gradeData['name']
+                        ],
+                        [
+                            'description' => $gradeData['description'],
+                            'status' => 'active'
+                        ]
+                    );
+                }
+            }
+        }
     }
 }
