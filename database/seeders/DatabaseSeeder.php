@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             OrganizationSeeder::class,
             TmcSeeder::class,
             MailTemplateSeeder::class,
+            TravelPolicySeeder::class,
         ]);
     }
 }
