@@ -89,6 +89,10 @@ class CompanyListing extends Component
                 // Organization Admin sees branches/sub-companies they created
                 $query->where('parent_id', auth()->user()->company_id);
             })
+            ->when(auth()->user()->can('Manage Global System'), function ($query) {
+                // Super Admin sees only the root organizations/first hierarchy level
+                $query->whereNull('parent_id');
+            })
             ->when(auth()->user()->company_id, function ($query) {
                 $query->where('id', '!=', auth()->user()->company_id);
             })
