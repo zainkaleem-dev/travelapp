@@ -57,18 +57,31 @@
             @php($sidebarBg = $company->settings['background_color'] ?? '#2ab4c0')
             @php($sidebarFg = $company->settings['foreground_color'] ?? '#ffffff')
 
-            <div class="mb-4 w-full rounded-lg px-4 py-2.5 shadow-sm transition-colors duration-300" style="background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};">
+            <div class="mb-4 w-full rounded-lg shadow-sm transition-colors duration-300 overflow-hidden border border-gray-100">
                 @if($company && isset($company->settings['logo_path']))
-                    <div class="flex justify-center pt-2">
-                        <img src="{{ asset('storage/' . $company->settings['logo_path']) }}" 
-                             alt="{{ $company->name }} Logo" 
-                             class="h-20 w-auto object-contain">
+                    <div class="bg-white px-4 py-6 flex justify-center border-b border-gray-100 bg-[radial-gradient(#f8fafc_1px,transparent_1px)] [background-size:16px_16px]">
+                        <div class="p-2 rounded-xl border-2 border-dashed border-gray-200 bg-white shadow-sm transition-transform hover:scale-[1.02] duration-300">
+                            <div class="rounded-lg border border-gray-100 p-2 bg-white">
+                                <img src="{{ asset('storage/' . $company->settings['logo_path']) }}" 
+                                     alt="{{ $company->name }} Logo" 
+                                     class="h-20 w-auto object-contain">
+                            </div>
+                        </div>
                     </div>
-                    <div class="h-px my-4" style="background-color: {{ $sidebarFg }}33;"></div>
                 @endif
-                <div class="flex items-center justify-between gap-2">
-                    <p class="text-xs font-semibold truncate" style="color: {{ $sidebarFg }};">{{ $displayName }}</p>
-                    <p class="text-[11px] font-semibold whitespace-nowrap" style="color: {{ $sidebarFg }}CC;">{{ $sidebarRole }}</p>
+                <div class="px-2.5 py-2.5 flex items-center justify-between gap-2" style="background-color: {{ $sidebarBg }}; color: {{ $sidebarFg }};">
+                    <div class="flex items-center gap-1 min-w-0">
+                        <svg class="w-3.5 h-3.5 opacity-90 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <p class="text-[11px] font-semibold truncate">{{ $displayName }}</p>
+                    </div>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        <svg class="w-3.5 h-3.5 opacity-80 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        <p class="text-[11px] font-semibold opacity-80 whitespace-nowrap">{{ $sidebarRole }}</p>
+                    </div>
                 </div>
             </div>
 
