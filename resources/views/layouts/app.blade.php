@@ -13,18 +13,123 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
+    @php
+        $primaryBg = '#2ab4c0';
+        $primaryFg = '#ffffff';
+        $isImpersonating = session()->has('impersonated_by') && count(session('impersonated_by', [])) > 0;
+        $isSuperAdmin = auth()->check() && \Illuminate\Support\Facades\DB::table('model_has_roles')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->where('model_has_roles.model_id', auth()->id())
+            ->where('model_has_roles.model_type', \App\Models\User::class)
+            ->where('roles.name', 'Super Admin')
+            ->whereNull('model_has_roles.company_id')
+            ->exists();
+        
+        $useDynamicBranding = auth()->check() && ($isImpersonating || !$isSuperAdmin);
+
+        if ($useDynamicBranding && auth()->user()->company) {
+            $settings = auth()->user()->company->settings;
+            $primaryBg = $settings['background_color'] ?? '#2ab4c0';
+            $primaryFg = $settings['foreground_color'] ?? '#ffffff';
+        }
+
+        $brand500 = $useDynamicBranding ? $primaryBg : '#3b82f6';
+    @endphp
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                     colors: {
+                        brand: { 500: '{{ $brand500 }}' },
                         gray: { 50: '#c8cfd6', 500: '#6b6d80' },
                     }
                 }
             }
         }
     </script>
+
+    @if($useDynamicBranding)
+    <style>
+        :root {
+            --primary-bg: {{ $primaryBg }};
+            --primary-fg: {{ $primaryFg }};
+        }
+
+        /* Global Branding Overrides */
+        [class*="bg-[#2ab4c0]"], [class*="bg-teal-"], .bg-teal-500, .bg-teal-600, 
+        [class*="hover:bg-[#2ab4c0]"]:hover, [class*="hover:bg-teal-"],
+        [class*="bg-[#229aa4]"], [class*="hover:bg-[#229aa4]"]:hover,
+        [class*="bg-[#1f9aa6]"], [class*="hover:bg-[#1f9aa6]"]:hover {
+            background-color: var(--primary-bg) !important;
+            color: var(--primary-fg) !important;
+        }
+
+        /* Handle opacity variants for backgrounds */
+        [class*="bg-[#2ab4c0]/"], [class*="bg-teal-500/"], [class*="bg-teal-600/"] {
+            background-color: color-mix(in srgb, var(--primary-bg), transparent 90%) !important;
+            color: var(--primary-bg) !important;
+        }
+        
+        [class*="text-[#2ab4c0]"], [class*="text-teal-"],
+        [class*="text-[#1f9aa6]"], [class*="hover:text-[#1f9aa6]"]:hover,
+        [class*="hover:text-[#2ab4c0]"]:hover, [class*="group-hover:text-[#2ab4c0]"]:hover {
+            color: color-mix(in srgb, var(--primary-bg), black 15%) !important;
+        }
+        
+        [class*="border-[#2ab4c0]"], [class*="border-teal-"],
+        [class*="focus:border-[#2ab4c0]"]:focus, [class*="focus-within:border-[#2ab4c0]"]:focus-within {
+            border-color: var(--primary-bg) !important;
+        }
+
+        /* Border opacity variants */
+        [class*="border-[#2ab4c0]/"], [class*="border-teal-500/"] {
+            border-color: color-mix(in srgb, var(--primary-bg), transparent 70%) !important;
+        }
+
+        [class*="focus:ring-[#2ab4c0]"]:focus {
+            --tw-ring-color: var(--primary-bg) !important;
+        }
+
+        /* Light background variants using color-mix */
+        [class*="bg-"][class*="eaf9fb"], [class*="bg-"][class*="f2feff"], .bg-teal-50, .hover\:bg-teal-50:hover {
+            background-color: color-mix(in srgb, var(--primary-bg), white 97%) !important;
+        }
+
+        /* Gradient overrides */
+        [class*="from-"][class*="2ab4c0"], .from-teal-500, [class*="to-"][class*="f2feff"] {
+            --tw-gradient-from: var(--primary-bg) !important;
+            --tw-gradient-to: color-mix(in srgb, var(--primary-bg), white 98%) !important;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+        }
+        
+        /* Progress bars and status indicators */
+        [class*="peer-checked:bg-[#2ab4c0]"]:checked ~ [class*="peer-checked:bg-[#2ab4c0]"],
+        [class*="peer-checked:bg-[#2ab4c0]"] {
+            background-color: var(--primary-bg) !important;
+        }
+
+        /* Specific overrides for common components */
+        thead[class*="bg-[#2ab4c0]"] th, tr[class*="bg-[#2ab4c0]"] th,
+        .table-header-branded {
+            background-color: var(--primary-bg) !important;
+            color: var(--primary-fg) !important;
+        }
+
+        /* Navigation active states */
+        .is-active, .active-tab {
+            background-color: var(--primary-bg) !important;
+            color: var(--primary-fg) !important;
+        }
+
+        .admin-menu-item.is-active {
+            background-color: color-mix(in srgb, var(--primary-bg), transparent 92%) !important;
+            color: var(--primary-bg) !important;
+            font-weight: 700 !important;
+        }
+    </style>
+    @endif
 
     <style>
         body {

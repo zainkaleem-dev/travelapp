@@ -7,6 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Book a Flight' }}</title>
 
+    @php
+        $primaryBg = '#2ab4c0';
+        $primaryFg = '#ffffff';
+        $isImpersonating = session()->has('impersonated_by') && count(session('impersonated_by', [])) > 0;
+        $isSuperAdmin = auth()->check() && \Illuminate\Support\Facades\DB::table('model_has_roles')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->where('model_has_roles.model_id', auth()->id())
+            ->where('model_has_roles.model_type', \App\Models\User::class)
+            ->where('roles.name', 'Super Admin')
+            ->whereNull('model_has_roles.company_id')
+            ->exists();
+        
+        $useDynamicBranding = auth()->check() && ($isImpersonating || !$isSuperAdmin);
+
+        if ($useDynamicBranding && auth()->user()->company) {
+            $settings = auth()->user()->company->settings;
+            $primaryBg = $settings['background_color'] ?? '#2ab4c0';
+            $primaryFg = $settings['foreground_color'] ?? '#ffffff';
+        }
+
+        $brand50 = $useDynamicBranding ? "color-mix(in srgb, $primaryBg, white 95%)" : '#eff6ff';
+        $brand100 = $useDynamicBranding ? "color-mix(in srgb, $primaryBg, white 90%)" : '#dbeafe';
+        $brand500 = $useDynamicBranding ? $primaryBg : '#3b82f6';
+        $brand600 = $useDynamicBranding ? "color-mix(in srgb, $primaryBg, black 10%)" : '#2563eb';
+        $brand700 = $useDynamicBranding ? "color-mix(in srgb, $primaryBg, black 20%)" : '#1d4ed8';
+    @endphp
+
     {{-- Tailwind CDN (replace with Vite + compiled CSS in production) --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,7 +45,13 @@
                         serif: ['Lora', 'serif'],
                     },
                     colors: {
-                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        brand: { 
+                            50: '{{ $brand50 }}', 
+                            100: '{{ $brand100 }}', 
+                            500: '{{ $brand500 }}', 
+                            600: '{{ $brand600 }}', 
+                            700: '{{ $brand700 }}' 
+                        },
                         gray: { 50: '#c8cfd6', 500: '#6b6d80' },
                         accent: '#f97316',
                         ek: { red: '#cc0000', darkred: '#a80000' },
@@ -34,6 +67,102 @@
 
     @livewireStyles
     @stack('styles')
+
+    @if($useDynamicBranding)
+    <style>
+        :root {
+            --primary-bg: {{ $primaryBg }};
+            --primary-fg: {{ $primaryFg }};
+        }
+
+        /* Global Branding Overrides */
+        [class*="bg-[#2ab4c0]"], [class*="bg-teal-"], .bg-teal-500, .bg-teal-600, 
+        [class*="hover:bg-[#2ab4c0]"]:hover, [class*="hover:bg-teal-"],
+        [class*="bg-[#229aa4]"], [class*="hover:bg-[#229aa4]"]:hover,
+        [class*="bg-[#1f9aa6]"], [class*="hover:bg-[#1f9aa6]"]:hover {
+            background-color: var(--primary-bg) !important;
+            color: var(--primary-fg) !important;
+        }
+
+        /* Handle opacity variants for backgrounds */
+        [class*="bg-[#2ab4c0]/"], [class*="bg-teal-500/"], [class*="bg-teal-600/"] {
+            background-color: color-mix(in srgb, var(--primary-bg), transparent 90%) !important;
+            color: var(--primary-bg) !important;
+        }
+        
+        [class*="text-[#2ab4c0]"], [class*="text-teal-"],
+        [class*="text-[#1f9aa6]"], [class*="hover:text-[#1f9aa6]"]:hover,
+        [class*="hover:text-[#2ab4c0]"]:hover, [class*="group-hover:text-[#2ab4c0]"]:hover {
+            color: color-mix(in srgb, var(--primary-bg), black 15%) !important;
+        }
+        
+        [class*="border-[#2ab4c0]"], [class*="border-teal-"],
+        [class*="focus:border-[#2ab4c0]"]:focus, [class*="focus-within:border-[#2ab4c0]"]:focus-within {
+            border-color: var(--primary-bg) !important;
+        }
+
+        /* Border opacity variants */
+        [class*="border-[#2ab4c0]/"], [class*="border-teal-500/"] {
+            border-color: color-mix(in srgb, var(--primary-bg), transparent 70%) !important;
+        }
+
+        [class*="focus:ring-[#2ab4c0]"]:focus {
+            --tw-ring-color: var(--primary-bg) !important;
+        }
+
+        /* Light background variants using color-mix */
+        [class*="bg-"][class*="eaf9fb"], [class*="bg-"][class*="f2feff"], .bg-teal-50, .hover\:bg-teal-50:hover {
+            background-color: color-mix(in srgb, var(--primary-bg), white 97%) !important;
+        }
+
+        /* Gradient overrides */
+        [class*="from-"][class*="2ab4c0"], .from-teal-500, [class*="to-"][class*="f2feff"] {
+            --tw-gradient-from: var(--primary-bg) !important;
+            --tw-gradient-to: color-mix(in srgb, var(--primary-bg), white 98%) !important;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+        }
+        
+        /* Progress bars and status indicators */
+        [class*="peer-checked:bg-[#2ab4c0]"]:checked ~ [class*="peer-checked:bg-[#2ab4c0]"],
+        [class*="peer-checked:bg-[#2ab4c0]"] {
+            background-color: var(--primary-bg) !important;
+        }
+
+        /* Specific overrides for common components */
+        thead[class*="bg-[#2ab4c0]"] th, tr[class*="bg-[#2ab4c0]"] th,
+        .table-header-branded {
+            background-color: var(--primary-bg) !important;
+            color: var(--primary-fg) !important;
+        }
+
+        /* Navigation active states */
+        .is-active, .active-tab {
+            background-color: var(--primary-bg) !important;
+            color: var(--primary-fg) !important;
+        }
+
+        /* Trip Tabs and Search Button */
+        .trip-tab.active {
+            color: var(--primary-bg) !important;
+        }
+        .btn-search {
+            background-color: var(--primary-bg) !important;
+            color: var(--primary-fg) !important;
+        }
+        .btn-search:hover {
+            background-color: color-mix(in srgb, var(--primary-bg), black 10%) !important;
+        }
+        .btn-add-flight:hover, .btn-add-flight:hover .add-icon {
+            color: var(--primary-bg) !important;
+            border-color: var(--primary-bg) !important;
+        }
+        .admin-menu-item.is-active {
+            background-color: color-mix(in srgb, var(--primary-bg), transparent 92%) !important;
+            color: var(--primary-bg) !important;
+            font-weight: 700 !important;
+        }
+    </style>
+    @endif
 
     <style>
         /* Remove NProgress busy cursor and hide the progress bar */
@@ -704,20 +833,20 @@
             $previousAdmin = $previousAdminId ? \App\Models\User::withoutGlobalScopes()->find($previousAdminId) : null;
             $depth = count($impersonationStack);
         @endphp
-        <div class="bg-indigo-600 px-4 py-2 text-white shadow-sm sticky top-0 z-[1000]">
+        <div class="px-4 py-2 shadow-sm sticky top-0 z-[1000]" style="background-color: {{ $primaryBg }}; color: {{ $primaryFg }};">
             <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     <span class="text-[13px] font-semibold leading-tight">
-                        Impersonating {{ auth()->user()->company ? auth()->user()->company->name : 'N/A' }} admin, <span class="underline decoration-indigo-300 decoration-2 underline-offset-2">{{ auth()->user()->display_name }}</span>
+                        Impersonating {{ auth()->user()->company ? auth()->user()->company->name : 'N/A' }} admin, <span class="underline decoration-white/30 decoration-2 underline-offset-2">{{ auth()->user()->display_name }}</span>
                         @if($depth > 1)
-                            <span class="ml-1 text-indigo-300 text-[11px] font-normal">({{ $depth }} levels deep)</span>
+                            <span class="ml-1 opacity-70 text-[11px] font-normal">({{ $depth }} levels deep)</span>
                         @endif
                     </span>
                 </div>
-                <a href="{{ route('impersonate.leave') }}" class="flex-shrink-0 rounded-lg bg-white/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50">
+                <a href="{{ route('impersonate.leave') }}" class="flex-shrink-0 rounded-lg bg-white/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50" style="color: {{ $primaryFg }};">
                     Return to {{ $previousAdmin ? $previousAdmin->display_name : 'Admin' }}
                 </a>
             </div>
