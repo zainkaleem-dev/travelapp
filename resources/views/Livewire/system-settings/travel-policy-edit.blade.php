@@ -74,18 +74,21 @@
                             @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
 
-                        <div>
-                            <label class="field-label">Status</label>
-                            <div class="flex items-center gap-3 mt-2">
-                                <button type="button" wire:click="$set('isActive', true)" 
-                                    class="flex-1 px-4 py-2 rounded-lg border text-[11px] font-bold uppercase transition-all {{ $isActive ? 'bg-green-50 border-green-200 text-green-700' : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300' }}">
-                                    Active
+                        <div class="w-full sm:w-1/3">
+                            <label class="field-label">Status <span class="text-red-500">*</span></label>
+                            <div class="relative" x-data="{ open: false, active: @entangle('isActive').live }" @keydown.escape.window="open = false" @click.outside="open = false">
+                                <button type="button" class="input-field flex items-center justify-between text-left capitalize" @click="open = !open">
+                                    <span x-text="active ? 'Active' : 'Inactive'"></span>
+                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
                                 </button>
-                                <button type="button" wire:click="$set('isActive', false)" 
-                                    class="flex-1 px-4 py-2 rounded-lg border text-[11px] font-bold uppercase transition-all {{ !$isActive ? 'bg-red-50 border-red-200 text-red-700' : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300' }}">
-                                    Inactive
-                                </button>
+                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': active }" @click="active = true; open = false">Active</button>
+                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': !active }" @click="active = false; open = false">Inactive</button>
+                                </div>
                             </div>
+                            @error('isActive') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
