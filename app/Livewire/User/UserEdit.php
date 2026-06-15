@@ -47,6 +47,9 @@ class UserEdit extends Component
     public string $tab = 'personal';
     public bool $isTmc = false;
 
+    public $availableGrades = [];
+    public array $selectedGrades = [];
+
     public function mount(int $id, TenantContext $tenantContext, ?int $companyId = null): void
     {
         $this->company_id = $companyId ?: $tenantContext->companyId();
@@ -122,6 +125,9 @@ class UserEdit extends Component
             $this->preferred_cabin = $pi->preferred_cabin;
             $this->preferred_airline = $pi->preferred_airline;
         }
+
+        $this->selectedGrades = $this->user->grades()->pluck('grades.id')->map(fn($id) => (string)$id)->toArray();
+        $this->fetchGrades();
     }
 
     public function updatedCompanyId()
@@ -130,9 +136,23 @@ class UserEdit extends Component
             $company = Company::find($this->company_id);
             $this->isTmc = ($company?->company_type === 'TMC');
             $this->branches = Branch::where('company_id', $this->company_id)->orderBy('name')->get();
+            $this->fetchGrades();
         } else {
             $this->isTmc = false;
             $this->branches = [];
+            $this->availableGrades = [];
+        }
+    }
+
+    public function fetchGrades()
+    {
+        if ($this->company_id) {
+            $this->availableGrades = \App\Models\Grade::where('company_id', $this->company_id)
+                ->where('status', 'Active')
+                ->orderBy('name')
+                ->get();
+        } else {
+            $this->availableGrades = [];
         }
     }
 
@@ -206,6 +226,12 @@ class UserEdit extends Component
         $pi->preferred_cabin = $validated['preferred_cabin'] ?? null;
         $pi->preferred_airline = $validated['preferred_airline'] ?? null;
         $pi->save();
+
+        if (!empty($this->selectedGrades)) {
+            $this->user->grades()->sync($this->selectedGrades);
+        } else {
+            $this->user->grades()->detach();
+        }
 
         session()->flash('status', 'User updated successfully.');
         return redirect()->route('users.index', ['companyId' => $this->company_id]);

@@ -61,7 +61,7 @@
                 .profile-tabs .glider {
                     position: absolute;
                     height: 40px;
-                    width: calc(50% - 0.25rem);
+                    width: calc(33.33% - 0.25rem);
                     background-image: linear-gradient(to right, #2ab4c0, #239ea9);
                     z-index: 1;
                     border-radius: 80px;
@@ -72,6 +72,7 @@
                 }
                 .profile-tabs #ptabs-1:checked ~ .glider { transform: translateX(0); }
                 .profile-tabs #ptabs-2:checked ~ .glider { transform: translateX(100%); }
+                .profile-tabs #ptabs-3:checked ~ .glider { transform: translateX(200%); }
             </style>
 
             @if(!$isTmc)
@@ -81,6 +82,9 @@
 
                 <input type="radio" id="ptabs-2" name="profile-tabs" value="family" x-model="tab">
                 <label for="ptabs-2" class="tab">Family</label>
+
+                <input type="radio" id="ptabs-3" name="profile-tabs" value="grades" x-model="tab">
+                <label for="ptabs-3" class="tab">Grades</label>
 
                 <div class="glider"></div>
             </div>
@@ -459,6 +463,55 @@
                     </div>
                 </div>
             @endif
+        </div>
+    </div>
+
+    <div x-show="tab === 'grades'" x-cloak class="mt-6">
+        <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Assign Grades</h2>
+            </div>
+
+            @if(count($availableGrades) > 0)
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    @foreach($availableGrades as $grade)
+                        <label class="relative flex items-center p-3 rounded-lg border cursor-pointer transition-all {{ in_array($grade->id, $selectedGrades) ? 'bg-[#f2feff] border-[#2ab4c0] shadow-sm' : 'bg-white border-gray-200 hover:border-gray-300' }}">
+                            <input type="checkbox" wire:model.live="selectedGrades" value="{{ $grade->id }}" class="sr-only">
+                            <div class="flex-1">
+                                <p class="text-[12px] font-bold {{ in_array($grade->id, $selectedGrades) ? 'text-[#2ab4c0]' : 'text-gray-700' }}">{{ $grade->name }}</p>
+                                @if($grade->department)
+                                    <p class="text-[10px] text-gray-400 truncate uppercase font-bold">{{ $grade->department->name }}</p>
+                                @endif
+                            </div>
+                            <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center {{ in_array($grade->id, $selectedGrades) ? 'border-[#2ab4c0] bg-[#2ab4c0]' : 'border-gray-200' }}">
+                                @if(in_array($grade->id, $selectedGrades))
+                                    <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                                @endif
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+            @else
+                <div class="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/30">
+                    <svg class="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h10M4 18h7" />
+                    </svg>
+                    <p class="text-sm text-gray-500 font-medium">No grades available for this company.</p>
+                    <p class="text-[11px] text-gray-400 mt-1 uppercase font-bold tracking-wider">Create grades in Corporate Configuration first.</p>
+                </div>
+            @endif
+
+            <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
+                <button type="button" onclick="window.history.back()"
+                    class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors uppercase tracking-wider">
+                    Cancel
+                </button>
+                <button type="button" wire:click="save"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm uppercase tracking-wider">
+                    <span wire:loading.remove wire:target="save">Update User</span>
+                    <span wire:loading wire:target="save">Updating...</span>
+                </button>
+            </div>
         </div>
     </div>
     @endif
