@@ -145,6 +145,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Company::class, 'company_id');
     }
 
+    public function grades(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Grade::class, 'grade_user')->withTimestamps();
+    }
+
     /**
      * Override Spatie's hasPermissionTo to ensure strict multi-tenant isolation.
      * This prevents "bleeding" from global role templates (company_id = null)

@@ -45,6 +45,9 @@ class UserCreate extends Component
     public string $tab = 'personal';
     public bool $isTmc = false;
 
+    public $availableGrades = [];
+    public array $selectedGrades = [];
+
     public array $familyMembers = [];
 
     // Family Member Temp Fields
@@ -79,6 +82,7 @@ class UserCreate extends Component
         }
         
         $this->updatedCompanyId();
+        $this->fetchGrades();
 
         if (request()->is('admin*') || request()->is('companies*')) {
             $this->routePrefix = 'admin';
@@ -95,9 +99,23 @@ class UserCreate extends Component
             $company = Company::find($this->company_id);
             $this->isTmc = ($company?->company_type === 'TMC');
             $this->branches = Branch::where('company_id', $this->company_id)->orderBy('name')->get();
+            $this->fetchGrades();
         } else {
             $this->isTmc = false;
             $this->branches = [];
+            $this->availableGrades = [];
+        }
+    }
+
+    public function fetchGrades()
+    {
+        if ($this->company_id) {
+            $this->availableGrades = \App\Models\Grade::where('company_id', $this->company_id)
+                ->where('status', 'Active')
+                ->orderBy('name')
+                ->get();
+        } else {
+            $this->availableGrades = [];
         }
     }
 
@@ -223,6 +241,10 @@ class UserCreate extends Component
                 'expiry_date' => $fm['expiry_date'],
                 'issuing_country' => $fm['issuing_country'],
             ]);
+        }
+
+        if (!empty($this->selectedGrades)) {
+            $user->grades()->sync($this->selectedGrades);
         }
 
         session()->flash('status', 'User created successfully with family members.');
