@@ -170,7 +170,7 @@ class UserCreate extends Component
         $count = User::where('company_id', $this->company_id)->count();
 
         // 3. Prevent save if limit is reached
-        if ($count >= $limit) {
+        if ($count >= $limit && !auth()->user()->hasRole('Super Admin')) {
             session()->flash('error', "Limit reached. This company is only allowed to have {$limit} users.");
             return $this->redirect(route('users.index', ['companyId' => $this->company_id]));
         }

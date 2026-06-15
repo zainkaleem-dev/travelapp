@@ -119,7 +119,7 @@ class CompanyCreate extends Component
         } else {
             $query->where('parent_id', auth()->user()->company_id);
         }
-        if ($query->count() >= $limit) {
+        if ($query->count() >= $limit && !auth()->user()->hasRole('Super Admin')) {
             session()->flash('error', "Limit reached. You are only allowed to have more than {$limit} companies.");
             return $this->redirect(route('companies.index'));
         }
