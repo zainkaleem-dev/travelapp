@@ -45,6 +45,8 @@
             User and Roles
         </a>
 
+        @featureOrAdmin('feature-management-module')
+        @can('Manage Features')
         <a href="{{ $companyNavId ? route('companies.features', $companyNavId) : route('features') }}"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ ($activeCompanyTab === 'feature-management' || ($activeCompanyTab === null && (request()->routeIs('companies.features') || request()->routeIs('features*')))) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
             <svg class="w-3.5 h-3.5 flex-shrink-0 opacity-90" fill="none" stroke="currentColor" stroke-width="2"
@@ -55,6 +57,8 @@
             </svg>
             Feature Management
         </a>
+        @endcan
+        @endfeatureOrAdmin
 
         <a href="{{ $companyNavId ? route('companies.roles-permissions', $companyNavId) : route('roles.index') }}"
             class="inline-flex items-center gap-1.5 px-3 py-2 sm:px-4 flex-shrink-0 rounded-t-lg {{ ($activeCompanyTab === 'roles-permissions' || ($activeCompanyTab === null && (request()->routeIs('companies.roles-permissions') || request()->routeIs('roles.*')))) ? 'bg-[#2ab4c0] text-white font-semibold' : 'text-gray-600 hover:text-gray-900' }} transition-colors whitespace-nowrap">
