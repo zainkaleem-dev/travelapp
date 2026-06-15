@@ -60,11 +60,15 @@ class TravelPolicyEdit extends Component
 
         session()->flash('status', 'Travel policy updated successfully.');
 
-        if ($this->returnUrl) {
+        if ($this->returnUrl && !str_contains($this->returnUrl, 'livewire/update')) {
             return redirect($this->returnUrl);
         }
 
-        return redirect()->route('admin.system-settings', ['activeTab' => 'travel-policy']);
+        if (auth()->user()->hasRole('Super Admin')) {
+            return redirect()->route('admin.system-settings', ['activeTab' => 'travel-policy']);
+        }
+
+        return redirect()->route('companies.travel-policy', ['id' => $this->companyId]);
     }
 
     public function render()

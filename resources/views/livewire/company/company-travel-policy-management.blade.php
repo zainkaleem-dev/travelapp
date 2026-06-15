@@ -22,7 +22,7 @@
                     <tr class="group hover:bg-gray-50/50 transition-colors" wire:key="policy-{{ $policy->id }}">
                         <td class="px-6 py-4">
                             <div class="flex flex-col">
-                                <a href="{{ route('admin.travel-policy.view', ['companyId' => $policy->company_id, 'id' => $policy->id, 'returnUrl' => $returnUrl]) }}" class="text-[11px] font-bold text-gray-900 uppercase hover:text-[#2ab4c0] transition-colors">
+                                <a href="{{ route('admin.travel-policy.view', ['companyId' => $policy->company_id, 'id' => $policy->id, 'returnUrl' => route('companies.travel-policy', ['id' => $policy->company_id]) . '?activeTab=' . $policyType]) }}" class="text-[11px] font-bold text-gray-900 uppercase hover:text-[#2ab4c0] transition-colors">
                                     {{ $policy->name }}
                                 </a>
                                 <span class="text-[10px] text-gray-500 truncate max-w-xs">{{ $policy->description }}</span>
@@ -51,7 +51,7 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-2">
-                                <a href="{{ route('admin.travel-policy.edit', ['companyId' => $policy->company_id, 'id' => $policy->id, 'returnUrl' => $returnUrl]) }}" 
+                                <a href="{{ route('admin.travel-policy.edit', ['companyId' => $policy->company_id, 'id' => $policy->id, 'returnUrl' => route('companies.travel-policy', ['id' => $policy->company_id]) . '?activeTab=' . $policyType]) }}" 
                                     class="group inline-flex items-center justify-center p-1 rounded-lg border border-gray-200 bg-transparent text-black text-[11px] font-semibold transition-colors hover:border-gray-400" 
                                     title="Edit">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -207,6 +207,10 @@ Route::middleware(['auth', 'password.set'])->group(function () {
     Route::get('/companies/{companyId}/travel-policy/{id}', \App\Livewire\SystemSettings\TravelPolicyView::class)->name('admin.travel-policy.view')->middleware('can:View Travel Policy');
     Route::get('/companies/{companyId}/travel-policy/{id}/edit', \App\Livewire\SystemSettings\TravelPolicyEdit::class)->name('admin.travel-policy.edit')->middleware('can:Edit Travel Policy');
 
+    // New Company Specific Routes (Accessible to both Super Admins and Org Admins)
+    Route::get('/companies/{id}/travel-policy', \App\Livewire\Company\CompanyTravelPolicy::class)->name('companies.travel-policy')->middleware('can:View Company');
+    Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features')->middleware('can:Manage Features');
+
     // User Routes (Accessible to Company Admins)
     Route::get('/companies/{companyId}/users', UserListing::class)->name('users.index')->middleware('can:View Users');
     Route::get('/companies/{companyId}/users/create', UserCreate::class)->name('users.create')->middleware('can:Create User');
@@ -293,13 +297,11 @@ Route::middleware(['auth', 'password.set'])->group(function () {
         Route::get('/companies/{id}/integrations', \App\Livewire\Company\CompanyIntegrations::class)->name('companies.integrations')->middleware('can:View Company');
         Route::get('/companies/{id}/branches', CompanyBranches::class)->name('companies.branches')->middleware('can:View Company');
         Route::get('/companies/{id}/user-roles', CompanyUserRoles::class)->name('companies.user-roles')->middleware('can:View Company');
-        Route::get('/companies/{id}/travel-policy', \App\Livewire\Company\CompanyTravelPolicy::class)->name('companies.travel-policy')->middleware('can:View Company');
 
 
         Route::get('/companies/{id}/roles-permissions', RolesPermissions::class)->name('companies.roles-permissions')->middleware('can:Manage Roles and Permissions');
         Route::get('/companies/{id}/edit', CompanyEdit::class)->name('companies.edit')->middleware('can:Edit Company');
         Route::get('/companies/{id}/edit-branches', \App\Livewire\Company\CompanyEditBranches::class)->name('companies.edit-branches')->middleware('can:Edit Company');
-        Route::get('/companies/{company}/features', FeaturesListing::class)->name('companies.features')->middleware('can:Manage Features');
         Route::get('/features', FeaturesListing::class)->name('features')->middleware('can:Manage Features');
 
 
