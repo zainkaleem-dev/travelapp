@@ -1,5 +1,5 @@
-<div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+<div class="w-full px-1 py-1" x-data="{ activeTab: 'general' }">
+    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
         <!-- Unified Header -->
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
@@ -8,134 +8,162 @@
                 </div>
                 <a href="{{ $returnUrl ?? route('admin.system-settings', ['activeTab' => 'travel-policy']) }}"
                     class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-700 hover:bg-gray-50 uppercase tracking-wider transition-colors">
-                    Back to List
+                    Back
                 </a>
             </div>
         </div>
 
+        <!-- Tab Navigation -->
+        <div class="px-6 pt-2 border-b border-gray-200 bg-white">
+            <div class="flex items-center gap-0 overflow-x-auto no-scrollbar text-[11px] font-semibold w-full">
+                <button @click="activeTab = 'general'" 
+                    class="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-t-lg transition-all duration-200 whitespace-nowrap uppercase tracking-wider"
+                    :class="activeTab === 'general' ? 'bg-[#2ab4c0] text-white font-semibold shadow-sm' : 'text-gray-600 hover:text-gray-900'">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Policy Settings
+                </button>
+                <button @click="activeTab = 'grades'" 
+                    class="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-t-lg transition-all duration-200 whitespace-nowrap uppercase tracking-wider"
+                    :class="activeTab === 'grades' ? 'bg-[#2ab4c0] text-white font-semibold shadow-sm' : 'text-gray-600 hover:text-gray-900'">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Grades
+                </button>
+            </div>
+        </div>
+
         <form wire:submit.prevent="save" class="p-6">
-            <div class="space-y-8">
-                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Policy Configuration</h2>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label class="field-label">Policy Name <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="name" class="input-field" placeholder="e.g. Executive Flight Policy">
-                            @error('name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+            <div class="space-y-6">
+                <!-- General Settings Tab -->
+                <div x-show="activeTab === 'general'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0">
+                    <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Policy Configuration</h2>
                         </div>
 
-                        <div>
-                            <label class="field-label">Company <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, selected: @js($companyId ?: ''), companies: @js($companies->pluck('name', 'id')) }"
-                                @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
-                                    <span x-text="selected === '' ? 'Select company...' : companies[selected]"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel max-h-64 overflow-y-auto">
-                                    <button type="button" class="admin-menu-item" @click="selected = ''; open = false; $wire.set('companyId', '')">Select company...</button>
-                                    @foreach($companies as $company)
-                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected == '{{ $company->id }}' }"
-                                            @click="selected = '{{ $company->id }}'; open = false; $wire.set('companyId', '{{ $company->id }}')">{{ $company->name }}</button>
-                                    @endforeach
-                                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="field-label">Policy Name <span class="text-red-500">*</span></label>
+                                <input type="text" wire:model="name" class="input-field" placeholder="e.g. Standard Economy Policy">
+                                @error('name') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                             </div>
-                            @error('companyId') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
 
-                        <div>
-                            <label class="field-label">Policy Type <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, selected: @js($policyType) }"
-                                @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="input-field flex items-center justify-between text-left uppercase" @click="open = !open">
-                                    <span x-text="selected"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    @foreach($policyTypes as $type)
-                                        <button type="button" class="admin-menu-item uppercase" :class="{ 'is-active': selected === '{{ $type }}' }"
-                                            @click="selected = '{{ $type }}'; open = false; $wire.set('policyType', '{{ $type }}')">{{ $type }}</button>
-                                    @endforeach
+                            <div>
+                                <label class="field-label">Company <span class="text-red-500">*</span></label>
+                                <div class="relative" 
+                                    x-data="{ open: false, selected: @entangle('companyId').live, companies: @js($companies->pluck('name', 'id')) }"
+                                    @keydown.escape.window="open = false" @click.outside="open = false">
+                                    <button type="button" class="input-field flex items-center justify-between text-left" @click="open = !open">
+                                        <span x-text="!selected ? 'Select company...' : (companies[selected] ?? 'Select company...')"></span>
+                                        <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel max-h-64 overflow-y-auto">
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': !selected }" @click="selected = ''; open = false">Select company...</button>
+                                        @foreach($companies as $company)
+                                            <button type="button" class="admin-menu-item" :class="{ 'is-active': String(selected) === '{{ $company->id }}' }"
+                                                @click="selected = '{{ $company->id }}'; open = false">{{ $company->name }}</button>
+                                        @endforeach
+                                    </div>
                                 </div>
+                                @error('companyId') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                             </div>
-                            @error('policyType') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
 
-                        <div class="md:col-span-2">
-                            <label class="field-label">Description</label>
-                            <textarea wire:model="description" rows="3" class="input-field pt-2" placeholder="Policy details and rules..."></textarea>
-                            @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
-                        </div>
-
-                        <div class="w-full sm:w-1/3">
-                            <label class="field-label">Status <span class="text-red-500">*</span></label>
-                            <div class="relative" x-data="{ open: false, active: @entangle('isActive').live }" @keydown.escape.window="open = false" @click.outside="open = false">
-                                <button type="button" class="input-field flex items-center justify-between text-left capitalize" @click="open = !open">
-                                    <span x-text="active ? 'Active' : 'Inactive'"></span>
-                                    <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': active }" @click="active = true; open = false">Active</button>
-                                    <button type="button" class="admin-menu-item" :class="{ 'is-active': !active }" @click="active = false; open = false">Inactive</button>
+                            <div>
+                                <label class="field-label">Policy Type <span class="text-red-500">*</span></label>
+                                <div class="relative" 
+                                    x-data="{ open: false, selected: @entangle('policyType').live }"
+                                    @keydown.escape.window="open = false" @click.outside="open = false">
+                                    <button type="button" class="input-field flex items-center justify-between text-left uppercase" @click="open = !open">
+                                        <span x-text="selected || 'Select type...'"></span>
+                                        <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                        @foreach($policyTypes as $type)
+                                            <button type="button" class="admin-menu-item uppercase" :class="{ 'is-active': selected === '{{ $type }}' }"
+                                                @click="selected = '{{ $type }}'; open = false">{{ $type }}</button>
+                                        @endforeach
+                                    </div>
                                 </div>
+                                @error('policyType') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
                             </div>
-                            @error('isActive') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+
+                            <div class="md:col-span-2">
+                                <label class="field-label">Description</label>
+                                <textarea wire:model="description" rows="3" class="input-field pt-2" placeholder="Policy details and rules..."></textarea>
+                                @error('description') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            </div>
+
+                            <div class="w-full sm:w-1/3">
+                                <label class="field-label">Status <span class="text-red-500">*</span></label>
+                                <div class="relative" 
+                                    x-data="{ open: false, selected: @entangle('isActive').live }" 
+                                    @keydown.escape.window="open = false" @click.outside="open = false">
+                                    <button type="button" class="input-field flex items-center justify-between text-left capitalize" @click="open = !open">
+                                        <span x-text="selected ? 'Active' : 'Inactive'"></span>
+                                        <svg class="w-3.5 h-3.5 text-gray-500 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div x-cloak x-show="open" x-transition.origin.top class="admin-menu-panel">
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': selected }" @click="selected = true; open = false">Active</button>
+                                        <button type="button" class="admin-menu-item" :class="{ 'is-active': !selected }" @click="selected = false; open = false">Inactive</button>
+                                    </div>
+                                </div>
+                                @error('isActive') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Grade Selection -->
-                <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Applicable Grades</h2>
-                        <span class="text-[10px] font-bold text-[#2ab4c0] bg-[#2ab4c0]/5 px-2 py-0.5 rounded uppercase">Selection Required</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                        @foreach($grades as $grade)
-                            <label class="relative flex items-center p-3 rounded-lg border cursor-pointer transition-all {{ in_array($grade->id, $selectedGrades) ? 'bg-[#f2feff] border-[#2ab4c0] shadow-sm' : 'bg-white border-gray-200 hover:border-gray-300' }}">
-                                <input type="checkbox" wire:model.live="selectedGrades" value="{{ $grade->id }}" class="sr-only">
-                                <div class="flex-1">
-                                    <p class="text-[12px] font-bold {{ in_array($grade->id, $selectedGrades) ? 'text-[#2ab4c0]' : 'text-gray-700' }}">{{ $grade->name }}</p>
-                                    @if($grade->description)
-                                        <p class="text-[10px] text-gray-400 truncate">{{ $grade->description }}</p>
-                                    @endif
-                                </div>
-                                <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center {{ in_array($grade->id, $selectedGrades) ? 'border-[#2ab4c0] bg-[#2ab4c0]' : 'border-gray-200' }}">
-                                    @if(in_array($grade->id, $selectedGrades))
-                                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                    @endif
-                                </div>
-                            </label>
-                        @endforeach
-                    </div>
-                    @if(count($grades) === 0)
-                        <div class="text-center py-8 rounded-lg border-2 border-dashed border-gray-100 bg-white">
-                            <p class="text-[11px] font-bold text-gray-400 uppercase">No grades found for this organization.</p>
-                            <a href="{{ $companyId ? route('grades.index', ['companyId' => $companyId]) : '#' }}" class="text-[10px] font-bold text-[#2ab4c0] hover:underline mt-2 inline-block uppercase">Manage Grades First</a>
+                <!-- Applicable Grades Tab -->
+                <div x-show="activeTab === 'grades'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0">
+                    <div class="rounded-lg border border-gray-100 bg-gray-50/30 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-[11px] font-black tracking-widest text-gray-400 uppercase">Applicable Grades</h2>
+                            <span class="text-[10px] font-bold text-[#2ab4c0] bg-[#2ab4c0]/5 px-2 py-0.5 rounded uppercase">Selection Required</span>
                         </div>
-                    @endif
-                    @error('selectedGrades') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            @foreach($grades as $grade)
+                                <label class="relative flex items-center p-3 rounded-lg border cursor-pointer transition-all {{ in_array($grade->id, $selectedGrades) ? 'bg-[#f2feff] border-[#2ab4c0] shadow-sm' : 'bg-white border-gray-200 hover:border-gray-300' }}">
+                                    <input type="checkbox" wire:model.live="selectedGrades" value="{{ $grade->id }}" class="sr-only">
+                                    <div class="flex-1">
+                                        <p class="text-[12px] font-bold {{ in_array($grade->id, $selectedGrades) ? 'text-[#2ab4c0]' : 'text-gray-700' }}">{{ $grade->name }}</p>
+                                        @if($grade->description)
+                                            <p class="text-[10px] text-gray-400 truncate">{{ $grade->description }}</p>
+                                        @endif
+                                    </div>
+                                    <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center {{ in_array($grade->id, $selectedGrades) ? 'border-[#2ab4c0] bg-[#2ab4c0]' : 'border-gray-200' }}">
+                                        @if(in_array($grade->id, $selectedGrades))
+                                            <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                                        @endif
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                        @if(count($grades) === 0)
+                            <div class="text-center py-8 rounded-lg border-2 border-dashed border-gray-100 bg-white">
+                                <p class="text-[11px] font-bold text-gray-400 uppercase">No grades found for this organization.</p>
+                                <a href="{{ $companyId ? route('grades.index', ['companyId' => $companyId]) : '#' }}" class="text-[10px] font-bold text-[#2ab4c0] hover:underline mt-2 inline-block uppercase">Manage Grades First</a>
+                            </div>
+                        @endif
+                        @error('selectedGrades') <p class="mt-1 text-[11px] font-bold text-red-500 uppercase">{{ $message }}</p> @enderror
+                    </div>
                 </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 mt-10 pt-6 border-t border-gray-100">
-                <a href="{{ $returnUrl ?? route('admin.system-settings', ['activeTab' => 'travel-policy']) }}"
+                <button type="button" onclick="window.history.back()"
                     class="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
                     Cancel
-                </a>
+                </button>
                 <button type="submit"
-                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm">
-                    Create Policy
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2ab4c0] px-4 py-2 text-[11px] font-semibold text-white hover:bg-[#229aa4] transition-colors shadow-sm uppercase tracking-wide min-w-[120px]">
+                    <span wire:loading.remove>Create Policy</span>
+                    <span wire:loading>Processing...</span>
                 </button>
             </div>
         </form>
