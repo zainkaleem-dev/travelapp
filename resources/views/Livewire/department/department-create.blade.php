@@ -1,5 +1,5 @@
 <div class="w-full px-1 py-1">
-    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
+    <div class="rounded-lg border border-gray-200 bg-white shadow-sm mb-4">
         <div class="px-6 py-3.5 bg-gradient-to-r from-white to-[#f2feff] border-b border-gray-200">
             <div class="flex items-start justify-between gap-4">
                 <div>
